@@ -21,7 +21,7 @@ Thumbs.db
 nbproject
 
 # XCode
-consilium/**/*
+consilium
 consilium.*
-cordova/**/*
-CordovaLib/**/*
+cordova
+CordovaLib
