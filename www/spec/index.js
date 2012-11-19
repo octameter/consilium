@@ -20,48 +20,48 @@ describe('app', function() {
     describe('initialize', function() {
         it('should bind deviceready', function() {
             runs(function() {
-                spyOn(app, 'onDeviceReady');
+                spyOn(app, 'deviceready');
                 app.initialize();
                 helper.trigger(window.document, 'deviceready');
             });
 
             waitsFor(function() {
-                return (app.onDeviceReady.calls.length > 0);
-            }, 'onDeviceReady should be called once', 500);
+                return (app.deviceready.calls.length > 0);
+            }, 'deviceready should be called once', 500);
 
             runs(function() {
-                expect(app.onDeviceReady).toHaveBeenCalled();
+                expect(app.deviceready).toHaveBeenCalled();
             });
         });
     });
 
-    describe('onDeviceReady', function() {
+    describe('deviceready', function() {
         it('should report that it fired', function() {
-            spyOn(app, 'receivedEvent');
-            app.onDeviceReady();
-            expect(app.receivedEvent).toHaveBeenCalledWith('deviceready');
+            spyOn(app, 'report');
+            app.deviceready();
+            expect(app.report).toHaveBeenCalledWith('deviceready');
         });
     });
 
-    describe('receivedEvent', function() {
+    describe('report', function() {
         beforeEach(function() {
             var el = document.getElementById('stage');
             el.innerHTML = ['<div id="deviceready">',
-                            '    <p class="event listening">Listening</p>',
-                            '    <p class="event received">Received</p>',
+                            '    <p class="status pending">Pending</p>',
+                            '    <p class="status complete hide">Complete</p>',
                             '</div>'].join('\n');
         });
 
-        it('should hide the listening element', function() {
-            app.receivedEvent('deviceready');
-            var displayStyle = helper.getComputedStyle('#deviceready .listening', 'display');
-            expect(displayStyle).toEqual('none');
+        it('should show the completion state', function() {
+            app.report('deviceready');
+            var el = document.querySelector('#deviceready .complete:not(.hide)');
+            expect(el).toBeTruthy();
         });
 
-        it('should show the received element', function() {
-            app.receivedEvent('deviceready');
-            var displayStyle = helper.getComputedStyle('#deviceready .received', 'display');
-            expect(displayStyle).toEqual('block');
+        it('should hide the pending state', function() {
+            app.report('deviceready');
+            var el = document.querySelector('#deviceready .pending.hide');
+            expect(el).toBeTruthy();
         });
     });
 });
