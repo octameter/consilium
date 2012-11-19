@@ -1,3 +1,6 @@
+#OS specific and not allowed for build.phonegap.com
+www/cordova-*.js
+
 # always-ignore extensions
 *.diff
 *.log
