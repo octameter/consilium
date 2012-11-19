@@ -4,6 +4,7 @@
 *.err
 *.jar
 *.zip
+*.DS_Store
 
 # OS or Editor folders
 .DS_Store
@@ -16,12 +17,8 @@ Thumbs.db
 *.esproj
 nbproject
 
-.DS_Store
-
+# XCode
 consilium/**/*
-
 consilium.*
-
 cordova/**/*
-
 CordovaLib/**/*
