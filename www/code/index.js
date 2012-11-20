@@ -37,7 +37,6 @@ var app = {
         // This is an event handler function, which means the scope is the event.
         // So, we must explicitly called `app.report()` instead of `this.report()`.
         app.report('deviceready');
-        alert("deviceready");
     },
     report: function(id) {
         // Report the event in the console
@@ -51,7 +50,7 @@ var app = {
         completeElem.className = completeElem.className.split('hide').join('');   
     },
     scan: function() {
-    	alert("Scanning..");
+
         console.log('scanning');
         try {
             window.plugins.barcodeScanner.scan(function(args) {
@@ -68,6 +67,7 @@ var app = {
                 console.log(args);
         });
         } catch (ex) {
+        	alert(ex.message);
             console.log(ex.message);
         }
     }
