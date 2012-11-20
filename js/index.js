@@ -31,6 +31,7 @@ var app = {
         document.addEventListener("deviceready", this.deviceready, false);
         
         document.getElementById("scan").addEventListener("click", this.scan, false);
+        document.getElementById("photo").addEventListener("click", this.photo, false);
     },
     deviceready: function() {
         // This is an event handler function, which means the scope is the event.
@@ -64,11 +65,28 @@ var app = {
                 */
                 document.getElementById("info").innerHTML = args.text;
                 console.log(args);
-        });
+            });
         } catch (ex) {
         	alert(ex.message);
             console.log(ex.message);
         }
+    },
+    photo: function() {
+    	// capture callback
+    	var captureSuccess = function(mediaFiles) {
+    	    var i, path, len;
+    	    for (i = 0, len = mediaFiles.length; i < len; i += 1) {
+    	        path = mediaFiles[i].fullPath;
+    	        // do something interesting with the file
+    	    }
+    	};
+
+    	// capture error callback
+    	var captureError = function(error) {
+    	    navigator.notification.alert('Error code: ' + error.code, null, 'Capture Error');
+    	};
+    	
+    	navigator.device.capture.captureImage(captureSuccess, captureError, {limit:2});
     }
 
 };
