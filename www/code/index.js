@@ -21,9 +21,12 @@
  * https://build.phonegap.com/blog/barcodescanner-plugin
 */
 var app = {
+	// Application Constructor
     initialize: function() {
         this.bind();
     },
+    // Bind any events that are required on startup. Common events are:
+    // `load`, `deviceready`, `offline`, and `online`.
     bind: function() {
         document.addEventListener("deviceready", this.deviceready, false);
         document.addEventListener("DOMContentLoaded", this.deviceready, false);
