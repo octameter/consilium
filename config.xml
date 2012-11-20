@@ -24,7 +24,7 @@
 
    	<!-- expanded to the appropriate Android and Windows Phone permissions -->
     <!-- <feature name="http://api.phonegap.com/1.0/battery" /> -->
-    <!-- <feature name="http://api.phonegap.com/1.0/camera" /> -->
+    <feature name="http://api.phonegap.com/1.0/camera" />
     <!-- <feature name="http://api.phonegap.com/1.0/contacts" /> -->   
     <!-- WRITE_EXTERNAL_STORAGE permission -->
     <!-- <feature name="http://api.phonegap.com/1.0/file" /> -->
@@ -34,7 +34,7 @@
     <!-- maps to android:ACCESS_NETWORK_STATE -->
     <!-- <feature name="http://api.phonegap.com/1.0/network" /> -->
     <!-- maps to VIBRATE permission -->
-    <!-- <feature name="http://api.phonegap.com/1.0/notification" /> -->    
+    <feature name="http://api.phonegap.com/1.0/notification" />  
     <!-- maps to winphone:ID_CAP_IDENTITY_DEVICE permission -->
 	<!-- DENY ALL -->
 	<!-- <preference name="permissions" value="none"/> -->
