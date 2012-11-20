@@ -45,9 +45,9 @@
 	<!-- DENY ALL -->
 	<!-- <preference name="permissions" value="none"/> -->
 
-    <preference name="phonegap-version" value="2.1.0" />
     
     <!-- PREFERENCES GENERIC -->
+    <preference name="phonegap-version" value="2.1.0" />
     <!-- Device orientation: default(both are enabled), landscape, portrait -->
     <preference name="orientation"      value="default" />    
     <!-- Target specific device: handset (only ios), tablet (only ios) or universal -->

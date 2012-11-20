@@ -2,6 +2,7 @@
 www/cordova-*.js
 www/phonegap.js
 www/barcodescanner.js
+www/cordova.js
 
 # always-ignore extensions
 *.diff
