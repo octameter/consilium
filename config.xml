@@ -54,7 +54,7 @@
     <!-- WebView Bounce: bounces, when scrolled beyond (only iOS), default true -->
 	<!-- <preference name="webviewbounce" value="true" />    -->
     <!-- Prerendered Icon: no gloss (only iOS), default false -->
-	<!-- <preference name="prerendered-icon" value="false" /> -->
+	<preference name="prerendered-icon" value="true" />
     <!-- Open all links in WebView: all links open in webview, default is false -->
 	<!-- <preference name="stay-in-webview" value="false" /> -->
     <!-- Status Bar Style: default (grey-opaque), black-opaque or black-translucent (only iOS) -->
