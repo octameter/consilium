@@ -30,9 +30,6 @@ var app = {
     bind: function() {
         document.addEventListener("deviceready", this.deviceready, false);
         
-        // Browser und Device
-        document.addEventListener("DOMContentLoaded", this.deviceready, false);
-        
         document.getElementById("scan").addEventListener("click", this.scan, false);
     },
     deviceready: function() {
