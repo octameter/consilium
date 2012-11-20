@@ -20,10 +20,12 @@
     <gap:plugin name="BarcodeScanner"/>
 
 	<!-- FEATURE -->
-	<!-- expanded to the appropriate Android and Windows Phone permissions -->
+    <feature name="http://api.phonegap.com/1.0/device" />
+
+   	<!-- expanded to the appropriate Android and Windows Phone permissions -->
     <!-- <feature name="http://api.phonegap.com/1.0/battery" /> -->
     <!-- <feature name="http://api.phonegap.com/1.0/camera" /> -->
-    <!-- <feature name="http://api.phonegap.com/1.0/contacts" /> -->
+    <!-- <feature name="http://api.phonegap.com/1.0/contacts" /> -->   
     <!-- WRITE_EXTERNAL_STORAGE permission -->
     <!-- <feature name="http://api.phonegap.com/1.0/file" /> -->
     <!-- <feature name="http://api.phonegap.com/1.0/geolocation" /> -->
@@ -34,59 +36,53 @@
     <!-- maps to VIBRATE permission -->
     <!-- <feature name="http://api.phonegap.com/1.0/notification" /> -->    
     <!-- maps to winphone:ID_CAP_IDENTITY_DEVICE permission -->
-    <feature name="http://api.phonegap.com/1.0/device" />
 	<!-- DENY ALL -->
 	<!-- <preference name="permissions" value="none"/> -->
 
 
-    
     <!-- PREFERENCES GENERIC -->
     <preference name="phonegap-version" value="2.1.0" />
-    <!-- Device orientation: default(both are enabled), landscape, portrait -->
     <preference name="orientation"      value="default" />    
-    <!-- Target specific device: handset (only ios), tablet (only ios) or universal -->
     <preference name="target-device"    value="universal" />
-    <!-- Fullscreen: true hides status bar (only iOS and Android) -->
     <preference name="fullscreen"       value="false" />
+    
+    <!-- Device orientation: default(both are enabled), landscape, portrait -->
+    <!-- Target specific device: handset (only ios), tablet (only ios) or universal -->
+    <!-- Fullscreen: true hides status bar (only iOS and Android) -->
     
     <!-- PREFERENCE iOS -->   
     <!-- WebView Bounce: bounces, when scrolled beyond (only iOS), default true -->
-    <preference name="webviewbounce" value="true" />   
+	<!-- <preference name="webviewbounce" value="true" />    -->
     <!-- Prerendered Icon: no gloss (only iOS), default false -->
-    <preference name="prerendered-icon" value="false" />
+	<!-- <preference name="prerendered-icon" value="false" /> -->
     <!-- Open all links in WebView: all links open in webview, default is false -->
-    <preference name="stay-in-webview" value="false" />
+	<!-- <preference name="stay-in-webview" value="false" /> -->
     <!-- Status Bar Style: default (grey-opaque), black-opaque or black-translucent (only iOS) -->
-    <preference name="ios-statusbarres" value="default" />
+	<!-- <preference name="ios-statusbarres" value="default" /> -->
     <!-- Detect Data Types (phone numbers and dates turned into links), default is true -->
-    <preference name="detect-data-types" value="true" />
+	<!-- <preference name="detect-data-types" value="true" /> -->
     <!-- Exit on Suspend: App will terminate when homebutton, default is false -->
-    <preference name="exit-on-suspend" value="false" />
+	<!-- <preference name="exit-on-suspend" value="false" /> -->
     <!-- Show Splash Screen Spinner: Spinner during app loading, default is true -->
-    <preference name="show-splash-screen-spinner" value="true" />
+	<!-- <preference name="show-splash-screen-spinner" value="true" /> -->
 	<!-- Auto-Hide Splash Screen: if set to false, the splash screen must be hidden using a JavaScript API, default is true -->
-	<preference name="auto-hide-splash-screen" value="true" />
+	<!-- <preference name="auto-hide-splash-screen" value="true" /> -->
 	
 	<!-- PREFERENCE ANDROID -->
 	<!-- Minimum and Maximum SDK Version:android-minSdkVersion and/or android-maxSdkVersion, with integer values --> 
 	<!-- minSdkVersion defaults to 7 (Android 2.1 ) -->
-	<preference name="android-minSdkVersion" value="7" />
+	<!-- <preference name="android-minSdkVersion" value="7" /> -->
 	<!-- maxSdkVersion is unset by default -->	
 	<!-- <preference name="android-maxSdkVersion" value="15" /> -->
 	<!-- Install Location: android-installLocation with values internalOnly (default), auto or preferExternal -->
 	<!-- auto or preferExternal allow the app to be installed on an SD card - this can lead to unexpected behavior -->
-	<preference name="android-installLocation" value="internalOnly" />
+	<!-- <preference name="android-installLocation" value="internalOnly" /> -->
+
 	
 	
 	<!-- ICON APPLICATIONS DEFAULT -->
     <icon src="res/icon/icon.png" />
     
-    <!-- ICON IPHONE-->
-    <icon src="res/icon/ios/icon-57.png"            gap:platform="ios"        width="57" height="57" />
-    <icon src="res/icon/ios/icon-72.png"            gap:platform="ios"        width="72" height="72" />
-    <icon src="res/icon/ios/icon-57-2x.png"         gap:platform="ios"        width="114" height="114" />
-    <icon src="res/icon/ios/icon-72-2x.png"         gap:platform="ios"        width="144" height="144" />
-
     <!-- ICON Android -->
     <icon src="res/icon/android/icon-36-ldpi.png"   gap:platform="android"    gap:density="ldpi" />
     <icon src="res/icon/android/icon-48-mdpi.png"   gap:platform="android"    gap:density="mdpi" />
@@ -96,27 +92,29 @@
     <!-- ICON Blackberry: must be smaller then 16kb -->
     <icon src="res/icon/blackberry/icon-80.png"     gap:platform="blackberry" />
     <icon src="res/icon/blackberry/icon-80.png"     gap:platform="blackberry" gap:state="hover"/>
-    
-    <!-- ICON Windows Phone: a regular icon and a tile image -->
-    <icon src="res/icon/windows-phone/icon-48.png"  gap:platform="winphone" />
-    <icon src="res/icon/windows-phone/icon-173.png" gap:platform="winphone"   gap:role="background" />
+
+    <!-- ICON IPHONE-->
+    <icon src="res/icon/ios/icon-57.png"            gap:platform="ios"        width="57" height="57" />
+    <icon src="res/icon/ios/icon-72.png"            gap:platform="ios"        width="72" height="72" />
+    <icon src="res/icon/ios/icon-57-2x.png"         gap:platform="ios"        width="114" height="114" />
+    <icon src="res/icon/ios/icon-72-2x.png"         gap:platform="ios"        width="144" height="144" />
 
     <!-- ICON Webos -->
     <icon src="res/icon/webos/icon-64.png"          gap:platform="webos" />
     <!-- For notifications -->
     <!-- <icon src="icons/webos/miniicon.png" gap:platform="webos" gap:role="mini" /> -->
+    
+    <!-- ICON Windows Phone: a regular icon and a tile image -->
+    <icon src="res/icon/windows-phone/icon-48.png"  gap:platform="winphone" />
+    <icon src="res/icon/windows-phone/icon-173.png" gap:platform="winphone"   gap:role="background" />
+
+ 
  
     
     <!-- SPLASH DEFAULT -->
     <!-- The default splash must be named splash.png and must reside in the root of your -->
     <!-- <gap:splash src="splash.png" /> -->
     
-    <!-- SPLASH iPhone  -->
-    <gap:splash src="res/screen/ios/screen-iphone-portrait.png"    gap:platform="ios"     width="320" height="480" />
-    <gap:splash src="res/screen/ios/screen-iphone-portrait-2x.png" gap:platform="ios"     width="640" height="960" />
-    <gap:splash src="res/screen/ios/screen-ipad-portrait.png"      gap:platform="ios"     width="768" height="1024" />
-    <gap:splash src="res/screen/ios/screen-ipad-landscape.png"     gap:platform="ios"     width="1024" height="768" />
-
     <!-- SPLASH Android  -->
     <gap:splash src="res/screen/android/screen-ldpi-portrait.png"  gap:platform="android" gap:density="ldpi" />
     <gap:splash src="res/screen/android/screen-mdpi-portrait.png"  gap:platform="android" gap:density="mdpi" />
@@ -125,15 +123,21 @@
     
     <!-- SPLASH Blackberry  -->
     <gap:splash src="res/screen/blackberry/screen-225.png"         gap:platform="blackberry" />    
-    
+
+    <!-- SPLASH iPhone  -->
+    <gap:splash src="res/screen/ios/screen-iphone-portrait.png"    gap:platform="ios"     width="320" height="480" />
+    <gap:splash src="res/screen/ios/screen-iphone-portrait-2x.png" gap:platform="ios"     width="640" height="960" />
+    <gap:splash src="res/screen/ios/screen-ipad-portrait.png"      gap:platform="ios"     width="768" height="1024" />
+    <gap:splash src="res/screen/ios/screen-ipad-landscape.png"     gap:platform="ios"     width="1024" height="768" />
+   
     <!-- SPLASH Windows Phone  -->
     <gap:splash src="res/screen/windows-phone/screen-portrait.jpg" gap:platform="winphone" />
-    
+
 
 	<!-- ACCESS -->
 	<!-- the access element provides your app with access to resources on other domains -->
-	<access origin="http://epha.ch" subdomains="true" />
-	<access origin="https://epha.ch" subdomains="true" />
+	<!-- <access origin="http://epha.ch" subdomains="true" /> -->
+	<!-- <access origin="https://epha.ch" subdomains="true" /> -->
 	<!-- To ensure that links to this domain cannot take over the entire webview -->
 	<!-- <access origin="http://phonegap.com" browserOnly="true" /> -->
 </widget>
