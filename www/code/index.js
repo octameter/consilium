@@ -16,6 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+/*
+ * https://build.phonegap.com/blog/barcodescanner-plugin
+*/
 var app = {
     initialize: function() {
         this.bind();
@@ -38,5 +42,7 @@ var app = {
         document.querySelector('#' + id + ' .pending').className += ' hide';
         var completeElem = document.querySelector('#' + id + ' .complete');
         completeElem.className = completeElem.className.split('hide').join('');
+        
+        
     }
 };
