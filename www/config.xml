@@ -19,13 +19,6 @@
     <!-- <gap:plugin> -->
     <gap:plugin name="BarcodeScanner"/>
 
-	<!-- ACCESS -->
-	<!-- the access element provides your app with access to resources on other domains -->
-	<access origin="http://epha.ch" subdomains="true" />
-	<access origin="https://epha.ch" subdomains="true" />
-	<!-- To ensure that links to this domain cannot take over the entire webview -->
-	<!-- <access origin="http://phonegap.com" browserOnly="true" /> -->
-
 	<!-- FEATURE -->
 	<!-- expanded to the appropriate Android and Windows Phone permissions -->
     <!-- <feature name="http://api.phonegap.com/1.0/battery" /> -->
@@ -44,6 +37,7 @@
     <feature name="http://api.phonegap.com/1.0/device" />
 	<!-- DENY ALL -->
 	<!-- <preference name="permissions" value="none"/> -->
+
 
     
     <!-- PREFERENCES GENERIC -->
@@ -82,6 +76,7 @@
 	<!-- Install Location: android-installLocation with values internalOnly (default), auto or preferExternal -->
 	<!-- auto or preferExternal allow the app to be installed on an SD card - this can lead to unexpected behavior -->
 	<preference name="android-installLocation" value="internalOnly" />
+	
 	
 	<!-- ICON APPLICATIONS DEFAULT -->
     <icon src="style/icon/icon.png" />
@@ -134,4 +129,11 @@
     <!-- SPLASH Windows Phone  -->
     <gap:splash src="style/screen/windows-phone/screen-portrait.jpg" gap:platform="winphone" />
     
+
+	<!-- ACCESS -->
+	<!-- the access element provides your app with access to resources on other domains -->
+	<access origin="http://epha.ch" subdomains="true" />
+	<access origin="https://epha.ch" subdomains="true" />
+	<!-- To ensure that links to this domain cannot take over the entire webview -->
+	<!-- <access origin="http://phonegap.com" browserOnly="true" /> -->
 </widget>

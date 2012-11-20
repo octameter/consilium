@@ -29,6 +29,8 @@ var app = {
     // `load`, `deviceready`, `offline`, and `online`.
     bind: function() {
         document.addEventListener("deviceready", this.deviceready, false);
+        
+        // Browser und Device
         document.addEventListener("DOMContentLoaded", this.deviceready, false);
         
         document.getElementById("scan").addEventListener("click", this.scan, false);
@@ -67,7 +69,6 @@ var app = {
                 console.log(args);
         });
         } catch (ex) {
-        	alert(ex.message);
             console.log(ex.message);
         }
     }

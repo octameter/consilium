@@ -4,6 +4,10 @@ www/phonegap.js
 www/barcodescanner.js
 www/cordova.js
 
+# TEST
+www/test.html
+www/test
+
 # always-ignore extensions
 *.diff
 *.log
