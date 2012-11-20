@@ -9,16 +9,24 @@
         <title>Consilium</title>
     </head>
     <body>
+<!--         <div class="app"> -->
+<!--             <h1>Talk to Patient</h1> -->
+<!--             <div id="deviceready"> -->
+<!--                 <p class="status pending blink">Connecting to Device</p> -->
+<!--                 <p class="status complete blink hide">Device is Ready</p> -->
+<!--             </div> -->
+<!--         </div> -->
         <div class="app">
-            <h1>Talk to Patient</h1>
-            <div id="deviceready">
-                <p class="status pending blink">Connecting to Device</p>
-                <p class="status complete blink hide">Device is Ready</p>
+            <h1>Apache Cordova</h1>
+            <div id="deviceready" class="blink">
+                <p class="event listening">Connecting to Device</p>
+                <p class="event received">Device is Ready</p>
             </div>
+            <p><a href="#" id="scan">SCAN SOMETHING!</a></p>
+            <p id="info"></p>
         </div>
         <script type="text/javascript" src="phonegap.js"></script>
         <script type="text/javascript" src="barcodescanner.js"></script>
-        
         <script type="text/javascript" src="code/index.js"></script>
         <script type="text/javascript">
             app.initialize();

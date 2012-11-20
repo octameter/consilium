@@ -41,8 +41,38 @@ var app = {
         // .hide from the complete element.
         document.querySelector('#' + id + ' .pending').className += ' hide';
         var completeElem = document.querySelector('#' + id + ' .complete');
-        completeElem.className = completeElem.className.split('hide').join('');
-        
-        
+        completeElem.className = completeElem.className.split('hide').join('');   
+    },
+    // Update DOM on a Received Event
+    receivedEvent: function(id) {
+        var parentElement = document.getElementById(id);
+        var listeningElement = parentElement.querySelector('.listening');
+        var receivedElement = parentElement.querySelector('.received');
+
+        listeningElement.setAttribute('style', 'display:none;');
+        receivedElement.setAttribute('style', 'display:block;');
+
+        console.log('Received Event: ' + id);
+    },
+    scan: function() {
+        console.log('scanning');
+        try {
+            window.plugins.barcodeScanner.scan(function(args) {
+                console.log("Scanner result: \n" +
+                    "text: " + args.text + "\n" +
+                    "format: " + args.format + "\n" +
+                    "cancelled: " + args.cancelled + "\n");
+                /*
+                if (args.format == "QR_CODE") {
+                    window.plugins.childBrowser.showWebPage(args.text, { showLocationBar: false });
+                }
+                */
+                document.getElementById("info").innerHTML = args.text;
+                console.log(args);
+        });
+        } catch (ex) {
+            console.log(ex.message);
+        }
     }
+
 };

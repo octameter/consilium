@@ -17,6 +17,7 @@
     </author>
     
     <!-- <gap:plugin> -->
+    <gap:plugin name="BarcodeScanner"/>
 
 	<!-- ACCESS -->
 	<!-- the access element provides your app with access to resources on other domains -->
