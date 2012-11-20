@@ -26,6 +26,7 @@ var app = {
     },
     bind: function() {
         document.addEventListener("deviceready", this.deviceready, false);
+        document.addEventListener("DOMContentLoaded", this.deviceready, false);
         
         document.getElementById("scan").addEventListener("click", this.scan, false);
     },

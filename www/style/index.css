@@ -85,11 +85,12 @@ h1 {
     color:#FFFFFF;
     font-size:12px;
     margin:0px 30px;
-    padding:2px 0px;
+    padding:6px 4px;
 }
 
 .status.complete {
     background-color:#4B946A;
+    cursor:pointer;
 }
 
 .hide {
