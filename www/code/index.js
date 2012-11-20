@@ -25,7 +25,9 @@ var app = {
         this.bind();
     },
     bind: function() {
-        document.addEventListener('deviceready', this.deviceready, false);
+        document.addEventListener("deviceready", this.deviceready, false);
+        
+        document.getElementById("scan").addEventListener("click", this.scan, false);
     },
     deviceready: function() {
         // This is an event handler function, which means the scope is the event.
@@ -42,17 +44,6 @@ var app = {
         document.querySelector('#' + id + ' .pending').className += ' hide';
         var completeElem = document.querySelector('#' + id + ' .complete');
         completeElem.className = completeElem.className.split('hide').join('');   
-    },
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
-
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
-
-        console.log('Received Event: ' + id);
     },
     scan: function() {
         console.log('scanning');
