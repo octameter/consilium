@@ -9,10 +9,13 @@
         <title>Consilium</title>
     </head>
     <body>
+    
     	<header>
     		<h1>Consilium</h1>
     	</header>
-        <div class="app">
+    	
+        <div id="home" class="app">
+	    	
             <h1>Talk to Patient</h1>
             <div id="deviceready">
                 <p class="status pending blink">Connecting to Device</p>
@@ -20,12 +23,19 @@
             </div>
             <button id="scan">Scan</button>
             <p id="info"></p>
+            
+        </div>
+        
+        <div id="events" >
+        	<button>A</button>
+        	<button>B</button>
+        	<button>C</button>
         </div>
         
    		<nav>
-	   			<li><a href="index.html">Home</a>
-	   			<li><a href="events.html">Events</a>
-	   			<li><a href="optionen.html">Optionen</a>
+	   			<li><a href="#home">Home</a>
+	   			<li><a href="#events">Events</a>
+	   			<li><a href="#optionen">Optionen</a>
    		</nav>
         
         <script type="text/javascript" src="cordova.js"></script>
