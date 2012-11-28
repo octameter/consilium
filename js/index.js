@@ -31,7 +31,6 @@ var app = {
         document.addEventListener("deviceready", this.deviceready, false);
         
         document.getElementById("scan").addEventListener("click", this.scan, false);
-        document.getElementById("photo").addEventListener("click", this.photo, false);
     },
     deviceready: function() {
         // This is an event handler function, which means the scope is the event.

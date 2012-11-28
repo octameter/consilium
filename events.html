@@ -12,27 +12,25 @@
     	<header>
     		<h1>Consilium</h1>
     	</header>
-        <div class="app">
-            <h1>Talk to Patient</h1>
-            <div id="deviceready">
-                <p class="status pending blink">Connecting to Device</p>
-                <p class="status complete blink hide">Ready to scan</p>
-            </div>
-            <button id="scan">Scan</button>
-            <p id="info"></p>
-        </div>
-        <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="barcodescanner.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-        <script type="text/javascript">
-            app.initialize();
-        </script>
-        
+    	
+   		<p id="result"/>
    		<nav>
 	   			<li><a href="index.html">Home</a>
 	   			<li><a href="events.html">Events</a>
 	   			<li><a href="optionen.html">Optionen</a>
    		</nav>
+   		<script type="text/javascript">
    		
+   			if(localStorage.data){
+   				localStorage.data = Number(localStorage.data)+1
+   			}
+   			else{
+   				localStorage.data = 1;
+   			}
+   			
+   			document.getElementById("result").innerHTML = localStorage.data;
+   			
+   		
+   		</script>
     </body>
 </html>
