@@ -48,10 +48,6 @@ header
     background-image: linear-gradient(top, #535454 0%, #2C2D2D 51%);
 }
 
-h1{
-	font-size:20px;
-	color:#fff;
-}
 
 button{
 	background-color: rgba(52,122,232,0.8);
@@ -115,103 +111,31 @@ nav li a{
 	-webkit-box-align:end;
 }
 
-nav li a.aktiv{
+nav li a:active{
 	background-color: rgba(255,255,255,0.15);
 	color:#fff;
 }
-a[href="#optionen"] {
+
+a[href="#events"] {
 	background: url(../img/optionen.png) no-repeat center top;
 }
 
-body {
-    background-color:#D9D9D9;
-    background-attachment:fixed;
-    font-family:'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
-    font-size:12px;
-    height:100%;
-    margin:0px;
-    padding:0px;
-    text-transform:uppercase;
-    width:100%;
+.view
+{
+	
 }
 
-/* Portrait layout (default) */
-.app {
-    background:url(../img/logo.png) no-repeat center top; /* 170px x 200px */
-    position:absolute;             /* position in the center of the screen */
-    left:50%;
-    top:50%;
-    height:50px;                   /* text area height */
-    width:225px;                   /* text area width */
-    text-align:center;
-    padding:180px 0px 0px 0px;     /* image height is 200px (bottom 20px are overlapped with text) */
-    margin:-115px 0px 0px -112px;  /* offset vertical: half of image height and text area height */
-                                   /* offset horizontal: half of text area width */
+.swipe
+{
+	position:absolute;
+	width:100%;
+	height:100%;
+	left:100%;
+	-webkit-transition: all 0.75s ease-in-out;
 }
 
-/* Landscape layout (with min-width) */
-@media screen and (min-aspect-ratio: 1/1) and (min-width:400px) {
-    .app {
-        background-position:left center;
-        padding:75px 0px 75px 170px;  /* padding-top + padding-bottom + text area = image height */
-        margin:-90px 0px 0px -198px;  /* offset vertical: half of image height */
-                                      /* offset horizontal: half of image width and text area width */
-    }
+.from-right
+{
+	left:0%;
 }
-
-h1 {
-    font-size:24px;
-    font-weight:normal;
-    margin:0px;
-    overflow:visible;
-    padding:0px;
-    text-align:center;
-}
-
-.status {
-    background-color:#333333;
-    border-radius:4px;
-    -webkit-border-radius:4px;
-    color:#FFFFFF;
-    font-size:12px;
-    margin:0px 30px;
-    padding:6px 4px;
-}
-
-.status.complete {
-    background-color:#4B946A;
-    cursor:pointer;
-}
-
-.hide {
-    display:none;
-}
-
-@keyframes fade {
-    from { opacity: 1.0; }
-    50% { opacity: 0.4; }
-    to { opacity: 1.0; }
-}
- 
-@-webkit-keyframes fade {
-    from { opacity: 1.0; }
-    50% { opacity: 0.4; }
-    to { opacity: 1.0; }
-}
- 
-.blink {
-    animation:fade 3000ms infinite;
-    -webkit-animation:fade 3000ms infinite;
-}
-
-		#events
-		{
-			position:absolute;
-			width:100%;
-			left:100%;
-			-webkit-transition: all 0.75s ease-in-out;
-		}
-		#events:target
-		{
-			left:0%;
-		}
+.
