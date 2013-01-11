@@ -23,12 +23,17 @@ html, body {
 .view {
 	position:absolute;
 	width:100%;
+	height:100%;
 	-webkit-transition: all 0.75s ease-in-out;
+	-moz-transition: all 0.75s ease-in-out;
+	-ms-transition: all 0.75s ease-in-out;
+	-o-transition: all 0.75s ease-in-out;
+	transition: all 0.75s ease-in-out;
 }
 
 
-.view-header {
-	position:fixed;
+.view > header {
+	position:absolute;
 	width:100%;
 	height:50px;
 	line-height:50px;
@@ -44,47 +49,33 @@ html, body {
     color: #fff;
     border-bottom: solid 1px #eee;
 }
+.view > header > h1 {	
+	margin:0px;
+}
 
-.view-body {
+.view > div {
 	position:absolute;
-	width:100%;
+	left:0px;
 	top:50px;
+	right:0px;
 	bottom:0px;
 	border:none;
 }
-.big {
-	position: absolute;
-	top:100px;
-	left:40%;
-	width:100px;
-	height:100px;
-	z-Index:10;	
-	cursor:pointer;
+
+.back {
+	border-top-left-radius: 40px;
+	border-bottom-left-radius: 40px;
+	-webkit-border-top-left-radius: 40px;
+	-webkit-border-bottom-left-radius: 40px;
+	-moz-border-top-left-radius: 40px;
+	-moz-border-bottom-left-radius: 40px;
 }
-.spinner {
-	width: 8%;
-	min-width:14px;
-	max-width:24px;
-	height: 25%;
-	min-height:42px;
-	max-height:72px;
-	background: orange;
-	position: absolute;
-	left: 46%;
-	top: 37%;
-	opacity: 0;
-	border-radius: 10px;
-	-webkit-animation: fade 1s linear infinite;
-	-moz-animation: fade 1s linear infinite;
-	-ms-animation: fade 1s linear infinite;
-	-o-animation: fade 1s linear infinite;
-	animation: fade 1s linear infinite;
+
+
+.view-footer {
+	
 }
-@-webkit-keyframes fade { from { opacity: 1; } to { opacity: 0.25; } }
-@-moz-keyframes fade { from { opacity: 1; } to { opacity: 0.25; } }
-@-ms-keyframes fade { from { opacity: 1; } to { opacity: 0.25; } }
-@-o-keyframes fade { from { opacity: 1; } to { opacity: 0.25; } }
-@keyframes fade { from { opacity: 1; } to { opacity: 0.25; } }
+
 
 .middle {
 	left:0;
@@ -99,53 +90,48 @@ html, body {
 }
 
 
-h1 {
-	margin:0;
-}
+/* CONSILIUM */
 
 
-
-.swipe{
-	position:absolute;
-	width:100%;
-	left:100%;
-	-webkit-transition: all 0.75s ease-in-out;
-}
 
 .scrollable {
             overflow-y: scroll;
             -webkit-overflow-scrolling: touch;
         }
-
-.from-right
-{
-	left:0%;
+        
+.button-green {
+	
+	background-color: rgba(52,122,232,0.8);
+	background-image: -webkit-linear-gradient(top, #39A7DB, #0D78B6); 
+	background-image: -moz-linear-gradient(top, #39A7DB, #0D78B6); 
+	background-image: -ms-linear-gradient(top, #39A7DB, #0D78B6); 
+	background-image: -o-linear-gradient(top, #39A7DB, #0D78B6);  
+	background-image: linear-gradient(top, #39A7DB, #0D78B6); 		
 }
 
 
-
-button{
+button {
 	background-color: rgba(52,122,232,0.8);
 	background-image: -webkit-linear-gradient(top, #39A7DB, #0D78B6); 
-	background-image: -moz-linear-gradient(top, #4D90FE, #357AE8); 
-	background-image: -ms-linear-gradient(top, #4D90FE, #357AE8); 
-	background-image: -o-linear-gradient(top, #4D90FE, #357AE8);  
-	background-image: linear-gradient(top, #4D90FE, #357AE8); 		
-	padding:15px;		
+	background-image: -moz-linear-gradient(top, #39A7DB, #0D78B6); 
+	background-image: -ms-linear-gradient(top, #39A7DB, #0D78B6); 
+	background-image: -o-linear-gradient(top, #39A7DB, #0D78B6);  
+	background-image: linear-gradient(top, #39A7DB, #0D78B6); 		
+	padding:10px;		
 	border-radius:2px;
 	color: white;
 	border: 1px solid #2F5BB7;
-	font-size:140%;
+	font-size:120%;
 	cursor:pointer;
 }
 
 button:active {
 	background-color: rgba(52,122,232,0.8);
 	background-image: -webkit-linear-gradient(top, #2896CA, #0C67A5); 
-	background-image: -moz-linear-gradient(top, #4D90FE, #357AE8); 
-	background-image: -ms-linear-gradient(top, #4D90FE, #357AE8); 
-	background-image: -o-linear-gradient(top, #4D90FE, #357AE8);  
-	background-image: linear-gradient(top, #4D90FE, #357AE8); 		
+	background-image: -moz-linear-gradient(top, #2896CA, #0C67A5); 
+	background-image: -ms-linear-gradient(top, #2896CA, #0C67A5); 
+	background-image: -o-linear-gradient(top, #2896CA, #0C67A5);  
+	background-image: linear-gradient(top, #2896CA, #0C67A5); 		
 }
 
 

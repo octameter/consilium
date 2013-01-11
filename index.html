@@ -6,47 +6,44 @@
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, target-densitydpi=device-dpi" />
 
         <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <link rel="stylesheet" type="text/css" href="css/assets.css" />
         <title>Consilium</title>
     </head>
-    <body onload="app.onDeviceready()">
+    <body id="app">
     	
-		<!-- START VIEW -->
-        <div id="consilium" class="view middle">
-	    	<header class="view-header">
-	            <h1>Consilium</h1>
-	    	</header>             
-	    	<div class="view-body">
-		    	<button id="swiper">Start Swiping</button>
-		    	Test blabla
-		    </div>
-        </div>
-        
-        <!-- SYMPTOME VIEW -->
-        <div id="symptome" class="view right" >
-	    	<header class="view-header">
-	            <h1>Events</h1>
-	    	</header>           
-	    	<div class="view-body">
-		    	<button id="scan">asdf1</button>
-		    	<button id="popup">asdf2</button>
-		    	<button id="returned">LEFT</button>
-		    	<button>asdf5</button>
-		    	<button>asdf5</button>
-		    	<button>asdf6</button>
-		    	<div id="test" class="big">
-		    	</div>
-	    	</div>
-        </div>
- 
+		<!-- HOME -->     
+               
+        <!-- SYMPTOME --> 
     	
    		<script type="text/javascript" src="phonegap.js"></script>
    		<script type="text/javascript" src="barcodescanner.js"></script>
 		<!-- <script type="text/javascript" src="childbrowser.js"></script> -->
 		<!-- <script type="text/javascript" src="GAPlugin.js"></script> -->
-   		<script type="text/javascript" src="js/assets.js"></script>
-   		<script type="text/javascript" src="js/index.js"></script>
+		
+   		<script type="text/javascript" src="lib/home.js"></script>
+   		<script type="text/javascript" src="lib/symptome.js"></script>
+   		<script type="text/javascript" src="lib/assets.js"></script>
+   		<script type="text/javascript" src="lib/consilium.js"></script>
    		<script type="text/javascript">
-   			app.initialize();
+   		
+   			var consilium = new Consilium();
+
+   			document.addEventListener("DOMContentLoaded", init, false);
+
+   			function init()
+   			{
+   				consilium.init("app");
+   				
+   				consilium.addViewSymptome();
+   				
+	   			document.addEventListener("deviceready", onDeviceReady, false);
+   			}
+   			
+   			/* PhoneGap */
+   			function onDeviceReady()
+   			{
+   				
+   			}
 
    		</script>
     </body>

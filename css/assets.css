@@ -1,0 +1,33 @@
+.big {
+	position: absolute;
+	top:100px;
+	left:40%;
+	width:100px;
+	height:100px;
+	z-Index:10;	
+	cursor:pointer;
+}
+.spinner {
+	width: 8%;
+	min-width:14px;
+	max-width:24px;
+	height: 25%;
+	min-height:42px;
+	max-height:72px;
+	background: orange;
+	position: absolute;
+	left: 46%;
+	top: 37%;
+	opacity: 0;
+	border-radius: 10px;
+	-webkit-animation: fade 1s linear infinite;
+	-moz-animation: fade 1s linear infinite;
+	-ms-animation: fade 1s linear infinite;
+	-o-animation: fade 1s linear infinite;
+	animation: fade 1s linear infinite;
+}
+@-webkit-keyframes fade { from { opacity: 1; } to { opacity: 0.25; } }
+@-moz-keyframes fade { from { opacity: 1; } to { opacity: 0.25; } }
+@-ms-keyframes fade { from { opacity: 1; } to { opacity: 0.25; } }
+@-o-keyframes fade { from { opacity: 1; } to { opacity: 0.25; } }
+@keyframes fade { from { opacity: 1; } to { opacity: 0.25; } }
