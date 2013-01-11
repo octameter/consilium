@@ -8,7 +8,7 @@
         <link rel="stylesheet" type="text/css" href="css/index.css" />
         <title>Consilium</title>
     </head>
-    <body>
+    <body onload="app.onDeviceready()">
     	
 		<!-- START VIEW -->
         <div id="consilium" class="view middle">
@@ -30,10 +30,11 @@
 		    	<button id="scan">asdf1</button>
 		    	<button id="popup">asdf2</button>
 		    	<button id="returned">LEFT</button>
-		    	<button id="returned2">RIGHT</button>
 		    	<button>asdf5</button>
 		    	<button>asdf5</button>
 		    	<button>asdf6</button>
+		    	<div id="test" class="big">
+		    	</div>
 	    	</div>
         </div>
  
@@ -42,9 +43,11 @@
    		<script type="text/javascript" src="barcodescanner.js"></script>
 		<!-- <script type="text/javascript" src="childbrowser.js"></script> -->
 		<!-- <script type="text/javascript" src="GAPlugin.js"></script> -->
+   		<script type="text/javascript" src="js/assets.js"></script>
    		<script type="text/javascript" src="js/index.js"></script>
    		<script type="text/javascript">
    			app.initialize();
+
    		</script>
     </body>
 </html>

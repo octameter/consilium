@@ -21,6 +21,10 @@ var app = {
     onDeviceready: function() 
     {
         app.report('deviceready');
+        
+        document.getElementById("test").appendChild(  SVG.busy() );
+        
+        console.log( SVG.busy() );
     },
     onOffline: function() {
     	app.report('offline');
