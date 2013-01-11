@@ -1,5 +1,6 @@
 /**
  * STATIC SVG
+ * Version 1.1
 **/
 var SVG = 
 {
@@ -26,7 +27,7 @@ var SVG =
 				}
 				else
 				{
-					this.setStylePrefix( spinner, "animationDelay", (i / 11)+"s");					
+					this.setStylePrefix( spinner, "animationDelay", (i / 12)+"s");					
 				}
 
 				spinners.appendChild(spinner);
