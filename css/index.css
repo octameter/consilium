@@ -6,12 +6,22 @@
     -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
 }
 body{
-    margin: 0;
-    padding: 0;
+	position:absolute;
+	top:0px;
+	bottom:0px;
+	left:0px;
+	right:0px;
+	overflow: hidden;
+	padding: 0px;
+	margin: 0px;
 	font-size: 16px;
     background-color: #fafafa;
 }
 
+.view{
+	width:100%;
+	border:none;
+}
 
 header {
 	width:100%;
@@ -34,16 +44,9 @@ h1 {
 	margin:0;
 }
 
-.view{
-	position:absolute;
-	left:0;
-	right:0;
-	bottom:0;
-	top:50px;
-}
 
-.swipe
-{
+
+.swipe{
 	position:absolute;
 	width:100%;
 	height:100%;
