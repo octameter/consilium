@@ -19,7 +19,15 @@ var SVG =
 				spinner.className = "spinner";
 
 				this.setStylePrefix( spinner, "transform", "rotate("+(i*30)+"deg) translate(0, -120%)");
-				this.setStylePrefix( spinner, "animationDelay", (i / 12)+"s");
+				
+				if(i == 0)
+				{
+					this.setStylePrefix( spinner, "animationDelay", "0s");										
+				}
+				else
+				{
+					this.setStylePrefix( spinner, "animationDelay", (i / 11)+"s");					
+				}
 
 				spinners.appendChild(spinner);
 			}

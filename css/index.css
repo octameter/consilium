@@ -80,11 +80,11 @@ html, body {
 	-o-animation: fade 1s linear infinite;
 	animation: fade 1s linear infinite;
 }
-@-webkit-keyframes fade { from { opacity: 1; }to { opacity: 0.25; } }
-@-moz-keyframes fade { from { opacity: 1; }to { opacity: 0.25; } }
-@-ms-keyframes fade { from { opacity: 1; }to { opacity: 0.25; } }
-@-o-keyframes fade { from { opacity: 1; }to { opacity: 0.25; } }
-@keyframes fade { from { opacity: 1; }to { opacity: 0.25; } }
+@-webkit-keyframes fade { from { opacity: 1; } to { opacity: 0.25; } }
+@-moz-keyframes fade { from { opacity: 1; } to { opacity: 0.25; } }
+@-ms-keyframes fade { from { opacity: 1; } to { opacity: 0.25; } }
+@-o-keyframes fade { from { opacity: 1; } to { opacity: 0.25; } }
+@keyframes fade { from { opacity: 1; } to { opacity: 0.25; } }
 
 .middle {
 	left:0;

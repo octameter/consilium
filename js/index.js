@@ -17,6 +17,10 @@ var app = {
         document.getElementById("popup").addEventListener("click", this.nachricht, false);
         document.getElementById("swiper").addEventListener("click", this.addView, false);
         document.getElementById("returned").addEventListener("click", this.removeView, false);
+        
+        document.getElementById("symptome").addEventListener("transitionend", this.onEnd, false);
+        document.getElementById("symptome").addEventListener("webkitTransitionEnd", this.onEnd, false);
+        
     },
     onDeviceready: function() 
     {
@@ -31,6 +35,9 @@ var app = {
     },
     onOnline: function() {
     	app.report('online');
+    },
+    onEnd: function() {
+    	app.report('ende');
     },
     report: function(id) 
     {	
