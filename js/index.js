@@ -15,6 +15,8 @@ var app = {
         
         document.getElementById("scan").addEventListener("click", this.scan, false);
         document.getElementById("popup").addEventListener("click", this.nachricht, false);
+        document.getElementById("swiper").addEventListener("click", this.addView, false);
+        document.getElementById("returned").addEventListener("click", this.removeView, false);
     },
     onDeviceready: function() 
     {
@@ -30,13 +32,21 @@ var app = {
     {	
         console.log("Report: " + id);
     },
-    changeView: function(to, from) 
+    addView: function() 
     {    
-        document.querySelector('#' + to).className += ' hide';
+        var old = document.querySelector('#consilium');
+        old.className = old.className.replace('middle','left'); 
         
-        var completeElem = document.querySelector('#' + id + ' .complete');
+        var current = document.querySelector('#symptome');        
+        current.className = current.className.replace('right','middle'); 
+    },
+    removeView: function() 
+    {    
+        var old = document.querySelector('#symptome');
+        old.className = old.className.replace('middle','right'); 
         
-        completeElem.className = completeElem.className.split('hide').join('');   
+        var current = document.querySelector('#consilium');        
+        current.className = current.className.replace("left","middle");
     },
     scan: function() {
 
