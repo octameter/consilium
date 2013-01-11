@@ -5,7 +5,8 @@
     -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
     -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
 }
-body{
+
+html, body {
 	position:absolute;
 	top:0px;
 	bottom:0px;
@@ -14,31 +15,32 @@ body{
 	overflow: hidden;
 	padding: 0px;
 	margin: 0px;
+	border:none;
 	font-size: 16px;
     background-color: #fafafa;
 }
 
-.view{
+.view {
 	width:100%;
 	border:none;
 }
 
-header {
-	width:100%;
-	height:50px;
-	line-height:50px;
-	text-align:center;
+/* header { */
+/* 	width:100%; */
+/* 	height:50px; */
+/* 	line-height:50px; */
+/* 	text-align:center; */
 	
-	background-color: #535454;
- 	background-image: -webkit-linear-gradient(top, #535454, #2C2D2D); 
-	background-image: -moz-linear-gradient(top, #535454, #2C2D2D); 
- 	background-image: -ms-linear-gradient(top, #535454, #2C2D2D); 
-	background-image: -o-linear-gradient(top, #535454, #2C2D2D); 
-    background-image: linear-gradient(top, #535454 0%, #2C2D2D 51%);
+/* 	background-color: #535454; */
+/*  	background-image: -webkit-linear-gradient(top, #535454, #2C2D2D);  */
+/* 	background-image: -moz-linear-gradient(top, #535454, #2C2D2D);  */
+/*  	background-image: -ms-linear-gradient(top, #535454, #2C2D2D);  */
+/* 	background-image: -o-linear-gradient(top, #535454, #2C2D2D);  */
+/*     background-image: linear-gradient(top, #535454 0%, #2C2D2D 51%); */
 
-    color: #fff;
-    border-bottom: solid 1px #eee;
-}
+/*     color: #fff; */
+/*     border-bottom: solid 1px #eee; */
+/* } */
 
 h1 {
 	margin:0;
@@ -49,7 +51,6 @@ h1 {
 .swipe{
 	position:absolute;
 	width:100%;
-	height:100%;
 	left:100%;
 	-webkit-transition: all 0.75s ease-in-out;
 }
