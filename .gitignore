@@ -27,8 +27,4 @@ Thumbs.db
 *.esproj
 nbproject
 
-# XCode
-consilium
-consilium.*
-cordova
-CordovaLib
+
