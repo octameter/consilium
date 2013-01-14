@@ -48,9 +48,6 @@ html, body {
     color: #fff;
     border-bottom: solid 1px #eee;
 }
-.view > header > h1 {	
-	margin:0px;
-}
 
 .view > div {
 	position:absolute;

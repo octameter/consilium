@@ -24,6 +24,7 @@ Home.prototype.setHeader = function( title )
 	var header = document.createElement("header");
 
 		var h1 = document.createElement("h1");
+		h1.style["margin"] = "0px";
 		h1.innerHTML = title;
 	
 	header.appendChild(h1);	
@@ -55,7 +56,7 @@ Home.prototype.onTransitionEnd = function(event)
 };
 
 
-Home.prototype.setViewSymptome = function(symptome)
+Home.prototype.addViewSymptome = function(symptome)
 {
 	var body = document.createElement("div");
 	body.setAttribute("id", "bodyHome");

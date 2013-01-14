@@ -28,9 +28,9 @@ function Consilium()
 	
 	Consilium.prototype.addViewSymptome = function(){
 		
-		this.home.setViewSymptome( this.symptome );
+		this.home.addViewSymptome( this.symptome );
 
-		this.symptome.buildContent( this.home );
+		this.symptome.removeView( this.home );		
 	};
 
 	/**

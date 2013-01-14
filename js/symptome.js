@@ -28,7 +28,9 @@ Symptome.prototype.buildView = function()
 
 	this.buildBusy();
 	
-	this.buildHeader("Symptome");
+	this.buildHeader();
+	
+	this.buildContent();
 };
 
 Symptome.prototype.showView = function()
@@ -56,16 +58,41 @@ Symptome.prototype.hideBusy = function()
 };
 
 
-Symptome.prototype.buildHeader = function( title ){
+Symptome.prototype.buildHeader = function()
+{
 	var header = document.createElement("header");
+	header.setAttribute("id","headerSymptome");
 
 		var h1 = document.createElement("h1");
-		h1.setAttribute("id","headerSymptome");
-		h1.innerHTML = title;
+		h1.setAttribute("id","titleSymptome");
+		h1.style["margin"] = "0px";
+		h1.innerHTML = "Symptome";
 	
 	header.appendChild(h1);	
+	
+	this.view.appendChild( header );
+};
 
-	this.view.appendChild(header);
+Symptome.prototype.removeView = function( home )
+{
+	var header = document.getElementById("headerSymptome");
+	
+		var left = document.createElement("button");
+		left.setAttribute("id", "goHome");
+		left.style["position"] = "absolute";
+		left.style["left"] = "0px";
+		left.style["top"] = "0px";
+		left.innerHTML = "Back";
+		
+		left.addEventListener("click", function(event)
+		{
+			this.view.className = this.view.className.replace("middle","right"); 
+
+			home.showView();
+		}
+		.bind(this), false);
+	
+	header.appendChild(left);
 };
 
 Symptome.prototype.setHeader = function(title)
@@ -73,25 +100,12 @@ Symptome.prototype.setHeader = function(title)
 	document.getElementById("headerSymptome").innerHTML = title;
 };
 
-Symptome.prototype.buildContent = function( home ){
+Symptome.prototype.buildContent = function()
+{
 	var body = document.createElement("div");
 	body.setAttribute("id","contentSymptome");
 	body.style["display"] = "none";
-	this.view.appendChild(body);	
-	
-	var button = document.createElement("button");
-	button.setAttribute("id", "goHome");
-	button.innerHTML = "Back";
-	
-	button.addEventListener("click", function(event)
-	{
-		this.view.className = this.view.className.replace("middle","right"); 
-
-		home.showView();
-	}
-	.bind(this), false);
-	
-	body.appendChild(button);
+	this.view.appendChild(body);		
 };
 
 Symptome.prototype.showContent = function()
