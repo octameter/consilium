@@ -28,16 +28,19 @@
    		
    			var consilium = new Consilium();
 
+   			alert("new Consilium");
+   			
    			if(!window.cordova)
    			{
 	   			document.addEventListener("DOMContentLoaded", init, false);
+   				alert("add dom");
    			}
    			else
    			{
 	   			document.addEventListener("deviceready", init, false);
+	   			alert("add deviceready");
    			}
-   			
-			<!-- Testen im Browser -->
+
   			
 	   		function init( event )
    			{
