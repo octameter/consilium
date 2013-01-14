@@ -42,7 +42,9 @@ Symptome.prototype.showView = function()
 
 Symptome.prototype.buildBusy = function()
 {	
-	this.view.appendChild( Assets.busyDiv("busySymptome") );	
+	var div = Assets.busyDiv("busySymptome");
+	
+	this.view.appendChild( div );	
 };
 
 Symptome.prototype.showBusy = function()
@@ -104,8 +106,21 @@ Symptome.prototype.buildContent = function()
 {
 	var body = document.createElement("div");
 	body.setAttribute("id","contentSymptome");
+	body.setAttribute("class", "listeSymptome");
 	body.style["display"] = "none";
 	this.view.appendChild(body);		
+	
+	var liste = document.createElement("ul");
+	for(var i = 0; i < 100; i++)
+	{
+		var item = document.createElement("li");
+		item.style["border"] = "1px solid black";
+		item.innerHTML = "jaööp";
+		liste.appendChild(item);
+	}
+
+	body.appendChild(liste);
+	
 };
 
 Symptome.prototype.showContent = function()

@@ -17,6 +17,14 @@ html, body {
 	margin: 0px;
 	border:none;
     background-color: #fafafa;
+    font-family: Verdana;
+}
+
+.listeSymptome {
+	margin:5%;
+	height:50%;
+    overflow-y:scroll;
+    -webkit-overflow-scrolling: touch;
 }
 
 .view {

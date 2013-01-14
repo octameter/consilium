@@ -41,8 +41,13 @@
    			
    			function onDeviceReady()
    			{
-
+   				document.addEventListener("resume", onResume, false);
    			}
+   			
+   			function onResume()
+   			{
+   				console.log("Resume");
+   		    }
 
    		</script>
     </body>
