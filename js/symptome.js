@@ -40,12 +40,7 @@ Symptome.prototype.showView = function()
 
 Symptome.prototype.buildBusy = function()
 {	
-	var busy = document.createElement("div");
-	busy.setAttribute("id","busySymptome");
-	busy.style["display"] = "none";
-	busy.appendChild( Assets.busy() );
-
-	this.view.appendChild(busy);	
+	this.view.appendChild( Assets.busyDiv("busySymptome") );	
 };
 
 Symptome.prototype.showBusy = function()

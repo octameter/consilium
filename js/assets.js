@@ -34,6 +34,22 @@ var Assets = {
 				
 			return spinners;
 		},
+		busyDiv : function(id)
+		{
+			var busy = document.createElement("div");
+			busy.setAttribute("id",id);
+			busy.style["display"] = "none";
+			busy.style["position"] = "absolute";
+			busy.style["left"] = "50%";
+			busy.style["top"] = "50%";
+			busy.style["width"] = "100px";
+			busy.style["height"] = "100px";
+			busy.style["margin-left"] = "-50px";
+			busy.style["margin-top"] = "-50px";
+			busy.appendChild( this.busy() );
+
+			return busy;
+		},
 		error : function() 
 		{		
 			var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
