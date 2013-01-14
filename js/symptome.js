@@ -114,7 +114,7 @@ Symptome.prototype.buildContent = function()
 	for(var i = 0; i < 100; i++)
 	{
 		var item = document.createElement("li");
-		item.style["border"] = "1px solid black";
+		item.setAttribute("class", "listeItemsSymptome");
 		item.innerHTML = "jaööp";
 		liste.appendChild(item);
 	}

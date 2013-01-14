@@ -21,10 +21,17 @@ html, body {
 }
 
 .listeSymptome {
-	margin:5%;
-	height:50%;
+	position:absolute;
+	margin:50px;
     overflow-y:scroll;
     -webkit-overflow-scrolling: touch;
+    padding:10px;
+}
+
+.listeItemsSymptome {
+	list-style:none;
+	margin-bottom:22px;
+	display: list-item;
 }
 
 .view {
