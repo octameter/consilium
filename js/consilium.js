@@ -1,4 +1,5 @@
-function Consilium() {
+function Consilium() 
+{
 	/**
 	 * MODULES
 	 */
@@ -18,14 +19,16 @@ function Consilium() {
 	/**
 	 * Set Module & Views
 	 */	
-	Consilium.prototype.init = function(elementId){	
+	Consilium.prototype.init = function(elementId)
+	{	
 		this.home.init(elementId);		
 		
 		this.symptome.init(elementId);
 	};
 	
 	Consilium.prototype.addViewSymptome = function(){
-		this.home.setViewSymptome( this.symptome);
+		
+		this.home.setViewSymptome( this.symptome );
 
 		this.symptome.setViewBack( this.home );
 	};

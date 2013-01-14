@@ -8,7 +8,7 @@ function Home()
 Home.prototype.init = function(elementId)
 {
 	var view = document.createElement("div");
-	view.setAttribute("id","view");
+	view.setAttribute("id","homeView");
 	view.setAttribute("class","view middle");
 	this.view = view;
 	
@@ -34,12 +34,31 @@ Home.prototype.setHeader = function( title )
 Home.prototype.showView = function()
 {	
 	this.view.className = this.view.className.replace("left", "middle");
+	
+	document.getElementById("bodyHome").style["display"] = "none";
+	
+	document.getElementById("homeView").addEventListener("transitionend", this.onTransitionEnd, false);
+	document.getElementById("homeView").addEventListener("webkitTransitionEnd", this.onTransitionEnd, false);
+};
+
+Home.prototype.onTransitionEnd = function(event)
+{	
+	// Wird Sichtbar
+	if(event.target.className.indexOf("middle") > 0)
+	{
+		document.getElementById("bodyHome").style["display"] = "block";
+	}
+	else
+	{
+		document.getElementById("bodyHome").style["display"] = "none";
+	}
 };
 
 
 Home.prototype.setViewSymptome = function(symptome)
 {
 	var body = document.createElement("div");
+	body.setAttribute("id", "bodyHome");
 	this.view.appendChild(body);	
 	
 	var button = document.createElement("button");

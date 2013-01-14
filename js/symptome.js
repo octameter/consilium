@@ -1,10 +1,12 @@
 function Symptome() {
+	
 	this.app = null;
 	
 	this.view = null;
 }
 
 Symptome.prototype.init = function(elementId){
+	
 	var view = document.createElement("div");
 	view.setAttribute("id","symptome");
 	view.setAttribute("class","view right");
@@ -29,13 +31,32 @@ Symptome.prototype.setHeader = function( title ){
 
 Symptome.prototype.showView = function(){
 	this.view.className = this.view.className.replace("right", "middle");
+	
+	document.getElementById("body").style["display"] = "none";
+	
+	document.getElementById("symptome").addEventListener("transitionend", this.onTransitionEnd, false);
+	document.getElementById("symptome").addEventListener("webkitTransitionEnd", this.onTransitionEnd, false);
 };
 
-//document.getElementById("symptome").addEventListener("transitionend", this.onEnd, false);
-//document.getElementById("symptome").addEventListener("webkitTransitionEnd", this.onEnd, false);
+Symptome.prototype.onTransitionEnd = function(event)
+{	
+	// Wird Sichtbar
+	if(event.target.className.indexOf("middle") > 0)
+	{
+		document.getElementById("body").style["display"] = "block";
+	}
+	else
+	{
+		document.getElementById("body").style["display"] = "none";
+	}
+};
+
+
 
 Symptome.prototype.setViewBack = function( home ){
 	var body = document.createElement("div");
+	body.setAttribute("id","body");
+	body.style["display"] = "none";
 	this.view.appendChild(body);	
 	
 	var button = document.createElement("button");
