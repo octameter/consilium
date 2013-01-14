@@ -30,7 +30,7 @@ function Consilium()
 		
 		this.home.setViewSymptome( this.symptome );
 
-		this.symptome.setViewBack( this.home );
+		this.symptome.buildContent( this.home );
 	};
 
 	/**
