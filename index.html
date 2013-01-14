@@ -15,7 +15,7 @@
                
         <!-- SYMPTOME --> 
     	
-   		<script type="text/javascript" src="cordova.js"></script>
+   		<script type="text/javascript" src="phonegap.js"></script>
    		<script type="text/javascript" src="barcodescanner.js"></script>
 		<!-- <script type="text/javascript" src="childbrowser.js"></script> -->
 		<!-- <script type="text/javascript" src="GAPlugin.js"></script> -->
@@ -28,16 +28,26 @@
    		
    			var consilium = new Consilium();
 
-   			document.addEventListener("deviceready", init, false);
+   			if(!window.cordova)
+   			{
+	   			document.addEventListener("DOMContentLoaded", init, false);
+   			}
+   			else
+   			{
+	   			document.addEventListener("deviceready", init, false);
+   			}
    			
 			<!-- Testen im Browser -->
-   			document.addEventListener("DOMContentLoaded", init, false);
   			
-	   		function init()
+	   		function init( event )
    			{
-   				consilium.init("app");
+	   			alert(event.type);
+	   			
+   				if( consilium.init("app") )
+   				{
+	   				consilium.addViewSymptome();				
+   				}
    				
-   				consilium.addViewSymptome();
    			}
 
 
