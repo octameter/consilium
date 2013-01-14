@@ -23,7 +23,7 @@ Home.prototype.setHeader = function( title )
 {
 	var header = document.createElement("header");
 
-		var h1 = document.createElement("h1");
+		var h1 = document.createElement("h2");
 		h1.style["margin"] = "0px";
 		h1.innerHTML = title;
 	
@@ -73,4 +73,8 @@ Home.prototype.addViewSymptome = function(symptome)
 	}
 	.bind(this), false);
 	body.appendChild(button);
+	
+	var range = document.createElement("input");
+	range.setAttribute("type","range");
+	body.appendChild(range);
 };

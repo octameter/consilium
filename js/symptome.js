@@ -65,7 +65,7 @@ Symptome.prototype.buildHeader = function()
 	var header = document.createElement("header");
 	header.setAttribute("id","headerSymptome");
 
-		var h1 = document.createElement("h1");
+		var h1 = document.createElement("h2");
 		h1.setAttribute("id","titleSymptome");
 		h1.style["margin"] = "0px";
 		h1.innerHTML = "Symptome";
@@ -104,10 +104,15 @@ Symptome.prototype.setHeader = function(title)
 
 Symptome.prototype.buildContent = function()
 {
+	
 	var body = document.createElement("div");
 	body.setAttribute("id","contentSymptome");
 	body.setAttribute("class", "listeSymptome");
 	body.style["display"] = "none";
+	body.addEventListener("click", function(event)
+	{
+		console.log(event.currentTarget);
+	}, false);
 	this.view.appendChild(body);		
 	
 	var liste = document.createElement("ul");
@@ -120,8 +125,9 @@ Symptome.prototype.buildContent = function()
 	}
 
 	body.appendChild(liste);
-	
 };
+
+
 
 Symptome.prototype.showContent = function()
 {
@@ -149,8 +155,6 @@ Symptome.prototype.onTransitionEnd = function(event)
 		
 		document.getElementById("busySymptome").style["display"] = "none";
 	}
-	
-	console.log(this);
 	
 }
 .bind(this);
