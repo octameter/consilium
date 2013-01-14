@@ -15,7 +15,7 @@
                
         <!-- SYMPTOME --> 
     	
-   		<script type="text/javascript" src="phonegap.js"></script>
+   		<script type="text/javascript" src="cordova.js"></script>
    		<script type="text/javascript" src="barcodescanner.js"></script>
 		<!-- <script type="text/javascript" src="childbrowser.js"></script> -->
 		<!-- <script type="text/javascript" src="GAPlugin.js"></script> -->
@@ -28,22 +28,18 @@
    		
    			var consilium = new Consilium();
 
+   			document.addEventListener("deviceready", init, false);
+   			
+			<!-- Testen im Browser -->
    			document.addEventListener("DOMContentLoaded", init, false);
-
-   			function init()
+  			
+	   		function init()
    			{
    				consilium.init("app");
    				
    				consilium.addViewSymptome();
-   				
-	   			document.addEventListener("deviceready", onDeviceReady, false);
    			}
-   			
-   			/* PhoneGap */
-   			function onDeviceReady()
-   			{
-   				
-   			}
+
 
    		</script>
     </body>
