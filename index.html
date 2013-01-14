@@ -9,7 +9,7 @@
         <link rel="stylesheet" type="text/css" href="css/assets.css" />
         <title>Consilium</title>
     </head>
-    <body id="app">
+    <body id="app" onload="onLoad()">
     	
 		<!-- HOME -->     
                
@@ -20,37 +20,26 @@
 		<!-- <script type="text/javascript" src="childbrowser.js"></script> -->
 		<!-- <script type="text/javascript" src="GAPlugin.js"></script> -->
 		
-   		<script type="text/javascript" src="lib/home.js"></script>
-   		<script type="text/javascript" src="lib/symptome.js"></script>
-   		<script type="text/javascript" src="lib/assets.js"></script>
-   		<script type="text/javascript" src="lib/consilium.js"></script>
-   		<script type="text/javascript">
+   		<script type="text/javascript" charset="utf-8" src="lib/home.js"></script>
+   		<script type="text/javascript" charset="utf-8" src="lib/symptome.js"></script>
+   		<script type="text/javascript" charset="utf-8" src="lib/assets.js"></script>
+   		<script type="text/javascript" charset="utf-8" src="lib/consilium.js"></script>
+   		<script type="text/javascript" charset="utf-8">
    		
    			var consilium = new Consilium();
 
-   			alert("new Consilium");
-   			
-   			if(!window.cordova)
+   			function onLoad()
    			{
-	   			document.addEventListener("DOMContentLoaded", init, false);
-   				alert("add dom");
-   			}
-   			else
-   			{
-	   			document.addEventListener("deviceready", init, false);
-	   			alert("add deviceready");
-   			}
-
-  			
-	   		function init( event )
-   			{
-	   			alert(event.type);
+	   			consilium.init("app");
 	   			
-   				if( consilium.init("app") )
-   				{
-	   				consilium.addViewSymptome();				
-   				}
-   				
+	   			consilium.addViewSymptome();
+
+	   			document.addEventListener("deviceready", onDeviceReady, false);   	
+   			}
+   			
+   			function onDeviceReady()
+   			{
+
    			}
 
 
