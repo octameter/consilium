@@ -20,11 +20,14 @@
 		<!-- <script type="text/javascript" src="childbrowser.js"></script> -->
 		<!-- <script type="text/javascript" src="GAPlugin.js"></script> -->
 		
+		 <script type="text/javascript" charset="utf-8" src="lib/view.js"></script>
    		<script type="text/javascript" charset="utf-8" src="lib/home.js"></script>
    		<script type="text/javascript" charset="utf-8" src="lib/symptome.js"></script>
 		 <script type="text/javascript" charset="utf-8" src="lib/assets.js"></script>
+		 <script type="text/javascript" charset="utf-8" src="lib/symptom.js"></script>
    		<script type="text/javascript" charset="utf-8" src="lib/consilium.js"></script>
    		<script type="text/javascript" charset="utf-8">
+
    		
    			var consilium = new Consilium();
    			
@@ -32,10 +35,12 @@
    		
 			function onContentLoaded()
    			{   			
-   				consilium.init("app");
+   				consilium.setApp("app");
 	   			
-	   			consilium.addViewSymptome();
+	   			consilium.init();
 
+	   			consilium.show();
+	   			
 	   			document.addEventListener("deviceready", onDeviceReady, false);   	
    			}
    			
