@@ -34,7 +34,6 @@ html, body {
 .listeItemsSymptome {
 	list-style:none;
 	margin-bottom:22px;
-	display: list-item;
 }
 
 .view {
@@ -74,7 +73,13 @@ html, body {
 	right:0px;
 	bottom:0px;
 	border:none;
+	text-align:center;
 }
+
+.view-footer {
+	
+}
+
 
 .back {
 	border-top-left-radius: 40px;
@@ -86,9 +91,6 @@ html, body {
 }
 
 
-.view-footer {
-	
-}
 
 
 .middle {
@@ -132,7 +134,7 @@ button {
 	background-image: -o-linear-gradient(top, #39A7DB, #0D78B6);  
 	background-image: linear-gradient(top, #39A7DB, #0D78B6); 		
 	padding:10px;		
-	border-radius:2px;
+	border-radius:4px;
 	color: white;
 	border: 1px solid #2F5BB7;
 	font-size:120%;
