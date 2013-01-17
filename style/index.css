@@ -110,10 +110,10 @@ html, body {
 	position:absolute;
 	left:20px;
 	right:20px;
-	top:10px;
+	top:20px;
 	bottom:-20px;
 	overflow-x: scroll;
-	overflow-y: visible;
+	overflow-y:visible;
  }
         
 
