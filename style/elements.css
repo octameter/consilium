@@ -50,4 +50,10 @@
 .movePoint {
     cursor: move;
 }
+.chart {
+	position:relative;
+	width:100%;
+	height:220px;
+	overflow:visible;
+}
 

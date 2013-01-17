@@ -100,13 +100,22 @@ html, body {
 
 
 
-.scrollable {
-            overflow-y: scroll;
-            -webkit-overflow-scrolling: touch;
-        }
+.scrollableY {
+   overflow-y: scroll;
+   -webkit-overflow-scrolling: touch;        
+}
         
-
-
+.scrollableX {
+	direction:rtl;
+	position:absolute;
+	left:20px;
+	right:20px;
+	top:10px;
+	bottom:-20px;
+	overflow-x: scroll;
+	overflow-y: visible;
+ }
+        
 
 nav {
 	height: 60px;	
