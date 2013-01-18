@@ -1,0 +1,14 @@
+/* CHART */
+        
+.chart {
+	position:relative;
+	width:100%;
+	height:300px;
+	background:silver;
+	overflow-y: visible;
+}
+ 
+ 
+.movePoint {
+    cursor: move;
+}

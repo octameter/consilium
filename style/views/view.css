@@ -1,0 +1,79 @@
+.view {
+	position:absolute;
+	width:100%;
+	height:100%;
+	-webkit-transition: left 0.6s ease-in-out;
+	-moz-transition: left 0.6s ease-in-out;
+	-ms-transition: left 0.6s ease-in-out;
+	-o-transition: left 0.6s ease-in-out;
+	transition: left 0.6s ease-in-out;
+}
+
+
+.view > header {
+	position:absolute;
+	width:100%;
+	height:50px;
+	line-height:50px;
+	text-align:center;
+	
+	background-color: #535454;
+ 	background-image: -webkit-linear-gradient(top, #535454, #2C2D2D); 
+	background-image: -moz-linear-gradient(top, #535454, #2C2D2D); 
+ 	background-image: -ms-linear-gradient(top, #535454, #2C2D2D); 
+	background-image: -o-linear-gradient(top, #535454, #2C2D2D); 
+    background-image: linear-gradient(top, #535454 0%, #2C2D2D 51%);
+
+    color: #fff;
+    border-bottom: solid 1px #eee;
+}
+
+.view > div {
+	position:absolute;
+	left:0px;
+	top:50px;
+	right:0px;
+	bottom:0px;
+	border:none;
+	text-align:center;
+}
+
+.view-footer {
+	
+}
+
+
+
+
+.middle {
+	left:0;
+}
+
+.right {
+	left:100%;
+}
+
+.left {
+	left:-100%;
+}
+
+.scrollableY {
+   overflow-y: scroll;
+   -webkit-overflow-scrolling: touch;        
+}
+
+.listeSymptome {
+	position:absolute;
+	top:50px;
+	left:5%;
+	right:5%;
+	bottom:50px;
+    overflow-y:scroll;
+    -webkit-overflow-scrolling: touch;
+    padding:10px;
+}
+
+.listeItemsSymptome {
+	list-style:none;
+	margin-bottom:22px;
+}

@@ -1,7 +1,5 @@
-
 /* BUTTON */
-.button-green {
-	
+.button-green {	
 	background-color: rgba(52,122,232,0.8);
 	background-image: -webkit-linear-gradient(top, #39A7DB, #0D78B6); 
 	background-image: -moz-linear-gradient(top, #39A7DB, #0D78B6); 
@@ -9,7 +7,6 @@
 	background-image: -o-linear-gradient(top, #39A7DB, #0D78B6);  
 	background-image: linear-gradient(top, #39A7DB, #0D78B6); 		
 }
-
 
 .button-blue {
 	background-color: rgba(52,122,232,0.8);
@@ -46,14 +43,14 @@
 	-ms-border-bottom-left-radius: 25px 60px;	
 }
 
-/* CHART */
-.movePoint {
-    cursor: move;
-}
-
-.chart {
-	position:relative;
-	width:100%;
-	height:240px;
-}
-
+/* SCROLLER */
+.scrollableX {
+	direction:rtl;
+	position:absolute;
+	left:20px;
+	right:20px;
+	top:0px;
+	bottom:-20px;
+	overflow-x: scroll;
+	overflow-y: visible;
+ }
