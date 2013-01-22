@@ -8,28 +8,48 @@
 	background-image: linear-gradient(top, #39A7DB, #0D78B6); 		
 }
 
+.button {
+	padding-left:4px;
+	padding-right:4px;
+
+	vertical-align:middle;
+	height:42px;
+	
+	min-width:40px;
+	border-radius:4px;
+	color: white;
+	font-size:120%;
+	cursor:pointer;	
+}
+
 .button-blue {
-	background-color: rgba(52,122,232,0.8);
+	opacity:0.9;
+	background-color: rgba(52,122,232,0.6);
 	background-image: -webkit-linear-gradient(top, #39A7DB, #0D78B6); 
 	background-image: -moz-linear-gradient(top, #39A7DB, #0D78B6); 
 	background-image: -ms-linear-gradient(top, #39A7DB, #0D78B6); 
 	background-image: -o-linear-gradient(top, #39A7DB, #0D78B6);  
 	background-image: linear-gradient(top, #39A7DB, #0D78B6); 		
-	padding:10px;		
-	border-radius:4px;
-	color: white;
 	border: 1px solid #2F5BB7;
-	font-size:120%;
-	cursor:pointer;
 }
 
 .button-blue:active {
-	background-color: rgba(52,122,232,0.8);
-	background-image: -webkit-linear-gradient(top, #2785B9, #0B5694); 
-	background-image: -moz-linear-gradient(top, #2785B9, #0B5694); 
-	background-image: -ms-linear-gradient(top, #2785B9, #0B5694); 
-	background-image: -o-linear-gradient(top, #2785B9, #0B5694);  
-	background-image: linear-gradient(top, #2785B9, #0B5694); 		
+	opacity:0.8;
+}
+
+.button-colorless {
+	opacity:0.9;
+	background-color: rgba(200,200,200,0.6);
+	background-image: -webkit-linear-gradient(top, #696969, #464646); 
+	background-image: -moz-linear-gradient(top, #7A7A7A, #696969); 
+	background-image: -ms-linear-gradient(top, #7A7A7A, #696969); 
+	background-image: -o-linear-gradient(top, #7A7A7A, #696969);  
+	background-image: linear-gradient(top, #7A7A7A, #696969); 		
+	border: 1px solid rgba(150,150,150,0.6);
+}
+
+.button-colorless:active {
+	opacity:0.8;
 }
 
 .button-beveled {
@@ -45,12 +65,43 @@
 
 /* SCROLLER */
 .scrollableX {
-	direction:rtl;
-	position:absolute;
-	left:20px;
-	right:20px;
-	top:0px;
-	bottom:-20px;
-	overflow-x: scroll;
-	overflow-y: visible;
+	margin-left:30px;
+	margin-right:20px;
+	overflow-x:scroll;
+	overflow-y:hidden;
  }
+ 
+.scrollableY {
+    overflow-y:scroll;
+    -webkit-overflow-scrolling: touch;	
+}
+ 
+ /* LISTE */
+ .liste {
+	position:relative;
+	margin:10px;
+    padding:10px;
+	border-radius:10px;
+}
+
+
+ .liste > li{
+ 	position:relative;
+	border: 1px solid #CCCCCC;    
+	list-style:none;
+	border-bottom:none;
+	height:50px;
+	cursor:pointer;
+    overflow-x:hidden;
+}
+
+.liste > li:first-child {
+	border-top-left-radius:8px;
+	border-top-right-radius:8px;
+}
+.liste > li:last-child {
+	border-bottom-left-radius:8px;
+	border-bottom-right-radius:8px;
+	border-bottom:1px solid #CCCCCC;  
+}
+

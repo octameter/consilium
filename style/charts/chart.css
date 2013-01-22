@@ -1,13 +1,13 @@
 /* CHART */
         
 .chart {
-	position:relative;
-	width:100%;
 	height:300px;
+	min-height:300px;
+	max-height:300px;
 	background:silver;
-	overflow-y: visible;
+	width:100%;
 }
- 
+
  
 .movePoint {
     cursor: move;

@@ -24,25 +24,32 @@
 	background-image: -o-linear-gradient(top, #535454, #2C2D2D); 
     background-image: linear-gradient(top, #535454 0%, #2C2D2D 51%);
 
-    color: #fff;
+    color: #FAFAFA;
     border-bottom: solid 1px #eee;
+    
+    text-shadow: 0px 1px 0px #AAA;
 }
 
 .view > div {
 	position:absolute;
+	
 	left:0px;
 	top:50px;
 	right:0px;
 	bottom:0px;
+	
 	border:none;
 	text-align:center;
+	
+	overflow-y: scroll;
+	overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
 }
+
 
 .view-footer {
 	
 }
-
-
 
 
 .middle {
@@ -57,23 +64,5 @@
 	left:-100%;
 }
 
-.scrollableY {
-   overflow-y: scroll;
-   -webkit-overflow-scrolling: touch;        
-}
 
-.listeSymptome {
-	position:absolute;
-	top:50px;
-	left:5%;
-	right:5%;
-	bottom:50px;
-    overflow-y:scroll;
-    -webkit-overflow-scrolling: touch;
-    padding:10px;
-}
 
-.listeItemsSymptome {
-	list-style:none;
-	margin-bottom:22px;
-}
