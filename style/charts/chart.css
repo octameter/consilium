@@ -4,11 +4,14 @@
 	height:300px;
 	min-height:300px;
 	max-height:300px;
-	background:silver;
+	background:rgba(180,180,180,0.8);
 	width:100%;
 }
 
  
 .movePoint {
     cursor: move;
+}
+.popupPoint {
+    cursor: pointer;
 }

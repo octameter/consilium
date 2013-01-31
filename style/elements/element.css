@@ -93,6 +93,7 @@
 	height:50px;
 	cursor:pointer;
     overflow-x:hidden;
+    overflow-y:hidden;
 }
 
 .liste > li:first-child {
@@ -104,7 +105,18 @@
 	border-bottom-right-radius:8px;
 	border-bottom:1px solid #CCCCCC;  
 }
+
 .selectedItem {
-	background:silver;
+	background:rgba(180,180,180,0.8);
+	min-height:140px !important;
+}
+
+
+/* DIV */
+.intro {
+	margin: 5% 10% 10% 10%;
+	width:80%;
+	border-radius:12px;
+	border:1px solid #CCCCCC;  
 }
 
