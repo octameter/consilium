@@ -26,6 +26,17 @@
 	text-shadow: -1px -1px #0d2046;
 }
 
+.button-grey {
+				
+			background-color: #F8F8F8; 
+ 			background-image: -webkit-linear-gradient(top, #F8F8F8, #ECECEC); 
+ 			background-image: -moz-linear-gradient(top, #F8F8F8, #ECECEC); 
+ 			background-image: -ms-linear-gradient(top, #F8F8F8, #ECECEC); 
+ 			background-image: -o-linear-gradient(top, #F8F8F8, #ECECEC); 
+ 			background-image: linear-gradient(top, #F8F8F8, #ECECEC); 
+			border:1px solid #C6C6C6;
+}
+
 .button-blue {
 	min-width:100px !important;
 	
