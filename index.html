@@ -6,7 +6,7 @@
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, target-densitydpi=device-dpi" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		
-        <link rel="stylesheet" type="text/css" href="style/index.css" />
+        <link rel="stylesheet" type="text/css" href="style/master.css" />
         <link rel="stylesheet" type="text/css" href="style/elements/element.css" />
         <link rel="stylesheet" type="text/css" href="style/views/view.css" />
         <title>Consilium</title>
@@ -14,15 +14,29 @@
     <body id="app" >
     	
 		<!-- HOME -->     
+        <section id="homeId" class="view middle">
+        	<header>
+        		<button class="button colorless">
+        			<img src="img/icon/optionen.png" width="32">
+        		</button>
+        		<h2>Consilium</h2>
+        		<button class="button colorless">
+        			<img src="img/icon/plus.png" width="32">
+        		</button>
+        	</header>
+        	<div id="homeContentId"></div>
+        </section>
                
         <!-- SYMPTOME --> 
-    	
+        
+        <!-- OPTIONEN -->
+    </body>
    		<script type="text/javascript" src="cordova.js"></script>
 		<script type="text/javascript" src="barcodescanner.js"></script>
 		<!-- <script type="text/javascript" src="childbrowser.js"></script> -->
 		<!-- <script type="text/javascript" src="GAPlugin.js"></script> -->		
 
-		<script type="text/javascript" charset="utf-8" src="lib/utils/util.js"></script>
+   		<script type="text/javascript" charset="utf-8" src="lib/models/master.js"></script>
    		<script type="text/javascript" charset="utf-8" src="lib/models/model.js"></script>
 
 		<script type="text/javascript" charset="utf-8" src="lib/elements/element.js"></script>
@@ -39,37 +53,64 @@
 		<script type="text/javascript" charset="utf-8" src="lib/views/symptom.js"></script>
    		<script type="text/javascript" charset="utf-8" src="lib/views/symptome.js"></script>
    		<script type="text/javascript" charset="utf-8" src="lib/views/optionen.js"></script>
-   		
-   		<script type="text/javascript" charset="utf-8" src="lib/consilium.js"></script>
+
    		<script type="text/javascript" charset="utf-8">
 
-   			var consilium = new Consilium();
-   			
-   			document.addEventListener("DOMContentLoaded", onContentLoaded, false);
-   		
-			function onContentLoaded()
-   			{   			
-   				consilium.setApp("app");
-	   			
-	   			consilium.init();
+   			var app = {
+   					// Modules
+   					loadModules: function()
+   					{
+   						this.home = new Home("homeId");
+   						this.symptome = new Symptome();
+   						this.optionen = new Optionen();
+   					},
+   					// Commands
+   					render: function()
+   					{
 
-	   			consilium.show();
-	   			
-	   			document.addEventListener("deviceready", onDeviceReady, false);   	
-   			}
-   			
-   			function onDeviceReady()
-   			{
-   				document.addEventListener("resume", onResume, false);
-   			}
-   			
-   			function onResume()
-   			{
-   				console.log("Resume");
-   				
-   				consilium.refresh();
-   		    }
+   					},
+   					
+   					// Controller
+   					bind: function() {
+   						// FOR Browsers
+   						document.addEventListener("DOMContentLoaded", function(event)
+   						{
+//    							app.symptome.setApp( "app" );		
+//    							app.optionen.setApp( "app");
+						
+//    							app.symptome.init();
+//    							app.optionen.init();
+   							
+ //  							app.home.addViewSymptome( app.symptome );
+//    							app.symptome.setReturnView( app.home );
 
+//    							app.home.addViewOptionen( app.optionen );
+//    							app.optionen.setReturnView( app.home );
+   							
+   							app.home.showView();
+   						}
+   						, false);
+			   			document.addEventListener("deviceready", function(event)
+			   			{
+			   				
+			   			}
+			   			, false);  
+			   			document.addEventListener("resume", function(event)
+			   			{
+			   				this.home.showViewExt();
+			   			}
+			   			, false);
+   					},
+   					initialize:function() {
+   						this.model = new Model();
+   						
+   						this.bind();
+   						this.render();
+   						
+   						this.loadModules();
+   					}
+   			};
+   			
+   			app.initialize();
    		</script>
-    </body>
 </html>
