@@ -7,62 +7,185 @@
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		
         <link rel="stylesheet" type="text/css" href="style/master.css" />
-        <link rel="stylesheet" type="text/css" href="style/elements/element.css" />
-        <link rel="stylesheet" type="text/css" href="style/views/view.css" />
+        
         <title>Consilium</title>
     </head>
     <body id="app" >
     	
 		<!-- HOME -->     
         <section id="homeId" class="view middle">
+        
         	<header>
-        		<button class="button colorless">
+        		<button id="addOptionen" class="button colorless">
         			<img src="img/icon/optionen.png" width="32">
         		</button>
         		<h2>Consilium</h2>
-        		<button class="button colorless">
+        		<button id="addEingabe" class="button colorless">
         			<img src="img/icon/plus.png" width="32">
         		</button>
         	</header>
-        	<div id="homeContentId"></div>
+        	
+        	<article id="homeContentId" >
+        		<div id="chart" class="chart">
+					<div id="scrollerId" class="scrollableX">
+						<svg id="chartSVG"></svg>
+					</div>
+        		</div>
+        		<form>
+        			<fieldset>
+        				<legend>Auswahl</legend>
+        				<div>
+        					<p>Hallo</p>
+        					<button class="action-button blue">Edit</button>
+        					<input type="range" />
+        				</div>
+        			</fieldset>
+        		</form>
+        	</article>
+        	
+        	<article id="rahmen" class="intro">
+        		 <p>Liebe Patientin</p>
+        		<p style="margin:20px; text:justify;">Diese App soll Ihnen als Logbuch für den Verlauf Ihrer Therapie dienen. Wir empfehlen, dass Sie jeden Tag einmal Ihr subjektives Wohlbefinden eintragen. Ihre Eintrag erscheint erst am nächsten Tag im Verlauf.<br/><br/>Sollten weitere Symptome auftreten, fügen Sie diese dem Verlauf hinzu.</p>
+    			<button id="plusZeit" class="button blue" style="width:200px; height:40px">Start</button>
+    			<p></p>
+        	</article>
+        	
         </section>
                
+        <!-- EINGABE --> 
+        <section id="eingabeId" class="view right">
+        
+        	<header>
+        		<button id="eingabeBackButton" class="button colorless">
+        			<img src="img/icon/left.png" width="32">
+        		</button>
+        		<h2>Favoriten</h2>
+        	</header>
+        	
+        	<article id="eingabeContentId">
+        		
+        		<ul id="eingabeListeId" class="liste">
+        			<li>Diagosen<button id="addSymptome" class="action-button blue">Edit</button></li>
+        			<li>Diagosen</li>
+        			<li>Diagosen</li>
+        			
+        		</ul>
+        	</article>
+        	 
+        </section>
+        
         <!-- SYMPTOME --> 
+        <section id="symptomeId" class="view right">
+        
+        	<header>
+        		<button id="symptomeBackButton" class="button colorless">
+        			<img src="img/icon/left.png" width="32">
+        		</button>
+        		<h2>Symptome</h2>
+        	</header>
+        	
+        	<article id="symptomeContentId">
+        		<ul id="symptomeListeId" class="liste"></ul>
+        	</article>
+        	 
+        </section>
         
         <!-- OPTIONEN -->
+        <section id="optionenId" class="view left">
+        
+        	<header>
+        		<h2>Optionen</h2>
+        		<button id="optionenBackButton" class="button colorless">
+        			<img src="img/icon/right.png" width="32">
+        		</button>
+        	</header>
+        	
+        	<article id="optionenContentId">
+        		<form>
+        			<fieldset id="connectId">
+        				<legend>Connect</legend>
+	        			
+        				<div>
+        					<p>Bitte Scannen Sie den QR-Code, um sich mit dem Studienzentrum zu verbinden.</p>
+        					<button id="scannerId" class="action-button blue">SCANNEN</button>
+        				</div>
+<!--         				<div class="iphone-toggle-buttons">   						 -->
+<!--         					<label> -->
+<!--         						<input type="checkbox"><span></span> -->
+<!--         					</label> -->
+<!--         					<b>Beschleunigung</b><br><i>plus 12 Stunden alle 30 Sek.</i> -->
+<!--         				</div> -->
+  	
+        			</fieldset>
+        		</form>
+        	</article>
+        	
+        </section>
+        
     </body>
-   		<script type="text/javascript" src="cordova.js"></script>
-		<script type="text/javascript" src="barcodescanner.js"></script>
-		<!-- <script type="text/javascript" src="childbrowser.js"></script> -->
-		<!-- <script type="text/javascript" src="GAPlugin.js"></script> -->		
+<!--    <script type="text/javascript" src="cordova.js"></script> 			-->
+<!-- 	<script type="text/javascript" src="barcodescanner.js"></script> 	-->
+<!-- 	<script type="text/javascript" src="childbrowser.js"></script> 		-->
+<!-- 	<script type="text/javascript" src="GAPlugin.js"></script> 			-->		
 
-   		<script type="text/javascript" charset="utf-8" src="lib/models/master.js"></script>
+   		<script type="text/javascript" charset="utf-8" src="lib/master.js"></script>
    		<script type="text/javascript" charset="utf-8" src="lib/models/model.js"></script>
-
-		<script type="text/javascript" charset="utf-8" src="lib/elements/element.js"></script>
-		<script type="text/javascript" charset="utf-8" src="lib/elements/button.js"></script>
-		<script type="text/javascript" charset="utf-8" src="lib/elements/scroller.js"></script>
+	
 		<script type="text/javascript" charset="utf-8" src="lib/elements/svg.js"></script>
-		<script type="text/javascript" charset="utf-8" src="lib/elements/liste.js"></script>
 		<script type="text/javascript" charset="utf-8" src="lib/elements/chart.js"></script>
-		<script type="text/javascript" charset="utf-8" src="lib/elements/toggle.js"></script>
 		<script type="text/javascript" charset="utf-8" src="lib/elements/assets.js"></script>
-		
-		<script type="text/javascript" charset="utf-8" src="lib/views/view.js"></script>
+
    		<script type="text/javascript" charset="utf-8" src="lib/views/home.js"></script>
-		<script type="text/javascript" charset="utf-8" src="lib/views/symptom.js"></script>
    		<script type="text/javascript" charset="utf-8" src="lib/views/symptome.js"></script>
    		<script type="text/javascript" charset="utf-8" src="lib/views/optionen.js"></script>
+   		<script type="text/javascript" charset="utf-8" src="lib/views/eingabe.js"></script>
 
    		<script type="text/javascript" charset="utf-8">
 
    			var app = {
-   					// Modules
-   					loadModules: function()
+   					// ViewNavigator
+   					loadViews: function()
    					{
    						this.home = new Home("homeId");
-   						this.symptome = new Symptome();
-   						this.optionen = new Optionen();
+   						this.symptome = new Symptome("symptomeId");
+   						this.optionen = new Optionen("optionenId");
+   						this.eingabe = new Eingabe("eingabeId");
+   						
+   						ontouch("addOptionen", function(event){
+   							showView( app.optionen );
+   							hideView( app.home, "right" );	
+   						});
+   						ontouch("optionenBackButton", function(event){
+   							showView( app.home );
+   							hideView( app.optionen, "left" );	
+   						});
+   						ontouch("addEingabe", function(event){
+   							showView( app.eingabe );
+   							hideView( app.home, "left" );	
+   						});
+   						ontouch("eingabeBackButton", function(event){
+   							showView( app.home );
+   							hideView( app.eingabe, "right" );	
+   						});
+   						ontouch("addSymptome", function(event){
+   							showView( app.symptome );
+   							hideView( app.eingabe, "left" );	
+   						});
+   						ontouch("symptomeBackButton", function(event){
+   							showView( app.eingabe );
+   							hideView( app.symptome, "right" );	
+   						});
+   						ontouch("plusZeit"), function(event){
+   							app.home.addItem();
+   						}
+   						ontouch("scannerId", function(event){
+   							event.preventDefault();
+   							
+   							console.log("scanning");
+   							app.optionen.scan();
+   						});
+							
+						app.home.showContent();
    					},
    					// Commands
    					render: function()
@@ -71,43 +194,29 @@
    					},
    					
    					// Controller
-   					bind: function() {
+   					bind: function() 
+   					{
    						// FOR Browsers
    						document.addEventListener("DOMContentLoaded", function(event)
    						{
-//    							app.symptome.setApp( "app" );		
-//    							app.optionen.setApp( "app");
-						
-//    							app.symptome.init();
-//    							app.optionen.init();
-   							
- //  							app.home.addViewSymptome( app.symptome );
-//    							app.symptome.setReturnView( app.home );
-
-//    							app.home.addViewOptionen( app.optionen );
-//    							app.optionen.setReturnView( app.home );
-   							
-   							app.home.showView();
-   						}
-   						, false);
+   							app.loadViews();
+   						});
+					
 			   			document.addEventListener("deviceready", function(event)
 			   			{
-			   				
-			   			}
-			   			, false);  
-			   			document.addEventListener("resume", function(event)
-			   			{
-			   				this.home.showViewExt();
+
 			   			}
 			   			, false);
+			   			document.addEventListener("resume", function(event)
+			   			{
+			   				app.home.showContent();
+			   			}
+			   			, false);
+
    					},
-   					initialize:function() {
-   						this.model = new Model();
-   						
-   						this.bind();
-   						this.render();
-   						
-   						this.loadModules();
+   					initialize:function() 
+   					{
+   						this.bind();			
    					}
    			};
    			
