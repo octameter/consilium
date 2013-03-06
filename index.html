@@ -33,19 +33,18 @@
         		</div>
         		<form>
         			<fieldset>
-        				<legend>Auswahl</legend>
-        				<div>
-        					<p>Hallo</p>
-        					<button class="action-button blue">Edit</button>
-        					<input type="range" />
-        				</div>
+        				<legend id="homeAuswahlLegend">Auswahl</legend>
+        				<div id="homeAuswahlInfo"></div>
         			</fieldset>
         		</form>
         	</article>
         	
         	<article id="rahmen" class="intro">
         		 <p>Liebe Patientin</p>
-        		<p style="margin:20px; text:justify;">Diese App soll Ihnen als Logbuch für den Verlauf Ihrer Therapie dienen. Wir empfehlen, dass Sie jeden Tag einmal Ihr subjektives Wohlbefinden eintragen. Ihre Eintrag erscheint erst am nächsten Tag im Verlauf.<br/><br/>Sollten weitere Symptome auftreten, fügen Sie diese dem Verlauf hinzu.</p>
+        		<p style="margin:20px; text:justify;">Liebe Patientin<br/>
+                    Die App dient Ihnen als persönliches Logbuch für Ihr Wohlbefinden während der medizinischen Therapie.
+                    Wir empfehlen die App tägliche zu nutzen. Rückwirkend kann für maximal drei Tage ihre Bewertung nachgetragen werden. Sollte die Eingabe länger unterbrochen werden, beginnt die Verbindungslinie neu. Erweitern Sie Ihre Auswahlliste nach Bedarf durch Ergänzung weiterer Symptome. Die Eingaben werden erst am folgenden Tag im Graphen sichtbar.
+                </p>
     			<button id="plusZeit" class="button blue" style="width:200px; height:40px">Start</button>
     			<p></p>
         	</article>
@@ -60,16 +59,50 @@
         			<img src="img/icon/left.png" width="32">
         		</button>
         		<h2>Favoriten</h2>
+                <button id="eingabeEditButton" style="padding-left:10px;padding-right:10px;font-size:110%" class="button colorless">Edit</button>
         	</header>
         	
         	<article id="eingabeContentId">
-        		
-        		<ul id="eingabeListeId" class="liste">
-        			<li>Diagosen<button id="addSymptome" class="action-button blue">Edit</button></li>
-        			<li>Diagosen</li>
-        			<li>Diagosen</li>
-        			
-        		</ul>
+                <div style="height:40px;">
+                	<button class="action-button grey" style="position:absolute; top:1%; left:1%; height:36px">Heute</button>
+	                <input id="datum" style="position:absolute; top:1%; right:1%;" type="date" min="2013-03-01" class="action-button grey"/>
+                </div>
+                
+        		<form> 		
+                    <fieldset>
+        				<legend id="eingabeAuswahlLegend">Bewertung</legend>
+        				<div id="eingabeAuswahlInfo">
+        					<span style="position:absolute; top:-3px; right:0; font-size:130%;">48%</span>
+        					<span><b>Subjektives Wohlbefinden</b></span>
+        					<p style="width:100%;font-size:90%;margin:1px"><i>Zuletzt: 2013-01-27 14:55</i></p>
+        					<p style="width:100%;padding-top:5px">Nur begrenzte Selbstversorung möglich.</p>
+        					<input type="range" value="20" style="margin-bottom:20px" >
+        					<div style="position:relative;width:100%">
+	        					<button class="action-button grey">Abbrechen</button>
+	        					<button class="action-button red" style="float:right">Save</button>
+        					</div>
+        				</div>
+                    </fieldset>
+        		</form>
+                
+                <form> 		
+                    <fieldset>
+                        <legend>Symptome</legend>
+                         <button id="addSymptome" style="position:absolute; top:10px; right:5px; font-size:120%;display:none" class="action-button blue">+</button>     
+             				<div id="eingabeAuswahlInfo">
+        					<span style="position:absolute; top:-3px; right:0; font-size:130%;">60%</span>
+        					<span><b>Erbrechen</b></span>
+        					<p style="width:100%;font-size:90%;margin:1px"><i>Zuletzt: 2013-01-27 14:55</i></p>
+        					<p style="width:100%;padding-top:5px">Mehrmals Erbrechen am Tag.</p>
+        					<input type="range" style="margin-bottom:20px" value="40" >
+<!--         					<div style="position:relative;width:100%;padding-top:20px"> -->
+<!-- 	        					<button class="action-button grey">Abbrechen</button> -->
+<!-- 	        					<button class="action-button red" style="float:right">Save</button> -->
+<!--         					</div> -->
+        				</div>
+                    </fieldset>
+                </form>
+                
         	</article>
         	 
         </section>
@@ -144,6 +177,10 @@
 
    			var app = {
    					// ViewNavigator
+   					addCommands: function()
+   					{
+   						addCommand("changeView", changeViewCommand); 	
+   					},
    					loadViews: function()
    					{
    						this.home = new Home("homeId");
@@ -151,13 +188,11 @@
    						this.optionen = new Optionen("optionenId");
    						this.eingabe = new Eingabe("eingabeId");
    						
-   						ontouch("addOptionen", function(event){
-   							showView( app.optionen );
-   							hideView( app.home, "right" );	
+   						ontouch("addOptionen", function(event) {
+   							dispatchCommand("changeView", { source:app.home, target:app.optionen, direction:"right" });
    						});
    						ontouch("optionenBackButton", function(event){
-   							showView( app.home );
-   							hideView( app.optionen, "left" );	
+   							dispatchCommand("changeView", { source:app.optionen, target:app.home, direction:"left" });
    						});
    						ontouch("addEingabe", function(event){
    							showView( app.eingabe );
@@ -168,6 +203,7 @@
    							hideView( app.eingabe, "right" );	
    						});
    						ontouch("addSymptome", function(event){
+                            event.preventDefault();
    							showView( app.symptome );
    							hideView( app.eingabe, "left" );	
    						});
@@ -175,9 +211,6 @@
    							showView( app.eingabe );
    							hideView( app.symptome, "right" );	
    						});
-   						ontouch("plusZeit"), function(event){
-   							app.home.addItem();
-   						}
    						ontouch("scannerId", function(event){
    							event.preventDefault();
    							
@@ -200,6 +233,8 @@
    						document.addEventListener("DOMContentLoaded", function(event)
    						{
    							app.loadViews();
+   							
+   							app.addCommands();	
    						});
 					
 			   			document.addEventListener("deviceready", function(event)
@@ -212,14 +247,20 @@
 			   				app.home.showContent();
 			   			}
 			   			, false);
+			   			document.addEventListener("punkt", function(event)
+			   			{
+			   				app.home.showAuswahl(event);
+			   			}
+			   			, false);
 
    					},
    					initialize:function() 
    					{
-   						this.bind();			
+   						this.bind();		
    					}
    			};
    			
+            
    			app.initialize();
    		</script>
 </html>

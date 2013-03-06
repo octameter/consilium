@@ -2,6 +2,8 @@
 @import "toggle.css";
 @import "spinner.css";
 @import "liste.css";
+@import "button.css";
+@import "form.css";
 
 * {
     -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
@@ -55,110 +57,6 @@ html, body {
 	left:-100%;
 }
 
-.button
-{
-	color:white;
-	cursor:pointer;	
-	opacity:0.9;
-	border-radius:3px;
-	text-decoration: none;		
-	white-space: nowrap;
-	padding:4px;
-	vertical-align: middle;
-	-webkit-user-select: none;
-	height:42px;
-}
-
-.action-button {
-	padding-top:8px;	
-	padding-left:20px;	
-	padding-right:20px;	
-	padding-bottom:8px;	
-	vertical-align:middle;
-	border-radius:4px;
-	
-	color: white;
-	cursor:pointer;	
-}
-
-.button:hover {
-	opacity:1;
-	/* box-shadow: inset 2px 2px 2px #0C67A5; */
-}
-.colorless {
-	opacity:0.6;
-	
-	background-color: #464646;
-   	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#696969), to(#464646));
-   	background-image: -webkit-linear-gradient(top, #696969, #464646); 
-   	background-image:    -moz-linear-gradient(top, #696969, #464646);
-   	background-image:     -ms-linear-gradient(top, #696969, #464646);
-   	background-image:      -o-linear-gradient(top, #696969, #464646);
-   	background-image:         linear-gradient(top, #696969, #464646);
-	
-	border: 1px solid rgba(150,150,150,0.6);
-}
-
-.colorless:active {
-	opacity:0.4;
-}
-
-.blue
-{	background-color: #0D78B6;
-   	background-image: -webkit-linear-gradient(top, #4AB8EC, #0D78B6); 
-   	background-image:    -moz-linear-gradient(top, #4AB8EC, #0D78B6);
-   	background-image:     -ms-linear-gradient(top, #4AB8EC, #0D78B6);
-   	background-image:      -o-linear-gradient(top, #4AB8EC, #0D78B6);
-   	background-image:         linear-gradient(#4AB8EC, #0D78B6);
-   	
-	border: 1px solid #0C67B5;
-}
-.grey{
-	color: #333;
-	background-color: #eaeaea;
-	background-image: -webkit-linear-gradient(#FAFAFA, #DADADA);
-	background-image: -moz-linear-gradient(#FAFAFA, #DADADA);
-	background-image: -ms-linear-gradient(#FAFAFA, #DADADA);
-	background-image: -o-linear-gradient(#FAFAFA, #DADADA);
-	background-image: linear-gradient(#FAFAFA, #DADADA);
-
-	border: 1px solid #BBB;
-	border-bottom-color: #A5A5A5;
-}
-.red
-{
-	background-color: #d14837; 
- 	background-image: -webkit-linear-gradient(top, #FE7054, #D14836); 
- 	background-image: -moz-linear-gradient(top, #FE7054, #D14836); 
- 	background-image: -ms-linear-gradient(top, #FE7054, #D14836); 
- 	background-image: -o-linear-gradient(top, #FE7054, #D14836); 
- 	background-image: linear-gradient(top, #FE7054, #D14836); 
-
-	border: 1px solid #C92611;
-}
-.green
-{
-	background-color: #60b044;
-	background-image: -webkit-linear-gradient(#8add6d, #60b044);
-	background-image: -moz-linear-gradient(#8add6d, #60b044);
-	background-image: -ms-linear-gradient(#8add6d, #60b044);
-	background-image: -o-linear-gradient(#8add6d, #60b044);
-	background-image: linear-gradient(#8add6d, #60b044);
-	
-	border: 1px solid #5ca941;
-}
-
-
-
- 
- /* LISTE */
- .liste {
-	position:relative;
-	margin:10px;
-    padding:10px;
-	border-radius:10px;
-}
-
 
 /* TEXTBAUSTEINE */
 .intro {
@@ -168,51 +66,6 @@ html, body {
 	border:1px solid #CCCCCC;  
 }
 
-form {
-	position:relative;
-	border-radius:10px;
-	margin:2%;
-	color:#000;
-	padding:10px;
-	
-	background-color: #F5F5F5;
-   	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FAFAFA), to(#F2F2F2));
-   	background-image: -webkit-linear-gradient(top, #FAFAFA, #F5F5F5); 
-   	background-image:    -moz-linear-gradient(top, #FAFAFA, #F5F5F5);
-   	background-image:     -ms-linear-gradient(top, #FAFAFA, #F5F5F5);
-   	background-image:      -o-linear-gradient(top, #FAFAFA, #F5F5F5);
-   	background-image:         linear-gradient(top, #FAFAFA, #F5F5F5);
-	
-	border:1px solid #Ccc;
-	
-	text-align:left;
-}
-
-fieldset {
-    
-	position:relative;
-	color:#696969;
-    border-radius: 6px;
-	height:auto;
-} 		
-
-fieldset > legend {
-
-}
-
-fieldset > div {
-	position:relative;
-}
-
-fieldset > div > p {
-	margin-right:120px;
-}
-
-fieldset > div > button {
-	position:absolute;
-	top:0px;
-    right:0px;
-}
 
 /* CHART */     
 .chart {
