@@ -24,29 +24,33 @@
         			<img src="img/icon/plus.png" width="32">
         		</button>
         	</header>
+ 	
+ 			<article id="homeContentId" >
+ 			
+	        	<div id="homeVerlauf">
+	        		<div id="chart" class="chart">
+						<div id="scrollerId" class="scrollableX">
+							<svg id="chartSVG"></svg>
+						</div>
+	        		</div>
+	        		<form>
+	        			<fieldset>
+	        				<legend id="homeAuswahlLegend">Auswahl</legend>
+	        				<div id="homeAuswahlInfo"></div>
+	        			</fieldset>
+	        		</form>
+	        	</div>
+	        	
+	        	<div id="rahmen" style="display:none" class="intro">
+	        		 <p>Liebe Patientin</p>
+	        		<p style="margin:20px; text:justify;">Liebe Patientin<br/>
+	                    Die App dient Ihnen als persönliches Logbuch für Ihr Wohlbefinden während der medizinischen Therapie.
+	                    Wir empfehlen die App tägliche zu nutzen. Rückwirkend kann für maximal drei Tage ihre Bewertung nachgetragen werden. Sollte die Eingabe länger unterbrochen werden, beginnt die Verbindungslinie neu. Erweitern Sie Ihre Auswahlliste nach Bedarf durch Ergänzung weiterer Symptome. Die Eingaben werden erst am folgenden Tag im Graphen sichtbar.
+	                </p>
+	    			<button id="plusZeit" class="button blue" style="width:200px; height:40px">Start</button>
+	    			<p></p>
+	        	</div>
         	
-        	<article id="homeContentId" >
-        		<div id="chart" class="chart">
-					<div id="scrollerId" class="scrollableX">
-						<svg id="chartSVG"></svg>
-					</div>
-        		</div>
-        		<form>
-        			<fieldset>
-        				<legend id="homeAuswahlLegend">Auswahl</legend>
-        				<div id="homeAuswahlInfo"></div>
-        			</fieldset>
-        		</form>
-        	</article>
-        	
-        	<article id="rahmen" class="intro">
-        		 <p>Liebe Patientin</p>
-        		<p style="margin:20px; text:justify;">Liebe Patientin<br/>
-                    Die App dient Ihnen als persönliches Logbuch für Ihr Wohlbefinden während der medizinischen Therapie.
-                    Wir empfehlen die App tägliche zu nutzen. Rückwirkend kann für maximal drei Tage ihre Bewertung nachgetragen werden. Sollte die Eingabe länger unterbrochen werden, beginnt die Verbindungslinie neu. Erweitern Sie Ihre Auswahlliste nach Bedarf durch Ergänzung weiterer Symptome. Die Eingaben werden erst am folgenden Tag im Graphen sichtbar.
-                </p>
-    			<button id="plusZeit" class="button blue" style="width:200px; height:40px">Start</button>
-    			<p></p>
         	</article>
         	
         </section>
@@ -133,7 +137,7 @@
         		</button>
         	</header>
         	
-        	<article id="optionenContentId">
+        	<article id="optionenContentId" style="display:none">
         		<form>
         			<fieldset id="connectId">
         				<legend>Connect</legend>
@@ -169,9 +173,7 @@
 		<script type="text/javascript" charset="utf-8" src="lib/elements/assets.js"></script>
 
    		<script type="text/javascript" charset="utf-8" src="lib/views/home.js"></script>
-   		<script type="text/javascript" charset="utf-8" src="lib/views/symptome.js"></script>
-   		<script type="text/javascript" charset="utf-8" src="lib/views/optionen.js"></script>
-   		<script type="text/javascript" charset="utf-8" src="lib/views/eingabe.js"></script>
+   		<script type="text/javascript" charset="utf-8" src="lib/views/symptome.js"></script> 
 
    		<script type="text/javascript" charset="utf-8">
 
@@ -180,61 +182,42 @@
    					addCommands: function()
    					{
    						addCommand("changeView", changeViewCommand); 	
+   						addCommand("initHome", initHomeCommand); 	
+   						addCommand("initOptionen", initOptionenCommand); 	
+   						addCommand("initSymptome", initSymptomeCommand); 	
+   						addCommand("initEingabe", initEingabeCommand); 	
+   						addCommand("refreshChart", refreshChartCommand); 	
+   						addCommand("scan", scanCommand); 	
    					},
    					loadViews: function()
    					{
    						this.home = new Home("homeId");
    						this.symptome = new Symptome("symptomeId");
-   						this.optionen = new Optionen("optionenId");
-   						this.eingabe = new Eingabe("eingabeId");
-   						
-   						ontouch("addOptionen", function(event) {
-   							dispatchCommand("changeView", { source:app.home, target:app.optionen, direction:"right" });
-   						});
-   						ontouch("optionenBackButton", function(event){
-   							dispatchCommand("changeView", { source:app.optionen, target:app.home, direction:"left" });
-   						});
-   						ontouch("addEingabe", function(event){
-   							showView( app.eingabe );
-   							hideView( app.home, "left" );	
-   						});
-   						ontouch("eingabeBackButton", function(event){
-   							showView( app.home );
-   							hideView( app.eingabe, "right" );	
-   						});
-   						ontouch("addSymptome", function(event){
-                            event.preventDefault();
-   							showView( app.symptome );
-   							hideView( app.eingabe, "left" );	
-   						});
-   						ontouch("symptomeBackButton", function(event){
-   							showView( app.eingabe );
-   							hideView( app.symptome, "right" );	
-   						});
-   						ontouch("scannerId", function(event){
-   							event.preventDefault();
-   							
-   							console.log("scanning");
-   							app.optionen.scan();
-   						});
-							
-						app.home.showContent();
-   					},
-   					// Commands
-   					render: function()
-   					{
-
-   					},
-   					
-   					// Controller
+   					},   					
+   					// EventListener
    					bind: function() 
    					{
+   						DOM("homeId").onStage( "initHome", { id:"homeContentId", intro: "rahmen", verlauf:"homeVerlauf"}  ); 
+   						DOM("addOptionen").onTouch( "changeView", { fromId: "homeId", hideId:"homeContentId", toId: "optionenId", direction:"right" } );
+   						DOM("addEingabe").onTouch( "changeView", { fromId:"homeId", hideId:"homeContentId", toId:"eingabeId", direction:"left" } );
+
+   						DOM("optionenId").onStage( "initOptionen", { id:"optionenContentId"} ); 
+   						DOM("optionenBackButton").onTouch( "changeView", { fromId:"optionenId",hideId:"optionenContentId", toId:"homeId", direction:"left" } );
+
+   						DOM("symptomeId").onStage( "initSymptome", { id:"symptomeContentId"} ); 
+   						DOM("symptomeBackButton").onTouch( "changeView", { fromId:"symptomeId", hideId:"symptomeContentId", toId:"eingabeId", direction:"right" } );
+   						
+   						DOM("eingabeId").onStage( "initEingabe", { id:"eingabeContentId"} ); 
+   						DOM("eingabeBackButton").onTouch( "changeView", { fromId:"eingabeId", hideId:"eingabeContentId", toId:"homeId", direction:"right" } ); 
+   						DOM("addSymptome").onTouch( "changeView", { fromId:"eingabeId", hideId:"eingabeContentId", toId:"symptomeId", direction:"left" } );
+
+   						DOM("scannerId").onTouch( "scan", {} );
+   						
    						// FOR Browsers
    						document.addEventListener("DOMContentLoaded", function(event)
    						{
-   							app.loadViews();
-   							
-   							app.addCommands();	
+   							//app.loadViews();
+
    						});
 					
 			   			document.addEventListener("deviceready", function(event)
@@ -256,7 +239,10 @@
    					},
    					initialize:function() 
    					{
+   						this.addCommands();
    						this.bind();		
+   						
+   						dispatchCommand("initHome", { id:"homeContentId", intro: "rahmen", verlauf:"homeVerlauf"} );
    					}
    			};
    			
