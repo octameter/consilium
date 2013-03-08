@@ -27,8 +27,8 @@ Model.prototype.hasArzt = function()
 /**
  * punkt x:LocalTimeInMs, y [0 - 100], id: type.id
  */
-Model.prototype.data = {
-
+Model.prototype.data = 
+{
 		punkte : 
 		[
           	{"x":1359158900701,"y":84,"id":"10016256"},
@@ -44,20 +44,45 @@ Model.prototype.data = {
           	{"x":1359366906675,"y":37,"id":"10013963"},
           	{"x":1359384907275,"y":69,"id":"10016256"}
 	    ],
+	    favorites:
+	    {
+	    	bewertung:
+	     	[
+	     	 	{id : "10025482"}
+	     	],
+	     	symptome:
+	     	[
+	     	 	{ id: "10016256"},
+	     	 	{ id: "10013963"}
+	     	]
+	    }
+};
 		          
-		types : 
+Model.prototype.addFavorite = function( type, item )
+{
+	this.data["favorites"][type].push( item.id );
+};
+
+Model.prototype.dict =
+{
+		bewertung :
+		[
+			{ id: "10025482", title:"Subjektives Befinden", kategorie:"Lebensqualität", zero:100, farbwert:"rgba(154,205,50,0.9)",
+				  grad:[ 	
+					  	{ info:"Normale uneingeschränkte Aktivität wie vor der Erkrankung.", max:100, min:81},
+					  	{ info:"Einschränkung bei körperlicher Anstrengung, aber mobil." ,max:80, min:61 },
+					  	{ info:"Selbstversorgung möglich, aber nicht arbeitsfähig.", max:60, min:41},
+						{ info:"Nur begrenzte Selbstversorgung möglich.", max:40, min:21},
+						{ info:"Völlig pflegebedürftig, keinerlei Selbstversorgung möglich.", max:20, min:0}
+					]			 
+			}
+		],
+		
+		// http://www.rapidtables.com/web/color/RGB_Color.htm
+		symptome : 
 		[			 
-		 	// http://www.rapidtables.com/web/color/RGB_Color.htm
-			{ id: "10025482", title:"Subjektives Befinden", kategorie:"Bewertung", type:"Bewertung", zero:100, farbwert:"rgba(154,205,50,0.9)",
-			  grad:[ 	
-				  	{ info:"Normale uneingeschränkte Aktivität wie vor der Erkrankung.", max:100, min:81},
-				  	{ info:"Einschränkung bei körperlicher Anstrengung, aber mobil." ,max:80, min:61 },
-				  	{ info:"Selbstversorgung möglich, aber nicht arbeitsfähig.", max:60, min:41},
-					{ info:"Nur begrenzte Selbstversorgung möglich.", max:40, min:21},
-					{ info:"Völlig pflegebedürftig, keinerlei Selbstversorgung möglich.", max:20, min:0}
-				]			 
-			},
-			{ id: "10016256", title: "Müdigkeit", kategorie: "Allgemeinsymptome",  farbwert :"rgba(0,139,139,0.9)",
+
+			{ id: "10016256", title: "Müdigkeit", kategorie: "Allgemeinsymptome", farbwert :"rgba(0,139,139,0.9)",
 			  grad:[ 	
 				  	{ info:"Sehr starke Müdigkeit, auch in Ruhe, Selbstversorgung (z.B. Ankleiden und Waschen) ist unmöglich.", max:100, min:81},
 				  	{ info:"Starke Müdigkeit, auch in Ruhe, Selbstversorgung (z.B. Ankleiden und Waschen) stark eingeschränkt möglich, Arbeitsunfähigkeit." ,max:80, min:61 },
@@ -66,42 +91,42 @@ Model.prototype.data = {
 					{ info:"Sehr milde Müdigkeit, ohne Einschränkung im Alltag und bei der täglichen Arbeit.", max:20, min:0}
 				]  
 			},
-		  { id: "10013963", title: "Atemnot", kategorie: "Atemwege",  farbwert:"rgba(40,210,230,0.9)",
-				  grad:[ 	
-					  	{ info:"Sehr starke Atemnot, auch in Ruhe, Selbstversorgung (z.B. Ankleiden und Waschen) ist unmöglich.", max:100, min:81},
-					  	{ info:"Starke Atemnot auch in Ruhe, Selbstversorgung (z.B. Ankleiden und Waschen) stark eingeschränkt möglich, Arbeitsunfähigkeit." ,max:80, min:61 },
-					  	{ info:"Mässige Atemnot bei leichter Belastung mit deutlicher Einschränkung im Alltag und bei der Arbeit.", max:60, min:41},
-						{ info:"Leichte Atemnot bei leichter Belastung aber ohne Einschränkung im Alltag und bei der Arbeit.", max:40, min:21},
-						{ info:"Sehr leichte Atemnot bei normaler Belastung.", max:20, min:0}
-					]  
-				}, 
-		  { id: "10013950", title: "Schluckstörung", kategorie: "Hals, Nase, Ohren", farbwert:"rgba(160,200,200,0.9)",
-				  grad:[ 	
-					  	{ info:"Sehr starke Schluckbeschwerden, normale Nahrungs- oder Flüssigkeitsaufnahme ist nicht mehr möglich.", max:100, min:81},
-					  	{ info:"Starke Schluckbeschwerden, normale Nahrungs- und Flüssigkeitsaufnahme ist kaum mehr möglich." ,max:80, min:61 },
-					  	{ info:"Mässige Schluckbeschwerden, erschwerte und eingeschränkte Nahrungsaufnahme (z.B. Verwendung weicher oder flüssiger  Nahrungsmittel).", max:60, min:41},
-						{ info:"Milde aber deutliche Schluckbeschwer ohne relevante Einschränkung der Nahrungsaufnahme.", max:40, min:21},
-						{ info:"Sehr milde Symptome, unveränderte Nahrungsaufnahme.", max:20, min:0}
-					]  
-				}, 
+		  { id: "10013963", title: "Atemnot", kategorie: "Atemwege", farbwert:"rgba(40,210,230,0.9)",
+			grad:[ 	
+				  	{ info:"Sehr starke Atemnot, auch in Ruhe, Selbstversorgung (z.B. Ankleiden und Waschen) ist unmöglich.", max:100, min:81},
+				  	{ info:"Starke Atemnot auch in Ruhe, Selbstversorgung (z.B. Ankleiden und Waschen) stark eingeschränkt möglich, Arbeitsunfähigkeit." ,max:80, min:61 },
+				  	{ info:"Mässige Atemnot bei leichter Belastung mit deutlicher Einschränkung im Alltag und bei der Arbeit.", max:60, min:41},
+					{ info:"Leichte Atemnot bei leichter Belastung aber ohne Einschränkung im Alltag und bei der Arbeit.", max:40, min:21},
+					{ info:"Sehr leichte Atemnot bei normaler Belastung.", max:20, min:0}
+				]  
+			}, 
+		  { id: "10013950", title: "Schluckstörung", kategorie: "Hals, Nase, Ohren",  farbwert:"rgba(160,200,200,0.9)",
+		    grad:[ 	
+			  	{ info:"Sehr starke Schluckbeschwerden, normale Nahrungs- oder Flüssigkeitsaufnahme ist nicht mehr möglich.", max:100, min:81},
+			  	{ info:"Starke Schluckbeschwerden, normale Nahrungs- und Flüssigkeitsaufnahme ist kaum mehr möglich." ,max:80, min:61 },
+			  	{ info:"Mässige Schluckbeschwerden, erschwerte und eingeschränkte Nahrungsaufnahme (z.B. Verwendung weicher oder flüssiger  Nahrungsmittel).", max:60, min:41},
+				{ info:"Milde aber deutliche Schluckbeschwer ohne relevante Einschränkung der Nahrungsaufnahme.", max:40, min:21},
+				{ info:"Sehr milde Symptome, unveränderte Nahrungsaufnahme.", max:20, min:0}
+			]  
+		  }, 
 		  { id: "10012727", title: "Durchfall", kategorie: "Magen- und Darmsystem", farbwert:"rgba(0,206,209,0.9)",
-				  grad:[ 	
-					  	{ info:"Sehr starke Symptome, Selbstversorgung aufgrund Häufigkeit des Symptoms nicht mehr möglich.", max:100, min:81},
-					  	{ info:"Starke Symptome, wässrige Stuhlgänge mehr als 7 Mal pro Tag, starke Einschränkung im Alltag und Arbeitsunfähigkeit." ,max:80, min:61 },
-					  	{ info:"Mässige Symptome, wässrige Stuhlgänge 4-6 Mal pro Tag, leichte Einschränkung im Alltag.", max:60, min:41},
-						{ info:"Leichte Symptome, wässriger Stuhlgang unter 4 Mal pro Tag.", max:40, min:21},
-						{ info:"Sehr milde gelegentliche Symptome, keine Einschränkung im Alltag.", max:20, min:0}
-					]  
-				}, 
-		   { id: "10050068", title: "Ödeme an Gliedmassen", kategorie: "Ödeme", farbwert:"rgba(64,224,208,0.9)",
-				  grad:[ 	
-					  	{ info:"Sehr starke Schwellung, starke Bewegungseinschränkung, Selbstversorgung (z.B. Ankleiden und Waschen) ist unmöglich.", max:100, min:81},
-					  	{ info:"Starke Schwellung mit Bewegungseinschränkung, starkes Spannungsgefühl und deutliche Veränderung der Körperkontur." ,max:80, min:61 },
-					  	{ info:"Mässige sichtbare Schwellung, Auslöschung von Hautfalten, veränderte Körperkontur, leichte Einschränkung im Alltag.", max:60, min:41},
-						{ info:"Leichte sichtbare Schwellung mit erhöhtem Spannungsgefühl, leichte Hautstrukturveränderung.", max:40, min:21},
-						{ info:"Sehr leichte Schwellung, leichtes Spannungsgefühl aber keine Veränderung der Hautstruktur.", max:20, min:0}
-					]  
-				}, 
+			  grad:[ 	
+				  	{ info:"Sehr starke Symptome, Selbstversorgung aufgrund Häufigkeit des Symptoms nicht mehr möglich.", max:100, min:81},
+				  	{ info:"Starke Symptome, wässrige Stuhlgänge mehr als 7 Mal pro Tag, starke Einschränkung im Alltag und Arbeitsunfähigkeit." ,max:80, min:61 },
+				  	{ info:"Mässige Symptome, wässrige Stuhlgänge 4-6 Mal pro Tag, leichte Einschränkung im Alltag.", max:60, min:41},
+					{ info:"Leichte Symptome, wässriger Stuhlgang unter 4 Mal pro Tag.", max:40, min:21},
+					{ info:"Sehr milde gelegentliche Symptome, keine Einschränkung im Alltag.", max:20, min:0}
+				]  
+			}, 
+		   { id: "10050068", title: "Ödeme an Gliedmassen", kategorie: "Ödeme",farbwert:"rgba(64,224,208,0.9)",
+			  grad:[ 	
+				  	{ info:"Sehr starke Schwellung, starke Bewegungseinschränkung, Selbstversorgung (z.B. Ankleiden und Waschen) ist unmöglich.", max:100, min:81},
+				  	{ info:"Starke Schwellung mit Bewegungseinschränkung, starkes Spannungsgefühl und deutliche Veränderung der Körperkontur." ,max:80, min:61 },
+				  	{ info:"Mässige sichtbare Schwellung, Auslöschung von Hautfalten, veränderte Körperkontur, leichte Einschränkung im Alltag.", max:60, min:41},
+					{ info:"Leichte sichtbare Schwellung mit erhöhtem Spannungsgefühl, leichte Hautstrukturveränderung.", max:40, min:21},
+					{ info:"Sehr leichte Schwellung, leichtes Spannungsgefühl aber keine Veränderung der Hautstruktur.", max:20, min:0}
+				]  
+			}, 
 			{ id: "10013774", title: "Trockene Augen", kategorie: "Augen", farbwert:"rgba(175,238,238,0.9)",
 			  grad:[ 	
 				  	{ info:"Sehr starke Symptome, Selbstversorgung stark eingeschränkt durch Seheinschränkung.", max:100, min:81},
@@ -111,7 +136,7 @@ Model.prototype.data = {
 					{ info:"Sehr milde Symptome, keine Einschränkung im Alltag.", max:20, min:0}
 				]  
 			}, 
-		    { id: "10037868", title: "Hautausschlag", kategorie: "Haut und Haare", farbwert:"rgba(70,130,180,0.9)",
+		    { id: "10037868", title: "Hautausschlag", kategorie: "Haut und Haare",farbwert:"rgba(70,130,180,0.9)",
 			  grad:[ 	
 				  	{ info:"Sehr starke Symptome (Juckreiz, Hautspannen, Rötung, Hautbrennen), lokal oder verteilt, Selbstversorgung unmöglich.", max:100, min:81},
 				  	{ info:"Starke Symptome (Juckreiz, Hautspannen, Rötung, Hautbrennen), lokal oder verteilt, starke Einschränkung im Alltag und bei der Arbeit." ,max:80, min:61 },
@@ -129,7 +154,7 @@ Model.prototype.data = {
 					{ info:"Sehr milde Symptome.", max:20, min:0}
 				]  
 			}, 
-
+	
 		    { id: "10059827", title: "Erkältung", kategorie: "Infekt", farbwert:"rgba(30,144,255,0.9)" ,
 			  grad:[ 	
 				  	{ info:"Sehr starke Symptome mit Einschränkung der Selbstversorgung (z.B. selbst Ankleiden und Waschen) ist unmöglich.", max:100, min:81},
@@ -139,7 +164,7 @@ Model.prototype.data = {
 					{ info:"Sehr milde Symptome, keine Einschränkung im Alltag und bei der Arbeit.", max:20, min:0}
 				]  
 			}, 
-		    { id: "10046593", title: "Harndrang", kategorie: "Niere und Harnblase", farbwert:"rgba(0,0,205,0.9)",
+		    { id: "10046593", title: "Harndrang", kategorie: "Niere und Harnblase",farbwert:"rgba(0,0,205,0.9)",
 			  grad:[ 	
 				  	{ info:"Sehr starke Symptome mit Einschränkung der Selbstversorgung (z.B. selbst Ankleiden und Waschen) ist unmöglich.", max:100, min:81},
 				  	{ info:"Starke Symptome, hohe Toilettenfrequenz, Verlassen der Wohnung kaum möglich, Einschränkung des Alltags, Arbeitsunfähigkeit." ,max:80, min:61 },
@@ -193,8 +218,7 @@ Model.prototype.data = {
 					{ info:"Sehr milde Symptome, keine Einschränkung im Alltag und bei der Arbeit.", max:20, min:0}
 				]  
 			},		
-
-		{ id: "10016558", title: "Fieber", kategorie: "Allgemeinsymptome", farbwert:"rgba(135,206,235,0.9)",
+			{ id: "10016558", title: "Fieber", kategorie: "Allgemeinsymptome", farbwert:"rgba(135,206,235,0.9)",
 			  grad:[ 	
 				  	{ info:"Schweres anhaltendes Fieber, über 40°C über 24 Stunden Dauer.", max:100, min:81},
 				  	{ info:"Schweres Fieber über 40°C während 24Stunden." ,max:80, min:61 },
@@ -203,7 +227,6 @@ Model.prototype.data = {
 					{ info:"Leicht erhöhte Temperatur von 37-38°C.", max:20, min:0}
 				]  
 			},			
-
 		    { id: "10047340", title: "Schwindel", kategorie: "Allgemeinsymptome", farbwert:"rgba(135,206,235,0.9)",
 			  grad:[ 	
 				  	{ info:"Sehr starke nicht auszuhaltende Symptome, Selbstversorgung (z.B. Ankleiden und Waschen) unmöglich.", max:100, min:81},
@@ -213,7 +236,7 @@ Model.prototype.data = {
 					{ info:"Sehr milde Symptome, keine Einschränkung im Alltag und bei der Arbeit.", max:20, min:0}
 				]  
 			},		
-
+	
 		    { id: "10033371", title: "Schmerzen allgemein", kategorie: "Schmerzen", farbwert:"rgba(135,206,235,0.9)",
 			  grad:[ 	
 				  	{ info:"Sehr starke nicht auszuhaltende Schmerzen, Selbstversorgung (z.B. Ankleiden und Waschen) unmöglich.", max:100, min:81},
@@ -223,8 +246,8 @@ Model.prototype.data = {
 					{ info:"Sehr milde Symptome, keine Einschränkung im Alltag und bei der Arbeit", max:20, min:0}
 				]  
 			},		
-
-		    { id: "10011224", title: "trockener Reizhusten", kategorie: "Atemwege", farbwert:"rgba(135,206,235,0.9)",
+	
+		    { id: "10011224", title: "Trockener Reizhusten", kategorie: "Atemwege", farbwert:"rgba(135,206,235,0.9)",
 			  grad:[ 	
 				  	{ info:"Sehr starker nicht auszuhaltender Reizhusten, Selbstversorgung (z.B. Ankleiden und Waschen) unmöglich.", max:100, min:81},
 				  	{ info:"Stark anhaltender Reizhusten, stark eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:80, min:61 },
@@ -233,7 +256,7 @@ Model.prototype.data = {
 					{ info:"Sehr milde gelegentliche Symptome, keine Einschränkung im Alltag und bei der Arbeit.", max:20, min:0}
 				]  
 			},		
-
+	
 		    { id: "10036790", title: "Husten mit Auswurf", kategorie: "Atemwege", farbwert:"rgba(135,206,235,0.9)",
 			  grad:[ 	
 				  	{ info:"Sehr starker nicht auszuhaltender Husten mit massiven Auswurf, Selbstversorgung (z.B. Ankleiden und Waschen) unmöglich.", max:100, min:81},
@@ -243,18 +266,24 @@ Model.prototype.data = {
 					{ info:"Sehr milde gelegentliche Symptome, minimer Auswurf beim Husten, keine Einschränkung im Alltag und bei der Arbeit.", max:20, min:0}
 				]  
 			},	
-
+	
 		   { id: "10015090", title: "Nasenbluten", kategorie: "Blutungen", farbwert:"rgba(70,130,180,0.9)",
 			  grad:[ 	
-				  	{ info:"Massiver Blutverlust durch Nasenbluten.", max:100, min:81},
+				  	{ info:"Massiver Blutverlust durch Nasenbluten.", max:100, min:81, tipps:"info1,info2"},
 				  	{ info:"Anhaltendes und nicht stillendes Nasenbluten." ,max:80, min:61 },
 				  	{ info:"Länger anhaltendes und wiederholtes Nasenbluten.", max:60, min:41},
 					{ info:"Kurzes wiederholtes Nasenbluten, leichte Einschränkung des Alltags und bei der täglichen Arbeit.", max:40, min:21},
 					{ info:"Kurzes und einmaliges Nasenbluten, keine Einschränkung im Alltag und bei der Arbeit.", max:20, min:0}
 				]  
 			}
-           
-		]
+		],
+		
+		tipps:
+		[
+			 { id: "info1", title:"Tee machen und trinken", kategorie:"Pflege", likes:0, dislikes:0, displayed:0, clicked:0,
+				 
+			 }		 
+		 ]
 };
 
 Model.prototype.addPunkt = function( punkt )
@@ -305,6 +334,23 @@ Model.prototype.sortPunkteByTime = function(id)
 			return ( b.x - a.x );				
 		}
 	});
+};
+
+Model.prototype.getSymptomeAsc = function()
+{
+	var symptome = this.dict.symptome.slice(0);
+
+	symptome.sort( function( a,b) 
+	{
+		var links = a.title.replace(/Ö/, "Oe").replace(/Ä/, "Ae").replace(/Ü/,"Ue");
+		var rechts = b.title.replace(/Ö/, "Oe").replace(/Ä/, "Ae").replace(/Ü/,"Ue");
+		
+		if( links < rechts) return -1;
+		if( links > rechts) return 1;
+		return 0;
+	});
+	
+	return symptome;
 };
 
 /**
@@ -359,11 +405,13 @@ Model.prototype.getType = function( id, value )
 {
 	id = String( id );
 	
-	for( var i = 0; i < this.data.types.length; i++)
+	var dictionary = [].concat(this.dict.symptome, this.dict.bewertung, this.dict.tipps);
+	
+	for( var i = 0; i < dictionary.length; i++)
 	{
-		if( this.data.types[i].id === id )
+		if( dictionary[i].id === id )
 		{
-			return (value) ?  this.data.types[i][value] : this.data.types[i];				
+			return (value) ?  dictionary[i][value] : dictionary[i];				
 		}
 	}
 };

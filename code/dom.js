@@ -16,6 +16,7 @@
 		}
 		
 		console.log("Element with ID "+id);
+		
 		// Konstruktor-Funktion
 		var modules = {
 				
@@ -40,12 +41,60 @@
 						, false);			
 					}	
 				},
+				onTouchEnd: function(commandName, data)
+				{				
+					if("ontouchend" in window)
+					{	
+						item.addEventListener( "touchend", function(event)
+						{
+							event.preventDefault();
+							dispatchCommand(commandName, data);
+						}
+						, false);		
+					}
+					else
+					{
+						item.addEventListener( "mouseup", function(event)
+						{
+							event.preventDefault();
+							dispatchCommand(commandName, data);
+						}
+						, false);
+					}
+				},
+				onDOM: function(commandName, data)
+				{
+					document.addEventListener("DOMContentLoaded", function(event)
+					{
+						event.preventDefault();
+						dispatchCommand( commandName, data);
+					}, false);
+				},
+				onDevice: function(commandName, data)
+				{
+		   			document.addEventListener("deviceready", function(event)
+		   		   	{
+		   				event.preventDefault();
+		   				dispatchCommand( commandName, data);
+		   		   	}
+		   		   	, false);
+				},
+				onResume: function(commandName, data)
+				{
+		   			document.addEventListener("resume", function(event)
+		   		   	{
+		   				event.preventDefault();
+		   				dispatchCommand( commandName, data);
+		   		   	}
+		   		   	, false);
+				},
 				onStage: function(commandName, data)
 				{				
 					var onTransitionHandler = function(event)
 					{
 						if(event.target.className.indexOf("middle") > -1)
 						{
+							event.preventDefault();
 							dispatchCommand(commandName, data);														
 						}
 					};
@@ -75,6 +124,8 @@
 					    }
 					    
 					    element.appendChild( childTag );
+					    
+					    return childTag;
 				},
 				attrib: function( attribute )
 				{					
@@ -131,7 +182,7 @@
 
 
 /**
- * PATTERN
+ * FRONT CONTROLLER
  */
 function Controller() {};
 
@@ -149,13 +200,13 @@ Controller.prototype.dispatchCommand = function(eventName, data)
 	(this.commands[eventName]) ?  this.commands[eventName].execute(data) : console.log("Command "+eventName+" not registered");	
 };
 
-function Command( callback, custom )
+function Command( callback, preReg )
 {
 	this.callback = callback;
 	
 	this.model = new Model();
 	
-	this.custom = custom;
+	this.preReg = preReg;
 }
 
 Command.prototype.execute = function(data)
@@ -164,7 +215,7 @@ Command.prototype.execute = function(data)
 };
 
 /**
- * MODEL VIEW CONTROLLER
+ * UTILITY FUNCTION
  */
 var controller = new Controller();
 
@@ -173,7 +224,7 @@ function dispatchCommand(nameEvent, data)
 	controller.dispatchCommand(nameEvent, data);
 };
 
-function addCommand(nameEvent, command, custom)
+function addCommand(nameEvent, command, preReg)
 {
-	controller.addCommand(nameEvent, command, custom);
+	controller.addCommand(nameEvent, command, preReg);
 };

@@ -2,11 +2,26 @@
  * COMMANDS
  * @param data
  */
-function changeViewCommand( data )
+Events = 
 {
-	DOM( data.toId ).attrib("className").replace(/(top|left|right)/, "middle");	
-	DOM( data.hideId ).hide();
-	DOM( data.fromId ).attrib("className").replace("middle", data.direction );	
+	REFRESH_CHART:"refreshChart",
+	SHOW_AUSWAHL:"showAuswahl",
+	CHANGE_VIEW:"changeView",
+	SCAN:"scan",
+	SYMPTOME_SELECTED:"symptomSelected",
+	EDIT_EINGABE:"editEingabe",
+	INIT_HOME:"initHome",
+	INIT_OPTIONEN:"initOptionen",
+	INIT_SYMPTOME:"initSymptome",
+	INIT_EINGABE:"initEingabe"
+};
+
+function changeViewCommand( data )
+{	
+	DOM( data.to ).attrib("className").replace(/(top|left|right)/, "middle");	
+	DOM( data.from.split("Id").join("ContentId") ).hide();
+	DOM( data.from ).attrib("className").replace("middle", data.direction );	
+	
 };
 function showContentCommand( data )
 {
@@ -15,46 +30,53 @@ function showContentCommand( data )
 
 function initHomeCommand( data )
 {	
+	var preReg = this.preReg;
+	
 	if( this.model.data.punkte.length > 0 )
 	{		
-		dispatchCommand("refreshChart", { id: "chart"} );
+		dispatchCommand( Events.REFRESH_CHART );
 		
-		DOM( data.intro ).hide();
-		DOM( data.verlauf ).show();
+		DOM( preReg.intro ).hide();
+		DOM( preReg.verlauf ).show();
 	}
 	else
 	{
-		DOM( data.intro).show();
-		DOM( data.verlauf ).hide();
+		DOM( preReg.intro).show();
+		DOM( preReg.verlauf ).hide();
 	}
 	
-	dispatchCommand("showAuswahl");
+	dispatchCommand( Events.SHOW_AUSWAHL );
 	
-	DOM( data.id ).show();
+	DOM( preReg.id ).show();
 };
 function initOptionenCommand( data )
 {
 	DOM( data.id ).show();
 };
-function initSymptomeCommand( data )
-{
-	DOM( data.id ).show();
-};
+
 function initEingabeCommand( data )
 {
+	console.log("TODO Bewertung dynamisch");
+	console.log("TODO Symptome dynamisch");
+	console.log("TODO Tagebuch dynamisch");
+	console.log("TODO Gewicht dynamisch");
+	console.log( this.model.data.favorites.symptome.length );
+	
 	DOM( data.id ).show();
 };
 
 function refreshChartCommand( data )
 {
-	this.model.sortPunkteByTime("10025482");
+	var preReg = this.preReg;
 	
-	DOM("chartSVG").verlauf();
+	this.model.sortPunkteByTime();
+	
+	DOM(preReg.chart).verlauf();
 };
 
 function showAuswahlCommand( data )
 {
-	var customize = this.custom;
+	var customize = this.preReg;
 	
 	if(data)
 	{
@@ -102,6 +124,46 @@ function scanCommand( data )
 };
 
 /**
+ * SYMPTOME INIT
+ * @param data.id -> ContentId
+ * @param data.liste -> ListeId
+ */
+function initSymptomeCommand( data )
+{
+	DOM( data.liste ).removeElements();
+	
+	var items = this.model.getSymptomeAsc();
+	
+	for(var i = 0; i < items.length; i++)
+	{		
+		var item = DOM( data.liste ).appendChild("li");
+		
+		DOM( item ).appendChild("div", { style: 'background:'+items[i].farbwert }, "+" ).className = "itemIcon";
+		DOM( item ).appendChild("span", { style: 'position:absolute; white-space:nowrap; top:5px; left:60px;' }, "<b>"+items[i].title+"</b>");
+		DOM( item ).appendChild("span", { style: 'position:absolute; white-space:nowrap; top:25px; left:60px;'}, "<i>" + items[i].kategorie + "</i>");		
+
+		DOM( item ).onTouch( "symptomSelected", items[i] );
+	}	
+		
+	DOM( data.id ).show();
+};
+
+function symptomSelectedCommand( data )
+{
+	this.model.addFavorite( "symptome", data );
+	
+	dispatchCommand( Events.CHANGE_VIEW, { from:"symptomeId", to:"eingabeId", direction:"right"} );
+};
+
+
+function editEingabeCommand( data )
+{
+	console.log("TODO Symptome hinzufügen");
+	console.log("TODO Symptome löschen");
+	console.log("TODO Symptome ordnen");
+};
+
+/**
  * UTILITY FUNCTIONS
  */
 function zeit( milliSekunden, pattern )
@@ -119,5 +181,7 @@ function zeit( milliSekunden, pattern )
 		{
 			case("yyyy-mm-dd hh:mm"): return year + "-" + month+ "-"+day+" "+stunde+":"+minute; break;
 			default: return year + "-" + month+ "-"+day; break;
-		}
+		};
 };
+
+
