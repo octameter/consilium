@@ -33,9 +33,9 @@
 							<svg id="chartSVG"></svg>
 						</div>
 	        		</div>
-	        		<form>
+	        		<form id="homeAuswahl">
 	        			<fieldset>
-	        				<legend id="homeAuswahlLegend">Auswahl</legend>
+	        				<legend id="homeAuswahlLegend"></legend>
 	        				<div id="homeAuswahlInfo"></div>
 	        			</fieldset>
 	        		</form>
@@ -165,15 +165,14 @@
 <!-- 	<script type="text/javascript" src="childbrowser.js"></script> 		-->
 <!-- 	<script type="text/javascript" src="GAPlugin.js"></script> 			-->		
 
-   		<script type="text/javascript" charset="utf-8" src="lib/master.js"></script>
-   		<script type="text/javascript" charset="utf-8" src="lib/models/model.js"></script>
+   		<script type="text/javascript" charset="utf-8" src="code/dom.js"></script>
+   		<script type="text/javascript" charset="utf-8" src="code/model.js"></script>
+   		<script type="text/javascript" charset="utf-8" src="code/commands.js"></script>
 	
-		<script type="text/javascript" charset="utf-8" src="lib/elements/svg.js"></script>
-		<script type="text/javascript" charset="utf-8" src="lib/elements/chart.js"></script>
-		<script type="text/javascript" charset="utf-8" src="lib/elements/assets.js"></script>
+		<script type="text/javascript" charset="utf-8" src="code/plugins/svg.js"></script>
+		<script type="text/javascript" charset="utf-8" src="code/plugins/assets.js"></script>
 
-   		<script type="text/javascript" charset="utf-8" src="lib/views/home.js"></script>
-   		<script type="text/javascript" charset="utf-8" src="lib/views/symptome.js"></script> 
+   		<script type="text/javascript" charset="utf-8" src="code/views/symptome.js"></script> 
 
    		<script type="text/javascript" charset="utf-8">
 
@@ -187,11 +186,11 @@
    						addCommand("initSymptome", initSymptomeCommand); 	
    						addCommand("initEingabe", initEingabeCommand); 	
    						addCommand("refreshChart", refreshChartCommand); 	
+   						addCommand("showAuswahl", showAuswahlCommand, { legend:"homeAuswahlLegend", info:"homeAuswahlInfo"} ); 	
    						addCommand("scan", scanCommand); 	
    					},
    					loadViews: function()
    					{
-   						this.home = new Home("homeId");
    						this.symptome = new Symptome("symptomeId");
    					},   					
    					// EventListener
@@ -230,16 +229,13 @@
 			   				app.home.showContent();
 			   			}
 			   			, false);
-			   			document.addEventListener("punkt", function(event)
-			   			{
-			   				app.home.showAuswahl(event);
-			   			}
-			   			, false);
+
 
    					},
    					initialize:function() 
    					{
    						this.addCommands();
+   						
    						this.bind();		
    						
    						dispatchCommand("initHome", { id:"homeContentId", intro: "rahmen", verlauf:"homeVerlauf"} );

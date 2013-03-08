@@ -252,74 +252,26 @@ Svg.prototype.drawKoordLine = function(x1, y1, x2, y2)
 	document.getElementById( this.getId() ).appendChild( line );
 };
 
-Svg.prototype.drawPunkt = function(punkt, movable, active)
-{					
-	var kreis = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-	
+Svg.prototype.drawPunkt = function( punkt, movable, active)
+{						
 	var cx = this.getPixelForX( punkt.x, true );
 	var cy = this.getPixelForY( this.maxY, true );
 	var y = this.getPixelForY( punkt.y, false);
-	kreis.setAttribute("transform","translate(0 " + y + ")");
-
 	var farbe = this.getFarbwert(punkt.id);
-	var data = JSON.stringify( punkt );
-	
-    var evento = new CustomEvent("punkt", { detail : data, bubbles: true, cancelable: false } );
-    
 
-	kreis.onmousedown =  function(event) { kreis.dispatchEvent(evento); };
-//	if(active)
-//	{
-//		if(movable)
-//		{
-			kreis.setAttribute("class","movePoint");
-			kreis.setAttribute("stroke","rgba(255,255,255,0.9)");		
-			kreis.setAttribute("r","12");
-//			
-//			if("ontouchstart" in window)
-//			{	
-//				kreis.ontouchstart = function(event) { ChartPoint.selectElement(event); };
-//				kreis.ontouchend = function(event) { ChartPoint.deselectElement(event); };
-//			}
-//			else
-//			{
-//				kreis.setAttributeNS(null, "onmousedown", "ChartPoint.selectElement(event)");
-//				kreis.setAttributeNS(null, "onmouseout", "ChartPoint.deselectElement(event)");
-//				kreis.setAttributeNS(null, "onmouseup", "ChartPoint.deselectElement(event)");
-//			}						
-//		}
-//		else
-//		{
-//			kreis.setAttribute("class","popupPoint");
-//			kreis.setAttribute("opacity", "1");
-//			kreis.setAttribute("stroke","rgba(255,255,255,0.9)");		
-//			kreis.setAttribute("r","10");		
-//			
-//			if("ontouchstart" in window)
-//			{	
-//				kreis.ontouchstart = function(event) { ChartPoint.selectOldElement(event); };
-//				kreis.ontouchend = function(event) { ChartPoint.deselectOldElement(event); };
-//			}
-//			else
-//			{
-//				kreis.setAttributeNS(null, "onmousedown", "ChartPoint.selectOldElement(event)");
-//			}	
-//		}
-//	}
-//	else
-//	{
-//		kreis.setAttribute("r","10");		
-//		kreis.setAttribute("opacity", "0.7");
-//		kreis.setAttribute("stroke", farbe);			
-//	}
-	
-	kreis.setAttribute("data", JSON.stringify( punkt ) );
+	var kreis = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    kreis.setAttribute("transform","translate(0 " + y + ")");
+	kreis.setAttribute("class","movePoint");
+	kreis.setAttribute("stroke","rgba(255,255,255,0.9)");		
+	kreis.setAttribute("r","12");
 	kreis.setAttribute("fill", farbe ); 
 	kreis.setAttribute("stroke-width", "2");
 	kreis.setAttribute("cx", cx);
 	kreis.setAttribute("cy", cy);
 	
-	document.getElementById( this.getId() ).appendChild(kreis);
+	DOM(kreis).onTouch( "showAuswahl", punkt );
+
+	DOM( this.elementId ).appendChild(kreis);
 };
 
 /**
