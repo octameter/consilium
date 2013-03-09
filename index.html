@@ -39,6 +39,10 @@
 	        				<div id="homeAuswahlInfo"></div>
 	        			</fieldset>
 	        		</form>
+                    <div class="slider" onclick="clicker(event)">
+                        <a href="#" id="oimel" class="grey" ondragstart="dragStart(event)" ondrag="drag(event)" ></a>
+
+                    </div>
 	        	</div>
         	
 	        	<div id="rahmen" style="display:none" class="intro">
@@ -222,7 +226,20 @@
    						dispatchCommand( "initHome" );
    					}
    			};
-   			
+   			function clicker(event)
+            {
+                console.log(event);
+                document.getElementById("oimel").style.left = event.offsetX +"px";
+            }
+            
+            function dragStart(event) {
+                console.log("start");
+            }
+            
+            function drag(event) {
+                console.log(event);
+                event.target.style.left = "100px";
+            }
             
    			app.initialize();
    		</script>

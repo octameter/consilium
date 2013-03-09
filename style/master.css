@@ -4,6 +4,7 @@
 @import "liste.css";
 @import "button.css";
 @import "form.css";
+@import "slider.css";
 
 * {
     -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
