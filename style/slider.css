@@ -1,8 +1,8 @@
 .slider {
     width:100%;
     height:9px;
-    margin-top:10px;
-    margin-left:10px;
+    margin:10px;
+    padding-right:20px;
     float:left;
     clear:right;
     background:#3C72E6;
