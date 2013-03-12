@@ -1,3 +1,28 @@
+  /* LISTE Next */
+ .listeNext {
+	position:relative;
+	margin:0;
+	padding:0;
+}
+
+.listeNext > li{
+ 	position:relative;
+ 
+	list-style:none;
+	text-align:left;
+	cursor:pointer;
+    overflow-y:hidden;
+    overflow-x:hidden;
+	border-bottom:1px solid #CCCCCC; 
+}
+.listeNext > li:last-child{
+	border-bottom:none; 
+}
+
+.listeNext > li.selected {
+	background:rgba(100,150,200,0.6);
+}
+ 
  /* LISTE */
  .liste {
 	position:relative;

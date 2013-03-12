@@ -1,33 +1,66 @@
 .slider {
+    position:relative;
     width:100%;
+    margin-top:20px;
+    padding:0;
     height:9px;
-    margin:10px;
-    padding-right:20px;
-    float:left;
-    clear:right;
     background:#3C72E6;
     border-radius:5px;
-    position:relative;
     border:1px solid #333;
     opacity:0.7;
+    margin-left:2px;
 }
 
 .slider > a {
     position:absolute; 
     left:40px; 
     top:-12px; 
-    margin-left:-12px;
+ 
     margin-top:1px;
-    width:28px; 
-    height:28px; 
+    width:32px; 
+    height:32px; 
+    overflow:hidden;
     cursor:move; 
-    border-radius:14px; 
+    border-radius:18px; 
     border:1px solid #000;   
     -webkit-box-shadow: 0 0 6px #000;
-    
-    -webkit-transition: left 0.3s ease-in-out;
+
+    -webkit-transition: left 0.6s ease-in-out;
 	-moz-transition: left 0.3s ease-in-out;
 	-ms-transition: left 0.3s ease-in-out;
 	-o-transition: left 0.3s ease-in-out;
 	transition: left 0.3s ease-in-out;
+}
+
+input[type="range"] {
+	margin-top:20px;
+    -webkit-appearance: none;
+    border-radius:5px;
+    
+    border:1px solid #333;
+    background:#3C72E6;
+    opacity:0.7;
+    height: 10px;
+    width:100%;
+}
+ 
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    position: relative;
+    width: 36px;
+    height: 36px;
+    
+ 	border:1px solid #000;
+ 	 
+    -webkit-border-radius: 18px;
+    -moz-border-radius: 18px;
+    border-radius: 18px;
+	background-color: #eaeaea;
+	background-image: -webkit-linear-gradient(#FAFAFA, #DADADA);
+	background-image: -moz-linear-gradient(#FAFAFA, #DADADA);
+	background-image: -ms-linear-gradient(#FAFAFA, #DADADA);
+	background-image: -o-linear-gradient(#FAFAFA, #DADADA);
+	background-image: linear-gradient(#FAFAFA, #DADADA);
+
+	border:1px solid #000;
 }

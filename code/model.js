@@ -46,21 +46,39 @@ Model.prototype.data =
 	    ],
 	    favorites:
 	    {
-	    	bewertung:
+	    	Bewertung:
 	     	[
 	     	 	{id : "10025482"}
 	     	],
-	     	symptome:
+	     	Symptome:
 	     	[
 	     	 	{ id: "10016256"},
 	     	 	{ id: "10013963"}
-	     	]
-	    }
+	     	],
+			Tagebuch:
+			[
+			 	{ id: "tagebuchPrivat"}
+			 ]
+	    },
+	    currentItem: null
 };
+
 		          
 Model.prototype.addFavorite = function( type, item )
 {
 	this.data["favorites"][type].push( item.id );
+};
+Model.prototype.addCurrentItem = function( currentItem )
+{
+	this.data["currentItem"] = currentItem;
+};
+Model.prototype.getCurrentItem = function()
+{
+	return this.data["currentItem"];
+};
+Model.prototype.removeCurrentItem = function()
+{
+	this.data["currentItem"] = null;
 };
 
 Model.prototype.dict =
@@ -77,11 +95,14 @@ Model.prototype.dict =
 					]			 
 			}
 		],
+		tagebuch :
+		[
+		 	{ id: "tagebuchPrivat", title:"Private Notiz", kategorie:"Notizen"}
+		 ],
 		
 		// http://www.rapidtables.com/web/color/RGB_Color.htm
 		symptome : 
 		[			 
-
 			{ id: "10016256", title: "Müdigkeit", kategorie: "Allgemeinsymptome", farbwert :"rgba(0,139,139,0.9)",
 			  grad:[ 	
 				  	{ info:"Sehr starke Müdigkeit, auch in Ruhe, Selbstversorgung (z.B. Ankleiden und Waschen) ist unmöglich.", max:100, min:81},
@@ -291,6 +312,8 @@ Model.prototype.addPunkt = function( punkt )
 	punkt.x = Number( punkt.x );
 	
 	this.data.punkte.unshift( punkt );
+	
+	console.log( JSON.stringify( this.data.punkte ) );
 };
 
 Model.prototype.getMinX = function()
@@ -336,6 +359,10 @@ Model.prototype.sortPunkteByTime = function(id)
 	});
 };
 
+/**
+ * Sorts all symptoms in dict.symptome ascending
+ * @returns
+ */
 Model.prototype.getSymptomeAsc = function()
 {
 	var symptome = this.dict.symptome.slice(0);
@@ -405,7 +432,7 @@ Model.prototype.getType = function( id, value )
 {
 	id = String( id );
 	
-	var dictionary = [].concat(this.dict.symptome, this.dict.bewertung, this.dict.tipps);
+	var dictionary = [].concat(this.dict.symptome, this.dict.bewertung, this.dict.tagebuch, this.dict.tipps);
 	
 	for( var i = 0; i < dictionary.length; i++)
 	{
@@ -416,6 +443,21 @@ Model.prototype.getType = function( id, value )
 	}
 };
 
+Model.prototype.getGrad = function( id, value )
+{
+	var info = "";
+	
+	this.getType(id).grad.forEach(function(dataElement)
+	{
+		if( dataElement.min <= value && dataElement.max >= value)
+		{
+			info = dataElement.info; return;
+		}
+	});	
+	
+	return info;
+
+};
 
 Model.prototype.getPunkt = function( id, value )
 {	

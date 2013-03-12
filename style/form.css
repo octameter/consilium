@@ -35,6 +35,13 @@ fieldset > div {
 	text-align:left;
 	padding-top:20px;
 }
+fieldset > span {
+	position:relative;
+	text-align:left;
+	padding-top:20px;
+}
+
+
 
 fieldset > div > p {
 	margin-right:120px;
@@ -44,33 +51,4 @@ fieldset > div > button {
 	position:absolute;
 	top:0px;
     right:0px;
-}
-
-
-
-input[type="range"] {
-	margin-top:10px;
-    -webkit-appearance: none;
-    background-color: grey;
-    height: 10px;
-    width:100%;
-}
- 
-input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    position: relative;
-    width: 36px;
-    height: 36px;
- 
-    -webkit-border-radius: 18px;
-    -moz-border-radius: 18px;
-    border-radius: 18px;
-	background-color: #eaeaea;
-	background-image: -webkit-linear-gradient(#FAFAFA, #DADADA);
-	background-image: -moz-linear-gradient(#FAFAFA, #DADADA);
-	background-image: -ms-linear-gradient(#FAFAFA, #DADADA);
-	background-image: -o-linear-gradient(#FAFAFA, #DADADA);
-	background-image: linear-gradient(#FAFAFA, #DADADA);
-
-	border: 1px solid #BBB;
 }

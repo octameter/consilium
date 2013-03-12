@@ -35,16 +35,15 @@
 	        		</div>
 	        		<form id="homeAuswahl">
 	        			<fieldset>
+	        			
 	        				<legend id="homeAuswahlLegend"></legend>
 	        				<div id="homeAuswahlInfo"></div>
+	        				 				                     
 	        			</fieldset>
-	        		</form>
-                    <div class="slider" onclick="clicker(event)">
-                        <a href="#" id="oimel" class="grey" ondragstart="dragStart(event)" ondrag="drag(event)" ></a>
-
-                    </div>
+	        		</form>               
 	        	</div>
-        	
+
+                
 	        	<div id="rahmen" style="display:none" class="intro">
 	        		 <p>Liebe Patientin</p>
 	        		<p style="margin:20px; text:justify;">Liebe Patientin<br/>
@@ -59,58 +58,31 @@
         	
         </section>
                
-        <!-- EINGABE --> 
-        <section id="eingabeId" class="view right">
+        <!-- FAVORITES --> 
+        <section id="favoritesId" class="view right">
         
         	<header>
-        		<button id="eingabeBackButton" class="button colorless">
+        		<button id="favoritesBackButton" class="button colorless">
         			<img src="img/icon/left.png" width="32">
         		</button>
         		<h2>Favoriten</h2>
-                <button id="eingabeEditButton" style="padding-left:10px;padding-right:10px;font-size:110%" class="button colorless">Edit</button>
+                <button id="favoritesEditButton" style="padding-left:10px;padding-right:10px;font-size:110%" class="button colorless">Edit</button>
         	</header>
         	
-        	<article id="eingabeContentId">
-                <div style="height:40px;">
-                	<button class="action-button grey" style="position:absolute; top:1%; left:1%; height:36px">Heute</button>
-	                <input id="datum" style="position:absolute; top:1%; right:1%;" type="date" min="2013-03-01" class="action-button grey"/>
-                </div>
-                
-        		<form> 		
-                    <fieldset>
-        				<legend id="eingabeAuswahlLegend">Bewertung</legend>
-        				<div id="eingabeAuswahlInfo">
-        					<span style="position:absolute; top:-3px; right:0; font-size:130%;">48%</span>
-        					<span><b>Subjektives Wohlbefinden</b></span>
-        					<p style="width:100%;font-size:90%;margin:1px"><i>Zuletzt: 2013-01-27 14:55</i></p>
-        					<p style="width:100%;padding-top:5px">Nur begrenzte Selbstversorung möglich.</p>
-        					<input type="range" value="20" style="margin-bottom:20px" >
-        					<div style="position:relative;width:100%">
-	        					<button class="action-button grey">Abbrechen</button>
-	        					<button class="action-button red" style="float:right">Save</button>
-        					</div>
-        				</div>
-                    </fieldset>
-        		</form>
-                
-                <form> 		
-                    <fieldset>
-                        <legend>Symptome</legend>
-                         <button id="addSymptome" style="position:absolute; top:10px; right:5px; font-size:120%;display:none" class="action-button blue">+</button>     
-             				<div id="eingabeAuswahlInfo">
-        					<span style="position:absolute; top:-3px; right:0; font-size:130%;">60%</span>
-        					<span><b>Erbrechen</b></span>
-        					<p style="width:100%;font-size:90%;margin:1px"><i>Zuletzt: 2013-01-27 14:55</i></p>
-        					<p style="width:100%;padding-top:5px">Mehrmals Erbrechen am Tag.</p>
-        					<input type="range" style="margin-bottom:20px" value="40" >
-<!--         					<div style="position:relative;width:100%;padding-top:20px"> -->
-<!-- 	        					<button class="action-button grey">Abbrechen</button> -->
-<!-- 	        					<button class="action-button red" style="float:right">Save</button> -->
-<!--         					</div> -->
-        				</div>
-                    </fieldset>
-                </form>
-                
+        	<article id="favoritesContentId"></article>
+        	 
+        </section>
+        
+        <!-- FAVORITE --> 
+        <section id="favoriteId" class="view right">
+        
+        	<header>
+        		<button id="favoriteCancelId" class="button-text colorless">Cancel</button>
+        		<h2>Eingabe</h2>
+        		<button id="favoriteSaveId" class="button-text blue" style="display:none">Save</button>
+        	</header>
+        	
+        	<article id="favoriteContentId">
         	</article>
         	 
         </section>
@@ -181,41 +153,63 @@
    		<script type="text/javascript" charset="utf-8">
 
    			var app = {
-   					// CommandCenter
+   					// INSTANTIATE COMMANDS WITH PROPERTIES
    					addCommands: function()
    					{
    						addCommand( Events.CHANGE_VIEW, changeViewCommand ); 	
    						
-   						addCommand( Events.INIT_HOME, initHomeCommand, { id:"homeContentId", intro: "rahmen", verlauf:"homeVerlauf"}); 	
-   						addCommand( Events.INIT_OPTIONEN, initOptionenCommand); 	
-   						addCommand( Events.INIT_SYMPTOME, initSymptomeCommand); 	
-   						addCommand( Events.INIT_EINGABE, initEingabeCommand); 	
-   						
-   						addCommand( Events.EDIT_EINGABE, editEingabeCommand); 	
+   						addCommand( Events.HOME_INIT, homeInitCommand, { id:"homeContentId", intro: "rahmen", verlauf:"homeVerlauf"} ); 	
    						addCommand( Events.REFRESH_CHART, refreshChartCommand, { chart:"chartSVG"} ); 	
    						addCommand( Events.SHOW_AUSWAHL, showAuswahlCommand, { legend:"homeAuswahlLegend", info:"homeAuswahlInfo"} ); 	
    						addCommand( Events.SYMPTOME_SELECTED, symptomSelectedCommand ); 	
+
+   						addCommand( Events.OPTIONEN_INIT, optionenInitCommand, { id:"optionenContentId"} ); 	
    						addCommand( Events.SCAN, scanCommand); 	
+   						addCommand( Events.OPTIONEN_TO_HOME, optionenToHomeCommand, { from:"optionenId", to:"homeId", direction:"left" } ); 	
+   						
+   						addCommand( Events.SYMPTOME_INIT, symptomeInitCommand, { id:"symptomeContentId", liste:"symptomeListeId"} ); 	
+   						addCommand( Events.SYMPTOME_TO_FAVORITES, symptomeToFavoritesCommand, { from:"symptomeId", to:"favoritesId", direction:"right" } ); 	
+   						  						
+   						addCommand( Events.FAVORITES_INIT, favoritesInitCommand, { id:"favoritesContentId", bewertung:"listeBewertung", symptome:"listeSymptome", tagebuch:"listeTagebuch"} ); 	
+   						addCommand( Events.FAVORITES_LIST, favoritesListCommand); 	
+   						addCommand( Events.FAVORITES_ROW, favoritesRowCommand); 	
+   						addCommand( Events.FAVORITES_ITEM, favoritesItemCommand); 	
+   						addCommand( Events.FAVORITES_EDIT, favoritesEditCommand); 	
+   						addCommand( Events.FAVORITES_CHANGE, favoritesChangeCommand); 	
+   						addCommand( Events.FAVORITES_TO_HOME, favoritesToHomeCommand, { from:"favoritesId", to:"homeId", direction:"right" } ); 	
+   						addCommand( Events.FAVORITES_TO_FAVORITE, favoritesToHomeCommand, { from:"favoritesId", to:"favoriteId", direction:"left" } ); 	
+
+   						addCommand( Events.FAVORITE_INIT, favoriteInitCommand, { id : "favoriteContentId", save:"favoriteSaveId"} ); 	
+   						addCommand( Events.FAVORITE_CANCEL, favoriteCancelCommand, { from:"favoriteId", to:"favoritesId", direction:"right" }); 	
+   						addCommand( Events.FAVORITE_SAVE, favoriteSaveCommand, { from:"favoriteId", to:"favoritesId", direction:"right" }); 	
+
+   						
+   						addCommand( Events.SLIDER_MOVE, sliderMoveCommand); 	
    					},				
-   					// EventListener
+   					// STANDARD EVENTLISTENERS
    					bind: function() 
    					{
-   						DOM("homeId").onStage( "initHome", { id:"homeContentId", intro: "rahmen", verlauf:"homeVerlauf"}  ); 
-   						DOM("addOptionen").onTouch( Events.CHANGE_VIEW, { from: "homeId", to:"optionenId", direction:"right" } );
-   						DOM("addEingabe").onTouch( Events.CHANGE_VIEW, { from:"homeId", to:"eingabeId", direction:"left" } );
-
-   						DOM("optionenId").onStage( "initOptionen", { id:"optionenContentId"} ); 
-   						DOM("optionenBackButton").onTouch( Events.CHANGE_VIEW, { from:"optionenId", to:"homeId", direction:"left" } );
-
-   						DOM("symptomeId").onStage( "initSymptome", { id:"symptomeContentId", liste:"symptomeListeId"} ); 
-   						DOM("symptomeBackButton").onTouch( Events.CHANGE_VIEW, { from:"symptomeId", to:"eingabeId", direction:"right" } );
+   						DOM("homeId").onStage( Events.HOME_INIT ); 
+   						DOM("optionenId").onStage( Events.OPTIONEN_INIT ); 
+   						DOM("symptomeId").onStage( Events.SYMPTOME_INIT ); 
+   						DOM("favoritesId").onStage( Events.FAVORITES_INIT ); 
    						
-   						DOM("eingabeId").onStage( "initEingabe", { id:"eingabeContentId"} ); 
-   						DOM("eingabeBackButton").onTouch( Events.CHANGE_VIEW, { from:"eingabeId", to:"homeId", direction:"right" } ); 
-   						DOM("eingabeEditButton").onTouch( Events.EDIT_EINGABE ); 
-   						DOM("addSymptome").onTouch( Events.CHANGE_VIEW, { from:"eingabeId", to:"symptomeId", direction:"left" } );
+   						DOM("favoriteId").onStage( Events.FAVORITE_INIT ); 
+   						DOM("favoriteCancelId").onTouch( Events.FAVORITE_CANCEL );
+   						DOM("favoriteSaveId").onTouch( Events.FAVORITE_SAVE );
+   						
+   						DOM("addOptionen").onTouch( Events.CHANGE_VIEW, { from: "homeId", to:"optionenId", direction:"right" } );
+   						DOM("addEingabe").onTouch( Events.CHANGE_VIEW, { from:"homeId", to:"favoritesId", direction:"left" } );
 
-   						DOM("scannerId").onTouch( "scan", {} );
+   						DOM("optionenBackButton").onTouch( Events.OPTIONEN_TO_HOME );
+
+   						DOM("symptomeBackButton").onTouch( Events.SYMPTOME_TO_FAVORITES );
+   											
+   						DOM("favoritesBackButton").onTouch( Events.FAVORITES_TO_HOME ); 
+   						DOM("favoritesEditButton").onTouch( Events.FAVORITES_CHANGE ); 
+   						
+  
+   						DOM("scannerId").onTouch( Events.SCAN, {} );
    					},
    					initialize:function() 
    					{
@@ -223,24 +217,12 @@
    						
    						this.bind();		
    						
-   						dispatchCommand( "initHome" );
+   						dispatchCommand( Events.HOME_INIT );
    					}
    			};
-   			function clicker(event)
-            {
-                console.log(event);
-                document.getElementById("oimel").style.left = event.offsetX +"px";
-            }
-            
-            function dragStart(event) {
-                console.log("start");
-            }
-            
-            function drag(event) {
-                console.log(event);
-                event.target.style.left = "100px";
-            }
             
    			app.initialize();
+   			
+
    		</script>
 </html>

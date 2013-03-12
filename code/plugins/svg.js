@@ -143,13 +143,12 @@ Svg.prototype.drawPunkte = function(id)
 		var active = true;
 		
 		// Only last days not current
-		if(punkt1.x < this.maxX)
-		{
+		//if(punkt1.x < this.maxX)
+		//{
 			this.drawLine( punkt1, punkt2, active, 14);
 
-			
 			this.drawPunkt( punkt1, true, active);									
-		}
+		//}
 		
 		punkt2 = punkt1;
 	}
@@ -263,7 +262,7 @@ Svg.prototype.drawPunkt = function( punkt, movable, active)
     kreis.setAttribute("transform","translate(0 " + y + ")");
 	kreis.setAttribute("class","movePoint");
 	kreis.setAttribute("stroke","rgba(255,255,255,0.9)");		
-	kreis.setAttribute("r","12");
+	kreis.setAttribute("r","14");
 	kreis.setAttribute("fill", farbe ); 
 	kreis.setAttribute("stroke-width", "2");
 	kreis.setAttribute("cx", cx);

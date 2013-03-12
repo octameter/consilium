@@ -1,4 +1,4 @@
-.button
+.button, .button-text
 {
 	color:white;
 	cursor:pointer;	
@@ -10,6 +10,14 @@
 	vertical-align: middle;
 	-webkit-user-select: none;
 	height:42px;
+}
+
+.button-text
+{
+	margin-top:4px;
+	height:32px;
+	font-size:110%;
+	width:70px;
 }
 
 .action-button {

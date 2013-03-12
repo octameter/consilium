@@ -4,16 +4,32 @@
  */
 Events = 
 {
+	HOME_INIT:"homeInit",
+	OPTIONEN_INIT:"optionenInit",
+	OPTIONEN_TO_HOME:"optionenToHome",
+	SYMPTOME_INIT:"symptome_init",
+	SYMPTOME_TO_FAVORITES:"symptomeToFavorites",
+	
 	REFRESH_CHART:"refreshChart",
 	SHOW_AUSWAHL:"showAuswahl",
 	CHANGE_VIEW:"changeView",
 	SCAN:"scan",
 	SYMPTOME_SELECTED:"symptomSelected",
-	EDIT_EINGABE:"editEingabe",
-	INIT_HOME:"initHome",
-	INIT_OPTIONEN:"initOptionen",
-	INIT_SYMPTOME:"initSymptome",
-	INIT_EINGABE:"initEingabe"
+	
+	FAVORITES_INIT:"favorites_init",
+	FAVORITES_LIST:"favorites_list",
+	FAVORITES_ROW:"favorites_row",
+	FAVORITES_ITEM:"favorites_item",
+	FAVORITES_EDIT:"favorites_edit",
+	FAVORITES_CHANGE:"favorites_Change",
+	FAVORITES_TO_HOME:"favorites_to_home",
+	FAVORITES_TO_FAVORITE:"favorites_to_favorite",
+	
+	FAVORITE_INIT:"favorite_init",
+	FAVORITE_CANCEL:"favorite_cancel",
+	FAVORITE_SAVE:"favorite_save",
+	
+	SLIDER_MOVE:"sliderMove",
 };
 
 function changeViewCommand( data )
@@ -28,9 +44,9 @@ function showContentCommand( data )
 	DOM( data.id ).show();
 };
 
-function initHomeCommand( data )
+function homeInitCommand( data )
 {	
-	var preReg = this.preReg;
+	var preReg = this.properties;
 	
 	if( this.model.data.punkte.length > 0 )
 	{		
@@ -49,26 +65,32 @@ function initHomeCommand( data )
 	
 	DOM( preReg.id ).show();
 };
-function initOptionenCommand( data )
+function optionenInitCommand( data )
 {
-	DOM( data.id ).show();
+	DOM( this.properties.id ).show();
+};
+function optionenToHomeCommand( data )
+{
+	dispatchCommand( Events.OPTIONEN_TO_HOME, this.properties );
 };
 
-function initEingabeCommand( data )
+function sliderMoveCommand( data )
 {
-	console.log("TODO Bewertung dynamisch");
-	console.log("TODO Symptome dynamisch");
-	console.log("TODO Tagebuch dynamisch");
-	console.log("TODO Gewicht dynamisch");
-	console.log( this.model.data.favorites.symptome.length );
+	// Persist to Model
+	this.model.addCurrentItem( { x: new Date().getTime(), y:data.value, id:data.id, } ); 
 	
-	DOM( data.id ).show();
+	// SHOW SAVE BUTTON
+	DOM( data.save ).show();
+	
+	// Update Displays
+	DOM( data.output ).text( data.value  +"%");
+	DOM( data.grad ).text( this.model.getGrad( data.id, data.value ));
 };
 
 function refreshChartCommand( data )
 {
-	var preReg = this.preReg;
-	
+	var preReg = this.properties;
+		
 	this.model.sortPunkteByTime();
 	
 	DOM(preReg.chart).verlauf();
@@ -76,7 +98,7 @@ function refreshChartCommand( data )
 
 function showAuswahlCommand( data )
 {
-	var customize = this.preReg;
+	var customize = this.properties;
 	
 	if(data)
 	{
@@ -85,18 +107,11 @@ function showAuswahlCommand( data )
 		DOM(customize.legend).text( type.kategorie ); 		
 		
 		DOM(customize.info).text("");
-
 		DOM(customize.info).appendChild( "span", { style: 'position:absolute; top:-3px; right:0; font-size:130%' }, data.y +"%");
 		DOM(customize.info).appendChild( "span", {}, "<b>"+type.title+"</b>");
-		DOM(customize.info).appendChild( "p", { style:'width:100%;font-size:90%;margin:1px' }, "<i>"+zeit(data.x, "yyyy-mm-dd hh:mm")+"</i>");
-		
-		this.model.getType(data.id).grad.forEach(function(dataElement)
-		{
-			if( dataElement.min <= data.y && dataElement.max >= data.y)
-			{
-				DOM(customize.info).appendChild( "p", { style: 'width:100%;padding-top:5px'}, dataElement.info);
-			}
-		});	
+		DOM(customize.info).appendChild( "p", { style:'width:100%;font-size:90%;margin:1px' }, "<i>"+zeit(data.x, "yyyy-mm-dd hh:mm")+"</i>");		
+		DOM(customize.info).appendChild( "p", { style: 'width:100%;padding-top:5px'}, this.model.getGrad(data.id, data.y) );
+
 	}
 	else
 	{
@@ -128,7 +143,7 @@ function scanCommand( data )
  * @param data.id -> ContentId
  * @param data.liste -> ListeId
  */
-function initSymptomeCommand( data )
+function symptomeInitCommand( data )
 {
 	DOM( data.liste ).removeElements();
 	
@@ -147,6 +162,10 @@ function initSymptomeCommand( data )
 		
 	DOM( data.id ).show();
 };
+function symptomeToFavoritesCommand( data )
+{
+	dispatchCommand( Events.CHANGE_VIEW, this.properties);
+};
 
 function symptomSelectedCommand( data )
 {
@@ -156,12 +175,159 @@ function symptomSelectedCommand( data )
 };
 
 
-function editEingabeCommand( data )
+function favoritesChangeCommand( data )
 {
 	console.log("TODO Symptome hinzufügen");
 	console.log("TODO Symptome löschen");
 	console.log("TODO Symptome ordnen");
 };
+
+/**
+ * FAVORITES BUILD FORM
+ *  @param data { id: "viewContentId" }
+ */
+function favoritesInitCommand( data )
+{	
+	DOM( this.properties.id ).removeElements();
+	
+	var form = DOM( this.properties.id ).appendChild("form");
+	
+	for(var favorite in this.model.data.favorites)
+	{
+		var fieldset = DOM( form ).appendChild("fieldset");
+		
+		DOM( fieldset ).appendChild("legend", {}, favorite);
+		
+		dispatchCommand(Events.FAVORITES_LIST, { fieldset: fieldset, favorite: favorite} );		
+	}
+	
+	DOM( this.properties.id ).show();
+};
+/**
+ * FAVORITES BUILD LISTS
+ * @param data { fieldset:"fieldsetElement", favorite:"Favoriten Kategorei" }
+ */
+function favoritesListCommand( data )
+{
+	var liste = DOM( data.fieldset ).appendChild("ul", { class: "listeNext"} );
+		
+	for(var i = 0; i < this.model.data.favorites[data.favorite].length; i++ )
+	{
+		dispatchCommand( Events.FAVORITES_ROW, { id: this.model.data.favorites[data.favorite][i].id, display: liste });
+	}
+};
+/**
+ * FAVORITES CREATE LIST ITEM
+ * @param data { id:"typeId", display:"listElement" }
+ */
+function favoritesRowCommand( data )
+{
+	// Object {id: "10025482", title: "Subjektives Befinden", kategorie: "Lebensqualität", zero: 100, farbwert: "rgba(154,205,50,0.9)"…}
+	var infoType = this.model.getType( data.id );
+	
+	var item = DOM( data.display ).appendChild("li", {style:"padding-top:10px;padding-bottom:10px;"});
+	
+	// {x: 1359330905202, y: 87, id: "10025482"}
+	var infoData = this.model.getPunkt( data.id );
+	
+	DOM( item ).appendChild("span",{}, "<b>"+infoType.title+"</b>" );
+
+	var title = (infoData) ? infoData.y + "%" : "Eintrag";
+	var zeitpunkt = (infoData) ? "<i>Zuletzt: "+zeit(infoData.x,'dd.mm.yyyy hh:mm')+"</i>" : "&nbsp;";
+
+	DOM( item ).appendChild("p",{ style:"width:100%;font-size:90%;margin:1px;float:left;" }, zeitpunkt);		
+	 
+	var button = DOM( item ).appendChild("a", { class:"action-button grey", style:"position:absolute; right:2px; top:10px; font-size:110%;padding-left:5px;padding-right:5px;"}, title);
+	DOM( button ).onTouch(Events.FAVORITES_ITEM, { target:item, punkt:infoData, type:infoType } );
+};
+
+/**
+ * FAVORITES LIST ITEM DOWN
+ * @param data { target: "List item" }
+ */
+function favoritesItemCommand( data )
+{		
+	data.target.className = "selected";
+
+	DOM( data.target ).onTouchEnd( Events.FAVORITES_EDIT, {  punkt: data.punkt, type:data.type });
+};
+/**
+ * FAVORITES LIST ITEM UP 
+ * @param data { TODO }
+ */
+function favoritesEditCommand( data )
+{		
+	this.model.addCurrentItem( { x:data.punkt.x, y:data.punkt.y, id:data.type.id });
+	dispatchCommand( Events.FAVORITES_TO_FAVORITE );		
+};
+/**
+ * FAVORITES CHANGE VIEW
+ * @param data
+ */
+function favoritesToHomeCommand( data )
+{
+	dispatchCommand( Events.CHANGE_VIEW, this.properties ); 
+};
+function favoritesToFavoriteCommand( data )
+{
+	dispatchCommand( Events.CHANGE_VIEW, this.properties ); 
+};
+/**
+ * FAVORITE INIT
+ * @param data 
+ * this.properties { id: "ContentId" }
+ */
+function favoriteInitCommand( data )
+{
+	DOM( this.properties.save ).hide();
+	
+	var item = this.model.getCurrentItem(); 
+	
+	DOM( this.properties.id ).removeElements();
+	
+	var form = DOM( this.properties.id ).appendChild("form"); 
+	
+	var fieldset = DOM( form ).appendChild("fieldset");
+	
+	DOM( fieldset ).appendChild("legend", {}, this.model.getType( item.id ).kategorie );
+	
+	var div = DOM( fieldset ).appendChild( "div" );
+	DOM( div ).appendChild( "span", { style: "width:100%;"}, "<b>"+this.model.getType( item.id ).title+"</b>");
+	var output = DOM( div ).appendChild( "span", { style: "position:absolute; top:10px; right:2px; font-size:110%" }, item.y +"%");
+	DOM( div ).appendChild( "p", { style:'width:100%;font-size:90%;margin:1px' }, "<i>Zuletzt: "+zeit(item.x,'dd.mm.yyyy hh:mm')+"</i>");		
+	var grad = DOM( div ).appendChild( "p", { style: 'width:100%;padding-top:5px'}, this.model.getGrad(item.id, item.y) );
+	var range = DOM( div ).appendChild( "input", { type:"range", value:item.y, style:"margin-bottom:20px"});
+	
+	DOM( range ).onChange( Events.SLIDER_MOVE, { output:output, grad:grad, id:item.id, save: this.properties.save } );
+	
+	DOM( this.properties.id ).show();
+	// {punkt: Object, type: Object}
+	// type {id: "10025482", title: "Subjektives Befinden", kategorie: "Lebensqualität", zero: 100, farbwert: "rgba(154,205,50,0.9)"…}
+	// var item = this.model.getCurrentItem(); 
+};
+
+function favoriteSaveCommand( data )
+{
+	this.model.addPunkt( this.model.getCurrentItem() );
+	
+	this.model.removeCurrentItem();
+	
+	var properties = this.properties;
+	
+	dispatchCommand( Events.CHANGE_VIEW, properties );
+}
+function favoriteCancelCommand( data )
+{
+	var properties = this.properties;
+	
+	this.model.removeCurrentItem();
+	
+	dispatchCommand( Events.CHANGE_VIEW, properties );
+}
+
+
+
+
 
 /**
  * UTILITY FUNCTIONS
@@ -180,6 +346,7 @@ function zeit( milliSekunden, pattern )
 		switch( pattern )
 		{
 			case("yyyy-mm-dd hh:mm"): return year + "-" + month+ "-"+day+" "+stunde+":"+minute; break;
+			case("dd.mm.yyyy hh:mm"): return day + "." + month+ "."+year+" "+stunde+":"+minute; break;
 			default: return year + "-" + month+ "-"+day; break;
 		};
 };
