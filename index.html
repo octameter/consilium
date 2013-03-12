@@ -180,8 +180,8 @@
    						addCommand( Events.FAVORITES_TO_FAVORITE, favoritesToHomeCommand, { from:"favoritesId", to:"favoriteId", direction:"left" } ); 	
 
    						addCommand( Events.FAVORITE_INIT, favoriteInitCommand, { id : "favoriteContentId", save:"favoriteSaveId"} ); 	
-   						addCommand( Events.FAVORITE_CANCEL, favoriteCancelCommand, { from:"favoriteId", to:"favoritesId", direction:"right" }); 	
-   						addCommand( Events.FAVORITE_SAVE, favoriteSaveCommand, { from:"favoriteId", to:"favoritesId", direction:"right" }); 	
+   						addCommand( Events.FAVORITE_CANCEL, favoriteCancelCommand, { id:"favoriteSaveId", from:"favoriteId", to:"favoritesId", direction:"right" }); 	
+   						addCommand( Events.FAVORITE_SAVE, favoriteSaveCommand, { id:"favoriteSaveId", from:"favoriteId", to:"favoritesId", direction:"right" }); 	
 
    						
    						addCommand( Events.SLIDER_MOVE, sliderMoveCommand); 	

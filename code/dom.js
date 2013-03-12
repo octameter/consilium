@@ -109,8 +109,7 @@
 					}
 				},
 				onChange: function(commandName, data)
-				{
-					
+				{					
 					element.addEventListener( "change", function(event)
 					{
 						data["value"] = event.target.value;
@@ -125,7 +124,8 @@
 					{
 						event.preventDefault();
 						dispatchCommand( commandName, data);
-					}, false);
+					}
+                    , false);
 				},
 				onDevice: function(commandName, data)
 				{
@@ -164,7 +164,7 @@
 				},
 				text: function( value )
 				{
-					element.innerHTML = value; 
+					element.appendChild( document.createTextNode( value ) ); 
 				},
 				createChild: function( tag )
 				{
@@ -195,6 +195,24 @@
 					    
 					    return childTag;
 				},
+                addChild: function(tag, attributes, text)
+				{
+					    var childTag = (typeof tag === "string") ? this.createChild( tag ): tag;
+					    
+					    for (var attribute in attributes) 
+					    {
+					    	childTag.setAttribute( attribute, attributes[attribute] );
+					    }
+					    
+					    if(text)
+					    {
+					    	childTag.innerHTML = text;   
+					    }
+					    
+					    element.appendChild( childTag );
+					    
+					    return DOM( childTag );
+				},
 				attrib: function( attribute )
 				{					
 					function replace( oldValue, newValue )
@@ -217,10 +235,14 @@
 				show: function()
 				{
 					element.style["display"] = "block";
+                    
+                    return DOM( element );
 				},
 				hide: function()
 				{
 					element.style["display"] = "none";
+                    
+                    return DOM( element );
 				},
 				removeElements: function()
 				{						
@@ -228,6 +250,8 @@
 					{
 						element.removeChild(element.lastChild);
 					}
+                    
+                    return DOM( element );
 				},
 				verlauf: function()
 				{
@@ -237,9 +261,13 @@
 					svg.drawCoordinates();
 					svg.drawPunkte(id);
 					return svg;
-				}
+				},
+                element: function()
+                {
+                    return element;
+                }
+                
 		};
-
 		
 		return modules;
 	};

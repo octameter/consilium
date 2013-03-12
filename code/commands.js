@@ -46,24 +46,24 @@ function showContentCommand( data )
 
 function homeInitCommand( data )
 {	
-	var preReg = this.properties;
+	var prop = this.properties;
 	
 	if( this.model.data.punkte.length > 0 )
 	{		
 		dispatchCommand( Events.REFRESH_CHART );
 		
-		DOM( preReg.intro ).hide();
-		DOM( preReg.verlauf ).show();
+		DOM( prop.intro ).hide();
+		DOM( prop.verlauf ).show();
 	}
 	else
 	{
-		DOM( preReg.intro).show();
-		DOM( preReg.verlauf ).hide();
+		DOM( prop.intro).show();
+		DOM( prop.verlauf ).hide();
 	}
 	
 	dispatchCommand( Events.SHOW_AUSWAHL );
 	
-	DOM( preReg.id ).show();
+	DOM( prop.id ).show();
 };
 function optionenInitCommand( data )
 {
@@ -71,7 +71,7 @@ function optionenInitCommand( data )
 };
 function optionenToHomeCommand( data )
 {
-	dispatchCommand( Events.OPTIONEN_TO_HOME, this.properties );
+	dispatchCommand( Events.CHANGE_VIEW, this.properties );
 };
 
 function sliderMoveCommand( data )
@@ -83,17 +83,17 @@ function sliderMoveCommand( data )
 	DOM( data.save ).show();
 	
 	// Update Displays
-	DOM( data.output ).text( data.value  +"%");
-	DOM( data.grad ).text( this.model.getGrad( data.id, data.value ));
+	DOM( data.output ).removeElements().text( data.value  +"%");
+	DOM( data.grad ).removeElements().text( this.model.getGrad( data.id, data.value ));
 };
 
 function refreshChartCommand( data )
 {
-	var preReg = this.properties;
+	var prop = this.properties;
 		
 	this.model.sortPunkteByTime();
 	
-	DOM(preReg.chart).verlauf();
+	DOM( prop.chart ).verlauf();
 };
 
 function showAuswahlCommand( data )
@@ -106,7 +106,7 @@ function showAuswahlCommand( data )
 		
 		DOM(customize.legend).text( type.kategorie ); 		
 		
-		DOM(customize.info).text("");
+		DOM(customize.info).removeElements().text("");
 		DOM(customize.info).appendChild( "span", { style: 'position:absolute; top:-3px; right:0; font-size:130%' }, data.y +"%");
 		DOM(customize.info).appendChild( "span", {}, "<b>"+type.title+"</b>");
 		DOM(customize.info).appendChild( "p", { style:'width:100%;font-size:90%;margin:1px' }, "<i>"+zeit(data.x, "yyyy-mm-dd hh:mm")+"</i>");		
@@ -115,7 +115,7 @@ function showAuswahlCommand( data )
 	}
 	else
 	{
-		DOM(customize.legend).text( "Auswahl" ); 
+		DOM(customize.legend).removeElements().text( "Auswahl" ); 
 		DOM(customize.info).text( "Bitte einen Punkt im Graph auwählen.");
 	}
 };
@@ -187,25 +187,21 @@ function favoritesChangeCommand( data )
  *  @param data { id: "viewContentId" }
  */
 function favoritesInitCommand( data )
-{	
-	DOM( this.properties.id ).removeElements();
-	
-	var form = DOM( this.properties.id ).appendChild("form");
+{		
+	DOM( this.properties.id ).removeElements().appendChild("form", { id : "favFormId" } );
 	
 	for(var favorite in this.model.data.favorites)
 	{
-		var fieldset = DOM( form ).appendChild("fieldset");
+		DOM( "favFormId" ).addChild("fieldset", { id: favorite+"id" } ).addChild("legend", {}, favorite);
 		
-		DOM( fieldset ).appendChild("legend", {}, favorite);
-		
-		dispatchCommand(Events.FAVORITES_LIST, { fieldset: fieldset, favorite: favorite} );		
+		dispatchCommand(Events.FAVORITES_LIST, { fieldset: favorite+"id", favorite: favorite} );		
 	}
 	
 	DOM( this.properties.id ).show();
 };
 /**
  * FAVORITES BUILD LISTS
- * @param data { fieldset:"fieldsetElement", favorite:"Favoriten Kategorei" }
+ * @param data { fieldset:"fieldsetElement", favorite:"Favoriten Kategorie" }
  */
 function favoritesListCommand( data )
 {
@@ -284,21 +280,16 @@ function favoriteInitCommand( data )
 	var item = this.model.getCurrentItem(); 
 	
 	DOM( this.properties.id ).removeElements();
+	DOM( this.properties.id ).addChild("form").addChild("fieldset", { id: "favoriteFieldsetId" }).addChild("legend", {}, this.model.getType( item.id ).kategorie );
 	
-	var form = DOM( this.properties.id ).appendChild("form"); 
-	
-	var fieldset = DOM( form ).appendChild("fieldset");
-	
-	DOM( fieldset ).appendChild("legend", {}, this.model.getType( item.id ).kategorie );
-	
-	var div = DOM( fieldset ).appendChild( "div" );
+	var div = DOM( "favoriteFieldsetId" ).addChild( "div" ).element();
 	DOM( div ).appendChild( "span", { style: "width:100%;"}, "<b>"+this.model.getType( item.id ).title+"</b>");
 	var output = DOM( div ).appendChild( "span", { style: "position:absolute; top:10px; right:2px; font-size:110%" }, item.y +"%");
 	DOM( div ).appendChild( "p", { style:'width:100%;font-size:90%;margin:1px' }, "<i>Zuletzt: "+zeit(item.x,'dd.mm.yyyy hh:mm')+"</i>");		
 	var grad = DOM( div ).appendChild( "p", { style: 'width:100%;padding-top:5px'}, this.model.getGrad(item.id, item.y) );
-	var range = DOM( div ).appendChild( "input", { type:"range", value:item.y, style:"margin-bottom:20px"});
+	DOM( div ).appendChild( "input", { id:"favRangeId", type:"range", value:item.y, style:"margin-bottom:20px"});
 	
-	DOM( range ).onChange( Events.SLIDER_MOVE, { output:output, grad:grad, id:item.id, save: this.properties.save } );
+	DOM( "favRangeId" ).onChange( Events.SLIDER_MOVE, { output:output, grad:grad, id:item.id, save: this.properties.save } );
 	
 	DOM( this.properties.id ).show();
 	// {punkt: Object, type: Object}
@@ -308,21 +299,25 @@ function favoriteInitCommand( data )
 
 function favoriteSaveCommand( data )
 {
+    var prop = this.properties;
+    
+    DOM( prop.id ).hide();
+    
 	this.model.addPunkt( this.model.getCurrentItem() );
 	
 	this.model.removeCurrentItem();
 	
-	var properties = this.properties;
-	
-	dispatchCommand( Events.CHANGE_VIEW, properties );
+	dispatchCommand( Events.CHANGE_VIEW, prop );
 }
 function favoriteCancelCommand( data )
 {
-	var properties = this.properties;
+	var prop = this.properties;
 	
+    DOM( prop.id ).hide();
+    
 	this.model.removeCurrentItem();
 	
-	dispatchCommand( Events.CHANGE_VIEW, properties );
+	dispatchCommand( Events.CHANGE_VIEW, prop );
 }
 
 
