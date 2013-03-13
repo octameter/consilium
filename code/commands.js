@@ -19,7 +19,7 @@ Events =
 	FAVORITES_INIT:"favorites_init",
 	FAVORITES_ROW:"favorites_row",
 	FAVORITES_ITEM:"favorites_item",
-	FAVORITES_ADD:"favorites_add_item",
+
 	FAVORITES_EDIT:"favorites_edit",
 	FAVORITES_DELETE:"favorites_delete",
 	FAVORITES_CHANGE:"favorites_Change",
@@ -170,9 +170,7 @@ function symptomeToFavoritesCommand( data )
 };
 
 function symptomSelectedCommand( data )
-{
-	console.log( data );
-	
+{	
 	this.model.addFavorite( "Symptome", data.id);
 	
 	dispatchCommand( Events.SYMPTOME_TO_FAVORITES );
@@ -181,25 +179,25 @@ function symptomSelectedCommand( data )
 
 function favoritesChangeCommand( data )
 {	
-	var edit = (data.continueEdit || this.properties.editMode) ? true : false;
+    var edit = !this.model.favoritesEdit;
 	
 	if(edit)
 	{
 		DOM( this.properties.editButton ).text("Close").attrib("className").replace("colorless","grey");
 		DOM( this.properties.backButton ).hide();
+        this.model.favoritesEdit = true;
 	}
 	else
 	{
 		DOM( this.properties.editButton ).text("Edit").attrib("className").replace("grey","colorless");		
 		DOM( this.properties.backButton ).show();
+        this.model.favoritesEdit = true;
 	}
+    
+    this.model.favoritesEdit = edit;
 	
-	dispatchCommand( Events.FAVORITES_INIT, { edit:edit, favorites:this.properties.favorites } );		
+	dispatchCommand( Events.FAVORITES_INIT );		
 	
-	this.properties.editMode = !edit;
-	
-//	console.log("TODO Symptome hinzufügen");
-//	console.log("TODO Symptome löschen");
 //	console.log("TODO Symptome ordnen");
 };
 
@@ -216,14 +214,15 @@ function favoritesInitCommand( data )
 		DOM( "favFormId" ).addChild("fieldset", { id: favorite+"id" } ).addChild("legend", {}, favorite);
 
 		var liste = DOM( favorite+"id" ).appendChild("ul", { class: "listeNext"} );
-		
-		var del = (data.favorites == favorite);
-
-		if(del) dispatchCommand( Events.FAVORITES_ROW, { display: liste, edit:data.edit });
+        
+        if((this.model.favoritesEdit && this.model.hasFavoriteEdit( favorite ) || this.model.data.favorites[ favorite].length == 0 ) )
+        {
+            dispatchCommand( Events.FAVORITES_ROW, { row: {}, display: liste })
+        }
 		
 		for(var i = 0; i < this.model.data.favorites[ favorite ].length; i++ )
 		{
-			dispatchCommand( Events.FAVORITES_ROW, { id: this.model.data.favorites[ favorite ][i].id, display: liste, edit:data.edit, del:del });
+			dispatchCommand( Events.FAVORITES_ROW, { row: this.model.data.favorites[ favorite ][i], display: liste,  });
 		}
 	}
 
@@ -239,7 +238,7 @@ function favoritesRowCommand( data )
 	var item = DOM( data.display ).appendChild("li", {style:"padding-top:10px;padding-bottom:10px;"});
 		
 	// Object {id: "10025482", title: "Subjektives Befinden", kategorie: "Lebensqualität", zero: 100, farbwert: "rgba(154,205,50,0.9)"…}
-	var infoType = this.model.getType( data.id );
+	var infoType = this.model.getType( data.row.id );
 	if(infoType)
 	{
 		DOM( item ).appendChild("span",{}, "<b>"+infoType.title+"</b>" );		
@@ -250,40 +249,35 @@ function favoritesRowCommand( data )
 	}
 	
 	// {x: 1359330905202, y: 87, id: "10025482"}
-	var infoData = this.model.getPunkt( data.id );
+	var infoData = this.model.getPunkt( data.row.id );
 	var title = (infoData) ? infoData.y + "%" : "Eintrag";
 	var zeitpunkt = (infoData && !data.edit) ? "<i>Zuletzt: "+zeit(infoData.x,'dd.mm.yyyy hh:mm')+"</i>" : "&nbsp;";
 	DOM( item ).appendChild("p",{ style:"width:100%;font-size:90%;margin:1px;float:left;" }, zeitpunkt);	
 
-	if( !data.edit )
+	if( !this.model.favoritesEdit && data.row.id)
 	{		
 		var button = DOM( item ).appendChild("a", { class:"button grey", style:"position:absolute; right:2px; top:10px; font-size:110%;padding-left:5px;padding-right:5px;"}, title);
 		DOM( button ).onTouch(Events.FAVORITES_ITEM, { target:item, punkt:infoData, type:infoType } );		
 	}
-	else if(data.del)
-	{
-		var button = DOM( item ).appendChild("a", { class:"button red", style:"position:absolute; right:2px; top:10px; font-size:100%;"}, "Entfernen");
-		DOM( button ).onTouch(Events.FAVORITES_DELETE, { type:"Symptome", item: { id: data.id} } );		
-	}
-	else if(!data.id)
+    else if(!data.row.id)
 	{
 		var button = DOM( item ).appendChild("a", { class:"button blue", style:"position:absolute; right:2px; top:10px; font-size:100%;"}, "Hinzufügen");
 		DOM( button ).onTouch( Events.CHANGE_VIEW, { from:"favoritesId", to:"symptomeId", direction:"left" } );	
 	}
+	else if(this.model.favoritesEdit && data.row.edit)
+	{
+		var button = DOM( item ).appendChild("a", { class:"button red", style:"position:absolute; right:2px; top:10px; font-size:100%;"}, "Entfernen");
+		DOM( button ).onTouch(Events.FAVORITES_DELETE, { type:"Symptome", item: { id: data.row.id} } );		
+	}
 	
 };
 function favoritesDeleteCommand( data )
-{
+{    
 	this.model.removeFavorite( data.type, data.item );
 	
-	dispatchCommand( Events.FAVORITES_CHANGE, { continueEdit : true } );
+	dispatchCommand( Events.FAVORITES_INIT );
 }
-function favoritesAddCommand( data )
-{
-	this.model.removeFavorite( data.type, data.item );
-	
-	dispatchCommand( Events.FAVORITES_CHANGE, { continueEdit : true } );
-}
+
 
 /**
  * FAVORITES LIST ITEM DOWN
@@ -367,9 +361,6 @@ function favoriteCancelCommand( data )
 	
 	dispatchCommand( Events.CHANGE_VIEW, prop );
 }
-
-
-
 
 
 /**

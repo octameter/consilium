@@ -17,11 +17,11 @@
         
         	<header>
         		<button id="addOptionen" class="button colorless">
-        			<img src="img/icon/optionen.png" width="32">
+        			<img src="img/icon/optionen.png" width="28">
         		</button>
         		<h2>Consilium</h2>
         		<button id="addEingabe" class="button colorless">
-        			<img src="img/icon/plus.png" width="32">
+        			<img src="img/icon/plus.png" width="28">
         		</button>
         	</header>
  	
@@ -63,10 +63,10 @@
         
         	<header>
         		<button id="favoritesBackButton" class="button colorless">
-        			<img src="img/icon/left.png" width="32">
+        			<img src="img/icon/left.png" width="28">
         		</button>
         		<h2>Favoriten</h2>
-                <button id="favoritesEditButton" style="padding-left:10px;padding-right:10px;font-size:110%" class="button colorless">Edit</button>
+                <button id="favoritesEditButton" style="padding-left:10px;padding-right:10px;font-size:110%" class="button-text colorless">Edit</button>
         	</header>
         	
         	<article id="favoritesContentId"></article>
@@ -117,8 +117,8 @@
         				<legend>Connect</legend>
 	        			
         				<div>
-        					<p>Bitte Scannen Sie den QR-Code, um sich mit dem Studienzentrum zu verbinden.</p>
-        					<button id="scannerId" class="action-button blue">SCANNEN</button>
+        					<span style="margin-right:120px">Bitte Scannen Sie den QR-Code, um sich mit dem Studienzentrum zu verbinden.</span>
+        					<a style="position:absolute;right:2px;top:2px;" id="scannerId" class="button-action blue">SCANNEN</a>
         				</div>
 <!--         				<div class="iphone-toggle-buttons">   						 -->
 <!--         					<label> -->
@@ -171,8 +171,8 @@
    						addCommand( Events.FAVORITES_ITEM, favoritesItemCommand); 	
    						addCommand( Events.FAVORITES_EDIT, favoritesEditCommand); 	
    						addCommand( Events.FAVORITES_DELETE, favoritesDeleteCommand); 	
-   						addCommand( Events.FAVORITES_ADD, favoritesAddCommand); 	
-   						addCommand( Events.FAVORITES_CHANGE, favoritesChangeCommand, { editMode:true, editButton:"favoritesEditButton", backButton:"favoritesBackButton", favorites:"Symptome" }); 	
+  	
+   						addCommand( Events.FAVORITES_CHANGE, favoritesChangeCommand, { editButton:"favoritesEditButton", backButton:"favoritesBackButton" }); 	
    						addCommand( Events.FAVORITES_TO_HOME, favoritesToHomeCommand, { from:"favoritesId", to:"homeId", direction:"right" } ); 	
    						addCommand( Events.FAVORITES_TO_FAVORITE, favoritesToHomeCommand, { from:"favoritesId", to:"favoriteId", direction:"left" } ); 	
 
@@ -219,7 +219,7 @@
    			};
             
    			app.initialize();
-   			
+             			
 
    		</script>
 </html>

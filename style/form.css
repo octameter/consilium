@@ -43,14 +43,3 @@ fieldset > span {
 	padding-top:20px;
 }
 
-
-
-fieldset > div > p {
-	margin-right:120px;
-}
-
-fieldset > div > button {
-	position:absolute;
-	top:0px;
-    right:0px;
-}

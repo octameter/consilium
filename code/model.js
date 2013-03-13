@@ -52,44 +52,63 @@ Model.prototype.data =
 	     	],
 	     	Symptome:
 	     	[
-	     	 	{ id: "10016256"},
-	     	 	{ id: "10013963"}
+	     	 	{ id: "10016256", edit:"true"},
+	     	 	{ id: "10013963", edit:"true"}
 	     	],
 			Tagebuch:
 			[
 			 	{ id: "tagebuchPrivat"}
 			 ]
-	    },
-	    currentItem: null
+	    }
 };
 
-		          
+Model.prototype._state = 
+{
+    currentItem: null,
+    favoritesEdit: false
+};
+
+Model.prototype.__defineGetter__("favoritesEdit", function() { return this._state.favoritesEdit;  });
+Model.prototype.__defineSetter__("favoritesEdit", function( value ) { this._state.favoritesEdit = value; });
+
 Model.prototype.addFavorite = function( type, id )
 {
-	this.data["favorites"][type].push( { id: id } );
+	this.data["favorites"][type].unshift( { id: id, edit: true } );
+};
+Model.prototype.hasFavoriteEdit = function( type )
+{
+    var found = false;
+    
+    this.data["favorites"][type].forEach( function(element, index)
+	{
+		if(element.edit) found = true;
+	});
+    
+    return found;
 };
 Model.prototype.removeFavorite = function( type, item )
 {
 	var idx = -1;
-	
+    
 	this.data["favorites"][type].forEach( function(element, index)
 	{
-		if(element.id === item.id ) idx = index;
+		if(element.id == item.id ) idx = index;
 	});
 	
+    if( idx > -1)
 	this.data["favorites"][type].splice(idx,1);
 };
 Model.prototype.addCurrentItem = function( currentItem )
 {
-	this.data["currentItem"] = currentItem;
+	this._state["currentItem"] = currentItem;
 };
 Model.prototype.getCurrentItem = function()
 {
-	return this.data["currentItem"];
+	return this._state["currentItem"];
 };
 Model.prototype.removeCurrentItem = function()
 {
-	this.data["currentItem"] = null;
+	this._state["currentItem"] = null;
 };
 
 Model.prototype.dict =
@@ -323,8 +342,6 @@ Model.prototype.addPunkt = function( punkt )
 	punkt.x = Number( punkt.x );
 	
 	this.data.punkte.unshift( punkt );
-	
-	console.log( JSON.stringify( this.data.punkte ) );
 };
 
 Model.prototype.getMinX = function()
@@ -376,8 +393,20 @@ Model.prototype.sortPunkteByTime = function(id)
  */
 Model.prototype.getSymptomeAsc = function()
 {
-	var symptome = this.dict.symptome.slice(0);
-
+    var that = this;
+    
+	var symptome = this.dict.symptome.filter( function(element) 
+    {
+        var show = true;
+        
+        that.data["favorites"]["Symptome"].forEach( function( elementExists )
+        {
+          if( element.id == elementExists.id) show = false;
+        });
+        
+        return show;
+    });
+                                             
 	symptome.sort( function( a,b) 
 	{
 		var links = a.title.replace(/Ö/, "Oe").replace(/Ä/, "Ae").replace(/Ü/,"Ue");
