@@ -1,4 +1,4 @@
-.button, .button-text
+.button, .button-text, .button-action
 {
 	color:white;
 	cursor:pointer;	
@@ -9,30 +9,26 @@
 	padding:4px;
 	vertical-align: middle;
 	-webkit-user-select: none;
-	height:42px;
+	max-height:42px;
 }
 
 .button-text
 {
-	margin-top:4px;
-	height:32px;
+	height:32px;    
+	margin-top:20px;
 	font-size:110%;
 	width:70px;
 }
 
-.action-button {
+.button-action {
 	padding-top:8px;	
 	padding-left:20px;	
 	padding-right:20px;	
 	padding-bottom:8px;	
-	vertical-align:middle;
 	border-radius:4px;
-	
-	color: white;
-	cursor:pointer;	
 }
 
-.button:hover {
+.button:hover, .button-text:hover, .button-action:hover {
 	opacity:1;
 	/* box-shadow: inset 2px 2px 2px #0C67A5; */
 }

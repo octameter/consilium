@@ -24,6 +24,8 @@ fieldset {
    	background-image:     -ms-linear-gradient(top, #FAFAFA, #F5F5F5);
    	background-image:      -o-linear-gradient(top, #FAFAFA, #F5F5F5);
    	background-image:         linear-gradient(top, #FAFAFA, #F5F5F5);
+   	
+   	margin-bottom:20px;
 } 		
 
 fieldset > legend {

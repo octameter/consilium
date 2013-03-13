@@ -164,7 +164,10 @@
 				},
 				text: function( value )
 				{
+					element.innerHTML = "";
 					element.appendChild( document.createTextNode( value ) ); 
+					
+					return DOM( element );
 				},
 				createChild: function( tag )
 				{
@@ -307,7 +310,7 @@ function Command( callback, properties )
 
 Command.prototype.execute = function(data)
 {	
-	this.callback( data );
+	this.callback( data || {} );
 };
 
 /**

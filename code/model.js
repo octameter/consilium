@@ -64,9 +64,20 @@ Model.prototype.data =
 };
 
 		          
-Model.prototype.addFavorite = function( type, item )
+Model.prototype.addFavorite = function( type, id )
 {
-	this.data["favorites"][type].push( item.id );
+	this.data["favorites"][type].push( { id: id } );
+};
+Model.prototype.removeFavorite = function( type, item )
+{
+	var idx = -1;
+	
+	this.data["favorites"][type].forEach( function(element, index)
+	{
+		if(element.id === item.id ) idx = index;
+	});
+	
+	this.data["favorites"][type].splice(idx,1);
 };
 Model.prototype.addCurrentItem = function( currentItem )
 {

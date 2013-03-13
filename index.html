@@ -97,11 +97,7 @@
         		<h2>Symptome</h2>
         	</header>
         	
-        	<article id="symptomeContentId">
-        		
-        		<ul id="symptomeListeId" class="liste"></ul>
-
-        	</article>
+        	<article id="symptomeContentId"></article>
         	 
         </section>
         
@@ -167,15 +163,16 @@
    						addCommand( Events.SCAN, scanCommand); 	
    						addCommand( Events.OPTIONEN_TO_HOME, optionenToHomeCommand, { from:"optionenId", to:"homeId", direction:"left" } ); 	
    						
-   						addCommand( Events.SYMPTOME_INIT, symptomeInitCommand, { id:"symptomeContentId", liste:"symptomeListeId"} ); 	
+   						addCommand( Events.SYMPTOME_INIT, symptomeInitCommand, { id:"symptomeContentId" }); 	
    						addCommand( Events.SYMPTOME_TO_FAVORITES, symptomeToFavoritesCommand, { from:"symptomeId", to:"favoritesId", direction:"right" } ); 	
    						  						
-   						addCommand( Events.FAVORITES_INIT, favoritesInitCommand, { id:"favoritesContentId", bewertung:"listeBewertung", symptome:"listeSymptome", tagebuch:"listeTagebuch"} ); 	
-   						addCommand( Events.FAVORITES_LIST, favoritesListCommand); 	
+   						addCommand( Events.FAVORITES_INIT, favoritesInitCommand, { id:"favoritesContentId" } ); 	
    						addCommand( Events.FAVORITES_ROW, favoritesRowCommand); 	
    						addCommand( Events.FAVORITES_ITEM, favoritesItemCommand); 	
    						addCommand( Events.FAVORITES_EDIT, favoritesEditCommand); 	
-   						addCommand( Events.FAVORITES_CHANGE, favoritesChangeCommand); 	
+   						addCommand( Events.FAVORITES_DELETE, favoritesDeleteCommand); 	
+   						addCommand( Events.FAVORITES_ADD, favoritesAddCommand); 	
+   						addCommand( Events.FAVORITES_CHANGE, favoritesChangeCommand, { editMode:true, editButton:"favoritesEditButton", backButton:"favoritesBackButton", favorites:"Symptome" }); 	
    						addCommand( Events.FAVORITES_TO_HOME, favoritesToHomeCommand, { from:"favoritesId", to:"homeId", direction:"right" } ); 	
    						addCommand( Events.FAVORITES_TO_FAVORITE, favoritesToHomeCommand, { from:"favoritesId", to:"favoriteId", direction:"left" } ); 	
 
