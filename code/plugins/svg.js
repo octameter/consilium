@@ -122,7 +122,6 @@ Svg.prototype.drawLabelX = function( x, y )
 	document.getElementById( this.getId() ).appendChild( labelX );
 };
 
-
 /**
  * DATAPOINTS
  * @param id
@@ -138,34 +137,50 @@ Svg.prototype.drawPunkte = function(id)
 	while(dots--)
 	{				
 		var punkt1 = punkteById[dots];
-		
-		//var active = ( punkt1.id == id );
-		var active = true;
-		
-		// Only last days not current
-		//if(punkt1.x < this.maxX)
-		//{
-			this.drawLine( punkt1, punkt2, active, 14);
 
-			this.drawPunkt( punkt1, true, active);									
-		//}
-		
-		punkt2 = punkt1;
+		if(punkt1.id == "tagebuchPrivat")
+		{
+			this.drawTagebuch( punkt1 );
+		}
+		else
+		{
+			this.drawLine( punkt1, punkt2, 14);
+			
+			this.drawPunkt( punkt1 );									
+			
+			punkt2 = punkt1;			
+		}
 	}
-	
-//	// Active movable point
-//	var punktMov = { x: this.maxXRealtime, id : id };
-//	// Check if special default value
-//	var y = this.model.getType( id, "zero" ) || 0;
-//	
-//	punktMov.y = (punkt2 && punkt2.id == id) ? punkt2.y : y;
-//
-//	this.drawPunkt( punktMov, true, true);	
 	
 	delete punkteById;
 };
 
-Svg.prototype.drawLine = function( current, previous, active, padding )
+Svg.prototype.drawTagebuch = function( datapoi )
+{
+	console.log( datapoi );
+	
+	var mi = new Date( datapoi.x );
+	mi.setHours(0,0,0,0);
+	
+	var pixelX = this.getPixelForX( mi.getTime(), true);
+	var pixelY = this.getPixelForY(-2, true);
+	var pixelWidth = this.getPixelForX(datapoi.x + 10000, false);
+	var pixelHeight = this.getPixelForY(-12, false);
+	
+	var area= document.createElementNS("http://www.w3.org/2000/svg", "rect");
+	area.setAttribute("class","movePoint");
+	area.setAttribute("x", pixelX);
+	area.setAttribute("y", pixelY);
+	area.setAttribute("width", pixelWidth);
+	area.setAttribute("height", pixelHeight);
+	area.setAttribute("fill", "rgba(255,200,200,0.7)");
+	
+	DOM(area).onTouch( Events.SHOW_AUSWAHL, datapoi );
+
+	DOM( this.elementId ).appendChild(area);
+};
+
+Svg.prototype.drawLine = function( current, previous, padding )
 {	
 	var msProTag = this.model.msProTag;
 	
@@ -193,18 +208,12 @@ Svg.prototype.drawLine = function( current, previous, active, padding )
 	x2 -= pad.x;		
 	y1 += pad.y;
 	y2 -= pad.y;			
-
 	
 	var verbindung = document.createElementNS("http://www.w3.org/2000/svg", "line");
 	verbindung.setAttribute("transform","translate(0 0)");
 	verbindung.setAttribute("fill", farbe );
 	verbindung.setAttribute("stroke", farbe );
 	verbindung.setAttribute("stroke-width", "4");		
-	
-	if(!active)
-	{			
-		verbindung.setAttribute("opacity", "0.5");			
-	}
 	
 	verbindung.setAttribute("x1", x1);
 	verbindung.setAttribute("y1", y1 );
@@ -251,7 +260,7 @@ Svg.prototype.drawKoordLine = function(x1, y1, x2, y2)
 	document.getElementById( this.getId() ).appendChild( line );
 };
 
-Svg.prototype.drawPunkt = function( punkt, movable, active)
+Svg.prototype.drawPunkt = function( punkt )
 {						
 	var cx = this.getPixelForX( punkt.x, true );
 	var cy = this.getPixelForY( this.maxY, true );

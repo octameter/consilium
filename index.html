@@ -40,6 +40,7 @@
 	        				<div id="homeAuswahlInfo"></div>
 	        				 				                     
 	        			</fieldset>
+	        		
 	        		</form>               
 	        	</div>
 
@@ -56,6 +57,7 @@
         	
         	</article>
         	
+        	
         </section>
                
         <!-- FAVORITES --> 
@@ -69,7 +71,9 @@
                 <button id="favoritesEditButton" style="padding-left:10px;padding-right:10px;font-size:110%" class="button-text colorless">Edit</button>
         	</header>
         	
-        	<article id="favoritesContentId"></article>
+        	<article id="favoritesContentId">
+					
+        	</article>
         	 
         </section>
         
@@ -117,8 +121,8 @@
         				<legend>Connect</legend>
 	        			
         				<div>
-        					<span style="margin-right:120px">Bitte Scannen Sie den QR-Code, um sich mit dem Studienzentrum zu verbinden.</span>
-        					<a style="position:absolute;right:2px;top:2px;" id="scannerId" class="button-action blue">SCANNEN</a>
+        					<span>Bitte Scannen Sie den QR-Code, um sich mit dem Studienzentrum zu verbinden.</span>
+        					<a style="float:right" id="scannerId" class="button-action blue">SCANNEN</a>
         				</div>
 <!--         				<div class="iphone-toggle-buttons">   						 -->
 <!--         					<label> -->
@@ -153,6 +157,7 @@
    					addCommands: function()
    					{
    						addCommand( Events.CHANGE_VIEW, changeViewCommand ); 	
+   						addCommand( Events.DATAPOINT_DELETE, datapointDeleteCommand ); 	
    						
    						addCommand( Events.HOME_INIT, homeInitCommand, { id:"homeContentId", intro: "rahmen", verlauf:"homeVerlauf"} ); 	
    						addCommand( Events.REFRESH_CHART, refreshChartCommand, { chart:"chartSVG"} ); 	
@@ -171,6 +176,7 @@
    						addCommand( Events.FAVORITES_ITEM, favoritesItemCommand); 	
    						addCommand( Events.FAVORITES_EDIT, favoritesEditCommand); 	
    						addCommand( Events.FAVORITES_DELETE, favoritesDeleteCommand); 	
+   						addCommand( Events.TEXT_CHANGE, textChangeCommand); 	
   	
    						addCommand( Events.FAVORITES_CHANGE, favoritesChangeCommand, { editButton:"favoritesEditButton", backButton:"favoritesBackButton" }); 	
    						addCommand( Events.FAVORITES_TO_HOME, favoritesToHomeCommand, { from:"favoritesId", to:"homeId", direction:"right" } ); 	

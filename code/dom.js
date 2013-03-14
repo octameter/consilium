@@ -117,6 +117,13 @@
 						dispatchCommand(commandName, data);
 					}
 					, false);
+					element.addEventListener( "keyup", function(event)
+					{
+						data["value"] = event.target.value;
+						data["target"] = event.target;
+						dispatchCommand(commandName, data);
+					}
+					, false);
 				},
 				onDOM: function(commandName, data)
 				{
@@ -209,7 +216,14 @@
 					    
 					    if(text)
 					    {
-					    	childTag.innerHTML = text;   
+					    	if(tag == "textarea")
+					    	{
+					    		childTag.value = text;   					    							    		
+					    	}
+					    	else
+					    	{
+					    		childTag.innerHTML = text;   					    		
+					    	}
 					    }
 					    
 					    element.appendChild( childTag );
@@ -234,6 +248,42 @@
 					};
 					
 					return { replace:replace, add:add, remove:remove };
+				},
+				translate: function( data )
+				{
+					function iterate( node )
+					{
+						for(var i = 0; i < node.childNodes.length; i++)
+						{
+							var childNode = node.childNodes[i];						
+							
+							if( childNode.tagName == "LI")
+							{
+								console.log("TODO LISTE");
+							}
+							
+							if( childNode.tagName == "P")
+							{
+								var key = childNode.innerHTML.trim();
+								
+								if(data[key]) childNode.innerHTML = data[key];
+							}
+							
+							if( childNode.childNodes.length > 0 )
+							{
+								iterate(childNode);								
+							}
+
+						}
+					}
+					
+					iterate( element );
+					//while( element.hasChildNodes() )
+					//{
+						//console.log( element.nodeValue() );
+					//}
+					return element;
+	
 				},
 				show: function()
 				{
@@ -260,7 +310,7 @@
 				{
 					this.removeElements();
 					
-					var svg = new Svg( id );
+					var svg = new Svg(id);
 					svg.drawCoordinates();
 					svg.drawPunkte(id);
 					return svg;
