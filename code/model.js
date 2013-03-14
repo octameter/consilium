@@ -1,21 +1,14 @@
 function Model() {
 	
 	this.msProTag = Number(24 * 60 * 60 * 1000);
-	
-	var punkte = localStorage.getItem("punkte");
-	
-	if(punkte) {
-		this.data.punkte = punkte;
-	}
+    
 }
 
 Model.prototype.atomuhr = {
 
 		zeit : function() 
 		{		
-			var now = new Date();
-
-			return now.getTime();
+			return new Date().getTime();
 		}
 };
 
@@ -33,6 +26,10 @@ Model.prototype._state =
 
 Model.prototype.__defineGetter__("favoritesEdit", function() { return this._state.favoritesEdit;  });
 Model.prototype.__defineSetter__("favoritesEdit", function( value ) { this._state.favoritesEdit = value; });
+
+Model.prototype.__defineGetter__("currentItem", function() { return this._state.currentItem;  });
+Model.prototype.__defineSetter__("currentItem", function( value ) { this._state.currentItem = value; });
+
 
 Model.prototype.addFavorite = function( type, id )
 {
@@ -61,26 +58,7 @@ Model.prototype.removeFavorite = function( type, item )
     if( idx > -1)
 	this.data["favorites"][type].splice(idx,1);
 };
-Model.prototype.addCurrentItem = function( currentItem )
-{
-	this._state["currentItem"] = currentItem;
-};
-Model.prototype.getCurrentItem = function()
-{
-	return this._state["currentItem"];
-};
-Model.prototype.removeCurrentItem = function()
-{
-	this._state["currentItem"] = null;
-};
 
-
-Model.prototype.addPunkt = function( punkt )
-{	
-	punkt.x = Number( punkt.x );
-	
-	this.data.punkte.unshift( punkt );
-};
 
 Model.prototype.getMinX = function()
 {	
@@ -126,35 +104,15 @@ Model.prototype.sortPunkteByTime = function(id)
 };
 
 /**
- * Sorts all symptoms in dict.symptome ascending
- * @returns
+ * SORT ALL SYMPTOMS NOT IN FAVORITES
+ * @returns ARRAY
  */
-Model.prototype.getSymptomeAsc = function()
-{
-    var that = this;
+Model.prototype.getSymptome = function()
+{    
+	var symptome = this.dict.symptome.notIn( "id", this.data.favorites.Symptome );
     
-	var symptome = this.dict.symptome.filter( function(element) 
-    {
-        var show = true;
-        
-        that.data["favorites"]["Symptome"].forEach( function( elementExists )
-        {
-          if( element.id == elementExists.id) show = false;
-        });
-        
-        return show;
-    });
-                                             
-	symptome.sort( function( a,b) 
-	{
-		var links = a.title.replace(/Ö/, "Oe").replace(/Ä/, "Ae").replace(/Ü/,"Ue");
-		var rechts = b.title.replace(/Ö/, "Oe").replace(/Ä/, "Ae").replace(/Ü/,"Ue");
-		
-		if( links < rechts) return -1;
-		if( links > rechts) return 1;
-		return 0;
-	});
-	
+    symptome.sortABC( "title" );
+
 	return symptome;
 };
 
@@ -165,17 +123,14 @@ Model.prototype.getSymptomeAsc = function()
  */
 Model.prototype.getUniquePunkte = function(id)
 {
-	// Copy Array
+	// Copy Unique Array For Id
 	var punkte = this.data.punkte.slice(0);
 	// First the selected element 
 	var ids = [];
-	ids.unshift( String( id ) );
+	punkte.unshift( String( id ) );
 	
 	// than descending by time
-	punkte.sort( function( a,b)
-	{
-		return ( b.x - a.x);
-	});
+	punkte.sort123("x"); 
 	
 	// Unique ids
 	punkte.forEach( function(element, index)
@@ -205,64 +160,59 @@ Model.prototype.getTypesByPunkt = function( id )
 	
 	return types;
 };
-
-Model.prototype.getType = function( id, value )
+/**
+* RETURNS TYPE OBJECT FOR KEY
+**/
+Model.prototype.getType = function( id )
 {
-	id = String( id );
-	
 	var dictionary = [].concat(this.dict.symptome, this.dict.bewertung, this.dict.tagebuch, this.dict.tipps);
 	
 	for( var i = 0; i < dictionary.length; i++)
 	{
-		if( dictionary[i].id === id )
-		{
-			return (value) ?  dictionary[i][value] : dictionary[i];				
-		}
+		if( dictionary[i].id === id ) return dictionary[i];
 	}
 };
-
+/**
+* RETURNS INFO (TYPE) ACCORDING TO Y RANGE
+**/
 Model.prototype.getGrad = function( id, value )
 {
-	var info = "";
-	
-	this.getType(id).grad.forEach(function(dataElement)
+	var grad = this.getType(id).grad;
+    
+    for( var i = 0; i < grad.length; i++)
 	{
-		if( dataElement.min <= value && dataElement.max >= value)
-		{
-			info = dataElement.info; return;
-		}
-	});	
-	
-	return info;
-
+		if( grad[i].min <= value && grad[i].max >= value) return grad[i].info;
+	}
+};
+/**
+* ADD MOST RECENT DATA POINT
+**/
+Model.prototype.addPunkt = function( punkt )
+{	
+	this.data.punkte.unshift( punkt );
 };
 
-Model.prototype.getPunkt = function( id, value )
+/**
+* RETURNS MOST RECENT DATA POINT FOR KEY (TYPE)
+*/
+Model.prototype.getPunkt = function( id )
 {	
-	id = String( id );
-	
 	for( var i = 0; i < this.data.punkte.length; i++)
 	{
-		if( this.data.punkte[i].id === id )
-		{
-			return (value) ?  this.data.punkte[i][value] : this.data.punkte[i];				
-		}
+		if( this.data.punkte[i].id === id ) return this.data.punkte[i];				
 	}	
 };
 
-Model.prototype.deletePunkt = function( point )
+Model.prototype.removePunkt = function( punkt )
 {
 	for( var i = 0; i < this.data.punkte.length; i++)
 	{
-		if( this.data.punkte[i].id === point.id &&  this.data.punkte[i].x == point.x)
-		{
-			this.data.punkte.splice(i,1);				
-		}
+		if( this.data.punkte[i].id === punkt.id && this.data.punkte[i].x == punkt.x) this.data.punkte.splice(i,1);				
 	}	
 };
 
 /**
- * punkt x:LocalTimeInMs, y [0 - 100], id: type.id
+ * Punkt x:LocalTimeInMs, y [0 - 100], id: type.id
  */
 Model.prototype.data = 
 {
@@ -317,7 +267,7 @@ Model.prototype.dict =
 		],
 		tagebuch :
 		[
-		 	{ id: "tagebuchPrivat", title:"Private Notiz", kategorie:"Notizen", zero:"",  farbwert:"rgba(255,255,255,0.9)"}
+		 	{ id: "tagebuchPrivat", title:"Private Notiz", kategorie:"Notizen", zero:"", farbwert:"rgba(255,255,255,0.9)"}
 		 ],
 		symptome : 
 		[			 

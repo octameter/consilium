@@ -333,7 +333,7 @@ Svg.prototype.getYForPixel = function(pixelY, padding)
 
 Svg.prototype.getFarbwert = function(id)
 {
-	return this.model.getType(id, "farbwert");
+	return this.model.getType(id).farbwert;
 };
 
 /**

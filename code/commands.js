@@ -80,7 +80,7 @@ function optionenToHomeCommand( data )
 function sliderMoveCommand( data )
 {
 	// Persist to Model
-	this.model.addCurrentItem( { x: new Date().getTime(), y:data.value, id:data.id, } ); 
+	this.model.currentItem = { x: new Date().getTime(), y:data.value, id:data.id, }; 
 	
 	// SHOW SAVE BUTTON
 	DOM( data.save ).show();
@@ -134,9 +134,9 @@ function showAuswahlCommand( data )
 
 function datapointDeleteCommand( data )
 {
-	this.model.addCurrentItem( { id:data.id} );
+	this.model.currentItem = { id:data.id };
 	
-	this.model.deletePunkt( data );
+	this.model.removePunkt( data );
 	
 	dispatchCommand( Events.FAVORITE_INIT );
 };
@@ -169,7 +169,7 @@ function symptomeInitCommand( data )
 	DOM( this.properties.id ).removeElements();
 	var liste = DOM( this.properties.id ).addChild("ul", { class:"liste"} );
 	
-	var items = this.model.getSymptomeAsc();
+	var items = this.model.getSymptome();
 	
 	for(var i = 0; i < items.length; i++)
 	{		
@@ -322,7 +322,7 @@ function favoritesEditCommand( data )
 {		
 	var value = data.punkt || { y:data.type.zero };
 	
-	this.model.addCurrentItem( { x:value.x, y:value.y, id:data.type.id });
+	this.model.currentItem = { x:value.x, y:value.y, id:data.type.id };
 	dispatchCommand( Events.FAVORITES_TO_FAVORITE );		
 };
 /**
@@ -344,7 +344,7 @@ function favoritesToFavoriteCommand( data )
  */
 function favoriteInitCommand( data )
 {
-	var item = this.model.getCurrentItem(); 
+	var item = this.model.currentItem; 
 
 	var kategorie = this.model.getType( item.id ).kategorie;
 
@@ -385,15 +385,12 @@ function favoriteInitCommand( data )
 	}
 	
 	DOM( this.properties.id ).show();
-	// {punkt: Object, type: Object}
-	// type {id: "10025482", title: "Subjektives Befinden", kategorie: "Lebensqualität", zero: 100, farbwert: "rgba(154,205,50,0.9)"…}
-	// var item = this.model.getCurrentItem(); 
 };
 
 function textChangeCommand( data )
 {
 	// Persist to Model
-	this.model.addCurrentItem( { x: new Date().getTime(), y:data.value, id:data.id, } ); 
+	this.model.currentItem = { x: new Date().getTime(), y:data.value, id:data.id, }; 
 	
 	// SHOW SAVE BUTTON
 	DOM( data.save ).show();
@@ -405,9 +402,9 @@ function favoriteSaveCommand( data )
     
     DOM( prop.id ).hide();
     
-	this.model.addPunkt( this.model.getCurrentItem() );
+	this.model.addPunkt( this.model.currentItem );
 	
-	this.model.removeCurrentItem();
+	this.model.currentItem = null;
 	
 	dispatchCommand( Events.CHANGE_VIEW, prop );
 }
@@ -417,7 +414,7 @@ function favoriteCancelCommand( data )
 	
     DOM( prop.id ).hide();
     
-	this.model.removeCurrentItem();
+	this.model.currentItem = null;
 	
 	dispatchCommand( Events.CHANGE_VIEW, prop );
 }

@@ -363,11 +363,11 @@ Command.prototype.execute = function(data)
 	this.callback( data || {} );
 };
 
+var controller = new Controller();
+
 /**
  * UTILITY FUNCTION
  */
-var controller = new Controller();
-
 function dispatchCommand(nameEvent, data)
 {
 	controller.dispatchCommand(nameEvent, data);
@@ -376,4 +376,44 @@ function dispatchCommand(nameEvent, data)
 function addCommand(nameEvent, command, properties)
 {
 	controller.addCommand(nameEvent, command, properties);
+};
+
+/** 
+* EXTEND STANDARD ELEMENTS
+**/
+Array.prototype.sortABC = function( property )
+{
+    this.sort( function( a,b) 
+	{
+		var links = a[property].replace(/Ö/, "Oe").replace(/Ä/, "Ae").replace(/Ü/,"Ue");
+		var rechts = b[property].replace(/Ö/, "Oe").replace(/Ä/, "Ae").replace(/Ü/,"Ue");
+		
+		if( links < rechts) return -1;
+		if( links > rechts) return 1;
+		return 0;
+	});
+};
+
+Array.prototype.sort123 = function( key )
+{
+    this.sort( function( a,b)
+    {
+        return ( b[key] - a[key] );
+    });
+};
+
+Array.prototype.notIn = function( key, array )
+{
+    return this.filter( function(element) 
+    {
+        var flag = true;
+        
+        for(var i = 0; i < array.length; i++)
+        {
+            if( element[key] == array[i][key]) flag = false;
+        }
+        
+        return flag;
+    });
+    
 };
