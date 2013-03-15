@@ -433,7 +433,7 @@ function zeit( pattern, milliSekunden  )
 			case("dd.mm.yyyy hh:mm"): return day + "." + month+ "."+year+" "+stunde+":"+minute;
 			case("dawn"):
 			{
-				currentDate.setHours(1,0,0,0); return currentDate.getTime(); 
+				currentDate.setHours(0,0,0,0); return currentDate.getTime(); 
 			}
 			default: return year + "-" + month+ "-"+day;
 		};

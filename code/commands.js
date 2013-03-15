@@ -53,9 +53,9 @@ function changeViewCommand( event )
 
 function homeInitCommand( event )
 {	
-	if( event.introExit ) this.model.introShow = false;
+	if( event.introExit ) this.model.setIntroShow( false );
 	
-	( this.model.introShow ) ? dispatchCommand( Events.HOME_INTRO ) : dispatchCommand( Events.HOME_VERLAUF );
+	( this.model.getIntroShow() ) ? dispatchCommand( Events.HOME_INTRO ) : dispatchCommand( Events.HOME_VERLAUF );
 	
 	DOM( this.properties.id ).show();
 };
@@ -120,7 +120,7 @@ function showAuswahlCommand( event )
 		else
 		{
 			DOM(prop.info).appendChild( "span", { style: 'position:absolute; top:-3px; right:0; font-size:130%' }, event.y +"%");
-			DOM(prop.info).appendChild( "p", { style: 'width:100%;padding-top:5px'}, this.model.getGrad(data.id, event.y) );			
+			DOM(prop.info).appendChild( "p", { style: 'width:100%;padding-top:5px'}, this.model.getGrad(event.id, event.y) );			
 		}
 	}
 	else
@@ -136,13 +136,9 @@ function optionenInitCommand( data )
 };
 
 
-
-
-
-
 function datapointDeleteCommand( data )
 {
-	this.model.currentItem = { id:data.id };
+	this.model.setCurrentItem( { id:data.id } );
 	
 	this.model.removePunkt( data );
 	
@@ -203,22 +199,22 @@ function symptomSelectedCommand( data )
 
 function favoritesChangeCommand( data )
 {	
-    var edit = !this.model.favoritesEdit;
+    var edit = !this.model.getFavoritesEdit();
 	
 	if(edit)
 	{
 		DOM( this.properties.editButton ).text("Close").attrib("className").replace("colorless","grey");
 		DOM( this.properties.backButton ).hide();
-        this.model.favoritesEdit = true;
+        this.model.setFavoritesEdit( true );
 	}
 	else
 	{
 		DOM( this.properties.editButton ).text("Edit").attrib("className").replace("grey","colorless");		
 		DOM( this.properties.backButton ).show();
-        this.model.favoritesEdit = true;
+        this.model.setFavoritesEdit( true );
 	}
     
-    this.model.favoritesEdit = edit;
+    this.model.setFavoritesEdit( edit );
 	
 	dispatchCommand( Events.FAVORITES_INIT );		
 	
@@ -235,11 +231,11 @@ function favoritesInitCommand( data )
 	
 	for(var favorite in this.model.data.favorites)
 	{
-		DOM( "favFormId" ).addChild("fieldset", { id: favorite+"id" } ).addChild("legend", {}, favorite);
+		DOM( "favFormId" ).addChild("fieldset", { id: favorite+"id" } ).addChild( "legend", {}, favorite);
 
 		var liste = DOM( favorite+"id" ).appendChild("ul", { class: "listeNext"} );
         
-        if((this.model.favoritesEdit && this.model.hasFavoriteEdit( favorite ) || this.model.data.favorites[ favorite].length == 0 ) )
+        if((this.model.getFavoritesEdit() && this.model.hasFavoriteEdit( favorite ) || this.model.data.favorites[ favorite].length == 0 ) )
         {
             dispatchCommand( Events.FAVORITES_ROW, { row: {}, display: liste });
         }
@@ -283,7 +279,7 @@ function favoritesRowCommand( data )
 
 	DOM( item ).appendChild("p",{ style:"width:100%;font-size:90%;margin:1px;float:left;" }, zeitpunkt);	
 
-	if( !this.model.favoritesEdit && data.row.id)
+	if( !this.model.getFavoritesEdit() && data.row.id)
 	{		
 		var button = DOM( item ).appendChild("a", { class:"button grey", style:"position:absolute; right:2px; top:10px; font-size:110%;padding-left:5px;padding-right:5px;"}, title);
 		DOM( button ).onTouch(Events.FAVORITES_ITEM, { target:item, punkt:infoData, type:infoType } );		
@@ -293,7 +289,7 @@ function favoritesRowCommand( data )
 		var button = DOM( item ).appendChild("a", { class:"button-action blue", style:"position:absolute; right:2px; top:10px; font-size:100%;"}, "Hinzufügen");
 		DOM( button ).onTouch( Events.FAVORITES_TO_SYMPTOME  );	
 	}
-	else if(this.model.favoritesEdit && data.row.edit)
+	else if(this.model.getFavoritesEdit() && data.row.edit)
 	{
 		var button = DOM( item ).appendChild("a", { class:"button red", style:"position:absolute; right:2px; top:10px; font-size:100%;"}, "Entfernen");
 		DOM( button ).onTouch(Events.FAVORITES_DELETE, { type:"Symptome", item: { id: data.row.id} } );		
@@ -326,7 +322,7 @@ function favoritesEditCommand( data )
 {		
 	var value = data.punkt || { y:data.type.zero };
 	
-	this.model.currentItem = { x:value.x, y:value.y, id:data.type.id };
+	this.model.setCurrentItem( { x:value.x, y:value.y, id:data.type.id } );
 	dispatchCommand( Events.FAVORITES_TO_FAVORITE );		
 };
 
@@ -337,7 +333,7 @@ function favoritesEditCommand( data )
  */
 function favoriteInitCommand( data )
 {
-	var item = this.model.currentItem; 
+	var item = this.model.getCurrentItem(); 
 
 	var kategorie = this.model.getType( item.id ).kategorie;
 
@@ -349,16 +345,22 @@ function favoriteInitCommand( data )
 	}
 	
 	DOM( this.properties.save ).hide();
-	
+    
+	DOM( this.properties.id ).removeElements();
+    // NOW CLIENTWIDTH AVAILABLE
+    DOM( this.properties.id ).show();    
+    
 	DOM( this.properties.id ).addChild("form").addChild("fieldset", { id: "favoriteFieldsetId" }).addChild("legend", {}, kategorie);
 	
 	DOM( "favoriteFieldsetId" ).addChild( "div", { id:"favArea"} );
 	DOM( "favArea" ).appendChild( "span", { style: "width:100%;"}, "<b>"+this.model.getType( item.id ).title+"</b>");
 	
+
+    
 	if( kategorie == "Notizen")
 	{
 		DOM( "favArea" ).appendChild( "p", { style:'width:100%;font-size:90%;margin:1px' }, (item.x) ? "<i>Zuletzt: "+zeit('dd.mm.yyyy hh:mm', item.x)+"</i>" :"");	
-		DOM( "favArea" ).addChild("textarea", { id:"favTextareaId", style:"width:100%; height:200px;padding:3px;-webkit-user-select: text;", name:"notizEintrag", placeholder:"Text eingeben"}, item.y);
+		DOM( "favArea" ).addChild("textarea", { id:"favTextareaId", style:"font-size:100%;width:100%; height:200px;padding:3px;-webkit-user-select: text;", name:"notizEintrag", placeholder:"Text eingeben"}, item.y);
 		DOM( "favArea" ).addChild("input", { type:"reset", class:"button-action grey"}).onTouch( Events.TEXT_CHANGE, { id:item.id, save: this.properties.save } );
 		
 		if(item.x)
@@ -374,18 +376,14 @@ function favoriteInitCommand( data )
 		
 		dispatchCommand( Events.SLIDER, { parent:"favArea", output:"favOutputId", grad:"favGradId", id:item.id, y:item.y} );
 	}
-	
-	DOM( this.properties.id ).show();
 };
 
 function sliderCommand( event )
 {
-	// CREATE ELEMENT
+	// CREATE ELEMENT DESKTOP ODER MOBILE
 	if( event.parent && DO.plugins("agent").isDevice("Desktop") )
-	{		
-		console.log( DOM( event.parent ).element() );
-		 // CUSTOM SLIDER
-		 DOM( event.parent ).addChild("div", { id:"favSliderId", class:"slider"} ).addChild("a", { id:"thumbId", class:"grey"} );		 
+	{				
+        DOM( event.parent ).addChild("div", { id:"favSliderId", class:"slider"} ).addChild("a", { id:"thumbId", class:"grey"} );		 
 		 
 		 var hundert = DOM("favSliderId").width() - DOM("thumbId").width();
 		 
@@ -416,7 +414,7 @@ function sliderCommand( event )
 	if(event.value) 
 	{
 		// Persist to Model
-		this.model.currentItem = { x: new Date().getTime(), y:event.value, id:event.id, }; 
+		this.model.setCurrentItem( { x: new Date().getTime(), y:event.value, id:event.id, } ); 
 		
 		// SHOW SAVE BUTTON
 		DOM( this.properties.save ).show();
@@ -431,7 +429,7 @@ function sliderCommand( event )
 function textChangeCommand( data )
 {
 	// Persist to Model
-	this.model.currentItem = { x: new Date().getTime(), y:data.value, id:data.id, }; 
+	this.model.setCurrentItem( { x: new Date().getTime(), y:data.value, id:data.id, } ); 
 	
 	// SHOW SAVE BUTTON
 	DOM( data.save ).show();
@@ -445,10 +443,10 @@ function favoriteExitCommand( data )
     
     // PERSIT TO MODEL IF SAVE EVENT
 	if( this.properties.save ) {
-		this.model.addPunkt( this.model.currentItem );
+		this.model.addPunkt( this.model.getCurrentItem() );
 	}
 	
-	this.model.currentItem = null;
+	this.model.setCurrentItem( null );
 	
 	dispatchCommand( Events.FAVORITE_TO_FAVORITES );
 }

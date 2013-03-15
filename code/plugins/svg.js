@@ -10,7 +10,7 @@ function Svg()
 	this.paddingLeft = 20;
 	this.paddingRight = 40;
 	this.paddingTop = 40;
-	this.paddingBottom = 20;
+	this.paddingBottom = 40;
 
 	this.minX = 0;
 	this.maxX = 0;
@@ -52,8 +52,7 @@ Svg.prototype.drawCoordinates = function()
 	this.maxX = Math.floor( this.model.atomuhr.zeit() / milliProTag) * milliProTag;
 	
 	var chartWidth = this.getPixelForX( this.maxXRealtime, true ) + this.paddingRight;
-	
-	//document.getElementById( this.getId() ).setAttribute("left", 0);
+
 	this.element.setAttribute("width", chartWidth);
 	this.element.setAttribute("height", this.getPixelForY( this.minY, true ) + this.paddingBottom);
 
@@ -165,17 +164,19 @@ Svg.prototype.drawTagebuch = function( datapoi )
 {
 	
 	var pixelX = this.getPixelForX( zeit("dawn", datapoi.x), true);
-	var pixelY = this.getPixelForY(-2, true);
+	var pixelY = this.getPixelForY(-1, true);
 	var pixelWidth = this.getPixelForX( this.minX + (24 * 60 * 60 * 1000) , false);
-	var pixelHeight = this.getPixelForY(-12, false);
-	
+	var pixelHeight = this.getPixelForY(105, true);
+    
 	var area= document.createElementNS("http://www.w3.org/2000/svg", "rect");
 	area.setAttribute("class","movePoint");
 	area.setAttribute("x", pixelX);
 	area.setAttribute("y", pixelY);
 	area.setAttribute("width", pixelWidth);
 	area.setAttribute("height", pixelHeight);
-	area.setAttribute("fill", "rgba(255,200,200,0.7)");
+	area.setAttribute("fill", "rgba(255,200,200,0.6)");
+    area.setAttribute("stroke","rgba(220,220,220,0.6)");
+    area.setAttribute("stroke-width", "2")
 	
 	DOM(area).onTouch( Events.SHOW_AUSWAHL, datapoi );
 
@@ -187,16 +188,10 @@ Svg.prototype.drawLine = function( current, previous, padding )
 	var msProTag = this.model.msProTag;
 	
 	// No second point in same category available
-	if(!previous || previous.id !== current.id)
-	{
-		return;
-	}
+	if(!previous || previous.id !== current.id) return;
 	
 	// Distance is more than three days
-	if(current.x > ( previous.x + msProTag * 3) )
-	{
-		return;
-	}
+	if(current.x > ( previous.x + msProTag * 3) ) return;
 	
 	var x1 = Number( this.getPixelForX(previous.x, true) );
 	var y1 = Number( this.getPixelForY(previous.y, true) );

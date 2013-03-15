@@ -25,15 +25,20 @@ Model.prototype._state =
     introShow: false
 };
 
-Model.prototype.__defineGetter__("favoritesEdit", function() { return this._state.favoritesEdit;  });
-Model.prototype.__defineSetter__("favoritesEdit", function( value ) { this._state.favoritesEdit = value; });
+//Model.prototype.__defineGetter__("favoritesEdit" function() { return this._state.favoritesEdit;  });
+Model.prototype.getFavoritesEdit = function() { return this._state.favoritesEdit; };
+//Model.prototype.__defineSetter__("favoritesEdit", function( value ) { this._state.favoritesEdit = value; });
+Model.prototype.setFavoritesEdit = function( value ) { this._state.favoritesEdit = value; };
 
-Model.prototype.__defineGetter__("currentItem", function() { return this._state.currentItem;  });
-Model.prototype.__defineSetter__("currentItem", function( value ) { this._state.currentItem = value; });
+//Model.prototype.__defineGetter__("currentItem", function() { return this._state.currentItem;  });
+Model.prototype.getCurrentItem = function() { return this._state.currentItem;};
+//Model.prototype.__defineSetter__("currentItem", function( value ) { this._state.currentItem = value; });
+Model.prototype.setCurrentItem = function( value ) { this._state.currentItem = value; };
 
-Model.prototype.__defineGetter__("introShow", function() { return this._state.introShow;  });
-Model.prototype.__defineSetter__("introShow", function( value ) { this._state.introShow = value; });
-
+//Model.prototype.__defineGetter__("introShow", function() { return this._state.introShow;  });
+Model.prototype.getIntroShow = function() { return this._state.introShow;  };
+//Model.prototype.__defineSetter__("introShow", function( value ) { this._state.introShow = value; });
+Model.prototype.setIntroShow = function( value ) { this._state.introShow = value; };
 
 Model.prototype.addFavorite = function( type, id )
 {
@@ -76,9 +81,7 @@ Model.prototype.getMinX = function()
 		minX = Math.min( this.data.punkte[size].x, minX);
 	}
 	
-	minX = Math.floor( minX / this.msProTag) * this.msProTag;
-	
-	return minX;	
+	return zeit( "dawn", minX );	
 };
 
 /**
@@ -127,11 +130,11 @@ Model.prototype.getSymptome = function()
  */
 Model.prototype.getUniquePunkte = function(id)
 {
-	// Copy Unique Array For Id
+	// Copy Array
 	var punkte = this.data.punkte.slice(0);
 	// First the selected element 
 	var ids = [];
-	punkte.unshift( String( id ) );
+	punkte.push( String( id ) );
 	
 	// than descending by time
 	punkte.sort123("x"); 
