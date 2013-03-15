@@ -1,12 +1,10 @@
-function Svg( elementId )
+function Svg()
 {
-	this.elementId = elementId;
 	
-	var element = document.getElementById(elementId);	
-		element = document.createElementNS("http://www.w3.org/2000/svg", "svg");	
-		element.setAttribute("version", "1.1");
+	this.element = document.createElementNS("http://www.w3.org/2000/svg", "svg");		
+	this.element.setAttribute("version", "1.1");
 		
-	this.model = new Model();
+	this.model = null;
 			
 	// Padding
 	this.paddingLeft = 20;
@@ -26,12 +24,20 @@ function Svg( elementId )
 	return this;
 }
 
-Svg.prototype.getId = function()
+Svg.prototype.setModel = function( model )
 {
-	return this.elementId;
+	this.model = model;
 };
 
+Svg.prototype.exportTag = function()
+{
+	return this.element;
+};
 
+Svg.prototype.removeElements = function()
+{
+	DOM( this.element ).removeElements();
+};
 /**
  * COORDINATES
  */
@@ -48,8 +54,8 @@ Svg.prototype.drawCoordinates = function()
 	var chartWidth = this.getPixelForX( this.maxXRealtime, true ) + this.paddingRight;
 	
 	//document.getElementById( this.getId() ).setAttribute("left", 0);
-	document.getElementById( this.getId() ).setAttribute("width", chartWidth);
-	document.getElementById( this.getId() ).setAttribute("height", this.getPixelForY( this.minY, true ) + this.paddingBottom);
+	this.element.setAttribute("width", chartWidth);
+	this.element.setAttribute("height", this.getPixelForY( this.minY, true ) + this.paddingBottom);
 
 	// vLine
 	for(var x = this.minX; x <= this.maxX; x += (24 * 60 * 60 * 1000) )
@@ -68,11 +74,11 @@ Svg.prototype.drawCoordinates = function()
 	}
 
 
-	var scrollerWidth = document.getElementById( this.getId() ).parentNode.offsetWidth;
+	var scrollerWidth = this.element.parentNode.offsetWidth;
 
 	if(chartWidth > this.chartWidth)
 	{
-		document.getElementById( this.getId() ).parentNode.scrollLeft = chartWidth - scrollerWidth;			
+		this.element.parentNode.scrollLeft = chartWidth - scrollerWidth;			
 	}
 	
 	this.chartWidth = chartWidth;
@@ -97,7 +103,7 @@ Svg.prototype.drawWeekend = function( x, y, width, height )
 		area.setAttribute("height", pixelHeight);
 		area.setAttribute("fill", "rgba(255,255,255,0.3)");
 		
-		document.getElementById( this.getId() ).appendChild( area );
+		this.element.appendChild( area );
 	}
 };
 /**
@@ -119,7 +125,7 @@ Svg.prototype.drawLabelX = function( x, y )
 	var date = new Date(x);
 	labelX.textContent = date.getDate() + "." + (date.getMonth() + 1);
 	
-	document.getElementById( this.getId() ).appendChild( labelX );
+	this.element.appendChild( labelX );
 };
 
 /**
@@ -157,14 +163,10 @@ Svg.prototype.drawPunkte = function(id)
 
 Svg.prototype.drawTagebuch = function( datapoi )
 {
-	console.log( datapoi );
 	
-	var mi = new Date( datapoi.x );
-	mi.setHours(0,0,0,0);
-	
-	var pixelX = this.getPixelForX( mi.getTime(), true);
+	var pixelX = this.getPixelForX( zeit("dawn", datapoi.x), true);
 	var pixelY = this.getPixelForY(-2, true);
-	var pixelWidth = this.getPixelForX(datapoi.x + 10000, false);
+	var pixelWidth = this.getPixelForX( this.minX + (24 * 60 * 60 * 1000) , false);
 	var pixelHeight = this.getPixelForY(-12, false);
 	
 	var area= document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -177,7 +179,7 @@ Svg.prototype.drawTagebuch = function( datapoi )
 	
 	DOM(area).onTouch( Events.SHOW_AUSWAHL, datapoi );
 
-	DOM( this.elementId ).appendChild(area);
+	this.element.appendChild(area);
 };
 
 Svg.prototype.drawLine = function( current, previous, padding )
@@ -220,7 +222,7 @@ Svg.prototype.drawLine = function( current, previous, padding )
 	verbindung.setAttribute("x2", x2 );
 	verbindung.setAttribute("y2", y2 );
 		
-	document.getElementById( this.getId() ).appendChild( verbindung );
+	this.element.appendChild( verbindung );
 };
 
 Svg.prototype.getPaddingFromPoint = function( x1, y1, x2, y2, padding)
@@ -257,7 +259,7 @@ Svg.prototype.drawKoordLine = function(x1, y1, x2, y2)
 	line.setAttribute("x2", x2);
 	line.setAttribute("y2", y2);
 	
-	document.getElementById( this.getId() ).appendChild( line );
+	this.element.appendChild( line );
 };
 
 Svg.prototype.drawPunkt = function( punkt )
@@ -279,7 +281,7 @@ Svg.prototype.drawPunkt = function( punkt )
 	
 	DOM(kreis).onTouch( "showAuswahl", punkt );
 
-	DOM( this.elementId ).appendChild(kreis);
+	this.element.appendChild(kreis);
 };
 
 /**

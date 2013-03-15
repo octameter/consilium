@@ -21,7 +21,8 @@ Model.prototype.hasArzt = function()
 Model.prototype._state = 
 {
     currentItem: null,
-    favoritesEdit: false
+    favoritesEdit: false,
+    introShow: false
 };
 
 Model.prototype.__defineGetter__("favoritesEdit", function() { return this._state.favoritesEdit;  });
@@ -29,6 +30,9 @@ Model.prototype.__defineSetter__("favoritesEdit", function( value ) { this._stat
 
 Model.prototype.__defineGetter__("currentItem", function() { return this._state.currentItem;  });
 Model.prototype.__defineSetter__("currentItem", function( value ) { this._state.currentItem = value; });
+
+Model.prototype.__defineGetter__("introShow", function() { return this._state.introShow;  });
+Model.prototype.__defineSetter__("introShow", function( value ) { this._state.introShow = value; });
 
 
 Model.prototype.addFavorite = function( type, id )
@@ -253,7 +257,17 @@ Model.prototype.data =
 
 Model.prototype.dict =
 {
-		bewertung :
+		intro:
+		[
+		 	{ id: "introDefault", title:"Liebe Patientin",
+		 		bausteine: [
+		 		             "Die App dient Ihnen als persönliches Logbuch für Ihr Wohlbefinden während der medizinischen Therapie.",
+		 		             "Wir empfehlen die App tägliche zu nutzen. Rückwirkend kann für maximal drei Tage ihre Bewertung nachgetragen werden. Sollte die Eingabe länger unterbrochen werden, beginnt die Verbindungslinie neu.",
+		 		             "Erweitern Sie Ihre Auswahlliste nach Bedarf durch Ergänzung weiterer Symptome."
+		 		            ]		 						  
+		 	}
+		 ],
+		bewertung:
 		[
 			{ id: "10025482", title:"Subjektives Befinden", kategorie:"Lebensqualität", zero:100, farbwert:"rgba(154,205,50,0.9)",
 				  grad:[ 	

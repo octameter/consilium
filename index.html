@@ -25,39 +25,8 @@
         		</button>
         	</header>
  	
- 			<article id="homeContentId" >
- 			
-	        	<div id="homeVerlauf">
-	        		<div id="chart" class="chart">
-						<div id="scrollerId" class="scrollableX">
-							<svg id="chartSVG"></svg>
-						</div>
-	        		</div>
-	        		<form id="homeAuswahl">
-	        			<fieldset>
-	        			
-	        				<legend id="homeAuswahlLegend"></legend>
-	        				<div id="homeAuswahlInfo"></div>
-	        				 				                     
-	        			</fieldset>
-	        		
-	        		</form>               
-	        	</div>
-
-                
-	        	<div id="rahmen" style="display:none" class="intro">
-	        		 <p>Liebe Patientin</p>
-	        		<p style="margin:20px; text:justify;">Liebe Patientin<br/>
-	                    Die App dient Ihnen als persönliches Logbuch für Ihr Wohlbefinden während der medizinischen Therapie.
-	                    Wir empfehlen die App tägliche zu nutzen. Rückwirkend kann für maximal drei Tage ihre Bewertung nachgetragen werden. Sollte die Eingabe länger unterbrochen werden, beginnt die Verbindungslinie neu. Erweitern Sie Ihre Auswahlliste nach Bedarf durch Ergänzung weiterer Symptome. Die Eingaben werden erst am folgenden Tag im Graphen sichtbar.
-	                </p>
-	    			<button id="plusZeit" class="button blue" style="width:200px; height:40px">Start</button>
-	    			<p></p>
-	        	</div>
-        	
-        	</article>
-        	
-        	
+ 			<article id="homeContentId"></article>
+      	
         </section>
                
         <!-- FAVORITES --> 
@@ -71,9 +40,7 @@
                 <button id="favoritesEditButton" style="padding-left:10px;padding-right:10px;font-size:110%" class="button-text colorless">Edit</button>
         	</header>
         	
-        	<article id="favoritesContentId">
-					
-        	</article>
+        	<article id="favoritesContentId"></article>
         	 
         </section>
         
@@ -86,8 +53,7 @@
         		<button id="favoriteSaveId" class="button-text blue" style="display:none">Save</button>
         	</header>
         	
-        	<article id="favoriteContentId">
-        	</article>
+        	<article id="favoriteContentId"></article>
         	 
         </section>
         
@@ -148,79 +114,93 @@
    		<script type="text/javascript" charset="utf-8" src="code/commands.js"></script>
 	
 		<script type="text/javascript" charset="utf-8" src="code/plugins/svg.js"></script>
+		<script type="text/javascript" charset="utf-8" src="code/plugins/agent.js"></script>
 		<script type="text/javascript" charset="utf-8" src="code/plugins/assets.js"></script>
 
    		<script type="text/javascript" charset="utf-8">
 
    			var app = {
-   					// INSTANTIATE COMMANDS WITH PROPERTIES
+   					/**
+   					* INSTANTIATE COMMANDS WITH PROPERTIES (IDs of ELEMENTS) 
+   					* AND BIND TO EVENTS. PROPERTIES PERSIST OVER TIME.
+   					**/
    					addCommands: function()
    					{
    						addCommand( Events.CHANGE_VIEW, changeViewCommand ); 	
    						addCommand( Events.DATAPOINT_DELETE, datapointDeleteCommand ); 	
    						
    						addCommand( Events.HOME_INIT, homeInitCommand, { id:"homeContentId", intro: "rahmen", verlauf:"homeVerlauf"} ); 	
-   						addCommand( Events.REFRESH_CHART, refreshChartCommand, { chart:"chartSVG"} ); 	
+   						addCommand( Events.HOME_INTRO, homeIntroCommand, { id:"homeContentId" } ); 	
+   						addCommand( Events.HOME_VERLAUF, homeVerlaufCommand, { id:"homeContentId", scroller:"homeScrollerId"} ); 	
+   						addCommand( Events.HOME_TO_OPTIONEN, changeViewCommand,{ from: "homeId", to:"optionenId", direction:"right" }  );
+   						addCommand( Events.HOME_TO_FAVORITES, changeViewCommand,{ from:"homeId", to:"favoritesId", direction:"left" } );					
    						addCommand( Events.SHOW_AUSWAHL, showAuswahlCommand, { legend:"homeAuswahlLegend", info:"homeAuswahlInfo"} ); 	
+   						
    						addCommand( Events.SYMPTOME_SELECTED, symptomSelectedCommand ); 	
 
    						addCommand( Events.OPTIONEN_INIT, optionenInitCommand, { id:"optionenContentId"} ); 	
    						addCommand( Events.SCAN, scanCommand); 	
-   						addCommand( Events.OPTIONEN_TO_HOME, optionenToHomeCommand, { from:"optionenId", to:"homeId", direction:"left" } ); 	
+   						addCommand( Events.OPTIONEN_TO_HOME, changeViewCommand, { from:"optionenId", to:"homeId", direction:"left" } ); 	
    						
    						addCommand( Events.SYMPTOME_INIT, symptomeInitCommand, { id:"symptomeContentId" }); 	
-   						addCommand( Events.SYMPTOME_TO_FAVORITES, symptomeToFavoritesCommand, { from:"symptomeId", to:"favoritesId", direction:"right" } ); 	
+   						addCommand( Events.SYMPTOME_TO_FAVORITES, changeViewCommand, { from:"symptomeId", to:"favoritesId", direction:"right" } ); 	
    						  						
    						addCommand( Events.FAVORITES_INIT, favoritesInitCommand, { id:"favoritesContentId" } ); 	
+   						addCommand( Events.FAVORITES_TO_HOME, changeViewCommand, { from:"favoritesId", to:"homeId", direction:"right" } ); 	
+   						addCommand( Events.FAVORITES_TO_FAVORITE, changeViewCommand, { from:"favoritesId", to:"favoriteId", direction:"left" } ); 	
+   						addCommand( Events.FAVORITES_TO_SYMPTOME, changeViewCommand, { from:"favoritesId", to:"symptomeId", direction:"left" } ); 	
    						addCommand( Events.FAVORITES_ROW, favoritesRowCommand); 	
    						addCommand( Events.FAVORITES_ITEM, favoritesItemCommand); 	
    						addCommand( Events.FAVORITES_EDIT, favoritesEditCommand); 	
    						addCommand( Events.FAVORITES_DELETE, favoritesDeleteCommand); 	
    						addCommand( Events.TEXT_CHANGE, textChangeCommand); 	
-  	
    						addCommand( Events.FAVORITES_CHANGE, favoritesChangeCommand, { editButton:"favoritesEditButton", backButton:"favoritesBackButton" }); 	
-   						addCommand( Events.FAVORITES_TO_HOME, favoritesToHomeCommand, { from:"favoritesId", to:"homeId", direction:"right" } ); 	
-   						addCommand( Events.FAVORITES_TO_FAVORITE, favoritesToHomeCommand, { from:"favoritesId", to:"favoriteId", direction:"left" } ); 	
 
-   						addCommand( Events.FAVORITE_INIT, favoriteInitCommand, { id : "favoriteContentId", save:"favoriteSaveId"} ); 	
-   						addCommand( Events.FAVORITE_CANCEL, favoriteCancelCommand, { id:"favoriteSaveId", from:"favoriteId", to:"favoritesId", direction:"right" }); 	
-   						addCommand( Events.FAVORITE_SAVE, favoriteSaveCommand, { id:"favoriteSaveId", from:"favoriteId", to:"favoritesId", direction:"right" }); 	
-
-   						
-   						addCommand( Events.SLIDER_MOVE, sliderMoveCommand); 	
+   						addCommand( Events.FAVORITE_INIT, favoriteInitCommand, { id : "favoriteContentId", save:"favoriteSaveId"  } ); 		
+   						addCommand( Events.FAVORITE_SAVE, favoriteExitCommand, { id : "favoriteContentId", hide: "favoriteSaveId",  save: true }); 	
+   						addCommand( Events.FAVORITE_CANCEL, favoriteExitCommand, { id : "favoriteContentId", hide: "favoriteSaveId",  save: false }); 	
+   						addCommand( Events.FAVORITE_TO_FAVORITES, changeViewCommand, { from:"favoriteId", to:"favoritesId", direction:"right" }); 	
+  						
+   						addCommand( Events.SLIDER, sliderCommand, { save:"favoriteSaveId" }); 	
    					},				
-   					// STANDARD EVENTLISTENERS
+   					/**
+   					* BIND TO EVENT LISTENERS OF ELEMENTS. IF EVENT EXECUTE COMMAND  
+  					* WITH EVENT DATA. COMMANDS HAVE ACCESS TO MODEL AND PROPERTIES.
+   					*/
    					bind: function() 
    					{
+   						// HOME
    						DOM("homeId").onStage( Events.HOME_INIT ); 
+   						DOM("addOptionen").onTouch( Events.HOME_TO_OPTIONEN );
+   						DOM("addEingabe").onTouch( Events.HOME_TO_FAVORITES );
+   						
+   						// OPTIONEN
    						DOM("optionenId").onStage( Events.OPTIONEN_INIT ); 
-   						DOM("symptomeId").onStage( Events.SYMPTOME_INIT ); 
-   						DOM("favoritesId").onStage( Events.FAVORITES_INIT ); 
-   						
-   						DOM("favoriteId").onStage( Events.FAVORITE_INIT ); 
-   						DOM("favoriteCancelId").onTouch( Events.FAVORITE_CANCEL );
-   						DOM("favoriteSaveId").onTouch( Events.FAVORITE_SAVE );
-   						
-   						DOM("addOptionen").onTouch( Events.CHANGE_VIEW, { from: "homeId", to:"optionenId", direction:"right" } );
-   						DOM("addEingabe").onTouch( Events.CHANGE_VIEW, { from:"homeId", to:"favoritesId", direction:"left" } );
-
    						DOM("optionenBackButton").onTouch( Events.OPTIONEN_TO_HOME );
-
-   						DOM("symptomeBackButton").onTouch( Events.SYMPTOME_TO_FAVORITES );
-   											
-   						DOM("favoritesBackButton").onTouch( Events.FAVORITES_TO_HOME ); 
-   						DOM("favoritesEditButton").onTouch( Events.FAVORITES_CHANGE ); 
-   						
-  
    						DOM("scannerId").onTouch( Events.SCAN, {} );
+   						
+   						// FAVORITES
+   						DOM("favoritesId").onStage( Events.FAVORITES_INIT ); 
+   						DOM("favoritesBackButton").onTouch( Events.FAVORITES_TO_HOME ); 
+   						DOM("favoritesEditButton").onTouch( Events.FAVORITES_CHANGE ); 						
+   						
+   						// FAVORITE
+   						DOM("favoriteId").onStage( Events.FAVORITE_INIT ); 
+   						DOM("favoriteCancelId").onTouch( Events.FAVORITE_CANCEL);
+   						DOM("favoriteSaveId").onTouch( Events.FAVORITE_SAVE );
+
+   						// SYMPTOME
+   						DOM("symptomeId").onStage( Events.SYMPTOME_INIT ); 
+   						DOM("symptomeBackButton").onTouch( Events.SYMPTOME_TO_FAVORITES );
+   						
+   						DOM().onDOM( Events.HOME_INIT );
+
    					},
    					initialize:function() 
    					{
    						this.addCommands();
    						
    						this.bind();		
-   						
-   						dispatchCommand( Events.HOME_INIT );
    					}
    			};
             

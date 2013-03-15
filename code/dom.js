@@ -2,6 +2,8 @@
 
 (function(window,  document, undefined){
 				
+	var plugins = {};
+	
 	var selector = function(id){
 		
 		var element = null;
@@ -22,24 +24,28 @@
 				
 				onTouch: function(commandName, data)
 				{				
-					var daten = data || {}; 
+					var event = data || {}; 
 					
 					if("ontouchstart" in window )
 					{
-						element.addEventListener("touchstart", function(event)
+						element.addEventListener("touchstart", function(e)
 						{
-							event.preventDefault();
-							daten.event = event.touches[0];
-							dispatchCommand(commandName, daten);
+							e.preventDefault();
+							event.touches = event.touches[0];
+							event.offsetX = e.offsetX;
+							event.tag = e.target.tagName;
+							dispatchCommand(commandName, event);
 						}
 						, false);		
 					}
 					else
 					{
-						element.addEventListener("mousedown", function(event)
+						element.addEventListener("mousedown", function(e)
 						{
-							event.preventDefault();
-							dispatchCommand(commandName, daten);
+							e.preventDefault();
+							event.offsetX = e.offsetX;
+							event.tag = e.target.tagName;
+							dispatchCommand(commandName, event);
 						}
 						, false);			
 					}	
@@ -177,14 +183,7 @@
 					return DOM( element );
 				},
 				createChild: function( tag )
-				{
-					if(tag == "slider")
-					{
-						var temp = document.createElement("input");
-						temp.type = "range";
-						return temp;	
-					}
-						
+				{						
 					return document.createElement(tag);
 				},
 				appendChild: function(tag, attributes, text)
@@ -285,6 +284,14 @@
 					return element;
 	
 				},
+				width: function()
+				{
+					return parseInt( element.clientWidth );
+				},
+				style: function( property, value)
+				{
+					element.style[property] = value;
+				},
 				show: function()
 				{
 					element.style["display"] = "block";
@@ -306,14 +313,43 @@
                     
                     return DOM( element );
 				},
-				verlauf: function()
+				plugins: function( type )
 				{
-					this.removeElements();
-					
-					var svg = new Svg(id);
-					svg.drawCoordinates();
-					svg.drawPunkte(id);
-					return svg;
+					switch( type )
+					{
+						case("svg"): 
+						{
+							function create()
+							{
+								plugins.svg = new Svg();
+								plugins.svg.setModel( new Model() );
+								element.appendChild( plugins.svg.exportTag() );
+							}
+							
+							function refresh()
+							{
+								plugins.svg.removeElements();
+								plugins.svg.drawCoordinates();
+								plugins.svg.drawPunkte();
+							}
+							
+							return { create: create, refresh:refresh };
+						};
+						case("agent"):
+						{
+							// LAZY LOADING
+							if(!plugins.agent) plugins.agent = new Agent();
+							
+							function isDevice( device )
+							{
+								return plugins.agent.isDevice( device );
+							}
+							
+							// Mobile, Tablet, Desktop
+							return { isDevice: isDevice };
+						};
+					}
+
 				},
                 element: function()
                 {
@@ -326,6 +362,8 @@
 	};
 	
 	window.DOM = selector;
+	
+	window.DO = selector();
 	
 })(this, document, undefined);
 
@@ -376,6 +414,29 @@ function dispatchCommand(nameEvent, data)
 function addCommand(nameEvent, command, properties)
 {
 	controller.addCommand(nameEvent, command, properties);
+};
+
+function zeit( pattern, milliSekunden  )
+{
+		var currentDate = (milliSekunden) ? new Date( milliSekunden ) : new Date();
+		
+		var minute = currentDate.getMinutes() < 10 ? "0"+currentDate.getMinutes() : currentDate.getMinutes();
+		var stunde = currentDate.getHours() < 10 ? "0"+currentDate.getHours() : currentDate.getHours();
+		
+		var day = currentDate.getDate() < 10 ? "0"+currentDate.getDate() : currentDate.getDate();
+		var month = currentDate.getMonth() < 9 ? "0"+(currentDate.getMonth() + 1) : (currentDate.getMonth() + 1);
+		var year = currentDate.getFullYear();
+			
+		switch( pattern )
+		{
+			case("yyyy-mm-dd hh:mm"): return year + "-" + month+ "-"+day+" "+stunde+":"+minute;
+			case("dd.mm.yyyy hh:mm"): return day + "." + month+ "."+year+" "+stunde+":"+minute;
+			case("dawn"):
+			{
+				currentDate.setHours(1,0,0,0); return currentDate.getTime(); 
+			}
+			default: return year + "-" + month+ "-"+day;
+		};
 };
 
 /** 
