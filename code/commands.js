@@ -383,6 +383,7 @@ function sliderCommand( event )
 	// CREATE ELEMENT
 	if( event.parent && DO.plugins("agent").isDevice("Desktop") )
 	{		
+		console.log( DOM( event.parent ).element() );
 		 // CUSTOM SLIDER
 		 DOM( event.parent ).addChild("div", { id:"favSliderId", class:"slider"} ).addChild("a", { id:"thumbId", class:"grey"} );		 
 		 
