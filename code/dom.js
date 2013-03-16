@@ -31,8 +31,7 @@
 						element.addEventListener("touchstart", function(e)
 						{
 							e.preventDefault();
-							event.touches = event.touches[0];
-							event.offsetX = e.offsetX;
+							event.touches = e.touches[0];
 							event.tag = e.target.tagName;
 							dispatchCommand(commandName, event);
 						}
@@ -43,7 +42,8 @@
 						element.addEventListener("mousedown", function(e)
 						{
 							e.preventDefault();
-							event.offsetX = e.offsetX;
+							event.offsetX = e.offsetX || e.layerX;
+							event.offsetY = e.offsetY || e.layerY;
 							event.tag = e.target.tagName;
 							dispatchCommand(commandName, event);
 						}
@@ -175,6 +175,104 @@
 					element.addEventListener("oTransitionEnd", onTransitionHandler, false);
 					element.addEventListener("transitionend", onTransitionHandler, false);
 				},
+				onTap: function(commandName, data)
+				{
+					var event = data || {};
+					
+					if("ontouchstart" in window )
+					{
+						element.addEventListener("touchstart", function(e)
+						{						
+							event.type = "start";
+					        event.startX = e.touches[0].clientX;
+					        event.startY = e.touches[0].clientY;
+					        
+					        var element = e.touches[0].target;
+
+					        if(element.tagName !== data.watch) 
+					        { 
+					            element = element.parentNode;
+					            
+						        if(element.tagName !== data.watch) element = element.parentNode;
+					        }
+					        
+					        if(element.tagName === data.watch) event.element = element;
+	
+					        dispatchCommand(commandName, event);
+						});
+				    }else
+				    {
+						element.addEventListener("mousedown", function(e)
+						{
+							event.type = "start";
+							event.offsetX = e.offsetX || e.layerX;
+							event.offsetY = e.offsetY || e.layerY;
+					        event.startX = e.clientX;
+					        event.startY = e.clientY;
+
+					        var element = e.target;
+
+					        if(element.tagName !== data.watch) 
+					        { 
+					            element = element.parentNode;
+					            
+						        if(element.tagName !== data.watch) element = element.parentNode;
+					        }
+					        
+					        if(element.tagName === data.watch) event.element = element;
+							
+							dispatchCommand(commandName, event);
+						});
+				    }
+				    
+					if("ontouchmove" in window)
+					{
+						element.addEventListener("touchmove", function(e)
+						{
+					    	event.type = "move";
+					    	event.clientX = e.touches[0].clientX;
+					    	event.clientY = e.touches[0].clientY;
+					    	
+					        dispatchCommand(commandName, event);
+						});
+					}
+					else
+					{
+						element.addEventListener("mousemove", function(e)
+						{
+					    	event.type = "move";
+					    	event.clientX = e.clientX;
+					    	event.clientY = e.clientY;
+					    	
+					        dispatchCommand(commandName, event);
+						});
+					}
+
+					if("ontouchend" in window)
+					{
+						element.addEventListener("touchend", function(e)
+						{
+					        e.preventDefault();
+
+					        event.type = "end";
+
+					        dispatchCommand(commandName, event);
+						});
+					}
+					else
+					{
+						element.addEventListener("mouseup", function(e)
+						{
+					        e.preventDefault();
+
+					        event.type = "end";
+
+					        dispatchCommand(commandName, event);
+						});
+					}
+
+
+				},
 				text: function( value )
 				{
 					element.innerHTML = "";
@@ -231,22 +329,22 @@
 				},
 				attrib: function( attribute )
 				{					
-					function replace( oldValue, newValue )
+					function _replace( oldValue, newValue )
 					{
 						element[attribute] = element[attribute].replace( oldValue, newValue);						
 					};
 					
-					function add( value )
+					function _add( value )
 					{
 						element[attribute] += " " + value;						
 					};
 					
-					function remove( value )
+					function _remove( value )
 					{
 						element[attribute] = element[attribute].split( value ).join("");
 					};
 					
-					return { replace:replace, add:add, remove:remove };
+					return { replace:_replace, add:_add, remove:_remove };
 				},
 				translate: function( data )
 				{

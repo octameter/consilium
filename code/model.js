@@ -486,8 +486,17 @@ Model.prototype.dict =
 		
 		tipps:
 		[
-			 { id: "info1", title:"Tee machen und trinken", kategorie:"Pflege", likes:0, dislikes:0, displayed:0, clicked:0,
-				 
+			 { id: "info1", title:"Reservemedikation", kategorie:"Pflege", min:1, max:40, likes:0, dislikes:0, displayed:0, clicked:0,
+			 	bausteine: [
+			 	           "Nehmen Sie Ihre Reservemedikation grosszügig ein oder wenden Sie sich an das Brustzentrum/Onkozentrum.",
+			 	           "Telefon tagsüber: +41 43 344 33 33",
+			 	           "Wochenenden und nachts: +41 44 209 21 11"
+			 	           ]	
+			 },		 
+			 { id: "info2", title:"Mundpflege", kategorie:"Pflege", min:1, max:100, likes:0, dislikes:0, displayed:0, clicked:0,
+				 bausteine: [
+				             "Wählen Sie aus: alkoholfreies Mundwasser, Zahnseide, Lippenpflege ohne Gylcerin, weiche Zahnbürste, Zähnreinigung nach jeder Mahlzeit, gründliche Prothesenreinigung oder Prothesenverzicht."
+				             ]	
 			 }		 
 		 ]
 };

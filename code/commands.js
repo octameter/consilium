@@ -171,29 +171,72 @@ function scanCommand( data )
 function symptomeInitCommand( data )
 {
 	DOM( this.properties.id ).removeElements();
-	var liste = DOM( this.properties.id ).addChild("ul", { class:"liste"} );
+	var liste = DOM( this.properties.id ).addChild("ul", { id:"symptomeListe", class:"liste"} );
 	
 	var items = this.model.getSymptome();
 	
 	for(var i = 0; i < items.length; i++)
 	{		
-		var item = DOM( liste ).appendChild("li");
+		var item = DOM( liste ).appendChild("li", { data: items[i].id });
 		
 		DOM( item ).appendChild("div", { style: 'background:'+items[i].farbwert }, "+" ).className = "itemIcon";
 		DOM( item ).appendChild("span", { style: 'position:absolute; white-space:nowrap; top:5px; left:60px;' }, "<b>"+items[i].title+"</b>");
 		DOM( item ).appendChild("span", { style: 'position:absolute; white-space:nowrap; top:25px; left:60px;'}, "<i>" + items[i].kategorie + "</i>");		
 
-		DOM( item ).onTouch( Events.SYMPTOME_SELECTED, { id : items[i].id} );
 	}	
+	DOM( "symptomeListe" ).onTap( Events.SYMPTOME_SELECTED, { watch : "LI" } );
 		
 	DOM( this.properties.id ).show();
 };
 
-function symptomSelectedCommand( data )
+function symptomSelectedCommand( event )
 {	
-	this.model.addFavorite( "Symptome", data.id);
-	
-	dispatchCommand( Events.SYMPTOME_TO_FAVORITES );
+	this.properties = this.properties || {};
+	// HANDLE INCOMING TAP EVENTS
+	switch( event.type )
+	{
+		case("start"):
+		{
+			var element = event.element;
+
+			this.properties.startX = event.startX;	
+			this.properties.startY = event.startY;	
+			
+	        if(element) {
+	        	element.className = "selected";
+	        	this.properties.element = element;
+	        }
+			
+			break;
+		}
+		case("move"):
+		{		
+	        if (Math.abs(event.clientX - this.properties.startX) > 10 || Math.abs(event.clientY - this.properties.startY) > 10) 
+	        {
+	        	if(this.properties.element)
+	        	{
+	        		this.properties.element.className = "";
+	        		this.properties.element = null;	        		
+	        	}
+		    }
+			this.properties.startX = event.clientX;	
+			this.properties.startY = event.clientY;	
+
+			break;
+		}
+		case("end"):
+		{
+	        if(this.properties.element) 
+	        {    	
+            	this.model.addFavorite( "Symptome", this.properties.element.getAttribute("data") );            	
+            	dispatchCommand( Events.SYMPTOME_TO_FAVORITES );
+	        }
+	        
+	        this.properties = null;
+			break;
+		}
+
+	}
 };
 
 
@@ -401,7 +444,7 @@ function sliderCommand( event )
 	{	
 		var hundert = DOM("favSliderId").width() - DOM("thumbId").width();
 		var calibrate = DOM("thumbId").width() / 2;	 
-		var value = parseInt( (event.offsetX - calibrate )/ hundert * 100);
+		var value = parseInt( ( event.offsetX - calibrate )/ hundert * 100);
 		 
 		if(value < 0) value = 0; if(value > 100) value = 100;
 		 

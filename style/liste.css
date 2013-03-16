@@ -42,12 +42,14 @@
     overflow-y:hidden;
     overflow-x:hidden;
     background-color: #F5F5F5;
-   	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FAFAFA), to(#F2F2F2));
-   	background-image: -webkit-linear-gradient(top, #FAFAFA, #F5F5F5); 
-   	background-image:    -moz-linear-gradient(top, #FAFAFA, #F5F5F5);
-   	background-image:     -ms-linear-gradient(top, #FAFAFA, #F5F5F5);
-   	background-image:      -o-linear-gradient(top, #FAFAFA, #F5F5F5);
-   	background-image:         linear-gradient(top, #FAFAFA, #F5F5F5);
+   	background-image: -webkit-linear-gradient(#FAFAFA, #F5F5F5); 
+   	background-image:    -moz-linear-gradient( #FAFAFA, #F5F5F5);
+   	background-image:     -ms-linear-gradient( #FAFAFA, #F5F5F5);
+   	background-image:      -o-linear-gradient( #FAFAFA, #F5F5F5);
+   	background-image:         linear-gradient( #FAFAFA, #F5F5F5);
+}
+.liste > li.selected {
+	background:rgba(100,150,200,0.6);
 }
 
 .itemIcon {
