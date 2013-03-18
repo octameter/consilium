@@ -411,7 +411,7 @@ function favoritesChangeCommand( data )
 	}
 	else
 	{
-		DOM( this.properties.editButton ).text("Anpassen").attrib("className").replace("grey","colorless");		
+		DOM( this.properties.editButton ).text("Ändern").attrib("className").replace("grey","colorless");		
 		DOM( this.properties.backButton ).show();
         this.model.setFavoritesEdit( true );
 	}
