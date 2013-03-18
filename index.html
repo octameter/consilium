@@ -71,6 +71,20 @@
         	 
         </section>
         
+        <!-- SYMPTOME --> 
+        <section id="tippId" class="view left">
+        
+        	<header>
+        		<h2>Empfehlung</h2>
+        		<button id="tippBackButton" class="button colorless">
+        			<img src="img/icon/right.png" width="32">
+        		</button>
+        	</header>
+        	
+        	<article id="tippContentId"></article>
+        	 
+        </section>
+        
         <!-- OPTIONEN -->
         <section id="optionenId" class="view left">
         
@@ -134,8 +148,16 @@
    						addCommand( Events.HOME_VERLAUF, homeVerlaufCommand, { id:"homeContentId", scroller:"homeScrollerId"} ); 	
    						addCommand( Events.HOME_TO_OPTIONEN, changeViewCommand,{ from: "homeId", to:"optionenId", direction:"right" }  );
    						addCommand( Events.HOME_TO_FAVORITES, changeViewCommand,{ from:"homeId", to:"favoritesId", direction:"left" } );					
+   						addCommand( Events.HOME_TO_TIPP, changeViewCommand,{ from:"homeId", to:"tippId", direction:"right" } );					
    						addCommand( Events.SHOW_AUSWAHL, showAuswahlCommand, { legend:"homeAuswahlLegend", info:"homeAuswahlInfo"} ); 	
    						
+   						addCommand( Events.TIPPS_SHOW, tippsShowCommand ); 	
+   						addCommand( Events.TIPPS_SELECTED, tippsSelectedCommand ); 	
+   						addCommand( Events.TIPP_INIT, tippInitCommand, { id:"tippContentId"} ); 	
+   						addCommand( Events.TIPP_LIKED, tippLikedCommand ); 	
+   						addCommand( Events.TIPP_EXIT, tippExitCommand ); 	
+   						addCommand( Events.TIPP_TO_HOME, changeViewCommand,{ from:"tippId", to:"homeId", direction:"left" } ); 	
+
    						addCommand( Events.SYMPTOME_SELECTED, symptomSelectedCommand ); 	
 
    						addCommand( Events.OPTIONEN_INIT, optionenInitCommand, { id:"optionenContentId"} ); 	
@@ -192,6 +214,10 @@
    						// SYMPTOME
    						DOM("symptomeId").onStage( Events.SYMPTOME_INIT ); 
    						DOM("symptomeBackButton").onTouch( Events.SYMPTOME_TO_FAVORITES );
+   						
+   						// TIPP
+   						DOM("tippId").onStage( Events.TIPP_INIT ); 
+   						DOM("tippBackButton").onTouch( Events.TIPP_EXIT );
    						
    						DOM().onDOM( Events.HOME_INIT );
 

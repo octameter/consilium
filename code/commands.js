@@ -9,6 +9,7 @@ Events =
 	HOME_VERLAUF:"refreshChart",
 	HOME_TO_OPTIONEN:"homeToOptionen",
 	HOME_TO_FAVORITES:"homeToFavorites",
+	HOME_TO_TIPP:"home_to_tipp",
 	
 	OPTIONEN_INIT:"optionenInit",
 	OPTIONEN_TO_HOME:"optionenToHome",
@@ -32,6 +33,13 @@ Events =
 	FAVORITE_CANCEL:"favorite_cancel",
 	FAVORITE_TO_FAVORITES:"favorite_to_favorites",
 	DATAPOINT_DELETE:"data_point",
+	
+	TIPPS_SHOW:"tipps_show",
+	TIPPS_SELECTED:"tipps_selected",
+	TIPP_INIT:"tipp_init",
+	TIPP_LIKED:"tipp_liked",
+	TIPP_EXIT:"tipp_exit",
+	TIPP_TO_HOME:"tipp_to_home",
 	
 	SYMPTOME_INIT:"symptome_init",
 	SYMPTOME_SELECTED:"symptomSelected",
@@ -80,17 +88,23 @@ function homeVerlaufCommand( data )
 	
 	if( ! DOM( scroller ).element() )
 	{
-		DOM( this.properties.id ).removeElements();
-		
 		DOM( this.properties.id ).addChild( "div", { id:"homeVerlauf"} );
 		DOM( "homeVerlauf" ).addChild( "div", { id:"chart", class:"chart"} );
 		DOM( "chart").addChild("div", { id:scroller, class:"scrollableX"}); 		
-		DOM( scroller ).plugins( "svg" ).create();
-		
-		DOM( "homeVerlauf" ).addChild( "form", { id:"homeAuswahl"} ).appendChild( "fieldset", { id:"fieldsetAuswahl"} );
-		DOM( "fieldsetAuswahl").addChild( "legend", { id:"homeAuswahlLegend"} );
-		DOM( "fieldsetAuswahl").addChild( "div", { id:"homeAuswahlInfo"} );
+		DOM( scroller ).plugins( "svg" ).create();	
 	}
+	
+	( ! DOM( "homeForm" ).element() ) ? DOM( "homeVerlauf" ).appendChild( "form", { id:"homeForm"} ) : DOM(  "homeForm" ).removeElements();
+	
+	DOM( "homeForm").appendChild( "fieldset", { id:"fieldsetAuswahl"} );
+	DOM( "fieldsetAuswahl").addChild( "legend", { id:"homeAuswahlLegend"} );
+	DOM( "fieldsetAuswahl").addChild( "div", { id:"homeAuswahlInfo"} );
+	DOM( "fieldsetAuswahl").hide();
+	
+	DOM( "homeForm" ).appendChild( "fieldset", { id:"fieldsetTipp"} );
+	DOM( "fieldsetTipp").addChild( "legend", {}, "Empfehlungen" );
+	DOM( "fieldsetTipp").addChild( "ul", { class:"listeNext", id:"homeTipps" }).onTap( Events.TIPPS_SELECTED, { watch:"LI" } );
+	DOM( "fieldsetTipp").hide();	
 	
 	this.model.sortPunkteByTime();
 	
@@ -103,31 +117,184 @@ function showAuswahlCommand( event )
 {
 	var prop = this.properties;
 	
+	DOM(prop.info).removeElements().text("");
+
 	if(event.id)
 	{
 		var type = this.model.getType(event.id);
 		
 		DOM(prop.legend).text( type.kategorie ); 				
 		
-		DOM(prop.info).removeElements().text("");
-		DOM(prop.info).appendChild( "span", {}, "<b>"+type.title+"</b>");
+		DOM(prop.info).appendChild( "span", { }, "<b>"+type.title+"</b>");
 		DOM(prop.info).appendChild( "p", { style:'width:100%;font-size:90%;margin:1px' }, "<i>"+zeit("dd.mm.yyyy hh:mm", event.x )+"</i>");		
-		
+	
 		if( type.kategorie == "Notizen")
 		{
+			DOM( prop.info ).appendChild("a", { class:"button", style:"position:absolute; right:2px; top:10px; font-size:110%;padding-left:5px;padding-right:5px;background:"+type.farbwert}, "&nbsp;&nbsp;&nbsp;");
 			DOM(prop.info).appendChild( "p", { style: 'width:100%;padding-top:5px'}, event.y );						
 		}
 		else
 		{
-			DOM(prop.info).appendChild( "span", { style: 'position:absolute; top:-3px; right:0; font-size:130%' }, event.y +"%");
-			DOM(prop.info).appendChild( "p", { style: 'width:100%;padding-top:5px'}, this.model.getGrad(event.id, event.y) );			
-		}
+			DOM( prop.info ).appendChild("a", { class:"button", style:"position:absolute; right:2px; top:10px; font-size:110%;padding-left:5px;padding-right:5px;background:"+type.farbwert}, event.y +"%");
+			DOM(prop.info).appendChild( "p", { style: 'width:100%;padding-top:5px'}, this.model.getGrad(event.id, event.y).info );	
+			
+			dispatchCommand( Events.TIPPS_SHOW, { type:event.id, value:event.y, key:event.x} );
+ 		}
 	}
 	else
 	{
 		DOM(prop.legend).text( "Auswahl" ); 
 		DOM(prop.info).text( "Bitte einen Punkt im Graph auwählen.");
 	}
+	
+	DOM("fieldsetAuswahl").show();
+	
+};
+
+function tippsShowCommand ( data )
+{		
+	DOM( "homeTipps" ).removeElements();
+	DOM( "fieldsetTipp").hide();
+	
+	if( !data ) return;
+	
+	var tipps = this.model.getEmpfehlungen( data );
+	
+	for( var i = 0; i < tipps.length; i++)
+	{	
+		var likes = parseInt( tipps[i].likes );
+		var dislikes = parseInt( tipps[i].dislikes );
+
+		var exportData = { data : data, tipp:tipps[i] };
+		
+		var item1 = DOM( "homeTipps" ).addChild( "li", {style:"padding-top:5px;padding-bottom:5px;", data: JSON.stringify( exportData ) });
+		
+		DOM( item1 ).appendChild("span", { style:"padding-top:10px;"}, "<b>"+tipps[i].title+"</b>");	
+		
+		if( likes > 0)
+		{
+			DOM( item1 ).appendChild("span", {  style:"float:right;"}, "<b>Hilfreich für</b>");
+			DOM( item1 ).appendChild("br");	
+			DOM( item1 ).appendChild("span",{ style:"font-size:90%;margin:1px;float:left;" }, "<i>"+tipps[i].kategorie+"</i>");				
+
+			var wen = ( likes + dislikes > 1) ? "Patientinnen" : "Patientin";			
+			DOM( item1 ).appendChild("span", {  style:"float:right;"}, "<i>"+likes+" von "+( likes + dislikes )+" " + wen + "<i>");		
+		}
+		else
+		{
+			DOM( item1 ).appendChild("br");	
+			DOM( item1 ).appendChild("span",{ style:"font-size:90%;margin:1px;float:left;" }, "<i>"+tipps[i].kategorie+"</i>");				
+		}
+		
+		DOM( "fieldsetTipp").show();
+	}
+};
+
+function tippsSelectedCommand( event )
+{
+	this.properties = this.properties || {};
+	// HANDLE INCOMING TAP EVENTS
+	switch( event.type )
+	{
+		case("start"):
+		{
+			var element = event.element;
+
+			this.properties.startX = event.startX;	
+			this.properties.startY = event.startY;	
+			
+	        if(element) {
+	        	element.className = "selected";
+	        	this.properties.element = element;
+	        }
+			
+			break;
+		}
+		case("move"):
+		{		
+	        if (Math.abs(event.clientX - this.properties.startX) > 10 || Math.abs(event.clientY - this.properties.startY) > 10) 
+	        {
+	        	if(this.properties.element)
+	        	{
+	        		this.properties.element.className = "";
+	        		this.properties.element = null;	        		
+	        	}
+		    }
+			this.properties.startX = event.clientX;	
+			this.properties.startY = event.clientY;	
+
+			break;
+		}
+		case("end"):
+		{
+	        if(this.properties.element) 
+	        {    	 
+	        	this.model.setCurrentItem( JSON.parse( this.properties.element.getAttribute("data") ) );
+            	dispatchCommand( Events.HOME_TO_TIPP  );
+	        }
+	        
+	        this.properties = null;
+			break;
+		}
+		case("cancel"):
+		{
+			this.properties = null; break;
+		}
+
+	}
+};
+function tippInitCommand( data )
+{
+	DOM( this.properties.id ).removeElements();
+	
+	//"data":{"type":"10015090","value":"90","key":1363265891430},
+	//"tipp":{"id":"info1","title":"Nelkenwasser","kategorie":"Selbsthilfe","likes":1,"dislikes":0,"displayed":0,"clicked":0,"bausteine":[{"Häufigkeit":"Mundspülung mit Nelkenwasser 2-3 mal pro Tag"},{"Zubereitung":"Kochen Sie hierfür ein paar Gewürznelken in Wasser auf und lassen Sie das Wasser abkühlen."}]}} 
+	var item = this.model.getCurrentItem();
+	
+    // NOW CLIENTWIDTH AVAILABLE
+    DOM( this.properties.id ).show();    
+    
+	DOM( this.properties.id ).addChild("form").addChild("fieldset", { id: "tippFieldsetId" }).addChild("legend", {}, item.tipp.kategorie);
+	
+	DOM( "tippFieldsetId" ).addChild( "div", { id:"tipArea"} );
+	DOM( "tipArea" ).appendChild( "span", { style: "width:100%;"}, "<b>"+item.tipp.title+"</b>");
+
+	var bausteine = item.tipp.bausteine;
+	// Bausteine
+	for( var i = 0; i< bausteine.length; i++ )
+	{		
+		var baustein = bausteine[i];
+		
+		for( var typus in baustein)
+		{
+			DOM( "tipArea" ).appendChild( "p", { style:'width:100%;padding-top:10px' }, "<i>"+typus+":</i> "+baustein[typus]);	
+		}
+	}
+	
+	DOM( "tipArea" ).addChild("a", { style:"float:left", class:"button-action green"}, "Hilfreich").onTouch( Events.TIPP_LIKED, { liked:false } );
+	DOM( "tipArea" ).addChild("a", { style:"float:right", class:"button-action grey"}, "Nicht hilfreich").onTouch( Events.TIPP_LIKED, { liked:true });
+//		
+//		DOM( "favTextareaId" ).onChange( Events.TEXT_CHANGE, { id:item.id, save: this.properties.save } );
+//
+//		DOM( "tipArea" ).appendChild( "span", { id:"favOutputId", style: "position:absolute; top:10px; right:2px; font-size:110%" }, item.y +"%");
+//		DOM( "tipArea" ).appendChild( "p", { style:'width:100%;font-size:90%;margin:1px' }, (item.x) ? "<i>Zuletzt: "+zeit('dd.mm.yyyy hh:mm',item.x)+"</i>" :"");		
+//		DOM( "tipArea" ).appendChild( "p", { id:"favGradId", style: 'width:100%;padding-top:5px'}, this.model.getGrad(item.id, item.y).info );
+//		
+//		dispatchCommand( Events.SLIDER, { parent:"favArea", output:"favOutputId", grad:"favGradId", id:item.id, y:item.y} );
+
+	
+};
+
+function tippExitCommand( data )
+{
+	this.model.setCurrentItem(null);
+	
+	dispatchCommand( Events.TIPP_TO_HOME );
+};
+
+function tippLikedCommand( data )
+{
+	
 };
 
 function optionenInitCommand( data )
@@ -234,6 +401,10 @@ function symptomSelectedCommand( event )
 	        
 	        this.properties = null;
 			break;
+		}
+		case("cancel"):
+		{
+			this.properties = null; break;
 		}
 
 	}
@@ -397,8 +568,6 @@ function favoriteInitCommand( data )
 	
 	DOM( "favoriteFieldsetId" ).addChild( "div", { id:"favArea"} );
 	DOM( "favArea" ).appendChild( "span", { style: "width:100%;"}, "<b>"+this.model.getType( item.id ).title+"</b>");
-	
-
     
 	if( kategorie == "Notizen")
 	{
@@ -415,7 +584,7 @@ function favoriteInitCommand( data )
 	{
 		DOM( "favArea" ).appendChild( "span", { id:"favOutputId", style: "position:absolute; top:10px; right:2px; font-size:110%" }, item.y +"%");
 		DOM( "favArea" ).appendChild( "p", { style:'width:100%;font-size:90%;margin:1px' }, (item.x) ? "<i>Zuletzt: "+zeit('dd.mm.yyyy hh:mm',item.x)+"</i>" :"");		
-		DOM( "favArea" ).appendChild( "p", { id:"favGradId", style: 'width:100%;padding-top:5px'}, this.model.getGrad(item.id, item.y) );
+		DOM( "favArea" ).appendChild( "p", { id:"favGradId", style: 'width:100%;padding-top:5px'}, this.model.getGrad(item.id, item.y).info );
 		
 		dispatchCommand( Events.SLIDER, { parent:"favArea", output:"favOutputId", grad:"favGradId", id:item.id, y:item.y} );
 	}
@@ -464,7 +633,7 @@ function sliderCommand( event )
 		
 		// Update Displays
 		DOM( event.output ).removeElements().text( event.value  +"%");
-		DOM( event.grad ).removeElements().text( this.model.getGrad( event.id, event.value ));		
+		DOM( event.grad ).removeElements().text( this.model.getGrad( event.id, event.value ).info );		
 	}
 	
 };

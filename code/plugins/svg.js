@@ -167,6 +167,7 @@ Svg.prototype.drawTagebuch = function( datapoi )
 	var pixelY = this.getPixelForY(-1, true);
 	var pixelWidth = this.getPixelForX( this.minX + (24 * 60 * 60 * 1000) , false);
 	var pixelHeight = this.getPixelForY(105, true);
+	var farbe = this.getFarbwert(datapoi.id);
     
 	var area= document.createElementNS("http://www.w3.org/2000/svg", "rect");
 	area.setAttribute("class","movePoint");
@@ -174,9 +175,9 @@ Svg.prototype.drawTagebuch = function( datapoi )
 	area.setAttribute("y", pixelY);
 	area.setAttribute("width", pixelWidth);
 	area.setAttribute("height", pixelHeight);
-	area.setAttribute("fill", "rgba(255,200,200,0.6)");
+	area.setAttribute("fill", farbe);
     area.setAttribute("stroke","rgba(220,220,220,0.6)");
-    area.setAttribute("stroke-width", "2")
+    area.setAttribute("stroke-width", "2");
 	
 	DOM(area).onTouch( Events.SHOW_AUSWAHL, datapoi );
 

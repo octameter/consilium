@@ -188,7 +188,7 @@ Model.prototype.getGrad = function( id, value )
     
     for( var i = 0; i < grad.length; i++)
 	{
-		if( grad[i].min <= value && grad[i].max >= value) return grad[i].info;
+		if( grad[i].min <= value && grad[i].max >= value) return grad[i];
 	}
 };
 /**
@@ -237,7 +237,8 @@ Model.prototype.data =
           	{"x":1359348906115,"y":59,"id":"10016256"},
           	{"x":1359366906675,"y":37,"id":"10013963"},
           	{"x":1359384907275,"y":69,"id":"10016256"},
-          	{"x": 1363265891430, "y": "adsf", "id": "tagebuchPrivat"}
+          	{"x": 1363265891430, "y": "adsf", "id": "tagebuchPrivat"},
+          	{"x": 1363265891430, "y": "90", "id": "10015090"}
 	    ],
 	    favorites:
 	    {
@@ -284,7 +285,7 @@ Model.prototype.dict =
 		],
 		tagebuch :
 		[
-		 	{ id: "tagebuchPrivat", title:"Private Notiz", kategorie:"Notizen", zero:"", farbwert:"rgba(255,255,255,0.9)"}
+		 	{ id: "tagebuchPrivat", title:"Private Notiz", kategorie:"Notizen", zero:"", farbwert:"rgba(255,100,100,0.9)"}
 		 ],
 		symptome : 
 		[			 
@@ -486,17 +487,42 @@ Model.prototype.dict =
 		
 		tipps:
 		[
-			 { id: "info1", title:"Reservemedikation", kategorie:"Pflege", min:1, max:40, likes:0, dislikes:0, displayed:0, clicked:0,
-			 	bausteine: [
-			 	           "Nehmen Sie Ihre Reservemedikation grosszügig ein oder wenden Sie sich an das Brustzentrum/Onkozentrum.",
-			 	           "Telefon tagsüber: +41 43 344 33 33",
-			 	           "Wochenenden und nachts: +41 44 209 21 11"
-			 	           ]	
+			 { id: "info1", title:"Nelkenwasser", kategorie:"Selbsthilfe", likes:1, dislikes:0, displayed:0, clicked:0,
+			 	bausteine: 
+			 	[
+	 	           { "Häufigkeit": "Mundspülung mit Nelkenwasser 2-3 mal pro Tag anwenden."},
+	 	           { "Zubereitung": "Kochen Sie hierfür ein paar Gewürznelken in Wasser auf und lassen Sie das Wasser abkühlen."}
+			 	]	
 			 },		 
-			 { id: "info2", title:"Mundpflege", kategorie:"Pflege", min:1, max:100, likes:0, dislikes:0, displayed:0, clicked:0,
-				 bausteine: [
-				             "Wählen Sie aus: alkoholfreies Mundwasser, Zahnseide, Lippenpflege ohne Gylcerin, weiche Zahnbürste, Zähnreinigung nach jeder Mahlzeit, gründliche Prothesenreinigung oder Prothesenverzicht."
-				             ]	
+			 { id: "info2", title:"Kontakt", kategorie:"Brustzentrum", likes:0, dislikes:0, displayed:0, clicked:0,
+				 bausteine: 
+				 [
+		             { "Info":"Melden Sie sich telefonisch im Brust-Zentrum/Onkozentrum bei anhaltenden Beschwerden."},
+		             { "Tagsüber":"+41 43 344 3333"},
+		             { "Nachts":" +41 44 209 2111"},
+		             { "Am Wochenende":" +41 44 209 2111"}
+				 ]	
 			 }		 
 		 ]
+};
+/**
+* DATA  {Type, Value, Key (x)}
+* RETURNS TIPS ACCORDING TO Y RANGE
+**/
+Model.prototype.getEmpfehlungen = function( data )
+{	
+	var tippsIds = this.getGrad(data.type, data.value).tipps;
+	
+	var _tipps = [];
+
+	if(!tippsIds) return _tipps;
+	
+	var rows = tippsIds.split(",");	
+ 
+	for( var i = 0; i < rows.length; i++)
+	{
+		_tipps.push( this.getType( rows[i] ));
+	}
+	
+    return _tipps;
 };
