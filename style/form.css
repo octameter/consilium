@@ -2,10 +2,13 @@
 form {
 	position:relative;
 	
-	margin:1%;
+	margin:0px;
 	color:#000;
 	padding:0px;
 
+    padding-top:5px;
+    padding-left:10px;
+    padding-right:10px;
 	/*border:1px solid #Ccc;*/
     /* border-radius:10px */;
 }
@@ -23,8 +26,8 @@ fieldset {
    	background-image:     -ms-linear-gradient( #FAFAFA, #F5F5F5);
    	background-image:      -o-linear-gradient( #FAFAFA, #F5F5F5);
    	background-image:         linear-gradient( #FAFAFA, #F5F5F5);
-   	
-   	margin-bottom:20px;
+    
+   	margin-bottom:10px;
 } 		
 
 fieldset > legend {

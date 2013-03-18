@@ -118,7 +118,9 @@ function showAuswahlCommand( event )
 	var prop = this.properties;
 	
 	DOM(prop.info).removeElements().text("");
-
+    DOM( "homeTipps" ).removeElements();
+	DOM( "fieldsetTipp").hide();
+    
 	if(event.id)
 	{
 		var type = this.model.getType(event.id);
@@ -136,7 +138,7 @@ function showAuswahlCommand( event )
 		else
 		{
 			DOM( prop.info ).appendChild("a", { class:"button", style:"position:absolute; right:2px; top:10px; font-size:110%;padding-left:5px;padding-right:5px;background:"+type.farbwert}, event.y +"%");
-			DOM(prop.info).appendChild( "p", { style: 'width:100%;padding-top:5px'}, this.model.getGrad(event.id, event.y).info );	
+			DOM(prop.info).appendChild( "p", { style: 'width:100%;padding-top:0px'}, this.model.getGrad(event.id, event.y).info );	
 			
 			dispatchCommand( Events.TIPPS_SHOW, { type:event.id, value:event.y, key:event.x} );
  		}
@@ -146,16 +148,13 @@ function showAuswahlCommand( event )
 		DOM(prop.legend).text( "Auswahl" ); 
 		DOM(prop.info).text( "Bitte einen Punkt im Graph auwählen.");
 	}
-	
+
 	DOM("fieldsetAuswahl").show();
 	
 };
 
 function tippsShowCommand ( data )
 {		
-	DOM( "homeTipps" ).removeElements();
-	DOM( "fieldsetTipp").hide();
-	
 	if( !data ) return;
 	
 	var tipps = this.model.getEmpfehlungen( data );
@@ -175,7 +174,7 @@ function tippsShowCommand ( data )
 		{
 			DOM( item1 ).appendChild("span", {  style:"float:right;"}, "<b>Hilfreich für</b>");
 			DOM( item1 ).appendChild("br");	
-			DOM( item1 ).appendChild("span",{ style:"font-size:90%;margin:1px;float:left;" }, "<i>"+tipps[i].kategorie+"</i>");				
+			DOM( item1 ).appendChild("span", { style:"font-size:90%;margin:1px;float:left;" }, "<i>"+tipps[i].kategorie+"</i>");				
 
 			var wen = ( likes + dislikes > 1) ? "Patientinnen" : "Patientin";			
 			DOM( item1 ).appendChild("span", {  style:"float:right;"}, "<i>"+likes+" von "+( likes + dislikes )+" " + wen + "<i>");		
@@ -250,8 +249,7 @@ function tippInitCommand( data )
 	//"data":{"type":"10015090","value":"90","key":1363265891430},
 	//"tipp":{"id":"info1","title":"Nelkenwasser","kategorie":"Selbsthilfe","likes":1,"dislikes":0,"displayed":0,"clicked":0,"bausteine":[{"Häufigkeit":"Mundspülung mit Nelkenwasser 2-3 mal pro Tag"},{"Zubereitung":"Kochen Sie hierfür ein paar Gewürznelken in Wasser auf und lassen Sie das Wasser abkühlen."}]}} 
 	var item = this.model.getCurrentItem();
-	
-    // NOW CLIENTWIDTH AVAILABLE
+
     DOM( this.properties.id ).show();    
     
 	DOM( this.properties.id ).addChild("form").addChild("fieldset", { id: "tippFieldsetId" }).addChild("legend", {}, item.tipp.kategorie);
@@ -271,18 +269,8 @@ function tippInitCommand( data )
 		}
 	}
 	
-	DOM( "tipArea" ).addChild("a", { style:"float:left", class:"button-action green"}, "Hilfreich").onTouch( Events.TIPP_LIKED, { liked:false } );
-	DOM( "tipArea" ).addChild("a", { style:"float:right", class:"button-action grey"}, "Nicht hilfreich").onTouch( Events.TIPP_LIKED, { liked:true });
-//		
-//		DOM( "favTextareaId" ).onChange( Events.TEXT_CHANGE, { id:item.id, save: this.properties.save } );
-//
-//		DOM( "tipArea" ).appendChild( "span", { id:"favOutputId", style: "position:absolute; top:10px; right:2px; font-size:110%" }, item.y +"%");
-//		DOM( "tipArea" ).appendChild( "p", { style:'width:100%;font-size:90%;margin:1px' }, (item.x) ? "<i>Zuletzt: "+zeit('dd.mm.yyyy hh:mm',item.x)+"</i>" :"");		
-//		DOM( "tipArea" ).appendChild( "p", { id:"favGradId", style: 'width:100%;padding-top:5px'}, this.model.getGrad(item.id, item.y).info );
-//		
-//		dispatchCommand( Events.SLIDER, { parent:"favArea", output:"favOutputId", grad:"favGradId", id:item.id, y:item.y} );
-
-	
+	DOM( "tipArea" ).addChild("a", { style:"float:left;", class:"button-action green"}, "Hilfreich").onTouch( Events.TIPP_LIKED, { liked:true } );
+	DOM( "tipArea" ).addChild("a", { style:"float:right;", class:"button-action grey"}, "Nicht hilfreich").onTouch( Events.TIPP_LIKED, { liked:false });	
 };
 
 function tippExitCommand( data )
@@ -417,13 +405,13 @@ function favoritesChangeCommand( data )
 	
 	if(edit)
 	{
-		DOM( this.properties.editButton ).text("Close").attrib("className").replace("colorless","grey");
+		DOM( this.properties.editButton ).text("Fertig").attrib("className").replace("colorless","grey");
 		DOM( this.properties.backButton ).hide();
         this.model.setFavoritesEdit( true );
 	}
 	else
 	{
-		DOM( this.properties.editButton ).text("Edit").attrib("className").replace("grey","colorless");		
+		DOM( this.properties.editButton ).text("Anpassen").attrib("className").replace("grey","colorless");		
 		DOM( this.properties.backButton ).show();
         this.model.setFavoritesEdit( true );
 	}

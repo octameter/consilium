@@ -8,6 +8,9 @@
 .listeNext > li{
  	position:relative;
  
+    padding-left:8px;
+    padding-right:8px;
+    
 	list-style:none;
 	text-align:left;
 	cursor:pointer;
