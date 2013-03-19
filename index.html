@@ -20,7 +20,7 @@
                 <!-- <img src="img/icon/optionen.png" width="28"> -->
         		</button>
         		<h2>Consilium</h2>
-        		<button id="addEingabe" class="button-text colorless">Plus
+        		<button id="addEingabe" class="button-text colorless">Start
                 <!-- <img src="img/icon/plus.png" width="28"> -->
         		</button>
         	</header>
@@ -72,7 +72,7 @@
         </section>
         
         <!-- TiPPS --> 
-        <section id="tippId" class="view left">
+        <section id="tippId" class="view right">
         
         	<header>
         		<h2>Empfehlung</h2>
@@ -141,30 +141,31 @@
    					addCommands: function()
    					{
    						addCommand( Events.CHANGE_VIEW, changeViewCommand ); 	
+   						addCommand( Events.TAP_HANDLER, tapHandlerCommand ); 	
    						addCommand( Events.DATAPOINT_DELETE, datapointDeleteCommand ); 	
    						
    						addCommand( Events.HOME_INIT, homeInitCommand, { id:"homeContentId", intro: "rahmen", verlauf:"homeVerlauf"} ); 	
    						addCommand( Events.HOME_INTRO, homeIntroCommand, { id:"homeContentId" } ); 	
    						addCommand( Events.HOME_VERLAUF, homeVerlaufCommand, { id:"homeContentId", scroller:"homeScrollerId"} ); 	
+   						addCommand( Events.HOME_VERLAUF_SELECTED, homeVerlaufSelectedCommand, { legend:"homeAuswahlLegend", info:"homeAuswahlInfo"} ); 	
+   						addCommand( Events.HOME_EXIT, homeExitCommand ); 	
    						addCommand( Events.HOME_TO_OPTIONEN, changeViewCommand,{ from: "homeId", to:"optionenId", direction:"right" }  );
    						addCommand( Events.HOME_TO_FAVORITES, changeViewCommand,{ from:"homeId", to:"favoritesId", direction:"left" } );					
-   						addCommand( Events.HOME_TO_TIPP, changeViewCommand,{ from:"homeId", to:"tippId", direction:"right" } );					
-   						addCommand( Events.SHOW_AUSWAHL, showAuswahlCommand, { legend:"homeAuswahlLegend", info:"homeAuswahlInfo"} ); 	
+   						addCommand( Events.HOME_TO_FAVORITE, changeViewCommand,{ from:"homeId", to:"favoriteId", direction:"left" } );					
    						
    						addCommand( Events.TIPPS_SHOW, tippsShowCommand ); 	
    						addCommand( Events.TIPPS_SELECTED, tippsSelectedCommand ); 	
    						addCommand( Events.TIPP_INIT, tippInitCommand, { id:"tippContentId"} ); 	
    						addCommand( Events.TIPP_LIKED, tippLikedCommand ); 	
    						addCommand( Events.TIPP_EXIT, tippExitCommand ); 	
-   						addCommand( Events.TIPP_TO_HOME, changeViewCommand,{ from:"tippId", to:"homeId", direction:"left" } ); 	
-
-   						addCommand( Events.SYMPTOME_SELECTED, symptomSelectedCommand ); 	
-
+   						addCommand( Events.TIPP_TO_FAVORITE, changeViewCommand,{ from:"tippId", to:"favoriteId", direction:"left" } ); 	
+   
    						addCommand( Events.OPTIONEN_INIT, optionenInitCommand, { id:"optionenContentId"} ); 	
    						addCommand( Events.SCAN, scanCommand); 	
    						addCommand( Events.OPTIONEN_TO_HOME, changeViewCommand, { from:"optionenId", to:"homeId", direction:"left" } ); 	
    						
    						addCommand( Events.SYMPTOME_INIT, symptomeInitCommand, { id:"symptomeContentId" }); 	
+   						addCommand( Events.SYMPTOME_EXIT, symptomeExitCommand ); 	
    						addCommand( Events.SYMPTOME_TO_FAVORITES, changeViewCommand, { from:"symptomeId", to:"favoritesId", direction:"right" } ); 	
    						  						
    						addCommand( Events.FAVORITES_INIT, favoritesInitCommand, { id:"favoritesContentId" } ); 	
@@ -182,6 +183,8 @@
    						addCommand( Events.FAVORITE_SAVE, favoriteExitCommand, { id : "favoriteContentId", hide: "favoriteSaveId",  save: true }); 	
    						addCommand( Events.FAVORITE_CANCEL, favoriteExitCommand, { id : "favoriteContentId", hide: "favoriteSaveId",  save: false }); 	
    						addCommand( Events.FAVORITE_TO_FAVORITES, changeViewCommand, { from:"favoriteId", to:"favoritesId", direction:"right" }); 	
+   						addCommand( Events.FAVORITE_TO_HOME, changeViewCommand, { from:"favoriteId", to:"homeId", direction:"right" }); 	
+   						addCommand( Events.FAVORITE_TO_TIPP, changeViewCommand, { from:"favoriteId", to:"tippId", direction:"right" }); 	
   						
    						addCommand( Events.SLIDER, sliderCommand, { save:"favoriteSaveId" }); 	
    					},				
@@ -231,6 +234,9 @@
    			};
             
    			app.initialize();
+   			
+
+   			
              			
 
    		</script>

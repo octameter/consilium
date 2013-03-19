@@ -25,24 +25,27 @@ Model.prototype._state =
     introShow: false
 };
 
-//Model.prototype.__defineGetter__("favoritesEdit" function() { return this._state.favoritesEdit;  });
+/**GETTER AND SETTER 
+ * STUPID IE
+ * Model.prototype.__defineGetter__("favoritesEdit" function() { return this._state.favoritesEdit;  });
+ * Model.prototype.__defineSetter__("favoritesEdit", function( value ) { this._state.favoritesEdit = value; });
+ * Model.prototype.__defineGetter__("currentItem", function() { return this._state.currentItem;  });
+ * Model.prototype.__defineSetter__("currentItem", function( value ) { this._state.currentItem = value; });
+ * Model.prototype.__defineGetter__("introShow", function() { return this._state.introShow;  });
+ * Model.prototype.__defineSetter__("introShow", function( value ) { this._state.introShow = value; });
+ */
 Model.prototype.getFavoritesEdit = function() { return this._state.favoritesEdit; };
-//Model.prototype.__defineSetter__("favoritesEdit", function( value ) { this._state.favoritesEdit = value; });
 Model.prototype.setFavoritesEdit = function( value ) { this._state.favoritesEdit = value; };
 
-//Model.prototype.__defineGetter__("currentItem", function() { return this._state.currentItem;  });
 Model.prototype.getCurrentItem = function() { return this._state.currentItem;};
-//Model.prototype.__defineSetter__("currentItem", function( value ) { this._state.currentItem = value; });
 Model.prototype.setCurrentItem = function( value ) { this._state.currentItem = value; };
 
-//Model.prototype.__defineGetter__("introShow", function() { return this._state.introShow;  });
 Model.prototype.getIntroShow = function() { return this._state.introShow;  };
-//Model.prototype.__defineSetter__("introShow", function( value ) { this._state.introShow = value; });
 Model.prototype.setIntroShow = function( value ) { this._state.introShow = value; };
 
 Model.prototype.addFavorite = function( type, id )
 {
-	this.data["favorites"][type].unshift( { id: id, edit: true } );
+	this.data["favorites"][type].unshift( { id: String( id ), edit: true } );
 };
 Model.prototype.hasFavoriteEdit = function( type )
 {
@@ -464,7 +467,7 @@ Model.prototype.dict =
 				]  
 			},		
 	
-		    { id: "10036790", title: "Husten mit Auswurf", kategorie: "Atemwege",zero:0,  farbwert:"rgba(135,206,235,0.9)",
+		    { id: "10036790", title: "Husten mit Auswurf", kategorie: "Atemwege", zero:0,  farbwert:"rgba(135,206,235,0.9)",
 			  grad:[ 	
 				  	{ info:"Sehr starker nicht auszuhaltender Husten mit massiven Auswurf, Selbstversorgung (z.B. Ankleiden und Waschen) unmöglich.", max:100, min:81},
 				  	{ info:"Stark anhaltender Husten mit Auswurf, stark eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:80, min:61 },
@@ -474,7 +477,7 @@ Model.prototype.dict =
 				]  
 			},	
 	
-		   { id: "10015090", title: "Nasenbluten", kategorie: "Blutungen",zero:0,  farbwert:"rgba(70,130,180,0.9)",
+		   { id: "10015090", title: "Nasenbluten", kategorie: "Blutungen", zero:0,  farbwert:"rgba(70,130,180,0.9)",
 			  grad:[ 	
 				  	{ info:"Massiver Blutverlust durch Nasenbluten.", max:100, min:81, tipps:"info1,info2"},
 				  	{ info:"Anhaltendes und nicht stillendes Nasenbluten." ,max:80, min:61 },
@@ -491,7 +494,8 @@ Model.prototype.dict =
 			 	bausteine: 
 			 	[
 	 	           { "Häufigkeit": "Mundspülung mit Nelkenwasser 2-3 mal pro Tag anwenden."},
-	 	           { "Zubereitung": "Kochen Sie hierfür ein paar Gewürznelken in Wasser auf und lassen Sie das Wasser abkühlen."}
+	 	           { "Zubereitung": "Kochen Sie hierfür ein paar Gewürznelken in Wasser auf und lassen Sie das Wasser abkühlen."},
+	 	           { "Grafik": "Akupunktur Punkt P6<br><img src='img/assets/akupunkturP6.png'>"}
 			 	]	
 			 },		 
 			 { id: "info2", title:"Kontakt", kategorie:"Brustzentrum", likes:0, dislikes:0, displayed:0, clicked:0,

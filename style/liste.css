@@ -54,6 +54,9 @@
 .liste > li.selected {
 	background:rgba(100,150,200,0.6);
 }
+.selected {
+	background:rgba(100,150,200,0.6);
+}
 
 .itemIcon {
 		position: absolute;
@@ -84,4 +87,30 @@
 .selectedItem {
 	height:180px !important;
     overflow-x:scroll !important;
+}
+
+/**
+ * ROW
+**/
+.row_title { padding-right:60px; }
+.row_zeit { font-size:90%; }
+.row_detail {
+	width:100%;
+	border-top:1px solid rgba(200,200,200,1);
+	padding:4px;
+	margin:4px;
+}
+.row_caret {
+	position:absolute;
+	right:0px; 
+	width:18px; 
+	height:18px
+}
+.row_value {
+	color:white;
+	border-radius:3px;
+	float:right;
+	font-size:110%;
+	padding:7px;
+	margin-right:20px;
 }

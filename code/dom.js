@@ -189,14 +189,16 @@
 					        
 					        var element = e.touches[0].target;
 
-					        if(element.tagName !== data.watch) 
+					        var property = data.watch.split(":"); 
+					        
+					        if(element[property[0]] !== property[1] ) 
 					        { 
 					            element = element.parentNode;
 					            
-						        if(element.tagName !== data.watch) element = element.parentNode;
+						        if(element[property[0]] !== property[1] ) element = element.parentNode;
 					        }
 					        
-					        if(element.tagName === data.watch) event.element = element;
+					        if(element[property[0]] === property[1] ) event.element = element;
 	
 					        dispatchCommand(commandName, event);
 						});
@@ -212,14 +214,16 @@
 
 					        var element = e.target;
 
-					        if(element.tagName !== data.watch) 
+					        var property = data.watch.split(":"); 
+					        
+					        if(element[property[0]] !== property[1] ) 
 					        { 
 					            element = element.parentNode;
 					            
-						        if(element.tagName !== data.watch) element = element.parentNode;
+						        if(element[property[0]] !== property[1] ) element = element.parentNode;
 					        }
 					        
-					        if(element.tagName === data.watch) event.element = element;
+					        if(element[property[0]] === property[1] ) event.element = element;
 							
 							dispatchCommand(commandName, event);
 						});

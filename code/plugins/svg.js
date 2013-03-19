@@ -179,7 +179,7 @@ Svg.prototype.drawTagebuch = function( datapoi )
     area.setAttribute("stroke","rgba(220,220,220,0.6)");
     area.setAttribute("stroke-width", "2");
 	
-	DOM(area).onTouch( Events.SHOW_AUSWAHL, datapoi );
+	DOM(area).onTouch( Events.HOME_VERLAUF_SELECTED, datapoi );
 
 	this.element.appendChild(area);
 };
@@ -275,7 +275,7 @@ Svg.prototype.drawPunkt = function( punkt )
 	kreis.setAttribute("cx", cx);
 	kreis.setAttribute("cy", cy);
 	
-	DOM(kreis).onTouch( "showAuswahl", punkt );
+	DOM(kreis).onTouch( Events.HOME_VERLAUF_SELECTED, punkt );
 
 	this.element.appendChild(kreis);
 };

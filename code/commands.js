@@ -4,17 +4,19 @@
  */
 Events = 
 {
+	TAP_HANDLER:"tap_handler",
+		
 	HOME_INIT:"homeInit",
 	HOME_INTRO:"homeIntro",
 	HOME_VERLAUF:"refreshChart",
+	HOME_VERLAUF_SELECTED:"home_verlauf_selected",
 	HOME_TO_OPTIONEN:"homeToOptionen",
 	HOME_TO_FAVORITES:"homeToFavorites",
-	HOME_TO_TIPP:"home_to_tipp",
+	HOME_TO_FAVORITE:"home_to_favorite",
 	
 	OPTIONEN_INIT:"optionenInit",
 	OPTIONEN_TO_HOME:"optionenToHome",
 	SCAN:"scan",
-	SHOW_AUSWAHL:"showAuswahl",
 
 	FAVORITES_INIT:"favorites_init",
 	FAVORITES_ROW:"favorites_row",
@@ -32,6 +34,7 @@ Events =
 	FAVORITE_SAVE:"favorite_save",
 	FAVORITE_CANCEL:"favorite_cancel",
 	FAVORITE_TO_FAVORITES:"favorite_to_favorites",
+	FAVORITE_TO_HOME:"favorite_to_favorites",
 	DATAPOINT_DELETE:"data_point",
 	
 	TIPPS_SHOW:"tipps_show",
@@ -39,10 +42,9 @@ Events =
 	TIPP_INIT:"tipp_init",
 	TIPP_LIKED:"tipp_liked",
 	TIPP_EXIT:"tipp_exit",
-	TIPP_TO_HOME:"tipp_to_home",
 	
 	SYMPTOME_INIT:"symptome_init",
-	SYMPTOME_SELECTED:"symptomSelected",
+	SYMPTOME_EXIT:"symptome_exit",
 	SYMPTOME_TO_FAVORITES:"symptomeToFavorites"
 };
 
@@ -101,60 +103,119 @@ function homeVerlaufCommand( data )
 	DOM( "fieldsetAuswahl").addChild( "div", { id:"homeAuswahlInfo"} );
 	DOM( "fieldsetAuswahl").hide();
 	
-	DOM( "homeForm" ).appendChild( "fieldset", { id:"fieldsetTipp"} );
-	DOM( "fieldsetTipp").addChild( "legend", {}, "Empfehlungen" );
-	DOM( "fieldsetTipp").addChild( "ul", { class:"listeNext", id:"homeTipps" }).onTap( Events.TIPPS_SELECTED, { watch:"LI" } );
-	DOM( "fieldsetTipp").hide();	
-	
 	this.model.sortPunkteByTime();
 	
 	DOM().plugins( "svg" ).refresh();
 	
-	dispatchCommand( Events.SHOW_AUSWAHL );
+	dispatchCommand( Events.HOME_VERLAUF_SELECTED );
 };
 
-function showAuswahlCommand( event )
+function homeVerlaufSelectedCommand( event )
 {
-	var prop = this.properties;
-	
-	DOM(prop.info).removeElements().text("");
-    DOM( "homeTipps" ).removeElements();
-	DOM( "fieldsetTipp").hide();
+	var cmd = this.properties;
+
+	/* RESET */
+	DOM(cmd.info).removeElements().text("");
     
+	/* FIGUR SELECTED */
 	if(event.id)
 	{
 		var type = this.model.getType(event.id);
+		var buttonLabel = ( type.kategorie != "Notizen" ) ? event.y +"%" : "&nbsp;";
+		var detailLabel = ( type.kategorie != "Notizen" ) ? "Kategorie: "+this.model.getGrad(event.id, event.y).info : "Text:"+ event.y;
+
+		/* LEGEND */
+		DOM(cmd.legend).text( type.kategorie ); 				
+
+		/* CURRENT ITEM */
+		var exportData = JSON.stringify({x:event.x, y:event.y, id:event.id, command:Events.FAVORITE_TO_HOME});
+		/* ROW */
+		var row = DOM( cmd.info ).addChild("div", { id:"homeRowDiv", style:"cursor:pointer;padding:5px;", data:exportData });	
+		DOM(row).appendChild("span",{ class:"row_title"}, "<b>"+type.title+"</b>");
+		DOM(row).appendChild("span",{ class:"row_value", style:"background:"+type.farbwert}, buttonLabel);
+		DOM(row).appendChild("br");					
+		DOM(row).appendChild("span",{ class:"row_zeit"}, "<i>"+zeit("dd.mm.yyyy hh:mm", event.x )+"</i>" );
+		DOM(row).appendChild("div", { class:"row_caret", style:"top:18px"} ).appendChild( Assets.caret() );
 		
-		DOM(prop.legend).text( type.kategorie ); 				
+		DOM("homeRowDiv").onTap( Events.TAP_HANDLER, { watch: "id:homeRowDiv", command:Events.HOME_EXIT } );
 		
-		DOM(prop.info).appendChild( "span", { }, "<b>"+type.title+"</b>");
-		DOM(prop.info).appendChild( "p", { style:'width:100%;font-size:90%;margin:1px' }, "<i>"+zeit("dd.mm.yyyy hh:mm", event.x )+"</i>");		
-	
-		if( type.kategorie == "Notizen")
-		{
-			DOM( prop.info ).appendChild("a", { class:"button", style:"position:absolute; right:2px; top:10px; font-size:110%;padding-left:5px;padding-right:5px;background:"+type.farbwert}, "&nbsp;&nbsp;&nbsp;");
-			DOM(prop.info).appendChild( "p", { style: 'width:100%;padding-top:5px'}, event.y );						
-		}
-		else
-		{
-			DOM( prop.info ).appendChild("a", { class:"button", style:"position:absolute; right:2px; top:10px; font-size:110%;padding-left:5px;padding-right:5px;background:"+type.farbwert}, event.y +"%");
-			DOM(prop.info).appendChild( "p", { style: 'width:100%;padding-top:0px'}, this.model.getGrad(event.id, event.y).info );	
-			
-			dispatchCommand( Events.TIPPS_SHOW, { type:event.id, value:event.y, key:event.x} );
- 		}
+		/* DETAIL */
+		DOM(cmd.info).appendChild( "p", { class:"row_detail"}, detailLabel );		
 	}
 	else
 	{
-		DOM(prop.legend).text( "Auswahl" ); 
-		DOM(prop.info).text( "Bitte einen Punkt im Graph auwählen.");
+		/* DEFAULT */
+		DOM(cmd.legend).text( "Auswahl" ); 
+		DOM(cmd.info).text( "Ein Figur im Graph berühren, um weitere Information zu erhalten.");
 	}
-
-	DOM("fieldsetAuswahl").show();
 	
+	/* DISPLAY */
+	DOM("fieldsetAuswahl").show();	
+};
+
+function homeExitCommand( event )
+{
+	this.model.setCurrentItem( event );
+	
+	dispatchCommand( Events.HOME_TO_FAVORITE );
+};
+
+function tapHandlerCommand( event )
+{
+	this.properties = this.properties || {};
+	// HANDLE INCOMING TAP EVENTS
+	switch( event.type )
+	{
+		case("start"):
+		{
+			var element = event.element; 
+			this.properties.startX = event.startX;	
+			this.properties.startY = event.startY;	
+			
+	        if(element) 
+	        { 
+	        	element.className = "selected"; this.properties.element = element; 
+	        }
+			break;
+		}
+		case("move"):
+		{		
+	        if (Math.abs(event.clientX - this.properties.startX) > 10 || Math.abs(event.clientY - this.properties.startY) > 10) 
+	        {
+	        	if(this.properties.element){ this.properties.element.className = ""; this.properties.element = null; }
+		    }
+			this.properties.startX = event.clientX;	
+			this.properties.startY = event.clientY;	
+			break;
+		}
+		case("end"):
+		{
+	        if(this.properties.element) 
+	        {    	 
+            	dispatchCommand( event.command,  JSON.parse( this.properties.element.getAttribute("data") ) );
+	        } 
+	        this.properties = null; 
+	        break;
+		}
+		case("cancel"): { this.properties = null; break; }
+	}
 };
 
 function tippsShowCommand ( data )
 {		
+
+	if( DOM("fieldsetTipp").element() )
+	{
+		DOM("fieldsetTipp").removeElements();
+	}
+	else
+	{
+		DOM( "favFormId").appendChild( "fieldset", { id:"fieldsetTipp"} );		
+	}
+	DOM( "fieldsetTipp").addChild( "legend", {}, "Empfehlungen" );
+	DOM( "fieldsetTipp").addChild( "ul", { class:"listeNext", id:"homeTipps" }).onTap( Events.TAP_HANDLER, { watch:"tagName:LI", command:Events.TIPPS_SELECTED } );
+	DOM( "fieldsetTipp").hide();	
+	
 	if( !data ) return;
 	
 	var tipps = this.model.getEmpfehlungen( data );
@@ -172,12 +233,13 @@ function tippsShowCommand ( data )
 		
 		if( likes > 0)
 		{
-			DOM( item1 ).appendChild("span", {  style:"float:right;"}, "<b>Hilfreich für</b>");
+			DOM( item1 ).appendChild("span", {  style:"float:right;padding-right:15px;"}, "<b>Hilfreich für</b>");
 			DOM( item1 ).appendChild("br");	
 			DOM( item1 ).appendChild("span", { style:"font-size:90%;margin:1px;float:left;" }, "<i>"+tipps[i].kategorie+"</i>");				
-
+		
 			var wen = ( likes + dislikes > 1) ? "Patientinnen" : "Patientin";			
-			DOM( item1 ).appendChild("span", {  style:"float:right;"}, "<i>"+likes+" von "+( likes + dislikes )+" " + wen + "<i>");		
+			DOM( item1 ).appendChild("span", {  style:"float:right;padding-right:15px;"}, "<i>"+likes+" von "+( likes + dislikes )+" " + wen + "<i>");		
+			DOM( item1 ).appendChild("div", { class:"row_caret", style:"top:12px;"} ).appendChild( Assets.caret() );
 		}
 		else
 		{
@@ -191,57 +253,12 @@ function tippsShowCommand ( data )
 
 function tippsSelectedCommand( event )
 {
-	this.properties = this.properties || {};
-	// HANDLE INCOMING TAP EVENTS
-	switch( event.type )
-	{
-		case("start"):
-		{
-			var element = event.element;
-
-			this.properties.startX = event.startX;	
-			this.properties.startY = event.startY;	
-			
-	        if(element) {
-	        	element.className = "selected";
-	        	this.properties.element = element;
-	        }
-			
-			break;
-		}
-		case("move"):
-		{		
-	        if (Math.abs(event.clientX - this.properties.startX) > 10 || Math.abs(event.clientY - this.properties.startY) > 10) 
-	        {
-	        	if(this.properties.element)
-	        	{
-	        		this.properties.element.className = "";
-	        		this.properties.element = null;	        		
-	        	}
-		    }
-			this.properties.startX = event.clientX;	
-			this.properties.startY = event.clientY;	
-
-			break;
-		}
-		case("end"):
-		{
-	        if(this.properties.element) 
-	        {    	 
-	        	this.model.setCurrentItem( JSON.parse( this.properties.element.getAttribute("data") ) );
-            	dispatchCommand( Events.HOME_TO_TIPP  );
-	        }
-	        
-	        this.properties = null;
-			break;
-		}
-		case("cancel"):
-		{
-			this.properties = null; break;
-		}
-
-	}
+	this.model.setCurrentItem( event );
+	dispatchCommand( Events.HOME_TO_TIPP  );
 };
+
+
+
 function tippInitCommand( data )
 {
 	DOM( this.properties.id ).removeElements();
@@ -277,7 +294,7 @@ function tippExitCommand( data )
 {
 	this.model.setCurrentItem(null);
 	
-	dispatchCommand( Events.TIPP_TO_HOME );
+	dispatchCommand( Events.TIPP_TO_FAVORITE );
 };
 
 function tippLikedCommand( data )
@@ -326,6 +343,7 @@ function scanCommand( data )
 function symptomeInitCommand( data )
 {
 	DOM( this.properties.id ).removeElements();
+	
 	var liste = DOM( this.properties.id ).addChild("ul", { id:"symptomeListe", class:"liste"} );
 	
 	var items = this.model.getSymptome();
@@ -339,65 +357,17 @@ function symptomeInitCommand( data )
 		DOM( item ).appendChild("span", { style: 'position:absolute; white-space:nowrap; top:25px; left:60px;'}, "<i>" + items[i].kategorie + "</i>");		
 
 	}	
-	DOM( "symptomeListe" ).onTap( Events.SYMPTOME_SELECTED, { watch : "LI" } );
+	DOM( "symptomeListe" ).onTap( Events.TAP_HANDLER, { watch: "tagName:LI", command:Events.SYMPTOME_EXIT } );
 		
 	DOM( this.properties.id ).show();
 };
 
-function symptomSelectedCommand( event )
-{	
-	this.properties = this.properties || {};
-	// HANDLE INCOMING TAP EVENTS
-	switch( event.type )
-	{
-		case("start"):
-		{
-			var element = event.element;
-
-			this.properties.startX = event.startX;	
-			this.properties.startY = event.startY;	
-			
-	        if(element) {
-	        	element.className = "selected";
-	        	this.properties.element = element;
-	        }
-			
-			break;
-		}
-		case("move"):
-		{		
-	        if (Math.abs(event.clientX - this.properties.startX) > 10 || Math.abs(event.clientY - this.properties.startY) > 10) 
-	        {
-	        	if(this.properties.element)
-	        	{
-	        		this.properties.element.className = "";
-	        		this.properties.element = null;	        		
-	        	}
-		    }
-			this.properties.startX = event.clientX;	
-			this.properties.startY = event.clientY;	
-
-			break;
-		}
-		case("end"):
-		{
-	        if(this.properties.element) 
-	        {    	
-            	this.model.addFavorite( "Symptome", this.properties.element.getAttribute("data") );            	
-            	dispatchCommand( Events.SYMPTOME_TO_FAVORITES );
-	        }
-	        
-	        this.properties = null;
-			break;
-		}
-		case("cancel"):
-		{
-			this.properties = null; break;
-		}
-
-	}
-};
-
+function symptomeExitCommand( event ) {
+		
+	this.model.addFavorite( "Symptome", event ); 
+	
+	dispatchCommand( Events.SYMPTOME_TO_FAVORITES);
+}
 
 function favoritesChangeCommand( data )
 {	
@@ -449,6 +419,7 @@ function favoritesInitCommand( data )
 	}
 
 	DOM( this.properties.id ).show();
+	
 };
 
 /**
@@ -465,7 +436,6 @@ function favoritesRowCommand( data )
 	var infoType = this.model.getType( data.row.id );
 	var zeitpunkt = (infoData && !data.edit) ? "<i>Zuletzt: "+zeit('dd.mm.yyyy hh:mm', infoData.x)+"</i>" : "&nbsp;";
 
-	
 	if( infoData && infoType.kategorie == "Notizen") title = "Editieren";
 	
 	// Object {id: "10025482", title: "Subjektives Befinden", kategorie: "Lebensqualität", zero: 100, farbwert: "rgba(154,205,50,0.9)"…}
@@ -552,7 +522,7 @@ function favoriteInitCommand( data )
     // NOW CLIENTWIDTH AVAILABLE
     DOM( this.properties.id ).show();    
     
-	DOM( this.properties.id ).addChild("form").addChild("fieldset", { id: "favoriteFieldsetId" }).addChild("legend", {}, kategorie);
+	DOM( this.properties.id ).addChild("form", {id:"favFormId"}).addChild("fieldset", { id: "favoriteFieldsetId" }).addChild("legend", {}, kategorie);
 	
 	DOM( "favoriteFieldsetId" ).addChild( "div", { id:"favArea"} );
 	DOM( "favArea" ).appendChild( "span", { style: "width:100%;"}, "<b>"+this.model.getType( item.id ).title+"</b>");
@@ -575,7 +545,10 @@ function favoriteInitCommand( data )
 		DOM( "favArea" ).appendChild( "p", { id:"favGradId", style: 'width:100%;padding-top:5px'}, this.model.getGrad(item.id, item.y).info );
 		
 		dispatchCommand( Events.SLIDER, { parent:"favArea", output:"favOutputId", grad:"favGradId", id:item.id, y:item.y} );
+		
+		dispatchCommand( Events.TIPPS_SHOW, { type:item.id, value:item.y, key:item.x} );
 	}
+	
 };
 
 function sliderCommand( event )
@@ -621,9 +594,10 @@ function sliderCommand( event )
 		
 		// Update Displays
 		DOM( event.output ).removeElements().text( event.value  +"%");
-		DOM( event.grad ).removeElements().text( this.model.getGrad( event.id, event.value ).info );		
+		DOM( event.grad ).removeElements().text( this.model.getGrad( event.id, event.value ).info );	
+		
+		dispatchCommand( Events.TIPPS_SHOW, { type:event.id, value:event.value, x: new Date().getTime() } );
 	}
-	
 };
 
 function textChangeCommand( data )
@@ -637,18 +611,26 @@ function textChangeCommand( data )
 
 function favoriteExitCommand( data )
 {
+	var currentItem = this.model.getCurrentItem();
+	
+	var command = currentItem.command;
+	delete currentItem.command;
+	
     DOM( this.properties.hide ).hide();
-    
+  
     DOM( this.properties.id ).removeElements();	
     
     // PERSIT TO MODEL IF SAVE EVENT
 	if( this.properties.save ) {
 		this.model.addPunkt( this.model.getCurrentItem() );
 	}
-	
-	this.model.setCurrentItem( null );
-	
+
+	if(command)
+	dispatchCommand( command );
+	else
 	dispatchCommand( Events.FAVORITE_TO_FAVORITES );
+		
+	this.model.setCurrentItem( null );	
 }
 
 
