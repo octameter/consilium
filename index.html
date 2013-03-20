@@ -75,10 +75,9 @@
         <section id="tippId" class="view right">
         
         	<header>
+        		<button id="tippBackButton" class="button-text colorless">Zurück</button>
         		<h2>Empfehlung</h2>
-        		<button id="tippBackButton" class="button-text colorless">Zurück
                 <!-- <img src="img/icon/right.png" width="32"> -->
-        		</button>
         	</header>
         	
         	<article id="tippContentId"></article>
@@ -158,7 +157,8 @@
    						addCommand( Events.TIPP_INIT, tippInitCommand, { id:"tippContentId"} ); 	
    						addCommand( Events.TIPP_LIKED, tippLikedCommand ); 	
    						addCommand( Events.TIPP_EXIT, tippExitCommand ); 	
-   						addCommand( Events.TIPP_TO_FAVORITE, changeViewCommand,{ from:"tippId", to:"favoriteId", direction:"left" } ); 	
+   						/* BACK */
+   						addCommand( Events.TIPP_TO_FAVORITE, changeViewCommand,{ from:"tippId", to:"favoriteId", direction:"right" } ); 	
    
    						addCommand( Events.OPTIONEN_INIT, optionenInitCommand, { id:"optionenContentId"} ); 	
    						addCommand( Events.SCAN, scanCommand); 	
@@ -181,10 +181,12 @@
 
    						addCommand( Events.FAVORITE_INIT, favoriteInitCommand, { id : "favoriteContentId", save:"favoriteSaveId"  } ); 		
    						addCommand( Events.FAVORITE_SAVE, favoriteExitCommand, { id : "favoriteContentId", hide: "favoriteSaveId",  save: true }); 	
-   						addCommand( Events.FAVORITE_CANCEL, favoriteExitCommand, { id : "favoriteContentId", hide: "favoriteSaveId",  save: false }); 	
-   						addCommand( Events.FAVORITE_TO_FAVORITES, changeViewCommand, { from:"favoriteId", to:"favoritesId", direction:"right" }); 	
+   						addCommand( Events.FAVORITE_CANCEL, favoriteExitCommand, { id : "favoriteContentId", hide: "favoriteSaveId",  save: false });
+   						/* BACK */
+   						addCommand( Events.FAVORITE_TO_FAVORITES, changeViewCommand, { from:"favoriteId", to:"favoritesId", direction:"right" }); 
    						addCommand( Events.FAVORITE_TO_HOME, changeViewCommand, { from:"favoriteId", to:"homeId", direction:"right" }); 	
-   						addCommand( Events.FAVORITE_TO_TIPP, changeViewCommand, { from:"favoriteId", to:"tippId", direction:"right" }); 	
+   						/* GO */
+   						addCommand( Events.FAVORITE_TO_TIPP, changeViewCommand, { from:"favoriteId", to:"tippId", direction:"left" }); 	
   						
    						addCommand( Events.SLIDER, sliderCommand, { save:"favoriteSaveId" }); 	
    					},				

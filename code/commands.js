@@ -7,6 +7,7 @@ Events =
 	TAP_HANDLER:"tap_handler",
 		
 	HOME_INIT:"homeInit",
+	HOME_EXIT:"homeExit",
 	HOME_INTRO:"homeIntro",
 	HOME_VERLAUF:"refreshChart",
 	HOME_VERLAUF_SELECTED:"home_verlauf_selected",
@@ -34,7 +35,8 @@ Events =
 	FAVORITE_SAVE:"favorite_save",
 	FAVORITE_CANCEL:"favorite_cancel",
 	FAVORITE_TO_FAVORITES:"favorite_to_favorites",
-	FAVORITE_TO_HOME:"favorite_to_favorites",
+	FAVORITE_TO_HOME:"favorite_to_home",
+	FAVORITE_TO_TIP:"favorite_to_tip",
 	DATAPOINT_DELETE:"data_point",
 	
 	TIPPS_SHOW:"tipps_show",
@@ -42,6 +44,7 @@ Events =
 	TIPP_INIT:"tipp_init",
 	TIPP_LIKED:"tipp_liked",
 	TIPP_EXIT:"tipp_exit",
+	TIPP_TO_FAVORITE:"tipp_to_favorite",
 	
 	SYMPTOME_INIT:"symptome_init",
 	SYMPTOME_EXIT:"symptome_exit",
@@ -65,7 +68,7 @@ function homeInitCommand( event )
 {	
 	if( event.introExit ) this.model.setIntroShow( false );
 	
-	( this.model.getIntroShow() ) ? dispatchCommand( Events.HOME_INTRO ) : dispatchCommand( Events.HOME_VERLAUF );
+	( this.model.getStateIntro() ) ? dispatchCommand( Events.HOME_INTRO ) : dispatchCommand( Events.HOME_VERLAUF );
 	
 	DOM( this.properties.id ).show();
 };
@@ -122,7 +125,7 @@ function homeVerlaufSelectedCommand( event )
 	{
 		var type = this.model.getType(event.id);
 		var buttonLabel = ( type.kategorie != "Notizen" ) ? event.y +"%" : "&nbsp;";
-		var detailLabel = ( type.kategorie != "Notizen" ) ? "Kategorie: "+this.model.getGrad(event.id, event.y).info : "Text:"+ event.y;
+		var detailLabel = ( type.kategorie != "Notizen" ) ? "<b>Definition:</b> "+this.model.getGrad(event.id, event.y).info : "<b>Memo:</b> "+ event.y;
 
 		/* LEGEND */
 		DOM(cmd.legend).text( type.kategorie ); 				
@@ -135,7 +138,7 @@ function homeVerlaufSelectedCommand( event )
 		DOM(row).appendChild("span",{ class:"row_value", style:"background:"+type.farbwert}, buttonLabel);
 		DOM(row).appendChild("br");					
 		DOM(row).appendChild("span",{ class:"row_zeit"}, "<i>"+zeit("dd.mm.yyyy hh:mm", event.x )+"</i>" );
-		DOM(row).appendChild("div", { class:"row_caret", style:"top:18px"} ).appendChild( Assets.caret() );
+		DOM(row).appendChild("div", { class:"row_caret", style:"top:24px"} ).appendChild( Assets.caret() );
 		
 		DOM("homeRowDiv").onTap( Events.TAP_HANDLER, { watch: "id:homeRowDiv", command:Events.HOME_EXIT } );
 		
@@ -155,7 +158,7 @@ function homeVerlaufSelectedCommand( event )
 
 function homeExitCommand( event )
 {
-	this.model.setCurrentItem( event );
+	this.model.setStateSymptom( event );
 	
 	dispatchCommand( Events.HOME_TO_FAVORITE );
 };
@@ -225,21 +228,20 @@ function tippsShowCommand ( data )
 		var likes = parseInt( tipps[i].likes );
 		var dislikes = parseInt( tipps[i].dislikes );
 
-		var exportData = { data : data, tipp:tipps[i] };
+		var exportData =  tipps[i];
 		
-		var item1 = DOM( "homeTipps" ).addChild( "li", {style:"padding-top:5px;padding-bottom:5px;", data: JSON.stringify( exportData ) });
+		var item1 = DOM( "homeTipps" ).addChild( "li", { style:"padding-top:5px;padding-bottom:5px;", data: JSON.stringify( exportData ) });
 		
 		DOM( item1 ).appendChild("span", { style:"padding-top:10px;"}, "<b>"+tipps[i].title+"</b>");	
 		
-		if( likes > 0)
+		if( (likes + dislikes) > 0)
 		{
-			DOM( item1 ).appendChild("span", {  style:"float:right;padding-right:15px;"}, "<b>Hilfreich für</b>");
+			DOM( item1 ).appendChild("span", { style:"float:right;padding-right:13px;"}, "<i>Empfohlen</i>");
 			DOM( item1 ).appendChild("br");	
 			DOM( item1 ).appendChild("span", { style:"font-size:90%;margin:1px;float:left;" }, "<i>"+tipps[i].kategorie+"</i>");				
-		
-			var wen = ( likes + dislikes > 1) ? "Patientinnen" : "Patientin";			
-			DOM( item1 ).appendChild("span", {  style:"float:right;padding-right:15px;"}, "<i>"+likes+" von "+( likes + dislikes )+" " + wen + "<i>");		
-			DOM( item1 ).appendChild("div", { class:"row_caret", style:"top:12px;"} ).appendChild( Assets.caret() );
+				
+			DOM( item1 ).appendChild("span", { style:"float:right;padding-right:13px;"}, "<i>" +likes+" von "+( likes + dislikes )+ "<i>");		
+			DOM( item1 ).appendChild("div", { class:"row_caret", style:"top:16px;"} ).appendChild( Assets.caret() );
 		}
 		else
 		{
@@ -253,8 +255,8 @@ function tippsShowCommand ( data )
 
 function tippsSelectedCommand( event )
 {
-	this.model.setCurrentItem( event );
-	dispatchCommand( Events.HOME_TO_TIPP  );
+	this.model.setStateTipp( event );
+	dispatchCommand( Events.FAVORITES_TO_TIPP  );
 };
 
 
@@ -265,16 +267,16 @@ function tippInitCommand( data )
 	
 	//"data":{"type":"10015090","value":"90","key":1363265891430},
 	//"tipp":{"id":"info1","title":"Nelkenwasser","kategorie":"Selbsthilfe","likes":1,"dislikes":0,"displayed":0,"clicked":0,"bausteine":[{"Häufigkeit":"Mundspülung mit Nelkenwasser 2-3 mal pro Tag"},{"Zubereitung":"Kochen Sie hierfür ein paar Gewürznelken in Wasser auf und lassen Sie das Wasser abkühlen."}]}} 
-	var item = this.model.getCurrentItem();
+	var tipp = this.model.getStateTipp();
 
     DOM( this.properties.id ).show();    
     
-	DOM( this.properties.id ).addChild("form").addChild("fieldset", { id: "tippFieldsetId" }).addChild("legend", {}, item.tipp.kategorie);
+	DOM( this.properties.id ).addChild("form").addChild("fieldset", { id: "tippFieldsetId" }).addChild("legend", {}, tipp.kategorie);
 	
 	DOM( "tippFieldsetId" ).addChild( "div", { id:"tipArea"} );
-	DOM( "tipArea" ).appendChild( "span", { style: "width:100%;"}, "<b>"+item.tipp.title+"</b>");
+	DOM( "tipArea" ).appendChild( "p", { style: "width:100%;"}, "<b>"+tipp.title+"</b>");
 
-	var bausteine = item.tipp.bausteine;
+	var bausteine = tipp.bausteine;
 	// Bausteine
 	for( var i = 0; i< bausteine.length; i++ )
 	{		
@@ -286,21 +288,29 @@ function tippInitCommand( data )
 		}
 	}
 	
-	DOM( "tipArea" ).addChild("a", { style:"float:left;", class:"button-action green"}, "Hilfreich").onTouch( Events.TIPP_LIKED, { liked:true } );
-	DOM( "tipArea" ).addChild("a", { style:"float:right;", class:"button-action grey"}, "Nicht hilfreich").onTouch( Events.TIPP_LIKED, { liked:false });	
-};
-
-function tippExitCommand( data )
-{
-	this.model.setCurrentItem(null);
+	if( ! this.model.trackPunktLiked() )
+	{
+		DOM( "tipArea" ).addChild("a", { style:"float:left;", class:"button-action green"}, "Hilfreich").onTouch( Events.TIPP_LIKED, { liked:true } );
+		DOM( "tipArea" ).addChild("a", { style:"float:right;", class:"button-action grey"}, "Nicht hilfreich").onTouch( Events.TIPP_LIKED, { liked:false });	
+	}
 	
-	dispatchCommand( Events.TIPP_TO_FAVORITE );
+	this.model.trackPunktTipp("clicked");
 };
 
 function tippLikedCommand( data )
 {
+	this.model.setTipp( data );
 	
+	dispatchCommand( Events.TIPP_EXIT );
 };
+
+function tippExitCommand( data )
+{
+	this.model.setStateTipp(null);
+	
+	dispatchCommand( Events.TIPP_TO_FAVORITE );
+};
+
 
 function optionenInitCommand( data )
 {
@@ -352,7 +362,7 @@ function symptomeInitCommand( data )
 	{		
 		var item = DOM( liste ).appendChild("li", { data: items[i].id });
 		
-		DOM( item ).appendChild("div", { style: 'background:'+items[i].farbwert }, "+" ).className = "itemIcon";
+		DOM( item ).appendChild("div", { style: 'background:'+items[i].farbwert }, "&nbsp;" ).className = "itemIcon";
 		DOM( item ).appendChild("span", { style: 'position:absolute; white-space:nowrap; top:5px; left:60px;' }, "<b>"+items[i].title+"</b>");
 		DOM( item ).appendChild("span", { style: 'position:absolute; white-space:nowrap; top:25px; left:60px;'}, "<i>" + items[i].kategorie + "</i>");		
 
@@ -371,22 +381,20 @@ function symptomeExitCommand( event ) {
 
 function favoritesChangeCommand( data )
 {	
-    var edit = !this.model.getFavoritesEdit();
+    var edit = !this.model.getStateFavEdit();
 	
 	if(edit)
 	{
 		DOM( this.properties.editButton ).text("Fertig").attrib("className").replace("colorless","grey");
 		DOM( this.properties.backButton ).hide();
-        this.model.setFavoritesEdit( true );
+		this.model.setStateFavEdit( true );
 	}
 	else
 	{
 		DOM( this.properties.editButton ).text("Ändern").attrib("className").replace("grey","colorless");		
 		DOM( this.properties.backButton ).show();
-        this.model.setFavoritesEdit( true );
+		this.model.setStateFavEdit( false );
 	}
-    
-    this.model.setFavoritesEdit( edit );
 	
 	dispatchCommand( Events.FAVORITES_INIT );		
 	
@@ -406,8 +414,10 @@ function favoritesInitCommand( data )
 		DOM( "favFormId" ).addChild("fieldset", { id: favorite+"id" } ).addChild( "legend", {}, favorite);
 
 		var liste = DOM( favorite+"id" ).appendChild("ul", { class: "listeNext"} );
-        
-        if((this.model.getFavoritesEdit() && this.model.hasFavoriteEdit( favorite ) || this.model.data.favorites[ favorite].length == 0 ) )
+		
+		//DOM( liste ).onTap( )
+
+        if((this.model.getStateFavEdit() && this.model.hasFavoriteEdit( favorite ) || this.model.data.favorites[ favorite ].length == 0 ) )
         {
             dispatchCommand( Events.FAVORITES_ROW, { row: {}, display: liste });
         }
@@ -451,7 +461,7 @@ function favoritesRowCommand( data )
 
 	DOM( item ).appendChild("p",{ style:"width:100%;font-size:90%;margin:1px;float:left;" }, zeitpunkt);	
 
-	if( !this.model.getFavoritesEdit() && data.row.id)
+	if( !this.model.getStateFavEdit() && data.row.id)
 	{		
 		var button = DOM( item ).appendChild("a", { class:"button grey", style:"position:absolute; right:2px; top:10px; font-size:110%;padding-left:5px;padding-right:5px;"}, title);
 		DOM( button ).onTouch(Events.FAVORITES_ITEM, { target:item, punkt:infoData, type:infoType } );		
@@ -461,7 +471,7 @@ function favoritesRowCommand( data )
 		var button = DOM( item ).appendChild("a", { class:"button-action blue", style:"position:absolute; right:2px; top:10px; font-size:100%;"}, "Hinzufügen");
 		DOM( button ).onTouch( Events.FAVORITES_TO_SYMPTOME  );	
 	}
-	else if(this.model.getFavoritesEdit() && data.row.edit)
+	else if(this.model.getStateFavEdit() && data.row.edit)
 	{
 		var button = DOM( item ).appendChild("a", { class:"button red", style:"position:absolute; right:2px; top:10px; font-size:100%;"}, "Entfernen");
 		DOM( button ).onTouch(Events.FAVORITES_DELETE, { type:"Symptome", item: { id: data.row.id} } );		
@@ -494,7 +504,7 @@ function favoritesEditCommand( data )
 {		
 	var value = data.punkt || { y:data.type.zero };
 	
-	this.model.setCurrentItem( { x:value.x, y:value.y, id:data.type.id } );
+	this.model.setStateSymptom( { x:value.x, y:value.y, id:data.type.id, command: Events.FAVORITE_TO_FAVORITES } );
 	dispatchCommand( Events.FAVORITES_TO_FAVORITE );		
 };
 
@@ -505,10 +515,11 @@ function favoritesEditCommand( data )
  */
 function favoriteInitCommand( data )
 {
-	var item = this.model.getCurrentItem(); 
+	var item = this.model.getStateSymptom(); 
 
 	var kategorie = this.model.getType( item.id ).kategorie;
-
+	
+	
 	if(!item.x)
 	{
 		var last = this.model.getPunkt( item.id );
@@ -522,24 +533,42 @@ function favoriteInitCommand( data )
     // NOW CLIENTWIDTH AVAILABLE
     DOM( this.properties.id ).show();    
     
-	DOM( this.properties.id ).addChild("form", {id:"favFormId"}).addChild("fieldset", { id: "favoriteFieldsetId" }).addChild("legend", {}, kategorie);
+	DOM( this.properties.id ).addChild("form", {id:"favitFormId"});
+		
+	// ZEITPUNKT
+	DOM( "favitFormId").addChild("fieldset", { id: "favZeitpunktId" }).addChild("legend", {}, "Zeitpunkt");
+	DOM( "favZeitpunktId" ).addChild("div", {id:"zeitArea" });
+	
+	
+	DOM( "zeitArea" ).addChild("select", { class:"optionen" }).addSelect(1,31, zeit("dd"));
+	DOM( "zeitArea" ).addChild("select", { class:"optionen" }).addSelect(1,31, zeit("MM"));
+	DOM( "zeitArea" ).addChild("select", { class:"optionen",  }).addSelect(2013,2022, zeit("yyyy"));
+
+	DOM( "zeitArea" ).addChild("select", { class:"optionen", style:"margin-left:10px;" }).addSelect(1,31, zeit("hh"));
+	DOM( "zeitArea" ).addChild("select", { class:"optionen" }).addSelect(1,31, zeit("mm"));
+
+
+	//DOM( "zeitArea" ).addChild("span", {}, zeit("dd.mm.yyyy hh:mm"));
+	//DOM( "zeitArea" ).addChild("span", {}, "Später");
+	
+	DOM( "favitFormId").addChild("fieldset", { id: "favoriteFieldsetId" }).addChild("legend", {}, kategorie);
 	
 	DOM( "favoriteFieldsetId" ).addChild( "div", { id:"favArea"} );
 	DOM( "favArea" ).appendChild( "span", { style: "width:100%;"}, "<b>"+this.model.getType( item.id ).title+"</b>");
     
-	if( kategorie == "Notizen")
-	{
-		DOM( "favArea" ).appendChild( "p", { style:'width:100%;font-size:90%;margin:1px' }, (item.x) ? "<i>Zuletzt: "+zeit('dd.mm.yyyy hh:mm', item.x)+"</i>" :"");	
-		DOM( "favArea" ).addChild("textarea", { id:"favTextareaId", style:"font-size:100%;width:100%; height:200px;padding:3px;-webkit-user-select: text;", name:"notizEintrag", placeholder:"Text eingeben"}, item.y);
-		DOM( "favArea" ).addChild("input", { type:"reset", class:"button-action grey"}).onTouch( Events.TEXT_CHANGE, { id:item.id, save: this.properties.save } );
-		
-		if(item.x)
-		DOM( "favArea" ).addChild("a", { style:"float:right", class:"button-action red"}, "Löschen").onTouch( Events.DATAPOINT_DELETE, item);
-		
-		DOM( "favTextareaId" ).onChange( Events.TEXT_CHANGE, { id:item.id, save: this.properties.save } );
-	}
-	else
-	{
+//	if( kategorie == "Notizen")
+//	{
+//		DOM( "favArea" ).appendChild( "p", { style:'width:100%;font-size:90%;margin:1px' }, (item.x) ? "<i>Zuletzt: "+zeit('dd.mm.yyyy hh:mm', item.x)+"</i>" :"");	
+//		DOM( "favArea" ).addChild("textarea", { id:"favTextareaId", style:"font-size:100%;width:100%; height:200px;padding:3px;-webkit-user-select: text;", name:"notizEintrag", placeholder:"Text eingeben"}, item.y);
+//		DOM( "favArea" ).addChild("input", { type:"reset", class:"button-action grey"}).onTouch( Events.TEXT_CHANGE, { id:item.id, save: this.properties.save } );
+//		
+//		if(item.x)
+//		DOM( "favArea" ).addChild("a", { style:"float:right", class:"button-action red"}, "Löschen").onTouch( Events.DATAPOINT_DELETE, item);
+//		
+//		DOM( "favTextareaId" ).onChange( Events.TEXT_CHANGE, { id:item.id, save: this.properties.save } );
+//	}
+//	else
+//	{
 		DOM( "favArea" ).appendChild( "span", { id:"favOutputId", style: "position:absolute; top:10px; right:2px; font-size:110%" }, item.y +"%");
 		DOM( "favArea" ).appendChild( "p", { style:'width:100%;font-size:90%;margin:1px' }, (item.x) ? "<i>Zuletzt: "+zeit('dd.mm.yyyy hh:mm',item.x)+"</i>" :"");		
 		DOM( "favArea" ).appendChild( "p", { id:"favGradId", style: 'width:100%;padding-top:5px'}, this.model.getGrad(item.id, item.y).info );
@@ -547,7 +576,7 @@ function favoriteInitCommand( data )
 		dispatchCommand( Events.SLIDER, { parent:"favArea", output:"favOutputId", grad:"favGradId", id:item.id, y:item.y} );
 		
 		dispatchCommand( Events.TIPPS_SHOW, { type:item.id, value:item.y, key:item.x} );
-	}
+	//}
 	
 };
 
@@ -587,7 +616,7 @@ function sliderCommand( event )
 	if(event.value) 
 	{
 		// Persist to Model
-		this.model.setCurrentItem( { x: new Date().getTime(), y:event.value, id:event.id, } ); 
+		this.model.setStateSymptom( { x: new Date().getTime(), y:event.value, id:event.id, } ); 
 		
 		// SHOW SAVE BUTTON
 		DOM( this.properties.save ).show();
@@ -611,7 +640,7 @@ function textChangeCommand( data )
 
 function favoriteExitCommand( data )
 {
-	var currentItem = this.model.getCurrentItem();
+	var currentItem = this.model.getStateSymptom();
 	
 	var command = currentItem.command;
 	delete currentItem.command;
@@ -622,15 +651,14 @@ function favoriteExitCommand( data )
     
     // PERSIT TO MODEL IF SAVE EVENT
 	if( this.properties.save ) {
-		this.model.addPunkt( this.model.getCurrentItem() );
+		this.model.addPunkt( this.model.getStateSymptom() );
 	}
 
-	if(command)
+	console.log( command );
+	
 	dispatchCommand( command );
-	else
-	dispatchCommand( Events.FAVORITE_TO_FAVORITES );
 		
-	this.model.setCurrentItem( null );	
+	this.model.setStateSymptom( null );	
 }
 
 

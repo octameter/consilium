@@ -1,52 +1,11 @@
-function Model() {
-	
-	this.msProTag = Number(24 * 60 * 60 * 1000);
-    
-}
+function Model() {}
 
-Model.prototype.atomuhr = {
-
-		zeit : function() 
-		{		
-			return new Date().getTime();
-		}
-};
-
-Model.prototype.hasArzt = function()
-{
-	return false;		
-};
-
-
-Model.prototype._state = 
-{
-    currentItem: null,
-    favoritesEdit: false,
-    introShow: false
-};
-
-/**GETTER AND SETTER 
- * STUPID IE
- * Model.prototype.__defineGetter__("favoritesEdit" function() { return this._state.favoritesEdit;  });
- * Model.prototype.__defineSetter__("favoritesEdit", function( value ) { this._state.favoritesEdit = value; });
- * Model.prototype.__defineGetter__("currentItem", function() { return this._state.currentItem;  });
- * Model.prototype.__defineSetter__("currentItem", function( value ) { this._state.currentItem = value; });
- * Model.prototype.__defineGetter__("introShow", function() { return this._state.introShow;  });
- * Model.prototype.__defineSetter__("introShow", function( value ) { this._state.introShow = value; });
- */
-Model.prototype.getFavoritesEdit = function() { return this._state.favoritesEdit; };
-Model.prototype.setFavoritesEdit = function( value ) { this._state.favoritesEdit = value; };
-
-Model.prototype.getCurrentItem = function() { return this._state.currentItem;};
-Model.prototype.setCurrentItem = function( value ) { this._state.currentItem = value; };
-
-Model.prototype.getIntroShow = function() { return this._state.introShow;  };
-Model.prototype.setIntroShow = function( value ) { this._state.introShow = value; };
 
 Model.prototype.addFavorite = function( type, id )
 {
 	this.data["favorites"][type].unshift( { id: String( id ), edit: true } );
 };
+
 Model.prototype.hasFavoriteEdit = function( type )
 {
     var found = false;
@@ -75,7 +34,7 @@ Model.prototype.removeFavorite = function( type, item )
 Model.prototype.getMinX = function()
 {	
 	// Default 14 Tage zurück
-	var minX = this.atomuhr.zeit() - ( 14 * 24 * 60 * 60 * 1000 );
+	var minX = new Date().getTime() - ( 14 * 24 * 60 * 60 * 1000 );
 
 	var size = this.data.punkte.length;
 	
@@ -119,7 +78,7 @@ Model.prototype.sortPunkteByTime = function(id)
  */
 Model.prototype.getSymptome = function()
 {    
-	var symptome = this.dict.symptome.notIn( "id", this.data.favorites.Symptome );
+	var symptome = this.dict["Symptome"].notIn( "id", this.data.favorites.Symptome );
     
     symptome.sortABC( "title" );
 
@@ -175,7 +134,7 @@ Model.prototype.getTypesByPunkt = function( id )
 **/
 Model.prototype.getType = function( id )
 {
-	var dictionary = [].concat(this.dict.symptome, this.dict.bewertung, this.dict.tagebuch, this.dict.tipps);
+	var dictionary = [].concat(this.dict["Symptome"], this.dict["Bewertung"], this.dict["Tagebuch"], this.dict["Tipps"]);
 	
 	for( var i = 0; i < dictionary.length; i++)
 	{
@@ -222,27 +181,78 @@ Model.prototype.removePunkt = function( punkt )
 };
 
 /**
+* DATA  {Type, Value, Key (x)}
+* RETURNS TIPS ACCORDING TO Y RANGE
+**/
+Model.prototype.getEmpfehlungen = function( data )
+{	
+	var tippsIds = this.getGrad(data.type, data.value).tipps;
+	
+	var _tipps = [];
+
+	if(!tippsIds) return _tipps;
+	
+	var rows = tippsIds.split(",");	
+ 
+	for( var i = 0; i < rows.length; i++)
+	{
+		_tipps.push( this.getType( rows[i] ));
+	}
+	
+    return _tipps;
+};
+/**GETTER AND SETTER 
+ * STUPID IE
+ * Model.prototype.__defineGetter__("favoritesEdit" function() { return this._state.favoritesEdit;  });
+ * Model.prototype.__defineSetter__("favoritesEdit", function( value ) { this._state.favoritesEdit = value; });
+ * Model.prototype.__defineGetter__("currentItem", function() { return this._state.currentItem;  });
+ * Model.prototype.__defineSetter__("currentItem", function( value ) { this._state.currentItem = value; });
+ * Model.prototype.__defineGetter__("introShow", function() { return this._state.introShow;  });
+ * Model.prototype.__defineSetter__("introShow", function( value ) { this._state.introShow = value; });
+ */
+Model.prototype.getStateFavEdit = function() { return this._state.favoritesEdit; };
+Model.prototype.setStateFavEdit = function( value ) { this._state.favoritesEdit = value; };
+Model.prototype.getStateSymptom = function() { return this._state.currentItem;};
+Model.prototype.setStateSymptom = function( value ) { this._state.currentItem = value; };
+Model.prototype.getStateTipp = function() { return this._state.tipItem;};
+Model.prototype.setStateTipp = function( value ) { this._state.tipItem = value; };
+Model.prototype.getStateIntro = function() { return this._state.introShow;  };
+Model.prototype.setStateIntro = function( value ) { this._state.introShow = value; };
+
+/**
+ * APP STATUS
+ */ 
+Model.prototype._state = 
+{
+    currentItem: null,
+    favoritesEdit: false,
+    tipItem: null,
+    introShow: false
+};
+/**
  * Punkt x:LocalTimeInMs, y [0 - 100], id: type.id
  */
 Model.prototype.data = 
 {
-		punkte : 
+		punkte: 
 		[
-          	{"x":1359158900701,"y":84,"id":"10016256"},
-          	{"x":1359176902602,"y":61,"id":"10016256"},
-          	{"x":1359194904050,"y":40,"id":"10025482"},
-          	{"x":1359212904578,"y":78,"id":"10016256"},
-          	{"x":1359258900701,"y":84,"id":"10016256"},
-          	{"x":1359276902602,"y":61,"id":"10016256"},
-          	{"x":1359294904050,"y":40,"id":"10025482"},
-          	{"x":1359312904578,"y":78,"id":"10016256"},
-          	{"x":1359330905202,"y":87,"id":"10025482"},
-          	{"x":1359348906115,"y":59,"id":"10016256"},
-          	{"x":1359366906675,"y":37,"id":"10013963"},
-          	{"x":1359384907275,"y":69,"id":"10016256"},
-          	{"x": 1363265891430, "y": "adsf", "id": "tagebuchPrivat"},
-          	{"x": 1363265891430, "y": "90", "id": "10015090"}
-	    ],
+			 {"x":1359294904050,"y":40,"id":"10025482"},
+			 {"x":1359330905202,"y":87,"id":"10025482"},
+			 {"x":1359194904050,"y":40,"id":"10025482"},			 	
+
+		 	 {"x":1359158900701,"y":84,"id":"10016256"},
+		 	 {"x":1359176902602,"y":61,"id":"10016256"},
+		 	 {"x":1359212904578,"y":78,"id":"10016256"},
+		 	 {"x":1359258900701,"y":84,"id":"10016256"},
+		 	 {"x":1359276902602,"y":61,"id":"10016256"},
+		 	 {"x":1359312904578,"y":78,"id":"10016256"},
+		 	 {"x":1359348906115,"y":59,"id":"10016256"},
+		 	 {"x":1359366906675,"y":37,"id":"10013963"},
+		 	 {"x":1359384907275,"y":69,"id":"10016256"},	 
+		 	 {"x":1363265891430, "y": "90", "id": "10015090"},
+
+		 	 {"x":1363265891430, "y": "adsf", "id": "privat"} 	 	
+		],
 	    favorites:
 	    {
 	    	Bewertung:
@@ -256,15 +266,92 @@ Model.prototype.data =
 	     	],
 			Tagebuch:
 			[
-			 	{ id: "tagebuchPrivat"}
+			 	{ id: "privat"}
 			 ]
 	    }
 };
 
+// TIPP DISPLAY COUNTER
+// data { liked: true || false }
+Model.prototype.setTipp = function( data )
+{
+	var tip = this.getStateTipp();
+	
+	( data.liked ) ? tip.likes++ : tip.dislikes++;
+	this.dict["Tipps"].changeItem( tip.id, "likes", tip.likes);
+	this.dict["Tipps"].changeItem( tip.id, "dislikes", tip.dislikes);
+	
+	this.trackPunktTipp( (data.liked) ? "liked" : "disliked" );
+};
+/**
+ * data { property : "liked" || "disliked" || "clicked" }
+ */
+Model.prototype.trackPunktTipp = function( property )
+{
+	var tippId = this.getStateTipp().id;
+	
+	for( var i = 0; i < this.data.punkte.length; i++)
+	{
+		var punkt = this.data.punkte[i];
+				
+		if( punkt.id == this.getStateSymptom().id && punkt.x == this.getStateSymptom().x)
+		{
+			if( ! punkt.tipps ) this.data.punkte[i].tipps = [];
+
+			var tipp = this.data.punkte[i].tipps.getId( tippId );
+			
+			if(tipp)
+			{
+				var value = tipp[property] || 0;
+				this.data.punkte[i].tipps.changeItem(tippId, property, value + 1);
+			}
+			else
+			{
+				var trackTipp = {};
+				
+				trackTipp[ "id" ] = tippId; 				
+				trackTipp[ property ] = 1; 
+				
+				this.data.punkte[i].tipps.push( trackTipp );					
+			}
+		}
+	}
+};
+
+Model.prototype.trackPunktLiked = function()
+{
+	var tippId = this.getStateTipp().id;
+	
+	for( var i = 0; i < this.data.punkte.length; i++)
+	{
+		var punkt = this.data.punkte[i];
+				
+		if( punkt.id == this.getStateSymptom().id && punkt.x == this.getStateSymptom().x)
+		{
+			if( ! punkt.tipps ) this.data.punkte[i].tipps = [];
+
+			var tipp = this.data.punkte[i].tipps.getId( tippId );
+			
+			if(tipp)
+			return (tipp.liked || tipp.disliked);
+		}
+	}
+	return false;
+};
+
+
+
+//Model.prototype.hasPunkteTipp = function()
+//{
+//	var tip = this.getStateTipp();
+//	var item = this.getStateSymptom();
+//	
+//	return .tipps
+//};
 
 Model.prototype.dict =
 {
-		intro:
+		Intro:
 		[
 		 	{ id: "introDefault", title:"Liebe Patientin",
 		 		bausteine: [
@@ -274,7 +361,7 @@ Model.prototype.dict =
 		 		            ]		 						  
 		 	}
 		 ],
-		bewertung:
+		Bewertung:
 		[
 			{ id: "10025482", title:"Subjektives Befinden", kategorie:"Lebensqualität", zero:100, farbwert:"rgba(154,205,50,0.9)",
 				  grad:[ 	
@@ -286,11 +373,13 @@ Model.prototype.dict =
 					]			 
 			}
 		],
-		tagebuch :
+		Tagebuch :
 		[
-		 	{ id: "tagebuchPrivat", title:"Private Notiz", kategorie:"Notizen", zero:"", farbwert:"rgba(255,100,100,0.9)"}
+		 	{ id: "privat", title:"Private Memo", kategorie:"Notizen", zero:"", farbwert:"rgba(255,100,100,0.9)"},
+		 	{ id: "diagnose", title:"Diagnose", kategorie:"Notizen", zero:"", farbwert:"rgba(255,100,100,0.9)"},
+		 	{ id: "zyklus", title:"Zyklus", kategorie:"Notizen", zero:"", farbwert:"rgba(255,100,100,0.9)"}
 		 ],
-		symptome : 
+		Symptome : 
 		[			 
 			{ id: "10016256", title: "Müdigkeit", kategorie: "Allgemeinsymptome", zero:0, farbwert :"rgba(0,139,139,0.9)",
 			  grad:[ 	
@@ -488,9 +577,9 @@ Model.prototype.dict =
 			}
 		],
 		
-		tipps:
+		Tipps:
 		[
-			 { id: "info1", title:"Nelkenwasser", kategorie:"Selbsthilfe", likes:1, dislikes:0, displayed:0, clicked:0,
+			 { id: "info1", title:"Nelkenwasser", kategorie:"Selbsthilfe", likes:1, dislikes:0,
 			 	bausteine: 
 			 	[
 	 	           { "Häufigkeit": "Mundspülung mit Nelkenwasser 2-3 mal pro Tag anwenden."},
@@ -498,7 +587,7 @@ Model.prototype.dict =
 	 	           { "Grafik": "Akupunktur Punkt P6<br><img src='img/assets/akupunkturP6.png'>"}
 			 	]	
 			 },		 
-			 { id: "info2", title:"Kontakt", kategorie:"Brustzentrum", likes:0, dislikes:0, displayed:0, clicked:0,
+			 { id: "info2", title:"Kontakt", kategorie:"Brustzentrum", likes:0, dislikes:0, 
 				 bausteine: 
 				 [
 		             { "Info":"Melden Sie sich telefonisch im Brust-Zentrum/Onkozentrum bei anhaltenden Beschwerden."},
@@ -509,24 +598,5 @@ Model.prototype.dict =
 			 }		 
 		 ]
 };
-/**
-* DATA  {Type, Value, Key (x)}
-* RETURNS TIPS ACCORDING TO Y RANGE
-**/
-Model.prototype.getEmpfehlungen = function( data )
-{	
-	var tippsIds = this.getGrad(data.type, data.value).tipps;
-	
-	var _tipps = [];
 
-	if(!tippsIds) return _tipps;
-	
-	var rows = tippsIds.split(",");	
- 
-	for( var i = 0; i < rows.length; i++)
-	{
-		_tipps.push( this.getType( rows[i] ));
-	}
-	
-    return _tipps;
-};
+

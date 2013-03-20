@@ -42,14 +42,14 @@ Svg.prototype.removeElements = function()
  * COORDINATES
  */
 Svg.prototype.drawCoordinates = function()
-{	
-	
+{		
 	var milliProTag = (24 * 60 * 60 * 1000);
 	
 	this.minX = this.model.getMinX();
 
-	this.maxXRealtime = Number( this.model.atomuhr.zeit() );
-	this.maxX = Math.floor( this.model.atomuhr.zeit() / milliProTag) * milliProTag;
+	this.maxXRealtime = zeit();
+
+	this.maxX = Math.floor( zeit() / milliProTag) * milliProTag;
 	
 	var chartWidth = this.getPixelForX( this.maxXRealtime, true ) + this.paddingRight;
 
@@ -143,13 +143,13 @@ Svg.prototype.drawPunkte = function(id)
 	{				
 		var punkt1 = punkteById[dots];
 
-		if(punkt1.id == "tagebuchPrivat")
+		if(punkt1.id == "privat")
 		{
 			this.drawTagebuch( punkt1 );
 		}
 		else
 		{
-			this.drawLine( punkt1, punkt2, 14);
+			this.drawLine( punkt1, punkt2, 15);
 			
 			this.drawPunkt( punkt1 );									
 			
@@ -186,13 +186,16 @@ Svg.prototype.drawTagebuch = function( datapoi )
 
 Svg.prototype.drawLine = function( current, previous, padding )
 {	
-	var msProTag = this.model.msProTag;
+	var msProTag = ( 1000 * 60 * 60 * 24);
+	
+	if( !current || !previous) return;
 	
 	// No second point in same category available
-	if(!previous || previous.id !== current.id) return;
+	if(previous.id !== current.id) return;
 	
 	// Distance is more than three days
 	if(current.x > ( previous.x + msProTag * 3) ) return;
+
 	
 	var x1 = Number( this.getPixelForX(previous.x, true) );
 	var y1 = Number( this.getPixelForY(previous.y, true) );

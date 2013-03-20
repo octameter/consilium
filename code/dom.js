@@ -288,9 +288,24 @@
 				{						
 					return document.createElement(tag);
 				},
+				addSelect: function( min, max, value)
+				{
+					var options = document.createDocumentFragment();
+					
+					for( var i = min; i <= max; i++)
+					{
+						var option = document.createElement("option");
+						option.textContent = (i < 10) ? "0"+i : i;
+						option.value = i;
+						if( value == i) option.selected = "selected";
+						options.appendChild( option );
+					}
+					
+					element.appendChild( options );
+				},
 				appendChild: function(tag, attributes, text)
 				{
-					    var childTag = (typeof tag === "string") ? this.createChild( tag ): tag;
+					    var childTag = (typeof tag === "string") ? this.createChild( tag ) : tag;
 					    
 					    for (var attribute in attributes) 
 					    {
@@ -521,7 +536,7 @@ function addCommand(nameEvent, command, properties)
 function zeit( pattern, milliSekunden  )
 {
 		var currentDate = (milliSekunden) ? new Date( milliSekunden ) : new Date();
-		
+
 		var minute = currentDate.getMinutes() < 10 ? "0"+currentDate.getMinutes() : currentDate.getMinutes();
 		var stunde = currentDate.getHours() < 10 ? "0"+currentDate.getHours() : currentDate.getHours();
 		
@@ -533,11 +548,16 @@ function zeit( pattern, milliSekunden  )
 		{
 			case("yyyy-mm-dd hh:mm"): return year + "-" + month+ "-"+day+" "+stunde+":"+minute;
 			case("dd.mm.yyyy hh:mm"): return day + "." + month+ "."+year+" "+stunde+":"+minute;
+			case("dd"): return day;
+			case("MM"): return month;
+			case("yyyy"): return year;
+			case("hh"): return stunde;
+			case("mm"): return minute;
 			case("dawn"):
 			{
 				currentDate.setHours(0,0,0,0); return currentDate.getTime(); 
 			}
-			default: return year + "-" + month+ "-"+day;
+			default: return currentDate.getTime();
 		};
 };
 
@@ -578,5 +598,29 @@ Array.prototype.notIn = function( key, array )
         
         return flag;
     });
+};
+
+Array.prototype.getId = function( key )
+{	
+	for(var i = 0; i < this.length; i++)
+	{
+		if( this[i]["id"] == key) return this[i];
+	}
+	
+	return null;
+};
+
+Array.prototype.changeItem = function( key, property, value )
+{
+	var done = false;
+	
+    for(var i = 0; i < this.length; i++)
+    {
+        if( this[i]["id"] == key)
+        {
+        	this[i][property] = value ; done = true;
+        }
+    }
     
+    return done;
 };

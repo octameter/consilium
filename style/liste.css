@@ -65,8 +65,7 @@
 		right: 5px;
 		width: 40px;
 		height:40px;
-		border-radius:20px;
-		color:#FFF;
+		border-radius:4px;
 		font-size:1.8em;
 }
 
@@ -92,7 +91,7 @@
 /**
  * ROW
 **/
-.row_title { padding-right:60px; }
+.row_title {  font-size:110%; }
 .row_zeit { font-size:90%; }
 .row_detail {
 	width:100%;
@@ -109,6 +108,7 @@
 .row_value {
 	color:white;
 	border-radius:3px;
+	margin-top:5px;
 	float:right;
 	font-size:110%;
 	padding:7px;
