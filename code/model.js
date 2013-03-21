@@ -213,7 +213,7 @@ Model.prototype.getEmpfehlungen = function( data )
 Model.prototype.getStateFavEdit = function() { return this._state.favoritesEdit; };
 Model.prototype.setStateFavEdit = function( value ) { this._state.favoritesEdit = value; };
 Model.prototype.getStateSymptom = function() { return this._state.currentItem;};
-Model.prototype.setStateSymptom = function( value ) { this._state.currentItem = value; };
+Model.prototype.setStateSymptom = function( value ) { this._state.currentItem = value;};
 Model.prototype.getStateTipp = function() { return this._state.tipItem;};
 Model.prototype.setStateTipp = function( value ) { this._state.tipItem = value; };
 Model.prototype.getStateIntro = function() { return this._state.introShow;  };
@@ -225,7 +225,9 @@ Model.prototype.setStateIntro = function( value ) { this._state.introShow = valu
 Model.prototype._state = 
 {
     currentItem: null,
+    tempItem: null,
     favoritesEdit: false,
+    favitEdit:false,
     tipItem: null,
     introShow: false
 };

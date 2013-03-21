@@ -4,7 +4,7 @@
     margin-top:20px;
     padding:0;
     height:9px;
-    background:#3C72E6;
+    background:#535454;
     border-radius:5px;
     border:1px solid #333;
     opacity:0.7;
@@ -39,7 +39,7 @@ input[type="range"] {
     border-radius:5px;
     
     border:1px solid #333;
-    background:#3C72E6;
+    background:#535454;
     opacity:0.7;
     height: 10px;
     width:100%;

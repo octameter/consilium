@@ -48,9 +48,9 @@
         <section id="favoriteId" class="view right">
         
         	<header>
-        		<button id="favoriteCancelId" class="button-text colorless">Zurück</button>
+        		<button id="favoriteBackId" class="button-text colorless">Zurück</button>
         		<h2>Eingabe</h2>
-        		<button id="favoriteSaveId" class="button-text blue" style="display:none">Sichern</button>
+        		<button id="favoriteEditId" class="button-text colorless">Edit</button>
         	</header>
         	
         	<article id="favoriteContentId"></article>
@@ -141,7 +141,7 @@
    					{
    						addCommand( Events.CHANGE_VIEW, changeViewCommand ); 	
    						addCommand( Events.TAP_HANDLER, tapHandlerCommand ); 	
-   						addCommand( Events.DATAPOINT_DELETE, datapointDeleteCommand ); 	
+   						addCommand( Events.DATAPOINT_DELETE, datapointDeleteCommand ); 		  						
    						
    						addCommand( Events.HOME_INIT, homeInitCommand, { id:"homeContentId", intro: "rahmen", verlauf:"homeVerlauf"} ); 	
    						addCommand( Events.HOME_INTRO, homeIntroCommand, { id:"homeContentId" } ); 	
@@ -179,16 +179,15 @@
    						addCommand( Events.TEXT_CHANGE, textChangeCommand); 	
    						addCommand( Events.FAVORITES_CHANGE, favoritesChangeCommand, { editButton:"favoritesEditButton", backButton:"favoritesBackButton" }); 	
 
-   						addCommand( Events.FAVORITE_INIT, favoriteInitCommand, { id : "favoriteContentId", save:"favoriteSaveId"  } ); 		
-   						addCommand( Events.FAVORITE_SAVE, favoriteExitCommand, { id : "favoriteContentId", hide: "favoriteSaveId",  save: true }); 	
-   						addCommand( Events.FAVORITE_CANCEL, favoriteExitCommand, { id : "favoriteContentId", hide: "favoriteSaveId",  save: false });
+   						addCommand( Events.FAVORITE_INIT, favoriteInitCommand, { id : "favoriteContentId" } ); 		
+   						addCommand( Events.FAVORITE_CHANGE, favoriteChangeCommand, { id : "favoriteEditId" } );
+   						addCommand( Events.FAVORITE_BACK, favoriteExitCommand, { type: "back"} );
+   						addCommand( Events.FAVORITE_SAVE, favoriteExitCommand, { type: "save"} );
    						/* BACK */
    						addCommand( Events.FAVORITE_TO_FAVORITES, changeViewCommand, { from:"favoriteId", to:"favoritesId", direction:"right" }); 
    						addCommand( Events.FAVORITE_TO_HOME, changeViewCommand, { from:"favoriteId", to:"homeId", direction:"right" }); 	
    						/* GO */
    						addCommand( Events.FAVORITE_TO_TIPP, changeViewCommand, { from:"favoriteId", to:"tippId", direction:"left" }); 	
-  						
-   						addCommand( Events.SLIDER, sliderCommand, { save:"favoriteSaveId" }); 	
    					},				
    					/**
    					* BIND TO EVENT LISTENERS OF ELEMENTS. IF EVENT EXECUTE COMMAND  
@@ -213,8 +212,8 @@
    						
    						// FAVORITE
    						DOM("favoriteId").onStage( Events.FAVORITE_INIT ); 
-   						DOM("favoriteCancelId").onTouch( Events.FAVORITE_CANCEL);
-   						DOM("favoriteSaveId").onTouch( Events.FAVORITE_SAVE );
+   						DOM("favoriteBackId").onTouch( Events.FAVORITE_BACK );
+   						DOM("favoriteEditId").onTouch( Events.FAVORITE_CHANGE );
 
    						// SYMPTOME
    						DOM("symptomeId").onStage( Events.SYMPTOME_INIT ); 

@@ -288,20 +288,25 @@
 				{						
 					return document.createElement(tag);
 				},
-				addSelect: function( min, max, value)
+				addOptions: function( min, max, value, array)
 				{
 					var options = document.createDocumentFragment();
 					
-					for( var i = min; i <= max; i++)
+					if(!array)
 					{
-						var option = document.createElement("option");
-						option.textContent = (i < 10) ? "0"+i : i;
-						option.value = i;
-						if( value == i) option.selected = "selected";
-						options.appendChild( option );
+						for( var i = min; i <= max; i++)
+						{
+							var option = document.createElement("option");
+							option.textContent = (i < 10) ? "0"+i : i;
+							option.value = i;
+							if( value == i) option.selected = "selected";
+							options.appendChild( option );
+						}						
 					}
 					
 					element.appendChild( options );
+					
+					return( DOM(element) );
 				},
 				appendChild: function(tag, attributes, text)
 				{
@@ -494,9 +499,17 @@ Controller.prototype.commands = {};
 
 Controller.prototype.addCommand = function( nameCommand, callback, custom )
 {
-	var command = new Command(callback, custom);
-	
-	this.commands[nameCommand] = command;    		
+	if(!this.commands[nameCommand])
+	{
+		var command = new Command(callback, custom);
+		
+		this.commands[nameCommand] = command;    				
+	}
+};
+
+Controller.prototype.removeCommand = function( nameCommand, callback )
+{
+	delete this.commands[nameCommand];    		
 };
 
 Controller.prototype.dispatchCommand = function(eventName, data)
@@ -527,16 +540,23 @@ function dispatchCommand(nameEvent, data)
 {
 	controller.dispatchCommand(nameEvent, data);
 };
+function removeCommand(nameEvent, data)
+{
+	controller.removeCommand(nameEvent, data);
+};
 
 function addCommand(nameEvent, command, properties)
 {
 	controller.addCommand(nameEvent, command, properties);
+
 };
 
 function zeit( pattern, milliSekunden  )
 {
 		var currentDate = (milliSekunden) ? new Date( milliSekunden ) : new Date();
 
+		var milli = currentDate.getMilliseconds() < 10 ? "0"+currentDate.getMilliseconds() : currentDate.getMilliseconds();
+		var sekunde = currentDate.getSeconds() < 10 ? "0"+currentDate.getSeconds() : currentDate.getSeconds();
 		var minute = currentDate.getMinutes() < 10 ? "0"+currentDate.getMinutes() : currentDate.getMinutes();
 		var stunde = currentDate.getHours() < 10 ? "0"+currentDate.getHours() : currentDate.getHours();
 		
@@ -546,9 +566,13 @@ function zeit( pattern, milliSekunden  )
 			
 		switch( pattern )
 		{
-			case("yyyy-mm-dd hh:mm"): return year + "-" + month+ "-"+day+" "+stunde+":"+minute;
+			case("yyyy-MM-ddThh:mm.ss.ms"): return year + "-" + month+ "-"+day+"T"+stunde+":"+minute+":"+sekunde+"."+milli;
+			case("yyyy-MM-dd"): return year + "-" + month+ "-"+day;
 			case("dd.mm.yyyy hh:mm"): return day + "." + month+ "."+year+" "+stunde+":"+minute;
+			case("dd.mm.yyyy"): return day + "." + month+ "."+year;
+			case("hh:mm"): return +stunde+":"+minute;
 			case("dd"): return day;
+			case("ddInMonth"): return new Date(year, month, 0).getDate();
 			case("MM"): return month;
 			case("yyyy"): return year;
 			case("hh"): return stunde;
@@ -624,3 +648,35 @@ Array.prototype.changeItem = function( key, property, value )
     
     return done;
 };
+
+function clone(obj) {
+    // Handle the 3 simple types, and null or undefined
+    if (null == obj || "object" != typeof obj) return obj;
+
+    // Handle Date
+    if (obj instanceof Date) {
+        var copy = new Date();
+        copy.setTime(obj.getTime());
+        return copy;
+    }
+
+    // Handle Array
+    if (obj instanceof Array) {
+        var copy = [];
+        for (var i = 0, len = obj.length; i < len; i++) {
+            copy[i] = clone(obj[i]);
+        }
+        return copy;
+    }
+
+    // Handle Object
+    if (obj instanceof Object) {
+        var copy = {};
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+        }
+        return copy;
+    }
+
+    throw new Error("Unable to copy obj! Its type isn't supported.");
+}

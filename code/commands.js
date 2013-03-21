@@ -5,6 +5,7 @@
 Events = 
 {
 	TAP_HANDLER:"tap_handler",
+	DATE:"input_date",
 		
 	HOME_INIT:"homeInit",
 	HOME_EXIT:"homeExit",
@@ -34,9 +35,12 @@ Events =
 	FAVORITE_INIT:"favorite_init",
 	FAVORITE_SAVE:"favorite_save",
 	FAVORITE_CANCEL:"favorite_cancel",
+	FAVORITE_CHANGE:"favorite_change",
+	FAVORITE_BACK:"favorite_back",
+	FAVORITE_SAVE:"favorite_exit",
 	FAVORITE_TO_FAVORITES:"favorite_to_favorites",
 	FAVORITE_TO_HOME:"favorite_to_home",
-	FAVORITE_TO_TIP:"favorite_to_tip",
+	FAVORITE_TO_TIPP:"favorite_to_tip",
 	DATAPOINT_DELETE:"data_point",
 	
 	TIPPS_SHOW:"tipps_show",
@@ -58,6 +62,8 @@ Events =
 function changeViewCommand( event )
 {	
 	var cmd = this.properties;
+	
+	console.log( cmd );
 	
 	DOM( cmd.to ).attrib("className").replace(/(top|left|right)/, "middle");	
 	DOM( cmd.from.split("Id").join("ContentId") ).hide();
@@ -204,16 +210,19 @@ function tapHandlerCommand( event )
 	}
 };
 
-function tippsShowCommand ( data )
-{		
-
+function tippsShowCommand ( event )
+{			
+	var temp = this.model._state.tempItem;
+	
+	data = { type:temp.id, value:temp.y, key:temp.x };
+	
 	if( DOM("fieldsetTipp").element() )
 	{
 		DOM("fieldsetTipp").removeElements();
 	}
 	else
 	{
-		DOM( "favFormId").appendChild( "fieldset", { id:"fieldsetTipp"} );		
+		DOM( "favitFormId").appendChild( "fieldset", { id:"fieldsetTipp"} );		
 	}
 	DOM( "fieldsetTipp").addChild( "legend", {}, "Empfehlungen" );
 	DOM( "fieldsetTipp").addChild( "ul", { class:"listeNext", id:"homeTipps" }).onTap( Events.TAP_HANDLER, { watch:"tagName:LI", command:Events.TIPPS_SELECTED } );
@@ -256,7 +265,7 @@ function tippsShowCommand ( data )
 function tippsSelectedCommand( event )
 {
 	this.model.setStateTipp( event );
-	dispatchCommand( Events.FAVORITES_TO_TIPP  );
+	dispatchCommand( Events.FAVORITE_TO_TIPP );
 };
 
 
@@ -446,7 +455,7 @@ function favoritesRowCommand( data )
 	var infoType = this.model.getType( data.row.id );
 	var zeitpunkt = (infoData && !data.edit) ? "<i>Zuletzt: "+zeit('dd.mm.yyyy hh:mm', infoData.x)+"</i>" : "&nbsp;";
 
-	if( infoData && infoType.kategorie == "Notizen") title = "Editieren";
+	if( infoData && infoType.kategorie == "Notizen") title = "Edit";
 	
 	// Object {id: "10025482", title: "Subjektives Befinden", kategorie: "Lebensqualität", zero: 100, farbwert: "rgba(154,205,50,0.9)"…}
 
@@ -468,12 +477,12 @@ function favoritesRowCommand( data )
 	}
     else if(!data.row.id)
 	{
-		var button = DOM( item ).appendChild("a", { class:"button-action blue", style:"position:absolute; right:2px; top:10px; font-size:100%;"}, "Hinzufügen");
+		var button = DOM( item ).appendChild("a", { class:"button-action blue", style:"position:absolute; right:2px; top:10px; font-size:100%;"}, "Plus");
 		DOM( button ).onTouch( Events.FAVORITES_TO_SYMPTOME  );	
 	}
 	else if(this.model.getStateFavEdit() && data.row.edit)
 	{
-		var button = DOM( item ).appendChild("a", { class:"button red", style:"position:absolute; right:2px; top:10px; font-size:100%;"}, "Entfernen");
+		var button = DOM( item ).appendChild("a", { class:"button red", style:"position:absolute; right:2px; top:10px; font-size:100%;"}, "Minus");
 		DOM( button ).onTouch(Events.FAVORITES_DELETE, { type:"Symptome", item: { id: data.row.id} } );		
 	}
 	
@@ -504,7 +513,7 @@ function favoritesEditCommand( data )
 {		
 	var value = data.punkt || { y:data.type.zero };
 	
-	this.model.setStateSymptom( { x:value.x, y:value.y, id:data.type.id, command: Events.FAVORITE_TO_FAVORITES } );
+	this.model.setStateSymptom( { y:value.y, id:data.type.id, command: Events.FAVORITE_TO_FAVORITES } );
 	dispatchCommand( Events.FAVORITES_TO_FAVORITE );		
 };
 
@@ -514,48 +523,52 @@ function favoritesEditCommand( data )
  * this.properties { id: "ContentId" }
  */
 function favoriteInitCommand( data )
-{
+{	
+	// ITEM TO MODIFY
 	var item = this.model.getStateSymptom(); 
 
+	console.log( item );
+	// LEGENDE LABEL
 	var kategorie = this.model.getType( item.id ).kategorie;
-	
-	
-	if(!item.x)
-	{
-		var last = this.model.getPunkt( item.id );
 		
-		if(last) item = last;
-	}
+	// PERSIST NEW ITEM TO MODEL
+	this.model._state.tempItem = clone( item );
+
+	// ITEM NOT SPECIFIED THAN GET LAST
+	var last = (!item.x) ? this.model.getPunkt( item.id ).x : item.x;
+
+	// NOW CLIENTWIDTH AVAILABLE
+	DOM( this.properties.id ).removeElements().show(); 
 	
-	DOM( this.properties.save ).hide();
+	removeCommand( Events.SLIDER, sliderCommand );
+	removeCommand( Events.DATE, dateCommand );
     
-	DOM( this.properties.id ).removeElements();
-    // NOW CLIENTWIDTH AVAILABLE
-    DOM( this.properties.id ).show();    
-    
+	// FORM
 	DOM( this.properties.id ).addChild("form", {id:"favitFormId"});
 		
 	// ZEITPUNKT
-	DOM( "favitFormId").addChild("fieldset", { id: "favZeitpunktId" }).addChild("legend", {}, "Zeitpunkt");
-	DOM( "favZeitpunktId" ).addChild("div", {id:"zeitArea" });
+	DOM( "favitFormId" ).addChild("fieldset", { id: "favitZeitId" }).addChild("legend", {}, "Zeitpunkt");
+	DOM( "favitZeitId" ).addChild("div", {id:"zeitArea" });
 	
-	
-	DOM( "zeitArea" ).addChild("select", { class:"optionen" }).addSelect(1,31, zeit("dd"));
-	DOM( "zeitArea" ).addChild("select", { class:"optionen" }).addSelect(1,31, zeit("MM"));
-	DOM( "zeitArea" ).addChild("select", { class:"optionen",  }).addSelect(2013,2022, zeit("yyyy"));
-
-	DOM( "zeitArea" ).addChild("select", { class:"optionen", style:"margin-left:10px;" }).addSelect(1,31, zeit("hh"));
-	DOM( "zeitArea" ).addChild("select", { class:"optionen" }).addSelect(1,31, zeit("mm"));
-
-
-	//DOM( "zeitArea" ).addChild("span", {}, zeit("dd.mm.yyyy hh:mm"));
-	//DOM( "zeitArea" ).addChild("span", {}, "Später");
-	
+	// SYMPTOM
 	DOM( "favitFormId").addChild("fieldset", { id: "favoriteFieldsetId" }).addChild("legend", {}, kategorie);
-	
 	DOM( "favoriteFieldsetId" ).addChild( "div", { id:"favArea"} );
 	DOM( "favArea" ).appendChild( "span", { style: "width:100%;"}, "<b>"+this.model.getType( item.id ).title+"</b>");
-    
+	DOM( "favArea" ).appendChild( "span", { id:"favOutputId", style: "position:absolute; top:10px; right:2px; font-size:110%" }, item.y +"%");
+	DOM( "favArea" ).appendChild( "p", { style:'width:100%;font-size:90%;margin:1px' }, "<i>Zuletzt: "+zeit('dd.mm.yyyy hh:mm',last)+"</i>");		
+
+	// SLIDER 
+	DOM( "favArea" ).appendChild( "div", { id:"sliderArea"});	
+	
+	// DEFINITION DER KATEGORIE
+	DOM( "favArea" ).appendChild( "p", { id:"favGradId", style: 'width:100%;padding-top:5px'}, "<b>Definition: </b>"+this.model.getGrad(item.id, item.y).info );
+
+	// SAVE AND CANCEL
+	DOM( "favArea" ).appendChild( "div",{ id:"favitActions"});		
+	DOM( "favitActions" ).addChild("a", { id:"favitSaveId", class:"button-action blue", style:"float:left;"}, "Speichern").onTouch(Events.FAVORITE_SAVE);
+	DOM( "favitActions" ).addChild("a", { id:"favitCancelId", class:"button-action grey", style:"float:right;"}, "Abbrechen").onTouch(Events.FAVORITE_INIT);
+	DOM( "favitActions" ).hide();
+	
 //	if( kategorie == "Notizen")
 //	{
 //		DOM( "favArea" ).appendChild( "p", { style:'width:100%;font-size:90%;margin:1px' }, (item.x) ? "<i>Zuletzt: "+zeit('dd.mm.yyyy hh:mm', item.x)+"</i>" :"");	
@@ -569,35 +582,91 @@ function favoriteInitCommand( data )
 //	}
 //	else
 //	{
-		DOM( "favArea" ).appendChild( "span", { id:"favOutputId", style: "position:absolute; top:10px; right:2px; font-size:110%" }, item.y +"%");
-		DOM( "favArea" ).appendChild( "p", { style:'width:100%;font-size:90%;margin:1px' }, (item.x) ? "<i>Zuletzt: "+zeit('dd.mm.yyyy hh:mm',item.x)+"</i>" :"");		
-		DOM( "favArea" ).appendChild( "p", { id:"favGradId", style: 'width:100%;padding-top:5px'}, this.model.getGrad(item.id, item.y).info );
-		
-		dispatchCommand( Events.SLIDER, { parent:"favArea", output:"favOutputId", grad:"favGradId", id:item.id, y:item.y} );
-		
-		dispatchCommand( Events.TIPPS_SHOW, { type:item.id, value:item.y, key:item.x} );
+	
+	// REGISTER COMMANDS
+	addCommand( Events.SLIDER, sliderCommand, { parent:"sliderArea", actions:"favitActions", output:"favOutputId", grad:"favGradId"});
+	addCommand( Events.DATE, dateCommand, { parent: "zeitArea", actions:"favitActions" });
+
+	// DISPATCH COMMANDS
+	dispatchCommand( Events.SLIDER );
+	dispatchCommand( Events.DATE);	
+	dispatchCommand( Events.TIPPS_SHOW );
 	//}
 	
 };
 
-function sliderCommand( event )
-{
-	// CREATE ELEMENT DESKTOP ODER MOBILE
-	if( event.parent && DO.plugins("agent").isDevice("Desktop") )
-	{				
-        DOM( event.parent ).addChild("div", { id:"favSliderId", class:"slider"} ).addChild("a", { id:"thumbId", class:"grey"} );		 
-		 
-		 var hundert = DOM("favSliderId").width() - DOM("thumbId").width();
-		 
-		 DOM( "thumbId" ).style("left",  parseInt( hundert * event.y / 100 ) + "px");
-		 
-		 DOM( "favSliderId" ).onTouch( Events.SLIDER, {output:"favOutputId", grad:"favGradId", id:event.id, custom:true} );
-	}
-	else if( event.parent )
+function dateCommand( event )
+{	
+	// HANDLE CHANGE OF SELECT ( NEW DATE )
+	if( event.value && event.type )
 	{
-		DOM( event.parent ).addChild("input", { id:"favRangeId", type:"range", min:0, max:100, value:event.y, style:"margin-bottom:20px"} ).onChange( Events.SLIDER, {output:"favOutputId", grad:"favGradId", id:event.id} );
+		var update = new Date( event.zeitInMs );
+		var limit = new Date().getTime();
+
+		if( event.type == "dd") update.setDate( event.value );
+		if( event.type == "MM") 
+		{
+			update.setDate( 1 );
+			update.setMonth( Number( event.value ) - 1 );
+		}
+		if( event.type == "yyyy") update.setYear( Number( event.value ) - 1 );
+		if( event.type == "hh") update.setHours( Number( event.value ) - 1 );
+		if( event.type == "mm") update.setMinutes( Number( event.value ) - 1 );
+		
+		if( event.type == "yyyy-MM-dd")
+		{
+			update.setYear( Number( event.value.substr(0,4)) );
+			update.setMonth( Number( event.value.substr(5,2)) );
+			update.setDate( Number( event.value.substr(7,2)) );
+		}
+		
+		if( event.type == "hh:mm")
+		{
+			update.setHours( Number( event.value.substr(0,2)) );
+			update.setMinutes( Number( event.value.substr(3,2)) );
+		}
+		
+		// UPDATE TEMP ITEM
+		if( update.getTime() > limit )
+		{
+			this.model._state.tempItem.x = limit;
+			//alert("Das Datum liegt in der Zukunft und wurde auf Heute zurückgesetzt!"); 
+		}
+		else
+		{
+			this.model._state.tempItem.x = update.getTime();
+		}
+		
+		// SHOW SAVE AND CANCEL
+		DOM( this.properties.actions ).show();
 	}
 
+	// GET CURRENT X 
+	var zeitInMs = this.model._state.tempItem.x = (this.model._state.tempItem.x)? this.model._state.tempItem.x : new Date().getTime();
+
+	DOM( this.properties.parent ).removeElements();
+
+	// CREATE ELEMENT DESKTOP ODER MOBILE
+	if( DO.plugins("agent").isDevice("Desktop") )
+	{		
+		DOM( this.properties.parent ).addChild("span",{ style:"margin-right:5px;" },"<b>Datum</b>"); 
+		DOM( this.properties.parent ).addChild("select", { id:"dd", class:"optionen" }).addOptions(1, zeit("ddInMonth",zeitInMs), zeit("dd",zeitInMs)).onChange( Events.DATE, { type:"dd", zeitInMs: zeitInMs, parent:"zeitArea"} );
+		DOM( this.properties.parent ).addChild("select", { class:"optionen" }).addOptions(1,12, zeit("MM",zeitInMs)).onChange( Events.DATE, { type:"MM", zeitInMs: zeitInMs, parent:"zeitArea"} );
+		DOM( this.properties.parent ).addChild("select", { class:"optionen",  }).addOptions(2013, 2022, zeit("yyyy",zeitInMs)).onChange( Events.DATE, { type:"yyyy", zeitInMs: zeitInMs, parent:"zeitArea"} );
+	
+		DOM( this.properties.parent ).addChild("span",{ style:"margin-left:10px;margin-right:5px;" },"<b>Zeit</b>"); 
+		DOM( this.properties.parent ).addChild("select", { class:"optionen" }).addOptions(1,24, zeit("hh", zeitInMs)).onChange( Events.DATE, { type:"hh", zeitInMs: zeitInMs, parent:"zeitArea"} );
+		DOM( this.properties.parent ).addChild("select", { class:"optionen" }).addOptions(1,60, zeit("mm", zeitInMs)).onChange( Events.DATE, { type:"mm", zeitInMs: zeitInMs, parent:"zeitArea"} );
+	}
+	else
+	{
+		DOM( this.properties.parent ).addChild("input", { type:"date", value:zeit("yyyy-MM-dd",zeitInMs), style:"width:105px;" }).onChange( Events.DATE, { type:"yyyy-MM-dd", zeitInMs: zeitInMs, parent:"zeitArea"});
+		DOM( this.properties.parent ).addChild("input", { type:"time", value:zeit("hh:mm",zeitInMs), style:"margin-left:10px;width:65px" }).onChange( Events.DATE, { type:"hh:mm", zeitInMs: zeitInMs, parent:"zeitArea"});
+	}
+};
+
+function sliderCommand( event )
+{	
 	// TRANSFORM CUSTOM RESULT IF CLICKED ON SLIDER NOT THUMB
 	if(event.custom && event.tag == "DIV")
 	{	
@@ -614,19 +683,45 @@ function sliderCommand( event )
 	
 	// HANDLE RESULT
 	if(event.value) 
-	{
-		// Persist to Model
-		this.model.setStateSymptom( { x: new Date().getTime(), y:event.value, id:event.id, } ); 
-		
-		// SHOW SAVE BUTTON
-		DOM( this.properties.save ).show();
+	{	
+		this.model._state.tempItem.y = event.value;
+
+		var item = this.model._state.tempItem;
 		
 		// Update Displays
-		DOM( event.output ).removeElements().text( event.value  +"%");
-		DOM( event.grad ).removeElements().text( this.model.getGrad( event.id, event.value ).info );	
+		DOM( this.properties.output ).removeElements().text( event.value  +"%");
+		DOM( this.properties.grad ).element().innerHTML = "<b>Definition: </b>"+this.model.getGrad( item.id, item.y ).info;	
+		DOM( this.properties.actions ).show();
 		
-		dispatchCommand( Events.TIPPS_SHOW, { type:event.id, value:event.value, x: new Date().getTime() } );
+		dispatchCommand( Events.TIPPS_SHOW, { type:item.id, value:item.y, x: item.x } );	
 	}
+	
+	var temp = this.model._state.tempItem;
+	
+	// CREATE ELEMENT DESKTOP ODER MOBILE IF NO EVENT VALUE
+	if( !event.value )
+	{
+		if( DO.plugins("agent").isDevice("Desktop") )
+		{				
+			DOM( this.properties.parent ).addChild("div", { id:"favSliderId", class:"slider"} ).addChild("a", { id:"thumbId", class:"grey"} );		 
+			
+			var hundert = DOM("favSliderId").width() - DOM("thumbId").width();
+			
+			DOM( "thumbId" ).style("left",  parseInt( hundert * temp.y / 100 ) + "px");
+			
+			DOM( "favSliderId" ).onTouch( Events.SLIDER, {custom:true} );
+		}
+		else
+		{//, min:0, max:100, value:temp.y, style:"margin-bottom:20px"
+			DOM( this.properties.parent ).addChild("input", { id:"favRangeId", type:"range"} ).onChange( Events.SLIDER, {} );
+		}	
+	}
+
+};
+
+function favoriteChangeCommand( data )
+{
+	
 };
 
 function textChangeCommand( data )
@@ -640,25 +735,21 @@ function textChangeCommand( data )
 
 function favoriteExitCommand( data )
 {
-	var currentItem = this.model.getStateSymptom();
-	
-	var command = currentItem.command;
-	delete currentItem.command;
-	
-    DOM( this.properties.hide ).hide();
-  
-    DOM( this.properties.id ).removeElements();	
-    
-    // PERSIT TO MODEL IF SAVE EVENT
-	if( this.properties.save ) {
-		this.model.addPunkt( this.model.getStateSymptom() );
-	}
+	var command = this.model.getStateSymptom().command;
 
-	console.log( command );
+    // PERSIT TO MODEL IF SAVE EVENT
+	if( this.properties.type == "save") {
+		
+		var toSave = clone(this.model._state.tempItem);
+				
+		this.model.addPunkt( toSave );
+	}
+	
+	// Cleaning
+	this.model._state.tempItem = null;		
+	this.model.setStateSymptom( null );	
 	
 	dispatchCommand( command );
-		
-	this.model.setStateSymptom( null );	
 }
 
 

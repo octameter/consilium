@@ -59,6 +59,8 @@ html, body {
 	left:-100%;
 }
 
+/* Position the div wrapper as relative with overflow hidden and a specific width and height. */
+/* Use position absolute on the inner div (the div you want to move */
 
 /* TEXTBAUSTEINE */
 .intro {
