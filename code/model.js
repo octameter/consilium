@@ -163,8 +163,6 @@ Model.prototype.addPunkt = function( punkt )
 	var data = {id:punkt.id, x:punkt.x, y:punkt.y };
 	
 	this.data.punkte.unshift( data );
-	
-	console.log( this.data.punkte );
 };
 
 /**

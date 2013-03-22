@@ -152,7 +152,7 @@ function homeVerlaufSelectedCommand( event )
 		DOM("homeRowDiv").onTap( Events.TAP_HANDLER, { watch: "id:homeRowDiv", command:Events.HOME_EXIT } );
 		
 		/* DETAIL */
-		DOM(cmd.info).appendChild( "p", { class:"row_detail"}, detailLabel );		
+		DOM(cmd.info).addChild( "p", { class:"row_detail"}, detailLabel.replace(/\n\r?/g, '<br />') );		
 	}
 	else
 	{
@@ -782,10 +782,11 @@ function sliderCommand( event )
 
 function favoriteTextChangeCommand( data )
 {
-	// Persist to TEMP Model
 	DOM(data.action).show();
-	
-	this.model._state.tempItem.y = data.value; 
+
+	// Persist to TEMP Model
+	if(this.model._state.tempItem)
+	this.model._state.tempItem.y = data.value;
 };
 
 function favoriteExitCommand( data )
