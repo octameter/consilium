@@ -277,6 +277,10 @@
 
 
 				},
+				html: function( value )
+				{
+					element.innerHTML = value;
+				},
 				text: function( value )
 				{
 					element.innerHTML = "";

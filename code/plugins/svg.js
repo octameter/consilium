@@ -163,17 +163,17 @@ Svg.prototype.drawPunkte = function(id)
 Svg.prototype.drawTagebuch = function( datapoi )
 {
 	
-	var pixelX = this.getPixelForX( zeit("dawn", datapoi.x), true);
+	var pixelX = this.getPixelForX( datapoi.x , true);
 	var pixelY = this.getPixelForY(-1, true);
-	var pixelWidth = this.getPixelForX( this.minX + (24 * 60 * 60 * 1000) , false);
+	//var pixelWidth = this.getPixelForX( this.minX + (24 * 60 * 60 * 1000) , false);
 	var pixelHeight = this.getPixelForY(105, true);
 	var farbe = this.getFarbwert(datapoi.id);
     
 	var area= document.createElementNS("http://www.w3.org/2000/svg", "rect");
 	area.setAttribute("class","movePoint");
-	area.setAttribute("x", pixelX);
+	area.setAttribute("x", pixelX -15);
 	area.setAttribute("y", pixelY);
-	area.setAttribute("width", pixelWidth);
+	area.setAttribute("width", 26);
 	area.setAttribute("height", pixelHeight);
 	area.setAttribute("fill", farbe);
     area.setAttribute("stroke","rgba(220,220,220,0.6)");

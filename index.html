@@ -50,7 +50,7 @@
         	<header>
         		<button id="favoriteBackId" class="button-text colorless">Zurück</button>
         		<h2>Eingabe</h2>
-        		<button id="favoriteEditId" class="button-text colorless">Edit</button>
+        		<button id="favoriteEditId" class="button-text colorless" style="display:none">Edit</button>
         	</header>
         	
         	<article id="favoriteContentId"></article>
@@ -140,8 +140,7 @@
    					addCommands: function()
    					{
    						addCommand( Events.CHANGE_VIEW, changeViewCommand ); 	
-   						addCommand( Events.TAP_HANDLER, tapHandlerCommand ); 	
-   						addCommand( Events.DATAPOINT_DELETE, datapointDeleteCommand ); 		  						
+   						addCommand( Events.TAP_HANDLER, tapHandlerCommand ); 		  						
    						
    						addCommand( Events.HOME_INIT, homeInitCommand, { id:"homeContentId", intro: "rahmen", verlauf:"homeVerlauf"} ); 	
    						addCommand( Events.HOME_INTRO, homeIntroCommand, { id:"homeContentId" } ); 	
@@ -176,13 +175,14 @@
    						addCommand( Events.FAVORITES_ITEM, favoritesItemCommand); 	
    						addCommand( Events.FAVORITES_EDIT, favoritesEditCommand); 	
    						addCommand( Events.FAVORITES_DELETE, favoritesDeleteCommand); 	
-   						addCommand( Events.TEXT_CHANGE, textChangeCommand); 	
    						addCommand( Events.FAVORITES_CHANGE, favoritesChangeCommand, { editButton:"favoritesEditButton", backButton:"favoritesBackButton" }); 	
 
-   						addCommand( Events.FAVORITE_INIT, favoriteInitCommand, { id : "favoriteContentId" } ); 		
+   						addCommand( Events.FAVORITE_INIT, favoriteInitCommand, { id : "favoriteContentId", edit:"favoriteEditId"} ); 		
    						addCommand( Events.FAVORITE_CHANGE, favoriteChangeCommand, { id : "favoriteEditId" } );
+   						addCommand( Events.FAVORITE_TEXT_CHANGE, favoriteTextChangeCommand); 	   						
    						addCommand( Events.FAVORITE_BACK, favoriteExitCommand, { type: "back"} );
    						addCommand( Events.FAVORITE_SAVE, favoriteExitCommand, { type: "save"} );
+   						addCommand( Events.FAVORITE_DELETE, favoriteExitCommand, { type: "delete"} );
    						/* BACK */
    						addCommand( Events.FAVORITE_TO_FAVORITES, changeViewCommand, { from:"favoriteId", to:"favoritesId", direction:"right" }); 
    						addCommand( Events.FAVORITE_TO_HOME, changeViewCommand, { from:"favoriteId", to:"homeId", direction:"right" }); 	

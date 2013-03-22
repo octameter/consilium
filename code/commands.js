@@ -37,11 +37,12 @@ Events =
 	FAVORITE_CANCEL:"favorite_cancel",
 	FAVORITE_CHANGE:"favorite_change",
 	FAVORITE_BACK:"favorite_back",
-	FAVORITE_SAVE:"favorite_exit",
+	FAVORITE_SAVE:"favorite_save",
+	FAVORITE_DELETE:"favorite_delete",
+	FAVORITE_TEXT_CHANGE:"favorite_text_change",
 	FAVORITE_TO_FAVORITES:"favorite_to_favorites",
 	FAVORITE_TO_HOME:"favorite_to_home",
 	FAVORITE_TO_TIPP:"favorite_to_tip",
-	DATAPOINT_DELETE:"data_point",
 	
 	TIPPS_SHOW:"tipps_show",
 	TIPPS_SELECTED:"tipps_selected",
@@ -63,8 +64,6 @@ function changeViewCommand( event )
 {	
 	var cmd = this.properties;
 	
-	console.log( cmd );
-	
 	DOM( cmd.to ).attrib("className").replace(/(top|left|right)/, "middle");	
 	DOM( cmd.from.split("Id").join("ContentId") ).hide();
 	DOM( cmd.from ).attrib("className").replace("middle", cmd.direction );		
@@ -72,7 +71,10 @@ function changeViewCommand( event )
 
 function homeInitCommand( event )
 {	
-	if( event.introExit ) this.model.setIntroShow( false );
+	if( event.introExit ) {
+		this.model.setStateIntro( false );
+		DOM( this.properties.id ).removeElements();
+	}
 	
 	( this.model.getStateIntro() ) ? dispatchCommand( Events.HOME_INTRO ) : dispatchCommand( Events.HOME_VERLAUF );
 	
@@ -81,13 +83,14 @@ function homeInitCommand( event )
 
 function homeIntroCommand( event )
 {
-	var div = DOM( this.properties.id ).removeElements().appendChild("div", {class:"intro"});
+	DOM( this.properties.id ).removeElements();
+	var div = DOM( this.properties.id ).appendChild("div", {class:"intro"});
     
-	DOM( div ).addChild( "p", {}, this.model.dict.intro[0].title );
+	DOM( div ).addChild( "p", {}, this.model.dict.Intro[0].title );
 	
-	for( var i = 0; i < this.model.dict.intro[0].bausteine.length; i++)
+	for( var i = 0; i < this.model.dict.Intro[0].bausteine.length; i++)
 	{
-		DOM( div ).addChild( "p", {}, this.model.dict.intro[0].bausteine[i] );		
+		DOM( div ).addChild( "p", {}, this.model.dict.Intro[0].bausteine[i] );		
 	}
 
 	DOM( div ).addChild( "a", { class:"button-action blue", style:"width:200px; height:40px" }, "Schliessen").onTouch( Events.HOME_INIT, { introExit: true } );
@@ -155,7 +158,7 @@ function homeVerlaufSelectedCommand( event )
 	{
 		/* DEFAULT */
 		DOM(cmd.legend).text( "Auswahl" ); 
-		DOM(cmd.info).text( "Ein Figur im Graph berühren, um weitere Information zu erhalten.");
+		DOM(cmd.info).text( "Berühren Sie den Datenpunkt in der Timeline für detaillierte Informationen oder gehen Sie über „Start“ zur Favoritenliste.");
 	}
 	
 	/* DISPLAY */
@@ -327,14 +330,6 @@ function optionenInitCommand( data )
 };
 
 
-function datapointDeleteCommand( data )
-{
-	this.model.setCurrentItem( { id:data.id } );
-	
-	this.model.removePunkt( data );
-	
-	dispatchCommand( Events.FAVORITE_INIT );
-};
 
 function scanCommand( data )
 {	
@@ -465,7 +460,7 @@ function favoritesRowCommand( data )
 	}
 	else
 	{
-		DOM( item ).appendChild("span",{}, "<b>Neues Symptome</b>" );				
+		DOM( item ).appendChild("span",{}, "<b>Neues Symptom</b>" );				
 	}
 
 	DOM( item ).appendChild("p",{ style:"width:100%;font-size:90%;margin:1px;float:left;" }, zeitpunkt);	
@@ -518,6 +513,30 @@ function favoritesEditCommand( data )
 };
 
 /**
+ * 
+ * @param data, forceNoEdit ( onExit )
+ * @param forceNoEdit
+ */
+function favoriteChangeCommand( data )
+{	
+	if( this.model.getStateFavitEdit() || data.exit )
+	{
+		DOM( this.properties.id ).text("Edit");		
+		DOM( this.properties.id ).attrib("className").replace("grey", "colorless");		
+	}
+	else
+	{
+		DOM( this.properties.id ).text("Fertig");
+		DOM( this.properties.id ).attrib("className").replace("colorless", "grey");					
+	}
+	
+	(data.exit) ? this.model.setStateFavitEdit( false) : this.model.setStateFavitEdit( !this.model.getStateFavitEdit() );	
+	
+	if(!data.exit)
+	dispatchCommand( Events.FAVORITE_INIT );
+};
+
+/**
  * FAVORITE INIT
  * @param data 
  * this.properties { id: "ContentId" }
@@ -527,7 +546,6 @@ function favoriteInitCommand( data )
 	// ITEM TO MODIFY
 	var item = this.model.getStateSymptom(); 
 
-	console.log( item );
 	// LEGENDE LABEL
 	var kategorie = this.model.getType( item.id ).kategorie;
 		
@@ -535,62 +553,85 @@ function favoriteInitCommand( data )
 	this.model._state.tempItem = clone( item );
 
 	// ITEM NOT SPECIFIED THAN GET LAST
-	var last = (!item.x) ? this.model.getPunkt( item.id ).x : item.x;
-
+	var last = (!item.x) ? "<i>Zuletzt: "+ zeit('dd.mm.yyyy hh:mm', this.model.getPunkt( item.id ).x)+"</i>" : "<i>am "+zeit('dd.mm.yyyy hh:mm',item.x)+"</i>";
+	
+	// EDITABLE EVENT
+	if( item.x ) DOM( this.properties.edit ).show();
+	else 		 DOM( this.properties.edit ).hide();
+	
 	// NOW CLIENTWIDTH AVAILABLE
 	DOM( this.properties.id ).removeElements().show(); 
 	
 	removeCommand( Events.SLIDER, sliderCommand );
 	removeCommand( Events.DATE, dateCommand );
-    
+    	
 	// FORM
 	DOM( this.properties.id ).addChild("form", {id:"favitFormId"});
 		
-	// ZEITPUNKT
-	DOM( "favitFormId" ).addChild("fieldset", { id: "favitZeitId" }).addChild("legend", {}, "Zeitpunkt");
-	DOM( "favitZeitId" ).addChild("div", {id:"zeitArea" });
+	// ZEITPUNKT ONLY IF NOT EDITING
+	if( this.model.getStateFavitEdit() )
+	{
+		DOM( "favitFormId" ).addChild("fieldset", { id: "favitZeitId", disabled:"true" }).addChild("legend", {}, "Zeitpunkt");
+	}
+	else{
+		DOM( "favitFormId" ).addChild("fieldset", { id: "favitZeitId"} ).addChild("legend", {}, "Zeitpunkt");		
+	}
+	
+	DOM( "favitZeitId" ).addChild("div", {id:"zeitArea" });		
 	
 	// SYMPTOM
 	DOM( "favitFormId").addChild("fieldset", { id: "favoriteFieldsetId" }).addChild("legend", {}, kategorie);
 	DOM( "favoriteFieldsetId" ).addChild( "div", { id:"favArea"} );
 	DOM( "favArea" ).appendChild( "span", { style: "width:100%;"}, "<b>"+this.model.getType( item.id ).title+"</b>");
-	DOM( "favArea" ).appendChild( "span", { id:"favOutputId", style: "position:absolute; top:10px; right:2px; font-size:110%" }, item.y +"%");
-	DOM( "favArea" ).appendChild( "p", { style:'width:100%;font-size:90%;margin:1px' }, "<i>Zuletzt: "+zeit('dd.mm.yyyy hh:mm',last)+"</i>");		
+
+	// EINTRAG AM ODER ZULETTZT
+	DOM( "favArea" ).appendChild( "p", { id:"favitZeitLabel", style:'width:100%;font-size:90%;margin:1px' }, last);		
+
+	// TEXTAREA IF NOTIZ
+	if( kategorie == "Notizen")
+	{
+		DOM( "favArea" ).addChild("input", { type:"reset", class:"button grey", style:"margin-top:10px", value:"Neuer Text"}).onTouch( Events.FAVORITE_TEXT_CHANGE, { action:"favitActions"});
+		DOM( "favArea" ).addChild("textarea", { id:"favTextareaId", style:"font-size:100%;width:100%; height:200px;padding:3px;-webkit-user-select: text;", name:"notizEintrag", placeholder:"Text eingeben"}, item.y);
+		DOM( "favTextareaId" ).onChange( Events.FAVORITE_TEXT_CHANGE, { action:"favitActions"} );
+	}
+	else
+	{
+		DOM( "favArea" ).appendChild( "span", { id:"favOutputId", style: "position:absolute; top:10px; right:2px; font-size:110%" }, item.y +"%");				
+	}
 
 	// SLIDER 
 	DOM( "favArea" ).appendChild( "div", { id:"sliderArea"});	
 	
 	// DEFINITION DER KATEGORIE
-	DOM( "favArea" ).appendChild( "p", { id:"favGradId", style: 'width:100%;padding-top:5px'}, "<b>Definition: </b>"+this.model.getGrad(item.id, item.y).info );
-
+	if( !this.model.getStateFavitEdit() && kategorie != "Notizen" )
+	{
+		DOM( "favArea" ).appendChild( "p", { id:"favGradId", style: 'width:100%;padding-top:5px;'}, "<b>Definition: </b>"+this.model.getGrad(item.id, item.y).info );
+	}
+	
 	// SAVE AND CANCEL
 	DOM( "favArea" ).appendChild( "div",{ id:"favitActions"});		
-	DOM( "favitActions" ).addChild("a", { id:"favitSaveId", class:"button-action blue", style:"float:left;"}, "Speichern").onTouch(Events.FAVORITE_SAVE);
+	DOM( "favitActions" ).addChild("a", { id:"favitSaveId", class:"button-action blue", style:"float:left;"}, "Erstellen").onTouch(Events.FAVORITE_SAVE);
 	DOM( "favitActions" ).addChild("a", { id:"favitCancelId", class:"button-action grey", style:"float:right;"}, "Abbrechen").onTouch(Events.FAVORITE_INIT);
 	DOM( "favitActions" ).hide();
-	
-//	if( kategorie == "Notizen")
-//	{
-//		DOM( "favArea" ).appendChild( "p", { style:'width:100%;font-size:90%;margin:1px' }, (item.x) ? "<i>Zuletzt: "+zeit('dd.mm.yyyy hh:mm', item.x)+"</i>" :"");	
-//		DOM( "favArea" ).addChild("textarea", { id:"favTextareaId", style:"font-size:100%;width:100%; height:200px;padding:3px;-webkit-user-select: text;", name:"notizEintrag", placeholder:"Text eingeben"}, item.y);
-//		DOM( "favArea" ).addChild("input", { type:"reset", class:"button-action grey"}).onTouch( Events.TEXT_CHANGE, { id:item.id, save: this.properties.save } );
-//		
-//		if(item.x)
-//		DOM( "favArea" ).addChild("a", { style:"float:right", class:"button-action red"}, "Löschen").onTouch( Events.DATAPOINT_DELETE, item);
-//		
-//		DOM( "favTextareaId" ).onChange( Events.TEXT_CHANGE, { id:item.id, save: this.properties.save } );
-//	}
-//	else
-//	{
-	
-	// REGISTER COMMANDS
-	addCommand( Events.SLIDER, sliderCommand, { parent:"sliderArea", actions:"favitActions", output:"favOutputId", grad:"favGradId"});
-	addCommand( Events.DATE, dateCommand, { parent: "zeitArea", actions:"favitActions" });
 
-	// DISPATCH COMMANDS
-	dispatchCommand( Events.SLIDER );
+
+	addCommand( Events.DATE, dateCommand, { parent: "zeitArea", actions:"favitActions", zeit:"favitZeitLabel", edit: this.properties.edit});
 	dispatchCommand( Events.DATE);	
-	dispatchCommand( Events.TIPPS_SHOW );
+	
+	if( this.model.getStateFavitEdit() )
+	{
+		DOM("sliderArea").addChild( "a", { class:"button red", style:"float:right;margin-bottom:20px;"}, "Löschen").onTouch(Events.FAVORITE_DELETE);
+	}
+	
+	if( !this.model.getStateFavitEdit() && kategorie != "Notizen" )
+	{
+		// REGISTER COMMANDS
+		addCommand( Events.SLIDER, sliderCommand, { parent:"sliderArea", actions:"favitActions", zeit:"favitZeitLabel", output:"favOutputId", grad:"favGradId", edit:this.properties.edit});
+		
+		// DISPATCH COMMANDS
+		dispatchCommand( Events.SLIDER );
+		dispatchCommand( Events.TIPPS_SHOW );				
+	}
 	//}
 	
 };
@@ -636,6 +677,11 @@ function dateCommand( event )
 		{
 			this.model._state.tempItem.x = update.getTime();
 		}
+		
+		// ZEITPUNKT DELETE
+		DOM( this.properties.zeit ).html("&nbsp;");
+		// NO EDIT FUNCTION AVAILABLE
+		DOM( this.properties.edit ).hide();
 		
 		// SHOW SAVE AND CANCEL
 		DOM( this.properties.actions ).show();
@@ -691,7 +737,15 @@ function sliderCommand( event )
 		// Update Displays
 		DOM( this.properties.output ).removeElements().text( event.value  +"%");
 		DOM( this.properties.grad ).element().innerHTML = "<b>Definition: </b>"+this.model.getGrad( item.id, item.y ).info;	
+		
+		// SAVE AND CANCEL
 		DOM( this.properties.actions ).show();
+
+		// ZEITPUNKT DELETE
+		DOM( this.properties.zeit ).html( "&nbsp;");
+		
+		// NO EDIT FUNCTION AVAILABLE
+		DOM( this.properties.edit ).hide();
 		
 		dispatchCommand( Events.TIPPS_SHOW, { type:item.id, value:item.y, x: item.x } );	
 	}
@@ -719,18 +773,12 @@ function sliderCommand( event )
 
 };
 
-function favoriteChangeCommand( data )
+function favoriteTextChangeCommand( data )
 {
+	// Persist to TEMP Model
+	DOM(data.action).show();
 	
-};
-
-function textChangeCommand( data )
-{
-	// Persist to Model
-	this.model.setCurrentItem( { x: new Date().getTime(), y:data.value, id:data.id, } ); 
-	
-	// SHOW SAVE BUTTON
-	DOM( data.save ).show();
+	this.model._state.tempItem.y = data.value; 
 };
 
 function favoriteExitCommand( data )
@@ -744,10 +792,20 @@ function favoriteExitCommand( data )
 				
 		this.model.addPunkt( toSave );
 	}
+	// DELETE EVENT
+	if( this.properties.type == "delete") {
+		
+		var toDelete = clone( this.model.getStateSymptom() );
+		
+		this.model.removePunkt( toDelete );
+	}
 	
 	// Cleaning
 	this.model._state.tempItem = null;		
 	this.model.setStateSymptom( null );	
+	
+	// CLEANING EDIT BUTTN STATUS
+	dispatchCommand( Events.FAVORITE_CHANGE, { exit:true} );
 	
 	dispatchCommand( command );
 }

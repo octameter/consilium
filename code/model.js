@@ -212,6 +212,8 @@ Model.prototype.getEmpfehlungen = function( data )
  */
 Model.prototype.getStateFavEdit = function() { return this._state.favoritesEdit; };
 Model.prototype.setStateFavEdit = function( value ) { this._state.favoritesEdit = value; };
+Model.prototype.getStateFavitEdit = function() { return this._state.favitEdit; };
+Model.prototype.setStateFavitEdit = function( value ) { this._state.favitEdit = value; };
 Model.prototype.getStateSymptom = function() { return this._state.currentItem;};
 Model.prototype.setStateSymptom = function( value ) { this._state.currentItem = value;};
 Model.prototype.getStateTipp = function() { return this._state.tipItem;};
@@ -229,7 +231,7 @@ Model.prototype._state =
     favoritesEdit: false,
     favitEdit:false,
     tipItem: null,
-    introShow: false
+    introShow: true
 };
 /**
  * Punkt x:LocalTimeInMs, y [0 - 100], id: type.id
@@ -355,11 +357,28 @@ Model.prototype.dict =
 {
 		Intro:
 		[
-		 	{ id: "introDefault", title:"Liebe Patientin",
+		 	{ id: "introDefault", title:"Liebe NutzerIn",
 		 		bausteine: [
-		 		             "Die App dient Ihnen als persönliches Logbuch für Ihr Wohlbefinden während der medizinischen Therapie.",
-		 		             "Wir empfehlen die App tägliche zu nutzen. Rückwirkend kann für maximal drei Tage ihre Bewertung nachgetragen werden. Sollte die Eingabe länger unterbrochen werden, beginnt die Verbindungslinie neu.",
-		 		             "Erweitern Sie Ihre Auswahlliste nach Bedarf durch Ergänzung weiterer Symptome."
+		 		             "Die App dient Ihnen als persönliches Logbuch für Ihr Wohlbefinden während Ihrer Therapie. Wir empfehlen die App täglich zu nutzen. Bei Bedarf können Sie vergessene Eingaben nachtragen.",
+		 		             "Ist der Abstand zwischen zwei Eintragungen grösser als drei Tage wird die Verbindungslinie zwischen zwei Datenpunkten unterbrochen und beginnt von neuem. In Ihrer Favoritenliste finden Sie die Eingaben für Wohlbefinden, Symptomen und Tagebucheintragungen.",
+		 		             "Wir wünschen Ihnen viel Erfolg!"
+		 		            ]		 						  
+		 	},
+		 	{ id: "gruppeb", title:"Liebe Teilnehmerin",
+		 		bausteine: [
+		 		            "Sie gehören in der Studie der Gruppe B an.",
+		 		            "Teilnehmerinnen der Gruppe B nutzen die App, ohne den Arzt darüber zu informieren und ohne die App in der Arztvisite zu verwenden. Verhalten Sie sich ansonsten in Ihren Arztvisiten wie gewohnt, und informieren Sie den Arzt über Ihre Beschwerden und Wünsche.",
+		 		            "Bei der Beantwortung des Fragebogens können Sie gerne die App verwenden. Bitte verwenden Sie auf dem Fragbogen nur Ihre persönliche Patientenidentifikationsnummer und nicht ihren persönlichen Namen. Falls Sie diese Nummer vergessen haben sollten, so können Sie die Information durch Berühren der „Sync“-Taste abrufen.",
+		 		            "Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie."
+		 		            ]		 						  
+		 	},
+		 	{ id: "gruppec", title:"Liebe Teilnehmerin",
+		 		bausteine: [
+		 		            "Sie gehören in der Studie der Gruppe C an.",
+		 		            "Ist der Abstand zwischen zwei Eintragungen grösser als drei Tage wird die Verbindungslinie zwischen zwei Datenpunkten unterbrochen und beginnt von neuem. In Ihrer Favoritenliste finden Sie die Eingaben für Wohlbefinden, Symptomen und Tagebucheintragungen.",
+		 		            "Teilnehmerinnen der Gruppe C nutzen die App und betrachten zusammen mit dem Arzt den Verlauf der Eingaben. Die App dient hier als Ergänzung und soll Ihnen als Gedächtnisstütze helfen. Verhalten Sie sich ansonsten in Ihren Arztvisiten wie gewohnt, und informieren Sie den Arzt über Ihre Beschwerden und Wünsche.",
+		 		            "Bei der Beantwortung des Fragebogens können Sie gerne die App verwenden. Bitte verwenden Sie auf dem Fragbogen nur Ihre persönliche Patientenidentifikationsnummer und nicht ihren persönlichen Namen. Falls Sie diese Nummer vergessen haben sollten, so können Sie die Information durch Berühren der „Sync“-Taste abrufen.",
+		 		            "Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie."
 		 		            ]		 						  
 		 	}
 		 ],
@@ -377,7 +396,7 @@ Model.prototype.dict =
 		],
 		Tagebuch :
 		[
-		 	{ id: "privat", title:"Private Memo", kategorie:"Notizen", zero:"", farbwert:"rgba(255,100,100,0.9)"},
+		 	{ id: "privat", title:"Privates Memo", kategorie:"Notizen", zero:"", farbwert:"rgba(255,100,100,0.9)"},
 		 	{ id: "diagnose", title:"Diagnose", kategorie:"Notizen", zero:"", farbwert:"rgba(255,100,100,0.9)"},
 		 	{ id: "zyklus", title:"Zyklus", kategorie:"Notizen", zero:"", farbwert:"rgba(255,100,100,0.9)"}
 		 ],
