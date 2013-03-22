@@ -300,7 +300,7 @@ function tippInitCommand( data )
 		}
 	}
 	
-	if( ! this.model.trackPunktLiked() )
+	if( !this.model.trackPunktLikedOrNotExists() )
 	{
 		DOM( "tipArea" ).addChild("a", { style:"float:left;", class:"button-action green"}, "Hilfreich").onTouch( Events.TIPP_LIKED, { liked:true } );
 		DOM( "tipArea" ).addChild("a", { style:"float:right;", class:"button-action grey"}, "Nicht hilfreich").onTouch( Events.TIPP_LIKED, { liked:false });	
@@ -401,8 +401,6 @@ function favoritesChangeCommand( data )
 	}
 	
 	dispatchCommand( Events.FAVORITES_INIT );		
-	
-//	console.log("TODO Symptome ordnen");
 };
 
 /**
@@ -508,7 +506,12 @@ function favoritesEditCommand( data )
 {		
 	var value = data.punkt || { y:data.type.zero };
 	
-	this.model.setStateSymptom( { y:value.y, id:data.type.id, command: Events.FAVORITE_TO_FAVORITES } );
+	value.id = data.type.id;
+
+	value.command = Events.FAVORITE_TO_FAVORITES;
+	
+	this.model.setStateSymptom( value );
+	
 	dispatchCommand( Events.FAVORITES_TO_FAVORITE );		
 };
 
@@ -550,10 +553,15 @@ function favoriteInitCommand( data )
 	var kategorie = this.model.getType( item.id ).kategorie;
 		
 	// PERSIST NEW ITEM TO MODEL
-	this.model._state.tempItem = clone( item );
+	this.model._state.tempItem = { y:item.y, id:item.id };
 
 	// ITEM NOT SPECIFIED THAN GET LAST
-	var last = (!item.x) ? "<i>Zuletzt: "+ zeit('dd.mm.yyyy hh:mm', this.model.getPunkt( item.id ).x)+"</i>" : "<i>am "+zeit('dd.mm.yyyy hh:mm',item.x)+"</i>";
+	var last = "&nbsp;";
+	
+	if(this.model.getPunkt( item.id ))
+	{
+		last = (!item.x) ? "<i>Zuletzt: "+ zeit('dd.mm.yyyy hh:mm', this.model.getPunkt( item.id ).x)+"</i>" : "<i>am "+zeit('dd.mm.yyyy hh:mm',item.x)+"</i>";
+	}
 	
 	// EDITABLE EVENT
 	if( item.x ) DOM( this.properties.edit ).show();
@@ -753,7 +761,7 @@ function sliderCommand( event )
 	var temp = this.model._state.tempItem;
 	
 	// CREATE ELEMENT DESKTOP ODER MOBILE IF NO EVENT VALUE
-	if( !event.value )
+	if( !event.value && event.tag != "A")
 	{
 		if( DO.plugins("agent").isDevice("Desktop") )
 		{				
@@ -766,11 +774,10 @@ function sliderCommand( event )
 			DOM( "favSliderId" ).onTouch( Events.SLIDER, {custom:true} );
 		}
 		else
-		{//, min:0, max:100, value:temp.y, style:"margin-bottom:20px"
-			DOM( this.properties.parent ).addChild("input", { id:"favRangeId", type:"range"} ).onChange( Events.SLIDER, {} );
+		{//, , style:"margin-bottom:20px"
+			DOM( this.properties.parent ).addChild("input", { id:"favRangeId", type:"range", min:0, max:100, value:temp.y} ).onChange( Events.SLIDER, {} );
 		}	
 	}
-
 };
 
 function favoriteTextChangeCommand( data )
