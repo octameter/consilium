@@ -163,30 +163,40 @@ Svg.prototype.drawPunkte = function(id)
 
 Svg.prototype.drawNotizen = function( datapoi )
 {
-	
-	// ZYKLUS
-	
-	// DIAGNOSE
-	var pixelX = this.getPixelForX( datapoi.x , true);
+	var y = 0;	
+	var height = 0;
 		
 	// PRIVAT
-	var y = -1;
+	if( datapoi.id == "privat")
+	{
+		y = -1;
+		height = 105;
+	}
 	
-	if( datapoi.id == "zyklus") y = 116; 	
+	// ZYKLUS
+	if( datapoi.id == "zyklus") {
+		y = 116; 	
+		height = 105;
+	}
 	
-	if( datapoi.id == "diagnose") y = 116;
+	// DIAGNOSE
+	if( datapoi.id == "diagnose") 
+	{
+		y = 100;
+		height = 20;
+	}
 	
 	//var pixelWidth = this.getPixelForX( this.minX + (24 * 60 * 60 * 1000) , false);
 	
-	var pixelHeight = this.getPixelForY(105, true);
 	var farbe = this.getFarbwert(datapoi.id);
+	var pixelX = this.getPixelForX( datapoi.x , true);
     
 	var area= document.createElementNS("http://www.w3.org/2000/svg", "rect");
 	area.setAttribute("class","movePoint");
-	area.setAttribute("x", pixelX -15);
+	area.setAttribute("x", pixelX - 15);
 	area.setAttribute("y", this.getPixelForY( y, true));
 	area.setAttribute("width", 26);
-	area.setAttribute("height", pixelHeight);
+	area.setAttribute("height", this.getPixelForY(height, true) );
 	area.setAttribute("fill", farbe);
     area.setAttribute("stroke","rgba(255,255,255,1)");
     area.setAttribute("stroke-width", "2");

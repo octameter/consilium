@@ -339,12 +339,13 @@ function optionenInitCommand( data )
 {
 	DOM( this.properties.id ).removeElements();
 	
-	DOM( this.properties.id ).addChild( "form").addChild("fieldset", { id:"fieldsetOptionenId", style:"text-align:left;" });
+	DOM( this.properties.id ).addChild( "form").addChild("fieldset", { id:"fieldsetOptionenId", style:"text-align:left;" }).addChild( "legend", {}, "Verbindung" );
 	
 	/* VERBINDEN */
-	DOM( "fieldsetOptionenId"  ).addChild( "legend", {}, "Verbindung" );
-	DOM( "fieldsetOptionenId"  ).addChild( "span", {}, "Bitte halten Sie den QR-Code bereit, welcher vom Studienzentrum abgegeben wurde." );
-	DOM( "fieldsetOptionenId"  ).addChild( "a", { class:"button-action blue", style:"float:right;" }, "Verbinden" ).onTouch( Events.SCAN, {}); 
+	DOM( "fieldsetOptionenId"  ).addChild("div", { id:"optionenStatus", style:"vertical-align:center"} );
+	
+	DOM( "optionenStatus"  ).addChild( "span", { }, "Brustzentrum" );
+	DOM( "optionenStatus"  ).addChild( "a", { class:"button-action blue", style:"float:right;" }, "Verbinden" ).onTouch( Events.SCAN, {}); 
 
 	DOM( this.properties.id ).show();	
 };
@@ -356,7 +357,7 @@ function scanCommand( data )
             {
                 console.log("Scanner result text: " + args.text + "format: " + args.format + "cancelled: " + args.cancelled + "\n");
                 
-                dispatchCommand( Events.SCAN_RESULT, { qrcode : args.text } );
+                dispatchCommand( Events.SCAN_RESULT, { result: args.text, format: args.format  } );
                 
                 if (args.format == "QR_CODE") {
                     window.plugins.childBrowser.showWebPage(args.text, { showLocationBar: false });
@@ -364,14 +365,13 @@ function scanCommand( data )
                
             });
         } catch (ex) {        	
-        	dispatchCommand( Events.SCAN_RESULT, { qrcode : "" } );
-            console.log(ex.message);
+        	dispatchCommand( Events.SCAN_RESULT, { error : ex.message} );
         }
 };
 
 function scanResultCommand( event )
 {
-
+	window.plugins.childBrowser.showWebPage(event.result, { showLocationBar: true });
 };
 
 /**
