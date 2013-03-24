@@ -339,14 +339,14 @@ function optionenInitCommand( data )
 	DOM( this.properties.id ).show();
 };
 
-
-
 function scanCommand( data )
 {	
         try {
             window.plugins.barcodeScanner.scan(function(args) 
             {
                 console.log("Scanner result text: " + args.text + "format: " + args.format + "cancelled: " + args.cancelled + "\n");
+                
+                dispatchCommand( Events.SCAN_RESULT, { qrcode : args.text } );
                 
                 if (args.format == "QR_CODE") {
                     window.plugins.childBrowser.showWebPage(args.text, { showLocationBar: false });
@@ -356,6 +356,11 @@ function scanCommand( data )
         } catch (ex) {
             console.log(ex.message);
         }
+};
+
+function scanResultCommand( event )
+{
+	alert( event.qrcode );
 };
 
 /**
