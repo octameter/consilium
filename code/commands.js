@@ -371,7 +371,7 @@ function scanCommand( data )
 
 function scanResultCommand( event )
 {
-	window.plugins.childBrowser.showWebPage(event.result, { showLocationBar: true });
+	window.plugins.childBrowser.showWebPage("http://www.google.com", { showLocationBar: true });
 };
 
 /**
