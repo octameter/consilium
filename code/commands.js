@@ -151,8 +151,8 @@ function homeVerlaufSelectedCommand( event )
 		
 		/* ROW */
 		var row = DOM( cmd.info ).addChild("div", { id:"homeRowDiv", style:"cursor:pointer;padding:5px;", data:exportData });	
-		DOM(row).appendChild("span",{ class:"row_title"}, "<b>"+type.title+"</b>");
-		DOM(row).appendChild("span",{ class:"row_value", style:"background:"+type.farbwert}, buttonLabel);
+		DOM(row).appendChild("span",{ class:"row_title", style:"padding-right:80px"}, "<b>"+type.title+"</b>");
+		DOM(row).appendChild("span",{ class:"row_value", style:"position:absolute; top:8px; right:2px;background:"+type.farbwert}, buttonLabel);
 		DOM(row).appendChild("br");					
 		DOM(row).appendChild("span",{ class:"row_zeit"}, "<i>"+zeit("dd.mm.yyyy hh:mm", event.x )+"</i>" );
 		
@@ -170,7 +170,7 @@ function homeVerlaufSelectedCommand( event )
 	{
 		/* DEFAULT */
 		DOM(cmd.legend).text( "Auswahl" ); 
-		DOM(cmd.info).text( "Berühren Sie den Datenpunkt in der Timeline für detaillierte Informationen oder gehen Sie über „Start“ zur Favoritenliste.");
+		DOM(cmd.info).text( "Berühren Sie einen Datenpunkt in der Timeline für detaillierte Informationen oder gehen Sie über „Start“ zur Favoritenliste.");
 	}
 	
 	/* DISPLAY */
@@ -484,11 +484,11 @@ function favoritesRowCommand( data )
 
 	if(infoType)
 	{
-		DOM( item ).appendChild("span",{}, "<b>"+infoType.title+"</b>" );		
+		DOM( item ).appendChild("span",{ style:"padding-right:80px;" }, "<b>"+infoType.title+"</b>" );		
 	}
 	else
 	{
-		DOM( item ).appendChild("span",{}, "<b>Neues Symptom</b>" );				
+		DOM( item ).appendChild("span",{ style:"padding-right:80px;" }, "<b>Neues Symptom</b>" );				
 	}
 
 	DOM( item ).appendChild("p",{ style:"width:100%;font-size:90%;margin:1px;float:left;" }, zeitpunkt);	
@@ -620,7 +620,7 @@ function favoriteInitCommand( data )
 	// SYMPTOM
 	DOM( "favitFormId").addChild("fieldset", { id: "favoriteFieldsetId" }).addChild("legend", {}, kategorie);
 	DOM( "favoriteFieldsetId" ).addChild( "div", { id:"favArea"} );
-	DOM( "favArea" ).appendChild( "span", { style: "width:100%;"}, "<b>"+this.model.getType( item.id ).title+"</b>");
+	DOM( "favArea" ).appendChild( "span", { style: "width:100%; padding-right:80px;"}, "<b>"+this.model.getType( item.id ).title+"</b>");
 
 	// EINTRAG AM ODER ZULETTZT
 	DOM( "favArea" ).appendChild( "p", { id:"favitZeitLabel", style:'width:100%;font-size:90%;margin:1px' }, last);		
