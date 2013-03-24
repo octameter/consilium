@@ -74,7 +74,6 @@ Svg.prototype.drawCoordinates = function()
 		this.drawKoordLine( this.minX, y, this.maxXRealtime, y );		
 	}
 
-
 	var scrollerWidth = this.element.parentNode.offsetWidth;
 
 	if(chartWidth > this.chartWidth)
@@ -145,9 +144,9 @@ Svg.prototype.drawPunkte = function(id)
 	{				
 		var punkt1 = punkteById[dots];
 
-		if(punkt1.id == "privat")
+		if(punkt1.id == "privat" || punkt1.id == "diagnose" || punkt1.id == "zyklus")
 		{
-			this.drawTagebuch( punkt1 );
+			this.drawNotizen( punkt1 );
 		}
 		else
 		{
@@ -162,11 +161,21 @@ Svg.prototype.drawPunkte = function(id)
 	delete punkteById;
 };
 
-Svg.prototype.drawTagebuch = function( datapoi )
+Svg.prototype.drawNotizen = function( datapoi )
 {
 	
+	// ZYKLUS
+	
+	// DIAGNOSE
 	var pixelX = this.getPixelForX( datapoi.x , true);
-	var pixelY = this.getPixelForY(-1, true);
+		
+	// PRIVAT
+	var y = -1;
+	
+	if( datapoi.id == "zyklus") y = 116; 	
+	
+	if( datapoi.id == "diagnose") y = 116;
+	
 	//var pixelWidth = this.getPixelForX( this.minX + (24 * 60 * 60 * 1000) , false);
 	
 	var pixelHeight = this.getPixelForY(105, true);
@@ -175,7 +184,7 @@ Svg.prototype.drawTagebuch = function( datapoi )
 	var area= document.createElementNS("http://www.w3.org/2000/svg", "rect");
 	area.setAttribute("class","movePoint");
 	area.setAttribute("x", pixelX -15);
-	area.setAttribute("y", pixelY);
+	area.setAttribute("y", this.getPixelForY( y, true));
 	area.setAttribute("width", 26);
 	area.setAttribute("height", pixelHeight);
 	area.setAttribute("fill", farbe);

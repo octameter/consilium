@@ -259,7 +259,9 @@ Model.prototype.data =
 		 	 {"x":1359384907275,"y":69,"id":"10016256"},	 
 		 	 {"x":1363265891430, "y": "90", "id": "10015090"},
 
-		 	 {"x":1363265891430, "y": "adsf", "id": "privat"} 	 	
+		 	 {"x":1363265891430, "y": "adsf", "id": "privat"}, 	 	
+		 	 {"x":1363376891430, "y": "chemo", "id": "zyklus"}, 	 	
+		 	 {"x":1363486891430, "y": "tumor ABC", "id": "diagnose"} 	 	
 		],
 	    favorites:
 	    {
@@ -395,8 +397,8 @@ Model.prototype.dict =
 		Tagebuch :
 		[
 		 	{ id: "privat", title:"Privates Memo", kategorie:"Notizen", zero:"", farbwert:"rgba(255,100,100,0.9)"},
-		 	{ id: "diagnose", title:"Diagnose", kategorie:"Notizen", zero:"", farbwert:"rgba(255,100,100,0.9)"},
-		 	{ id: "zyklus", title:"Zyklus", kategorie:"Notizen", zero:"", farbwert:"rgba(255,100,100,0.9)"}
+		 	{ id: "diagnose", title:"Diagnose", kategorie:"Notizen", zero:"", farbwert:"rgba(255,204,0,0.9)"},
+		 	{ id: "zyklus", title:"Zyklus", kategorie:"Notizen", zero:"", farbwert:"rgba(200,100,200,0.9)"}
 		 ],
 		Symptome : 
 			 [                 

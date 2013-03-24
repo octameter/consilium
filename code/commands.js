@@ -148,9 +148,13 @@ function homeVerlaufSelectedCommand( event )
 		DOM(row).appendChild("span",{ class:"row_value", style:"background:"+type.farbwert}, buttonLabel);
 		DOM(row).appendChild("br");					
 		DOM(row).appendChild("span",{ class:"row_zeit"}, "<i>"+zeit("dd.mm.yyyy hh:mm", event.x )+"</i>" );
-		DOM(row).appendChild("div", { class:"row_caret", style:"top:24px"} ).appendChild( Assets.caret() );
 		
-		DOM("homeRowDiv").onTap( Events.TAP_HANDLER, { watch: "id:homeRowDiv", command:Events.HOME_EXIT } );
+		/* PROCEED TO EDIT IF */
+		if( type.kategorie != "Notizen" || event.id == "privat")
+		{
+			DOM(row).appendChild("div", { class:"row_caret", style:"top:24px"} ).appendChild( Assets.caret() );
+			DOM("homeRowDiv").onTap( Events.TAP_HANDLER, { watch: "id:homeRowDiv", command:Events.HOME_EXIT } );			
+		}
 		
 		/* DETAIL */
 		DOM(cmd.info).addChild( "p", { class:"row_detail"}, detailLabel.replace(/\n\r?/g, '<br />') );		
@@ -599,9 +603,9 @@ function favoriteInitCommand( data )
 	// TEXTAREA IF NOTIZ
 	if( kategorie == "Notizen")
 	{
-		DOM( "favArea" ).addChild("input", { type:"reset", class:"button grey", style:"margin-top:10px", value:"Neuer Text"}).onTouch( Events.FAVORITE_TEXT_CHANGE, { action:"favitActions"});
 		DOM( "favArea" ).addChild("textarea", { id:"favTextareaId", style:"font-size:100%;width:100%; height:200px;padding:3px;-webkit-user-select: text;", name:"notizEintrag", placeholder:"Text eingeben"}, item.y);
-		DOM( "favTextareaId" ).onChange( Events.FAVORITE_TEXT_CHANGE, { action:"favitActions"} );
+		DOM( "favArea" ).addChild("div",{ id:"favitReseter" }). addChild("a",{ class:"button-action grey", style:"float:left;"}, "Neuer Text").onTouch( Events.FAVORITE_TEXT_CHANGE, { action:"favitActions", type:"reset", reseter:"favitReseter"});
+		DOM( "favTextareaId" ).onChange( Events.FAVORITE_TEXT_CHANGE, { action:"favitActions", reseter:"favitReseter"} );
 	}
 	else
 	{
@@ -782,9 +786,16 @@ function sliderCommand( event )
 };
 
 function favoriteTextChangeCommand( data )
-{
+{	
+	DOM(data.reseter).hide();
 	DOM(data.action).show();
 
+	if(data.type == "reset")
+	{
+		data.value = "";
+		DOM("favTextareaId").element().value = "";
+	}
+	
 	// Persist to TEMP Model
 	if(this.model._state.tempItem)
 	this.model._state.tempItem.y = data.value;
