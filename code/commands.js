@@ -343,9 +343,8 @@ function optionenInitCommand( data )
 	
 	/* VERBINDEN */
 	DOM( "fieldsetOptionenId"  ).addChild( "legend", {}, "Verbindung" );
-	DOM( "fieldsetOptionenId"  ).addChild( "span", { }, "Bitte halten Sie den QR-Code bereit, welcher Ihnen vom Studienzentrum abgegeben wurde." );
-	DOM( "fieldsetOptionenId"  ).addChild( "a", { class:"button-action blue", style:"float:right;" }, "Start" ); 
-
+	DOM( "fieldsetOptionenId"  ).addChild( "span", {}, "Bitte halten Sie den QR-Code bereit, welcher vom Studienzentrum abgegeben wurde." );
+	DOM( "fieldsetOptionenId"  ).addChild( "a", { class:"button-action blue", style:"float:right;" }, "Verbinden" ).onTouch( Events.SCAN, {}); 
 
 	DOM( this.properties.id ).show();	
 };
