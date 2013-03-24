@@ -342,12 +342,11 @@ function scanCommand( data )
             window.plugins.barcodeScanner.scan(function(args) 
             {
                 console.log("Scanner result text: " + args.text + "format: " + args.format + "cancelled: " + args.cancelled + "\n");
-                /*
+                
                 if (args.format == "QR_CODE") {
                     window.plugins.childBrowser.showWebPage(args.text, { showLocationBar: false });
                 }
-                */
-                alert(args);
+               
             });
         } catch (ex) {
             console.log(ex.message);
