@@ -24,6 +24,7 @@ Events =
 	OPTIONEN_INIT:"optionenInit",
 	OPTIONEN_TO_HOME:"optionenToHome",
 	SCAN:"scan",
+	SCAN_RESULT:"scan_result",
 
 	FAVORITES_INIT:"favorites_init",
 	FAVORITES_ROW:"favorites_row",
@@ -348,12 +349,13 @@ function scanCommand( data )
                 
                 dispatchCommand( Events.SCAN_RESULT, { qrcode : args.text } );
                 
-                if (args.format == "QR_CODE") {
-                    window.plugins.childBrowser.showWebPage(args.text, { showLocationBar: false });
-                }
+//                if (args.format == "QR_CODE") {
+//                    window.plugins.childBrowser.showWebPage(args.text, { showLocationBar: false });
+//                }
                
             });
-        } catch (ex) {
+        } catch (ex) {        	
+        	dispatchCommand( Events.SCAN_RESULT, { qrcode : "" } );
             console.log(ex.message);
         }
 };
