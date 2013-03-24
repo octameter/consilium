@@ -16,7 +16,8 @@
 	cursor:pointer;
     overflow-y:hidden;
     overflow-x:hidden;
-	border-bottom:1px solid #CCCCCC; 
+	border-bottom:1px solid #DCDCDC; 
+	border-top:1px solid #FFF; 
 }
 .listeNext > li:last-child{
 	border-bottom:none; 

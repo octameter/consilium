@@ -141,6 +141,7 @@ function homeVerlaufSelectedCommand( event )
 
 		/* CURRENT ITEM */
 		var exportData = JSON.stringify({x:event.x, y:event.y, id:event.id, command:Events.FAVORITE_TO_HOME});
+		
 		/* ROW */
 		var row = DOM( cmd.info ).addChild("div", { id:"homeRowDiv", style:"cursor:pointer;padding:5px;", data:exportData });	
 		DOM(row).appendChild("span",{ class:"row_title"}, "<b>"+type.title+"</b>");

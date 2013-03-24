@@ -59,7 +59,9 @@ Svg.prototype.drawCoordinates = function()
 	// vLine
 	for(var x = this.minX; x <= this.maxX; x += (24 * 60 * 60 * 1000) )
 	{
-		this.drawWeekend( x, this.maxY, this.minX + milliProTag, this.minY);		
+		var breite = ( this.maxXRealtime > ( x + milliProTag )) ? milliProTag : ( this.maxXRealtime - this.maxX);  
+		
+		this.drawWeekend( x, this.maxY, this.minX + breite, this.minY);		
 
 		this.drawKoordLine( x, this.minY, x, this.maxY );		
 		
@@ -149,7 +151,7 @@ Svg.prototype.drawPunkte = function(id)
 		}
 		else
 		{
-			this.drawLine( punkt1, punkt2, 15);
+			this.drawLine( punkt1, punkt2, 19);
 			
 			this.drawPunkt( punkt1 );									
 			
@@ -166,6 +168,7 @@ Svg.prototype.drawTagebuch = function( datapoi )
 	var pixelX = this.getPixelForX( datapoi.x , true);
 	var pixelY = this.getPixelForY(-1, true);
 	//var pixelWidth = this.getPixelForX( this.minX + (24 * 60 * 60 * 1000) , false);
+	
 	var pixelHeight = this.getPixelForY(105, true);
 	var farbe = this.getFarbwert(datapoi.id);
     
@@ -176,7 +179,7 @@ Svg.prototype.drawTagebuch = function( datapoi )
 	area.setAttribute("width", 26);
 	area.setAttribute("height", pixelHeight);
 	area.setAttribute("fill", farbe);
-    area.setAttribute("stroke","rgba(220,220,220,0.6)");
+    area.setAttribute("stroke","rgba(255,255,255,1)");
     area.setAttribute("stroke-width", "2");
 	
 	DOM(area).onTouch( Events.HOME_VERLAUF_SELECTED, datapoi );
@@ -271,8 +274,8 @@ Svg.prototype.drawPunkt = function( punkt )
 	var kreis = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     kreis.setAttribute("transform","translate(0 " + y + ")");
 	kreis.setAttribute("class","movePoint");
-	kreis.setAttribute("stroke","rgba(255,255,255,0.9)");		
-	kreis.setAttribute("r","14");
+	kreis.setAttribute("stroke","rgba(255,255,255,1)");		
+	kreis.setAttribute("r","17");
 	kreis.setAttribute("fill", farbe ); 
 	kreis.setAttribute("stroke-width", "2");
 	kreis.setAttribute("cx", cx);

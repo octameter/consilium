@@ -30,7 +30,7 @@
 					{
 						element.addEventListener("touchstart", function(e)
 						{
-							e.preventDefault();
+							//e.preventDefault();
 							event.touches = e.touches[0];
 							event.tag = e.target.tagName;
 							dispatchCommand(commandName, event);
@@ -41,7 +41,7 @@
 					{
 						element.addEventListener("mousedown", function(e)
 						{
-							e.preventDefault();
+							//e.preventDefault();
 							event.offsetX = e.offsetX || e.layerX;
 							event.offsetY = e.offsetY || e.layerY;
 							event.tag = e.target.tagName;
