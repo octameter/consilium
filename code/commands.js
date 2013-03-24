@@ -25,6 +25,7 @@ Events =
 	OPTIONEN_TO_HOME:"optionenToHome",
 	SCAN:"scan",
 	SCAN_RESULT:"scan_result",
+	SHOW_PAGE:"scan_result",
 
 	FAVORITES_INIT:"favorites_init",
 	FAVORITES_ROW:"favorites_row",
@@ -344,8 +345,9 @@ function optionenInitCommand( data )
 	/* VERBINDEN */
 	DOM( "fieldsetOptionenId"  ).addChild("div", { id:"optionenStatus", style:"vertical-align:center"} );
 	
-	DOM( "optionenStatus"  ).addChild( "span", { }, "Brustzentrum" );
+	DOM( "optionenStatus"  ).addChild( "span", { }, "Mit Brustzentrum" );
 	DOM( "optionenStatus"  ).addChild( "a", { class:"button-action blue", style:"float:right;" }, "Verbinden" ).onTouch( Events.SCAN, {}); 
+	DOM( "optionenStatus"  ).addChild( "a", { class:"button-action blue", style:"float:right;" }, "Online" ).onTouch( Events.SHOW_PAGE, {}); 
 
 	DOM( this.properties.id ).show();	
 };
@@ -358,10 +360,6 @@ function scanCommand( data )
                 console.log("Scanner result text: " + args.text + "format: " + args.format + "cancelled: " + args.cancelled + "\n");
                 
                 dispatchCommand( Events.SCAN_RESULT, { result: args.text, format: args.format  } );
-                
-                if (args.format == "QR_CODE") {
-                    window.plugins.childBrowser.showWebPage(args.text, { showLocationBar: false });
-                }
                
             });
         } catch (ex) {        	
@@ -369,9 +367,16 @@ function scanCommand( data )
         }
 };
 
-function scanResultCommand( event )
+function showWebPage( event )
 {
-	window.plugins.childBrowser.showWebPage("http://www.google.com", { showLocationBar: true });
+	window.plugins.childBrowser.showWebPage("http://www.google.com");
+};
+
+function scanResultCommand( event )
+{	
+	DOM( "optionenStatus"  ).addChild( "p", { }, event.result );
+	DOM( "optionenStatus"  ).addChild( "p", { }, event.format );
+	DOM( "optionenStatus"  ).addChild( "p", { }, event.error );
 };
 
 /**
