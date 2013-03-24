@@ -367,7 +367,7 @@ function scanCommand( data )
         }
 };
 
-function showWebPage( event )
+function showWebPageCommand( event )
 {
 	window.plugins.childBrowser.showWebPage("http://www.google.com");
 };
