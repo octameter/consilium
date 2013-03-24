@@ -1,4 +1,9 @@
 /**
+ * Created by Marco Egbring on March 2013
+ * Copyright 2013 EPha.ch. All rights reserved.
+ */
+
+/**
  * COMMANDS
  * @param data
  */
