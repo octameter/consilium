@@ -94,28 +94,15 @@
         		</button>
         	</header>
         	
-        	<article id="optionenContentId" style="display:none">
-        		<form>
-        			<fieldset id="connectId">
-        				<legend>Connect</legend>
-	        			
-        				<div>
-        					<span>Bitte Scannen Sie den QR-Code, welcher Ihnen vom Studienzentrum abgegeben wurde.</span>
-        					<a style="float:right" id="scannerId" class="button-action blue">SCANNEN</a>
-        				</div>
-<!--         				<div class="iphone-toggle-buttons">   						 -->
-<!--         					<label> -->
-<!--         						<input type="checkbox"><span></span> -->
-<!--         					</label> -->
-<!--         					<b>Beschleunigung</b><br><i>plus 12 Stunden alle 30 Sek.</i> -->
-<!--         				</div> -->
-  	
-        			</fieldset>
-        		</form>
-        	</article>
+        	<article id="optionenContentId" style="display:none"></article>
         	
         </section>
-        
+        <!-- <div class="iphone-toggle-buttons">   -->
+		<!-- 	<label> -->
+		<!--		<input type="checkbox"><span></span> -->
+		<!--	</label> -->
+		<!-- <b>Beschleunigung</b><br><i>plus 12 Stunden alle 30 Sek.</i> -->
+		<!-- </div> -->
     </body>
    		<script type="text/javascript" src="cordova.js"></script> 			
 		<script type="text/javascript" src="barcodescanner.js"></script> 	
@@ -204,7 +191,6 @@
    						// OPTIONEN
    						DOM("optionenId").onStage( Events.OPTIONEN_INIT ); 
    						DOM("optionenBackButton").onTouch( Events.OPTIONEN_TO_HOME );
-   						DOM("scannerId").onTouch( Events.SCAN, {} );
    						
    						// FAVORITES
    						DOM("favoritesId").onStage( Events.FAVORITES_INIT ); 

@@ -337,7 +337,17 @@ function tippExitCommand( data )
 
 function optionenInitCommand( data )
 {
-	DOM( this.properties.id ).show();
+	DOM( this.properties.id ).removeElements();
+	
+	DOM( this.properties.id ).addChild( "form").addChild("fieldset", { id:"fieldsetOptionenId", style:"text-align:left;" });
+	
+	/* VERBINDEN */
+	DOM( "fieldsetOptionenId"  ).addChild( "legend", {}, "Verbindung" );
+	DOM( "fieldsetOptionenId"  ).addChild( "span", { }, "Bitte halten Sie den QR-Code bereit, welcher Ihnen vom Studienzentrum abgegeben wurde." );
+	DOM( "fieldsetOptionenId"  ).addChild( "a", { class:"button-action blue", style:"float:right;" }, "Start" ); 
+
+
+	DOM( this.properties.id ).show();	
 };
 
 function scanCommand( data )
@@ -349,9 +359,9 @@ function scanCommand( data )
                 
                 dispatchCommand( Events.SCAN_RESULT, { qrcode : args.text } );
                 
-//                if (args.format == "QR_CODE") {
-//                    window.plugins.childBrowser.showWebPage(args.text, { showLocationBar: false });
-//                }
+                if (args.format == "QR_CODE") {
+                    window.plugins.childBrowser.showWebPage(args.text, { showLocationBar: false });
+                }
                
             });
         } catch (ex) {        	
@@ -362,7 +372,7 @@ function scanCommand( data )
 
 function scanResultCommand( event )
 {
-	alert( event.qrcode );
+
 };
 
 /**

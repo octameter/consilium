@@ -2,8 +2,8 @@
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "ch.epha.consilium"
-        versionCode="001"
-        version   = "0.0.1">
+        versionCode="010"
+        version   = "0.1.0">
 	<!-- versionCode is optional and Android only -->
 
     <name>Consilium</name>
@@ -18,13 +18,14 @@
     
     <!-- <gap:plugin> -->
     <gap:plugin name="BarcodeScanner" />
-
+	<gap:plugin name="ChildBrowser" />
+	
 	<!-- FEATURE -->
     <feature name="http://api.phonegap.com/1.0/device" />
 
    	<!-- expanded to the appropriate Android and Windows Phone permissions -->
     <!-- <feature name="http://api.phonegap.com/1.0/battery" /> -->
-	<!-- <feature name="http://api.phonegap.com/1.0/camera" /> -->
+	<feature name="http://api.phonegap.com/1.0/camera" />
     <!-- <feature name="http://api.phonegap.com/1.0/contacts" /> -->   
     <!-- WRITE_EXTERNAL_STORAGE permission -->
     <!-- <feature name="http://api.phonegap.com/1.0/file" /> -->
@@ -32,9 +33,9 @@
     <!-- maps to android:RECORD_AUDIO, android:RECORD_VIDEO-->
     <!-- <feature name="http://api.phonegap.com/1.0/media" /> -->
     <!-- maps to android:ACCESS_NETWORK_STATE -->
-    <!-- <feature name="http://api.phonegap.com/1.0/network" /> -->
+    <feature name="http://api.phonegap.com/1.0/network" />
     <!-- maps to VIBRATE permission -->
-	<!-- <feature name="http://api.phonegap.com/1.0/notification" />   -->
+	<feature name="http://api.phonegap.com/1.0/notification" />
     <!-- maps to winphone:ID_CAP_IDENTITY_DEVICE permission -->
 	<!-- DENY ALL -->
 	<!-- <preference name="permissions" value="none"/> -->
