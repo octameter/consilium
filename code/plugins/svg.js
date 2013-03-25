@@ -75,15 +75,16 @@ Svg.prototype.drawCoordinates = function()
 	}
 
 	// RIGHT TO LEFT
-//	var scrollerWidth = this.element.parentNode.offsetWidth;
-//	
-//	if(chartWidth > this.chartWidth)
-//	{
-//		this.element.parentNode.scrollLeft = chartWidth - scrollerWidth;			
-//	}
-//	
-//	this.chartWidth = chartWidth;
+    var scrollerWidth = this.element.parentNode.clientWidth;
+
+	if(chartWidth > this.chartWidth)
+	{
+		this.element.parentNode.scrollLeft = chartWidth - scrollerWidth;			
+	}
+
+	this.chartWidth = chartWidth;
 };
+
 
 
 Svg.prototype.drawWeekend = function( x, y, width, height )

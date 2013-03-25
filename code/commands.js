@@ -85,9 +85,10 @@ function startCommand( event )
 	// CHECK LOCAL STORAGE
 	dispatchCommand( Events.MODEL_FROM_STORAGE );
 	
+    // CLIENTWIDTH AVAILABLE
+    DOM( "app" ).show();
+    
 	dispatchCommand( Events.HOME_INIT );
-	
-	DOM( "app" ).show();
 };
 
 function modelFromStorageCommand( event )
@@ -114,8 +115,8 @@ function syncCommand( event )
 {
 	if( !this.model.data.customer.lastSync )
 	{
-		this.model.addPunkt( {"x":1363486891430, "y": "\nChemotherapie mit\n\Methotrexat", "id": "zyklus"} ); 	 	
-		this.model.addPunkt( {"x":1363376891430, "y": "Adenocarcinom T3", "id": "diagnose"} ); 	 			
+		this.model.addPunkt( {"x":1363786891430, "y": "\nChemotherapie mit\n\Methotrexat", "id": "zyklus"} ); 	 	
+		this.model.addPunkt( {"x":1363676891430, "y": "Adenocarcinom T3", "id": "diagnose"} ); 	 			
 	}
 	
 	this.model.setCustomer("lastSync", zeit());
@@ -131,7 +132,10 @@ function homeInitCommand( event )
 		this.model.setCustomer("intro",-1);
 		DOM( this.properties.id ).removeElements();
 	}
-	
+    
+    // CLIENTWIDTH
+    DOM( this.properties.id ).show();
+    
 	if( this.model.data.customer.intro == -1 )
 	{
 		DOM( this.properties.sync ).show();
@@ -144,8 +148,6 @@ function homeInitCommand( event )
 		DOM( this.properties.start ).hide();
 		dispatchCommand( Events.HOME_INTRO );
 	}
-	
-	DOM( this.properties.id ).show();
 };
 
 function homeIntroCommand( event )
@@ -173,16 +175,9 @@ function homeVerlaufCommand( data )
 	{
 		DOM( this.properties.id ).addChild( "div", { id:"homeVerlauf"} );
 		DOM( "homeVerlauf" ).addChild( "div", { id:"chart", class:"chart"} );
-		DOM( "chart").addChild("div", { id:scroller, class:"scrollableX"}); 	
-		
+		DOM( "chart").addChild("div", { id:scroller, class:"scrollableX"}); 			
 		DOM( scroller ).plugins( "svg" ).create();	
-		
-		document.getElementById("homeScrollerId").scrollLeft = 2000;
-		console.log( document.getElementById("homeScrollerId").scrollLeft );	
 	}
-	
-	document.getElementById("homeScrollerId").scrollLeft = 10;
-	console.log( document.getElementById("homeScrollerId").scrollLeft );	
 	
 	( ! DOM( "homeForm" ).element() ) ? DOM( "homeVerlauf" ).appendChild( "form", { id:"homeForm"} ) : DOM(  "homeForm" ).removeElements();
 	
@@ -194,7 +189,7 @@ function homeVerlaufCommand( data )
 	this.model.sortPunkteByTime();
 	
 	DOM().plugins( "svg" ).refresh();
-	
+    
 	dispatchCommand( Events.HOME_VERLAUF_SELECTED );
 };
 
