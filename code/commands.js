@@ -25,7 +25,6 @@ Events =
 	OPTIONEN_TO_HOME:"optionenToHome",
 	SCAN:"scan",
 	SCAN_RESULT:"scan_result",
-	SHOW_PAGE:"scan_result",
 
 	FAVORITES_INIT:"favorites_init",
 	FAVORITES_ROW:"favorites_row",
@@ -78,12 +77,25 @@ function changeViewCommand( event )
 
 function homeInitCommand( event )
 {	
+	// LOAD DATA INTO MEMORY
+	
 	if( event.introExit ) {
-		this.model.setStateIntro( false );
+		this.model.data.customer.intro = -1;
 		DOM( this.properties.id ).removeElements();
 	}
 	
-	( this.model.getStateIntro() ) ? dispatchCommand( Events.HOME_INTRO ) : dispatchCommand( Events.HOME_VERLAUF );
+	if( this.model.data.customer.intro == -1 )
+	{
+		DOM( this.properties.sync ).show();
+		DOM( this.properties.start ).show();
+		dispatchCommand( Events.HOME_VERLAUF ); 
+	}
+	else
+	{
+		DOM( this.properties.sync ).hide();
+		DOM( this.properties.start ).hide();
+		dispatchCommand( Events.HOME_INTRO );
+	}
 	
 	DOM( this.properties.id ).show();
 };
@@ -93,11 +105,13 @@ function homeIntroCommand( event )
 	DOM( this.properties.id ).removeElements();
 	var div = DOM( this.properties.id ).appendChild("div", {class:"intro"});
     
-	DOM( div ).addChild( "p", {}, this.model.dict.Intro[0].title );
+	var type = this.model.data.customer.intro;
 	
-	for( var i = 0; i < this.model.dict.Intro[0].bausteine.length; i++)
+	DOM( div ).addChild( "p", {}, this.model.dict.Intro[type].title );
+	
+	for( var i = 0; i < this.model.dict.Intro[type].bausteine.length; i++)
 	{
-		DOM( div ).addChild( "p", {}, this.model.dict.Intro[0].bausteine[i] );		
+		DOM( div ).addChild( "p", {}, this.model.dict.Intro[type].bausteine[i] );		
 	}
 
 	DOM( div ).addChild( "a", { class:"button-action blue", style:"width:200px; height:40px" }, "Schliessen").onTouch( Events.HOME_INIT, { introExit: true } );
@@ -335,7 +349,6 @@ function tippExitCommand( data )
 	dispatchCommand( Events.TIPP_TO_FAVORITE );
 };
 
-
 function optionenInitCommand( data )
 {
 	DOM( this.properties.id ).removeElements();
@@ -347,7 +360,6 @@ function optionenInitCommand( data )
 	
 	DOM( "optionenStatus"  ).addChild( "span", { }, "Mit Brustzentrum" );
 	DOM( "optionenStatus"  ).addChild( "a", { class:"button-action blue", style:"float:right;" }, "Verbinden" ).onTouch( Events.SCAN, {}); 
-	DOM( "optionenStatus"  ).addChild( "a", { class:"button-action blue", style:"float:right;" }, "Online" ).onTouch( Events.SHOW_PAGE, {}); 
 
 	DOM( this.properties.id ).show();	
 };
@@ -367,13 +379,11 @@ function scanCommand( data )
         }
 };
 
-function showWebPageCommand( event )
-{
-	window.plugins.childBrowser.showWebPage("http://www.google.com");
-};
 
 function scanResultCommand( event )
 {	
+
+	
 	DOM( "optionenStatus"  ).addChild( "p", { }, event.result );
 	DOM( "optionenStatus"  ).addChild( "p", { }, event.format );
 	DOM( "optionenStatus"  ).addChild( "p", { }, event.error );
@@ -731,7 +741,7 @@ function dateCommand( event )
 	DOM( this.properties.parent ).removeElements();
 
 	// CREATE ELEMENT DESKTOP ODER MOBILE
-	if( DO.plugins("agent").isDevice("Desktop") )
+	if( DO.plugins("agent").isDevice("Desktop"))
 	{		
 		DOM( this.properties.parent ).addChild("span",{ style:"margin-right:5px;" },"<b>Datum</b>"); 
 		DOM( this.properties.parent ).addChild("select", { id:"dd", class:"optionen" }).addOptions(1, zeit("ddInMonth",zeitInMs), zeit("dd",zeitInMs)).onChange( Events.DATE, { type:"dd", zeitInMs: zeitInMs, parent:"zeitArea"} );
@@ -745,7 +755,7 @@ function dateCommand( event )
 	else
 	{
 		DOM( this.properties.parent ).addChild("input", { type:"date", value:zeit("yyyy-MM-dd",zeitInMs), style:"width:105px;" }).onChange( Events.DATE, { type:"yyyy-MM-dd", zeitInMs: zeitInMs, parent:"zeitArea"});
-		DOM( this.properties.parent ).addChild("input", { type:"time", value:zeit("hh:mm",zeitInMs), style:"margin-left:10px;width:65px" }).onChange( Events.DATE, { type:"hh:mm", zeitInMs: zeitInMs, parent:"zeitArea"});
+		DOM( this.properties.parent ).addChild("input", { type:"time", value:zeit("hh:mm",zeitInMs), style:"margin-left:10px;width:65px" });//.onChange( Events.DATE, { type:"hh:mm", zeitInMs: zeitInMs, parent:"zeitArea"});
 	}
 };
 

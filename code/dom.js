@@ -1,4 +1,7 @@
-
+/**
+ * Created by Marco Egbring on March 2013
+ * Copyright 2013 EPha.ch. All rights reserved.
+ */
 
 (function(window,  document, undefined){
 				
@@ -574,7 +577,7 @@ function zeit( pattern, milliSekunden  )
 			case("yyyy-MM-dd"): return year + "-" + month+ "-"+day;
 			case("dd.mm.yyyy hh:mm"): return day + "." + month+ "."+year+" "+stunde+":"+minute;
 			case("dd.mm.yyyy"): return day + "." + month+ "."+year;
-			case("hh:mm"): return +stunde+":"+minute;
+			case("hh:mm"): return stunde+":"+minute;
 			case("dd"): return day;
 			case("ddInMonth"): return new Date(year, month, 0).getDate();
 			case("MM"): return month;

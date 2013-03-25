@@ -88,7 +88,7 @@
         <section id="optionenId" class="view left">
         
         	<header>
-        		<h2>Optionen</h2>
+        		<h2>Einstellungen</h2>
         		<button id="optionenBackButton" class="button-text colorless">Zurück
         			<!-- <img src="img/icon/right.png" width="32"> -->
         		</button>
@@ -106,8 +106,10 @@
     </body>
    		<script type="text/javascript" src="cordova.js"></script> 			
 		<script type="text/javascript" src="barcodescanner.js"></script> 	
- 		<script type="text/javascript" src="childbrowser.js"></script> 
+<!--  	<script type="text/javascript" src="childbrowser.js"></script>  -->
 <!-- 	<script type="text/javascript" src="GAPlugin.js"></script> 			-->		
+
+   		<script type="text/javascript" charset="utf-8" src="code/plugins/sha256.js"></script>
 
    		<script type="text/javascript" charset="utf-8" src="code/dom.js"></script>
    		<script type="text/javascript" charset="utf-8" src="code/model.js"></script>
@@ -129,7 +131,7 @@
    						addCommand( Events.CHANGE_VIEW, changeViewCommand ); 	
    						addCommand( Events.TAP_HANDLER, tapHandlerCommand ); 		  						
    						
-   						addCommand( Events.HOME_INIT, homeInitCommand, { id:"homeContentId", intro: "rahmen", verlauf:"homeVerlauf"} ); 	
+   						addCommand( Events.HOME_INIT, homeInitCommand, { id:"homeContentId", sync: "addOptionen", start:"addEingabe" ,intro: "rahmen", verlauf:"homeVerlauf"} ); 	
    						addCommand( Events.HOME_INTRO, homeIntroCommand, { id:"homeContentId" } ); 	
    						addCommand( Events.HOME_VERLAUF, homeVerlaufCommand, { id:"homeContentId", scroller:"homeScrollerId"} ); 	
    						addCommand( Events.HOME_VERLAUF_SELECTED, homeVerlaufSelectedCommand, { legend:"homeAuswahlLegend", info:"homeAuswahlInfo"} ); 	
@@ -149,7 +151,6 @@
    						addCommand( Events.OPTIONEN_INIT, optionenInitCommand, { id:"optionenContentId"} ); 	
    						addCommand( Events.SCAN, scanCommand); 	
    						addCommand( Events.SCAN_RESULT, scanResultCommand); 	
-   						addCommand( Events.SHOW_PAGE, showWebPageCommand); 	
    						addCommand( Events.OPTIONEN_TO_HOME, changeViewCommand, { from:"optionenId", to:"homeId", direction:"left" } ); 	
    						
    						addCommand( Events.SYMPTOME_INIT, symptomeInitCommand, { id:"symptomeContentId" }); 	
@@ -211,7 +212,10 @@
    						DOM("tippId").onStage( Events.TIPP_INIT ); 
    						DOM("tippBackButton").onTouch( Events.TIPP_EXIT );
    						
+   						// Browser
    						DOM().onDOM( Events.HOME_INIT );
+   						// Device
+   						//DOM().onDevice( Events.HOME_INIT );
 
    					},
    					initialize:function() 
@@ -224,9 +228,10 @@
             
    			app.initialize();
    			
+   			//var encrypted = CryptoJS.HmacSHA256("{ patient-id:3 }", "otterloh$Sulmona");
 
-   			
-             			
+
+              			
 
    		</script>
 </html>

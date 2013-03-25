@@ -1,5 +1,9 @@
-function Model() {}
+/**
+ * Created by Marco Egbring on March 2013
+ * Copyright 2013 EPha.ch. All rights reserved.
+ */
 
+function Model() {}
 
 Model.prototype.addFavorite = function( type, id )
 {
@@ -222,11 +226,9 @@ Model.prototype.getStateSymptom = function() { return this._state.currentItem;};
 Model.prototype.setStateSymptom = function( value ) { this._state.currentItem = value;};
 Model.prototype.getStateTipp = function() { return this._state.tipItem;};
 Model.prototype.setStateTipp = function( value ) { this._state.tipItem = value; };
-Model.prototype.getStateIntro = function() { return this._state.introShow;  };
-Model.prototype.setStateIntro = function( value ) { this._state.introShow = value; };
 
 /**
- * APP STATUS
+ * APP TEMP STATUS
  */ 
 Model.prototype._state = 
 {
@@ -234,12 +236,12 @@ Model.prototype._state =
     tempItem: null,
     favoritesEdit: false,
     favitEdit:false,
-    tipItem: null,
-    introShow: false
+    tipItem: null
 };
 /**
  * Punkt x:LocalTimeInMs, y [0 - 100], id: type.id
  */
+
 Model.prototype.data = 
 {
 		punkte: 
@@ -278,6 +280,12 @@ Model.prototype.data =
 			[
 			 	{ id: "privat"}
 			 ]
+	    },
+	    customer:
+	    {
+	    	intro: 0,
+	    	login:null,
+	    	lastSync:null
 	    }
 };
 
