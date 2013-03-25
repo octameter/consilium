@@ -576,6 +576,7 @@ function zeit( pattern, milliSekunden  )
 			case("yyyy-MM-ddThh:mm.ss.ms"): return year + "-" + month+ "-"+day+"T"+stunde+":"+minute+":"+sekunde+"."+milli;
 			case("yyyy-MM-dd"): return year + "-" + month+ "-"+day;
 			case("dd.mm.yyyy hh:mm"): return day + "." + month+ "."+year+" "+stunde+":"+minute;
+			case("dd.MM.yyyy hh:mm"): return day + "." + month+ "."+year+" "+stunde+":"+minute;
 			case("dd.mm.yyyy"): return day + "." + month+ "."+year;
 			case("hh:mm"): return stunde+":"+minute;
 			case("dd"): return day;

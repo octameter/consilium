@@ -88,7 +88,7 @@
         <section id="optionenId" class="view left">
         
         	<header>
-        		<h2>Einstellungen</h2>
+        		<h2>Einstellung</h2>
         		<button id="optionenBackButton" class="button-text colorless">Zurück
         			<!-- <img src="img/icon/right.png" width="32"> -->
         		</button>
@@ -110,6 +110,7 @@
 <!-- 	<script type="text/javascript" src="GAPlugin.js"></script> 			-->		
 
    		<script type="text/javascript" charset="utf-8" src="code/plugins/sha256.js"></script>
+   		<script type="text/javascript" charset="utf-8" src="code/plugins/aes.js"></script>
 
    		<script type="text/javascript" charset="utf-8" src="code/dom.js"></script>
    		<script type="text/javascript" charset="utf-8" src="code/model.js"></script>
@@ -131,6 +132,8 @@
    						addCommand( Events.CHANGE_VIEW, changeViewCommand ); 	
    						addCommand( Events.TAP_HANDLER, tapHandlerCommand ); 		  						
    						addCommand( Events.START, startCommand ); 		  						
+   						addCommand( Events.MODEL_FROM_STORAGE, modelFromStorageCommand ); 		  						
+   						addCommand( Events.SYNC, syncCommand ); 		  						
    						
    						addCommand( Events.HOME_INIT, homeInitCommand, { id:"homeContentId", sync: "addOptionen", start:"addEingabe" ,intro: "rahmen", verlauf:"homeVerlauf"} ); 	
    						addCommand( Events.HOME_INTRO, homeIntroCommand, { id:"homeContentId" } ); 	
@@ -214,9 +217,9 @@
    						DOM("tippBackButton").onTouch( Events.TIPP_EXIT );
    						
    						// Browser
-   						// DOM().onDOM( Events.START );
+   						DOM().onDOM( Events.START );
    						// Device
-   						DOM().onDevice( Events.START );
+   						//DOM().onDevice( Events.START );
 
    					},
    					initialize:function() 
@@ -229,7 +232,8 @@
             
    			app.initialize();
    			
-   			//var encrypted = CryptoJS.HmacSHA256("{ patient-id:3 }", "otterloh$Sulmona");
+   			
+   			var encrypted = CryptoJS.HmacSHA256("raw", "secret");
 
 
               			

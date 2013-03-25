@@ -11,8 +11,12 @@ Events =
 {
 	TAP_HANDLER:"tap_handler",
 	DATE:"input_date",
+	
+	MODEL_FROM_STORAGE:"model_from_storage",
+	SYNC:"sync",
 		
 	START:"start",
+	
 	HOME_INIT:"homeInit",
 	HOME_EXIT:"homeExit",
 	HOME_INTRO:"homeIntro",
@@ -78,9 +82,45 @@ function changeViewCommand( event )
 
 function startCommand( event )
 {
+	// CHECK LOCAL STORAGE
+	dispatchCommand( Events.MODEL_FROM_STORAGE );
+	
 	dispatchCommand( Events.HOME_INIT );
-
+	
 	DOM( "app" ).show();
+};
+
+function modelFromStorageCommand( event )
+{
+	
+	if( localStorage.getItem("dataPunkte") ) 
+	this.model.data["punkte"] = JSON.parse( localStorage.getItem("dataPunkte") );	
+	
+	if( localStorage.getItem("dataFavorites") ) 
+	this.model.data["favorites"] = JSON.parse( localStorage.getItem("dataFavorites") );		
+	
+	if( localStorage.getItem("dataCustomer") ) 
+	this.model.data["customer"] = JSON.parse( localStorage.getItem("dataCustomer") );		
+
+
+//	this.model.dict["Intro"] = localStorage.getKey("dictIntro");
+//	this.model.dict["Bewertung"] = localStorage.getKey("dictBewertung");
+//	this.model.dict["Tagebuch"] = localStorage.getKey("dictTagebuch");
+//	this.model.dict["Symptome"] = localStorage.getKey("dictSymptome");
+//	this.model.dict["Tipps"] = localStorage.getKey("dictTipps");
+};
+
+function syncCommand( event )
+{
+	if( !this.model.data.customer.lastSync )
+	{
+		this.model.addPunkt( {"x":1363486891430, "y": "\nChemotherapie mit\n\Methotrexat", "id": "zyklus"} ); 	 	
+		this.model.addPunkt( {"x":1363376891430, "y": "Adenocarcinom T3", "id": "diagnose"} ); 	 			
+	}
+	
+	this.model.setCustomer("lastSync", zeit());
+	
+	dispatchCommand( Events.OPTIONEN_INIT);
 };
 
 function homeInitCommand( event )
@@ -88,7 +128,7 @@ function homeInitCommand( event )
 	// LOAD DATA INTO MEMORY
 	
 	if( event.introExit ) {
-		this.model.data.customer.intro = -1;
+		this.model.setCustomer("intro",-1);
 		DOM( this.properties.id ).removeElements();
 	}
 	
@@ -133,9 +173,16 @@ function homeVerlaufCommand( data )
 	{
 		DOM( this.properties.id ).addChild( "div", { id:"homeVerlauf"} );
 		DOM( "homeVerlauf" ).addChild( "div", { id:"chart", class:"chart"} );
-		DOM( "chart").addChild("div", { id:scroller, class:"scrollableX"}); 		
+		DOM( "chart").addChild("div", { id:scroller, class:"scrollableX"}); 	
+		
 		DOM( scroller ).plugins( "svg" ).create();	
+		
+		document.getElementById("homeScrollerId").scrollLeft = 2000;
+		console.log( document.getElementById("homeScrollerId").scrollLeft );	
 	}
+	
+	document.getElementById("homeScrollerId").scrollLeft = 10;
+	console.log( document.getElementById("homeScrollerId").scrollLeft );	
 	
 	( ! DOM( "homeForm" ).element() ) ? DOM( "homeVerlauf" ).appendChild( "form", { id:"homeForm"} ) : DOM(  "homeForm" ).removeElements();
 	
@@ -361,13 +408,52 @@ function optionenInitCommand( data )
 {
 	DOM( this.properties.id ).removeElements();
 	
-	DOM( this.properties.id ).addChild( "form").addChild("fieldset", { id:"fieldsetOptionenId", style:"text-align:left;" }).addChild( "legend", {}, "Verbindung" );
-	
-	/* VERBINDEN */
-	DOM( "fieldsetOptionenId"  ).addChild("div", { id:"optionenStatus", style:"vertical-align:center"} );
-	
-	DOM( "optionenStatus"  ).addChild( "span", { }, "Mit Brustzentrum" );
-	DOM( "optionenStatus"  ).addChild( "a", { class:"button-action blue", style:"float:right;" }, "Verbinden" ).onTouch( Events.SCAN, {}); 
+	/* VERBINDUNG */
+	DOM( this.properties.id ).addChild( "form", { id:"optionenFormId"});
+		
+	if( this.model.data["customer"].login )
+	{			
+		DOM("optionenFormId").addChild("fieldset", { id:"fieldsetVerbindung", style:"text-align:left;"}).addChild( "legend", {}, "Verbindung" );	
+		DOM( "fieldsetVerbindung"  ).addChild("div", { id:"optStatus"} );
+		DOM( "optStatus"  ).addChild( "span", { }, "<b>Mit Brustzentrum</b>" );
+		DOM( "optStatus"  ).addChild( "br" );
+		DOM( "optStatus"  ).addChild( "span", { style:"color:green; font-size:90%"}, "<i>&nbsp;</i>" ); 			
+		DOM( "optStatus"  ).addChild( "a", {  style:"position:absolute;top:6px;right:2px;color:darkblue" }, "Verbunden" ); 	
+
+		// LOGIN
+		DOM("optionenFormId").addChild("fieldset", { id:"fieldsetLogin", style:"text-align:left;"}).addChild( "legend", {}, "Login" );		
+		DOM( "fieldsetLogin"  ).addChild("div", { id:"optLogin"} );
+		DOM( "optLogin").addChild("p", {}, "<b>PatientIn-Id:</b> "+this.model.data["customer"].login.patId);
+		DOM( "optLogin").addChild("p", {}, "<b>Password:</b> "+this.model.data["customer"].login.pwd);
+		DOM( "optLogin").addChild("p", {}, "<b>Gruppe:</b> "+this.model.data["customer"].login.gruppe);
+		
+		// SYNC
+		DOM("optionenFormId").addChild("fieldset", { id:"fieldsetSync", style:"text-align:left;"}).addChild( "legend", {}, "Synchronisation" );	
+		DOM( "fieldsetSync"  ).addChild("div", { id:"optSync"} );
+		
+		if( this.model.data["customer"].lastSync )
+		{
+			DOM( "optSync" ).addChild( "span", { }, "<b>Zuletzt</b>");
+			DOM( "optSync" ).addChild( "br" );
+			DOM( "optSync" ).addChild( "span", { style:"font-size:90%"}, "<i>"+zeit("dd.MM.yyyy hh:mm", this.model.data["customer"].lastSync)+"</i>" ); 					
+		}
+		else
+		{
+			DOM( "optSync" ).addChild( "span", { }, "<b>Initialisierung</b>");
+			DOM( "optSync" ).addChild( "br" );
+			DOM( "optSync" ).addChild( "span", { style:"font-size:90%"}, "<i>&nbsp;</i>" ); 	
+		}
+		DOM( "optSync" ).addChild( "a", { class:"button-action blue", style:"position:absolute;top:6px;right:2px;"}, "Sync").onTouch(Events.SYNC);
+	}
+	else
+	{
+		DOM("optionenFormId").addChild("fieldset", { id:"fieldsetVerbindung", style:"text-align:left;"}).addChild( "legend", {}, "Verbindung" );	
+		DOM( "fieldsetVerbindung"  ).addChild("div", { id:"optStatus"} );
+		DOM( "optStatus"  ).addChild( "span", { }, "<b>Mit Brustzentrum</b>" );
+		DOM( "optStatus"  ).addChild( "br", { }, "" );
+		DOM( "optStatus"  ).addChild( "span", { }, "&nbsp;" );
+		DOM( "optStatus"  ).addChild( "a", { class:"button-action blue", style:"position:absolute;top:6px;right:2px;" }, "Verbinden" ).onTouch( Events.SCAN, {}); 	
+	}
 
 	DOM( this.properties.id ).show();	
 };
@@ -382,19 +468,30 @@ function scanCommand( data )
                 dispatchCommand( Events.SCAN_RESULT, { result: args.text, format: args.format  } );
                
             });
-        } catch (ex) {        	
+        } catch (ex) {        
+        	// DESKTOP WILL ALWAYS DISPATCH THIS
         	dispatchCommand( Events.SCAN_RESULT, { error : ex.message} );
         }
 };
 
-
+/**
+ * event { result: "", format:"QR_CODE", error:"message" }
+ * @param event
+ */
 function scanResultCommand( event )
 {	
+	if( event.result == "Lmd98324jhkl234987234" || true)
+	{
+		this.model.setCustomer("login", { patId : "Pat001", pwd: "987234", gruppe:"B"});
+			
+		if( this.model.data["customer"].login.gruppe == "B")
+		this.model.setCustomer("intro", 1);
+			
+		if( this.model.data["customer"].login.gruppe == "C")
+		this.model.setCustomer("intro", 2);
+	}
 
-	
-	DOM( "optionenStatus"  ).addChild( "p", { }, event.result );
-	DOM( "optionenStatus"  ).addChild( "p", { }, event.format );
-	DOM( "optionenStatus"  ).addChild( "p", { }, event.error );
+	dispatchCommand( Events.OPTIONEN_INIT );
 };
 
 /**

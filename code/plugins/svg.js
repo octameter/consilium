@@ -74,14 +74,15 @@ Svg.prototype.drawCoordinates = function()
 		this.drawKoordLine( this.minX, y, this.maxXRealtime, y );		
 	}
 
-	var scrollerWidth = this.element.parentNode.offsetWidth;
-
-	if(chartWidth > this.chartWidth)
-	{
-		this.element.parentNode.scrollLeft = chartWidth - scrollerWidth;			
-	}
-	
-	this.chartWidth = chartWidth;
+	// RIGHT TO LEFT
+//	var scrollerWidth = this.element.parentNode.offsetWidth;
+//	
+//	if(chartWidth > this.chartWidth)
+//	{
+//		this.element.parentNode.scrollLeft = chartWidth - scrollerWidth;			
+//	}
+//	
+//	this.chartWidth = chartWidth;
 };
 
 
@@ -122,8 +123,7 @@ Svg.prototype.drawLabelX = function( x, y )
 	labelX.setAttribute("fill", "rgba(255,255,255,0.7)");
 	//labelX.setAttribute("font-size", "1em");
 	
-	var date = new Date(x);
-	labelX.textContent = date.getDate() + "." + (date.getMonth() + 1);
+	labelX.textContent = zeit( "dd",x) + "." + zeit("MM",x );
 	
 	this.element.appendChild( labelX );
 };
