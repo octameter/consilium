@@ -10,7 +10,7 @@
         
         <title>Consilium</title>
     </head>
-    <body id="app" >
+    <body id="app" style="display:none" >
     	
 		<!-- HOME -->     
         <section id="homeId" class="view middle">
@@ -130,6 +130,7 @@
    					{
    						addCommand( Events.CHANGE_VIEW, changeViewCommand ); 	
    						addCommand( Events.TAP_HANDLER, tapHandlerCommand ); 		  						
+   						addCommand( Events.START, startCommand ); 		  						
    						
    						addCommand( Events.HOME_INIT, homeInitCommand, { id:"homeContentId", sync: "addOptionen", start:"addEingabe" ,intro: "rahmen", verlauf:"homeVerlauf"} ); 	
    						addCommand( Events.HOME_INTRO, homeIntroCommand, { id:"homeContentId" } ); 	
@@ -213,9 +214,9 @@
    						DOM("tippBackButton").onTouch( Events.TIPP_EXIT );
    						
    						// Browser
-   						DOM().onDOM( Events.HOME_INIT );
+   						DOM().onDOM( Events.START );
    						// Device
-   						//DOM().onDevice( Events.HOME_INIT );
+   						//DOM().onDevice( Events.START );
 
    					},
    					initialize:function() 

@@ -12,6 +12,7 @@ Events =
 	TAP_HANDLER:"tap_handler",
 	DATE:"input_date",
 		
+	START:"start",
 	HOME_INIT:"homeInit",
 	HOME_EXIT:"homeExit",
 	HOME_INTRO:"homeIntro",
@@ -73,6 +74,13 @@ function changeViewCommand( event )
 	DOM( cmd.to ).attrib("className").replace(/(top|left|right)/, "middle");	
 	DOM( cmd.from.split("Id").join("ContentId") ).hide();
 	DOM( cmd.from ).attrib("className").replace("middle", cmd.direction );		
+};
+
+function startCommand( event )
+{
+	dispatchCommand( Events.HOME_INIT );
+
+	DOM( "app" ).show();
 };
 
 function homeInitCommand( event )
