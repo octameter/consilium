@@ -3,7 +3,9 @@
  * Copyright 2013 EPha.ch. All rights reserved.
  */
 
-function Model() {}
+function Model() {
+
+}
 
 /**
  * GETTER AND SETTER SYNC LOCALSTORAGE
@@ -12,16 +14,16 @@ function Model() {}
  */
 Model.prototype.addFavorite = function( type, id )
 {
-	this.data["favorites"][type].unshift( { id: String( id ), edit: true } );
+	this._data["favorites"][type].unshift( { id: String( id ), edit: true } );
 	
-	localStorage.setItem( "dataFavorites", JSON.stringify( this.data["favorites"]));	
+	localStorage.setItem( "dataFavorites", JSON.stringify( this._data["favorites"]));	
 };
 
 Model.prototype.setCustomer = function( type, id )
 {
-	this.data["customer"][type] = id; 
+	this._data["customer"][type] = id; 
 	
-	localStorage.setItem( "dataCustomer", JSON.stringify( this.data["customer"]));
+	localStorage.setItem( "dataCustomer", JSON.stringify( this._data["customer"]));
 };
 
 
@@ -29,15 +31,15 @@ Model.prototype.removeFavorite = function( type, item )
 {
 	var idx = -1;
     
-	this.data["favorites"][type].forEach( function(element, index)
+	this._data["favorites"][type].forEach( function(element, index)
 	{
 		if(element.id == item.id ) idx = index;
 	});
 	
     if( idx > -1)
-	this.data["favorites"][type].splice(idx,1);
+	this._data["favorites"][type].splice(idx,1);
     
-	localStorage.setItem( "dataFavorite", JSON.stringify( this.data["favorites"]));	
+	localStorage.setItem( "dataFavorites", JSON.stringify( this._data["favorites"]));	
 };
 
 // ADD MOST RECENT DATA POINT
@@ -45,24 +47,27 @@ Model.prototype.addPunkt = function( punkt )
 {	
 	if(!punkt) return;
 		
-	var data = { id:punkt.id, x:punkt.x, y:punkt.y };
+	var element = {};
+	element.id = punkt.id;
+	element.x = punkt.x;
+	element.y = punkt.y;
 	
-	if( punkt.tipps ) data.tipps = punkt.tipps.slice(0);
-	
-	this.data.punkte.unshift( data );
+	if( punkt.tipps ) element.tipps = punkt.tipps.slice(0);
 
-	localStorage.setItem( "dataPunkte", JSON.stringify( this.data["punkte"] ));
+	this._data["punkte"].unshift( element );
+	
+	localStorage.setItem( "dataPunkte", JSON.stringify( this._data["punkte"] ));	
 };
 
 
 Model.prototype.removePunkt = function( punkt )
 {
-	for( var i = 0; i < this.data.punkte.length; i++)
+	for( var i = 0; i < this._data.punkte.length; i++)
 	{
-		if( this.data.punkte[i].id === punkt.id && this.data.punkte[i].x == punkt.x) this.data.punkte.splice(i,1);				
+		if( this._data.punkte[i].id === punkt.id && this._data.punkte[i].x == punkt.x) this._data.punkte.splice(i,1);				
 	}	
 
-	localStorage.setItem( "dataPunkte", JSON.stringify( this.data.punkte ));
+	localStorage.setItem( "dataPunkte", JSON.stringify( this._data["punkte"] ));
 };
 
 /**
@@ -75,7 +80,7 @@ Model.prototype.hasFavoriteEdit = function( type )
 {
     var found = false;
     
-    this.data["favorites"][type].forEach( function(element, index)
+    this._data["favorites"][type].forEach( function(element, index)
 	{
 		if(element.edit) found = true;
 	});
@@ -88,11 +93,11 @@ Model.prototype.getMinX = function()
 	// Default 14 Tage zurück
 	var minX = new Date().getTime() - ( 14 * 24 * 60 * 60 * 1000 );
 
-	var size = this.data.punkte.length;
+	var size = this._data.punkte.length;
 	
 	while(size--)
 	{
-		minX = Math.min( this.data.punkte[size].x, minX);
+		minX = Math.min( this._data.punkte[size].x, minX);
 	}
 	
 	return zeit( "dawn", minX );	
@@ -104,7 +109,7 @@ Model.prototype.getMinX = function()
  */
 Model.prototype.sortPunkteByTime = function(id)
 {
-	var punkte = this.data.punkte;
+	var punkte = this._data.punkte;
 	
 	var ids = this.getUniquePunkte(id);
 	
@@ -130,7 +135,7 @@ Model.prototype.sortPunkteByTime = function(id)
  */
 Model.prototype.getSymptome = function()
 {    
-	var symptome = this.dict["Symptome"].notIn( "id", this.data.favorites.Symptome );
+	var symptome = this.dict["Symptome"].notIn( "id", this._data.favorites.Symptome );
     
     symptome.sortABC( "title" );
 
@@ -145,7 +150,7 @@ Model.prototype.getSymptome = function()
 Model.prototype.getUniquePunkte = function(id)
 {
 	// Copy Array
-	var punkte = this.data.punkte.slice(0);
+	var punkte = this._data.punkte.slice(0);
 	// First the selected element 
 	var ids = [];
 	punkte.push( String( id ) );
@@ -212,9 +217,9 @@ Model.prototype.getGrad = function( id, value )
 */
 Model.prototype.getPunkt = function( id )
 {	
-	for( var i = 0; i < this.data.punkte.length; i++)
+	for( var i = 0; i < this._data.punkte.length; i++)
 	{
-		if( this.data.punkte[i].id === id ) return this.data.punkte[i];				
+		if( this._data.punkte[i].id === id ) return this._data.punkte[i];				
 	}	
 };
 
@@ -274,7 +279,7 @@ Model.prototype._state =
  * Punkt x:LocalTimeInMs, y [0 - 100], id: type.id
  */
 
-Model.prototype.data = 
+Model.prototype._data = 
 {
 		punkte: 
 		[
@@ -338,20 +343,20 @@ Model.prototype.trackPunktTipp = function( property )
 {
 	var tippId = this.getStateTipp().id;
 		
-	for( var i = 0; i < this.data.punkte.length; i++)
+	for( var i = 0; i < this._data.punkte.length; i++)
 	{
-		var punkt = this.data.punkte[i];
+		var punkt = this._data.punkte[i];
 	
 		if( punkt.id == this.getStateSymptom().id && punkt.x == this.getStateSymptom().x)
 		{
-			if( ! punkt.tipps ) this.data.punkte[i].tipps = [];
+			if( ! punkt.tipps ) this._data.punkte[i].tipps = [];
 
-			var tipp = this.data.punkte[i].tipps.getId( tippId );
+			var tipp = this._data.punkte[i].tipps.getId( tippId );
 			
 			if(tipp)
 			{
 				var value = tipp[property] || 0;
-				this.data.punkte[i].tipps.changeItem(tippId, property, value + 1);
+				this._data.punkte[i].tipps.changeItem(tippId, property, value + 1);
 			}
 			else
 			{
@@ -360,10 +365,10 @@ Model.prototype.trackPunktTipp = function( property )
 				trackTipp[ "id" ] = tippId; 				
 				trackTipp[ property ] = 1; 
 				
-				this.data.punkte[i].tipps.push( trackTipp );					
+				this._data.punkte[i].tipps.push( trackTipp );					
 			}
 			
-			localStorage.setItem( "dataPunkte", JSON.stringify( this.data["punkte"] ));
+			localStorage.setItem( "dataPunkte", JSON.stringify( this._data["punkte"] ));
 		}
 	}
 };
@@ -372,17 +377,17 @@ Model.prototype.trackPunktLikedOrNotExists = function()
 {
 	var tippId = this.getStateTipp().id;
 	
-	if( this.data.punkte.length == 0 ) return true;
+	if( this._data.punkte.length == 0 ) return true;
 	
-	for( var i = 0; i < this.data.punkte.length; i++)
+	for( var i = 0; i < this._data.punkte.length; i++)
 	{
-		var punkt = this.data.punkte[i];
+		var punkt = this._data.punkte[i];
 				
 		if( punkt.id == this.getStateSymptom().id && punkt.x == this.getStateSymptom().x)
 		{
-			if( ! punkt.tipps ) this.data.punkte[i].tipps = [];
+			if( ! punkt.tipps ) this._data.punkte[i].tipps = [];
 
-			var tipp = this.data.punkte[i].tipps.getId( tippId );
+			var tipp = this._data.punkte[i].tipps.getId( tippId );
 			
 			if(tipp)
 			return (tipp.liked || tipp.disliked);

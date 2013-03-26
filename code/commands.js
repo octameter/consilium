@@ -95,13 +95,13 @@ function modelFromStorageCommand( event )
 {
 	
 	if( localStorage.getItem("dataPunkte") ) 
-	this.model.data["punkte"] = JSON.parse( localStorage.getItem("dataPunkte") );	
+	this.model._data["punkte"] = JSON.parse( localStorage.getItem("dataPunkte") );	
 	
 	if( localStorage.getItem("dataFavorites") ) 
-	this.model.data["favorites"] = JSON.parse( localStorage.getItem("dataFavorites") );		
+	this.model._data["favorites"] = JSON.parse( localStorage.getItem("dataFavorites") );		
 	
 	if( localStorage.getItem("dataCustomer") ) 
-	this.model.data["customer"] = JSON.parse( localStorage.getItem("dataCustomer") );		
+	this.model._data["customer"] = JSON.parse( localStorage.getItem("dataCustomer") );		
 
 
 //	this.model.dict["Intro"] = localStorage.getKey("dictIntro");
@@ -113,7 +113,7 @@ function modelFromStorageCommand( event )
 
 function syncCommand( event )
 {
-	if( !this.model.data.customer.lastSync )
+	if( !this.model._data.customer.lastSync )
 	{
 		this.model.addPunkt( {"x":1363786891430, "y": "\nChemotherapie mit\n\Methotrexat", "id": "zyklus"} ); 	 	
 		this.model.addPunkt( {"x":1363676891430, "y": "Adenocarcinom T3", "id": "diagnose"} ); 	 			
@@ -136,7 +136,7 @@ function homeInitCommand( event )
     // CLIENTWIDTH
     DOM( this.properties.id ).show();
     
-	if( this.model.data.customer.intro == -1 )
+	if( this.model._data.customer.intro == -1 )
 	{
 		DOM( this.properties.sync ).show();
 		DOM( this.properties.start ).show();
@@ -155,7 +155,7 @@ function homeIntroCommand( event )
 	DOM( this.properties.id ).removeElements();
 	var div = DOM( this.properties.id ).appendChild("div", {class:"intro"});
     
-	var type = this.model.data.customer.intro;
+	var type = this.model._data.customer.intro;
 	
 	DOM( div ).addChild( "p", {}, this.model.dict.Intro[type].title );
 	
@@ -404,7 +404,7 @@ function optionenInitCommand( data )
 	/* VERBINDUNG */
 	DOM( this.properties.id ).addChild( "form", { id:"optionenFormId"});
 		
-	if( this.model.data["customer"].login )
+	if( this.model._data["customer"].login )
 	{			
 		DOM("optionenFormId").addChild("fieldset", { id:"fieldsetVerbindung", style:"text-align:left;"}).addChild( "legend", {}, "Verbindung" );	
 		DOM( "fieldsetVerbindung"  ).addChild("div", { id:"optStatus"} );
@@ -416,19 +416,19 @@ function optionenInitCommand( data )
 		// LOGIN
 		DOM("optionenFormId").addChild("fieldset", { id:"fieldsetLogin", style:"text-align:left;"}).addChild( "legend", {}, "Login" );		
 		DOM( "fieldsetLogin"  ).addChild("div", { id:"optLogin"} );
-		DOM( "optLogin").addChild("p", {}, "<b>PatientIn-Id:</b> "+this.model.data["customer"].login.patId);
-		DOM( "optLogin").addChild("p", {}, "<b>Password:</b> "+this.model.data["customer"].login.pwd);
-		DOM( "optLogin").addChild("p", {}, "<b>Gruppe:</b> "+this.model.data["customer"].login.gruppe);
+		DOM( "optLogin").addChild("p", {}, "<b>PatientIn-Id:</b> "+this.model._data["customer"].login.patId);
+		DOM( "optLogin").addChild("p", {}, "<b>Password:</b> "+this.model._data["customer"].login.pwd);
+		DOM( "optLogin").addChild("p", {}, "<b>Gruppe:</b> "+this.model._data["customer"].login.gruppe);
 		
 		// SYNC
 		DOM("optionenFormId").addChild("fieldset", { id:"fieldsetSync", style:"text-align:left;"}).addChild( "legend", {}, "Synchronisation" );	
 		DOM( "fieldsetSync"  ).addChild("div", { id:"optSync"} );
 		
-		if( this.model.data["customer"].lastSync )
+		if( this.model._data["customer"].lastSync )
 		{
 			DOM( "optSync" ).addChild( "span", { }, "<b>Zuletzt</b>");
 			DOM( "optSync" ).addChild( "br" );
-			DOM( "optSync" ).addChild( "span", { style:"font-size:90%"}, "<i>"+zeit("dd.MM.yyyy hh:mm", this.model.data["customer"].lastSync)+"</i>" ); 					
+			DOM( "optSync" ).addChild( "span", { style:"font-size:90%"}, "<i>"+zeit("dd.MM.yyyy hh:mm", this.model._data["customer"].lastSync)+"</i>" ); 					
 		}
 		else
 		{
@@ -477,10 +477,10 @@ function scanResultCommand( event )
 	{
 		this.model.setCustomer("login", { patId : "Pat001", pwd: "987234", gruppe:"B"});
 			
-		if( this.model.data["customer"].login.gruppe == "B")
+		if( this.model._data["customer"].login.gruppe == "B")
 		this.model.setCustomer("intro", 1);
 			
-		if( this.model.data["customer"].login.gruppe == "C")
+		if( this.model._data["customer"].login.gruppe == "C")
 		this.model.setCustomer("intro", 2);
 	}
 
@@ -549,7 +549,7 @@ function favoritesInitCommand( data )
 {		
 	DOM( this.properties.id ).removeElements().appendChild("form", { id : "favFormId" } );
 	
-	for(var favorite in this.model.data.favorites)
+	for(var favorite in this.model._data.favorites)
 	{
 		DOM( "favFormId" ).addChild("fieldset", { id: favorite+"id" } ).addChild( "legend", {}, favorite);
 
@@ -557,14 +557,14 @@ function favoritesInitCommand( data )
 		
 		//DOM( liste ).onTap( )
 
-        if((this.model.getStateFavEdit() && this.model.hasFavoriteEdit( favorite ) || this.model.data.favorites[ favorite ].length == 0 ) )
+        if((this.model.getStateFavEdit() && this.model.hasFavoriteEdit( favorite ) || this.model._data.favorites[ favorite ].length == 0 ) )
         {
             dispatchCommand( Events.FAVORITES_ROW, { row: {}, display: liste });
         }
 		
-		for(var i = 0; i < this.model.data.favorites[ favorite ].length; i++ )
+		for(var i = 0; i < this.model._data.favorites[ favorite ].length; i++ )
 		{
-			dispatchCommand( Events.FAVORITES_ROW, { row: this.model.data.favorites[ favorite ][i], display: liste,  });
+			dispatchCommand( Events.FAVORITES_ROW, { row: this.model._data.favorites[ favorite ][i], display: liste,  });
 		}
 	}
 
@@ -668,9 +668,9 @@ function favoritesEditCommand( data )
  * @param data, forceNoEdit ( onExit )
  * @param forceNoEdit
  */
-function favoriteChangeCommand( data )
+function favoriteChangeCommand( event )
 {	
-	if( this.model.getStateFavitEdit() || data.exit )
+	if( this.model.getStateFavitEdit() || event.exit )
 	{
 		DOM( this.properties.id ).text("Edit");		
 		DOM( this.properties.id ).attrib("className").replace("grey", "colorless");		
@@ -681,9 +681,9 @@ function favoriteChangeCommand( data )
 		DOM( this.properties.id ).attrib("className").replace("colorless", "grey");					
 	}
 	
-	(data.exit) ? this.model.setStateFavitEdit( false) : this.model.setStateFavitEdit( !this.model.getStateFavitEdit() );	
+	(event.exit) ? this.model.setStateFavitEdit( false) : this.model.setStateFavitEdit( !this.model.getStateFavitEdit() );	
 	
-	if(!data.exit)
+	if(!event.exit)
 	dispatchCommand( Events.FAVORITE_INIT );
 };
 
@@ -946,18 +946,20 @@ function favoriteTextChangeCommand( data )
 function favoriteExitCommand( data )
 {
 	var command = this.model.getStateSymptom().command;
-
+	
+	console.log( this.model.getStateSymptom() );
+	
     // PERSIT TO MODEL IF SAVE EVENT
 	if( this.properties.type == "save") {
 		
-		var toSave = clone(this.model._state.tempItem);
-				
-		this.model.addPunkt( toSave );
+		var toSave = this.model._state.tempItem;
+		
+		this.model.addPunkt( {id:toSave.id, x:toSave.x, y:toSave.y, tipps:toSave.tipps} );
 	}
 	// DELETE EVENT
 	if( this.properties.type == "delete") {
 		
-		var toDelete = clone( this.model.getStateSymptom() );
+		var toDelete = this.model.getStateSymptom();
 		
 		this.model.removePunkt( toDelete );
 	}
