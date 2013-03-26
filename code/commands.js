@@ -473,7 +473,7 @@ function scanCommand( data )
  */
 function scanResultCommand( event )
 {	
-	if( event.result == "Lmd98324jhkl234987234" || true)
+	if( event.result == "Lmd98324jhkl234987234")
 	{
 		this.model.setCustomer("login", { patId : "Pat001", pwd: "987234", gruppe:"B"});
 			
