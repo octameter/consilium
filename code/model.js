@@ -716,7 +716,7 @@ Model.prototype.dict =
                           { info:"Sehr milde kurze Symptome, keine Einschränkung im Alltag.", max:20, min:0, tipps:"iZwiebel,iGenuss"}
                     ]  
               }, 
-               { id: "10028130", title: "Mundschleimhautveränderungen", kategorie: "Magen- und Darmsystem", zero:0,  farbwert:"rgba(160,200,200,0.9)",
+               { id: "10028130", title: "Mundschleimhaut", kategorie: "Magen- und Darmsystem", zero:0,  farbwert:"rgba(160,200,200,0.9)",
             grad:[ 
                     { info:"Sehr starke Beschwerden, normale Nahrungs- oder Flüssigkeitsaufnahme ist nicht mehr möglich.", max:100, min:81, tipps:"iMeld2"},
                     { info:"Starke Beschwerden, normale Nahrungs- und Flüssigkeitsaufnahme ist kaum mehr möglich." ,max:80, min:61, tipps:"iMeld2"},
@@ -913,7 +913,7 @@ Model.prototype.dict =
                         { "Zubereitung": "Kochen Sie hierfür ein paar Gewürznelken in Wasser auf und lassen Sie das Wasser abkühlen."}
                    ]     
               },         
-              { id: "iMeld1", title:"Kontakt", kategorie:"Brustzentrum", likes:0, dislikes:0,
+              { id: "iMeld1", title:"Kontakt aufnehmen", kategorie:"Brustzentrum", likes:0, dislikes:0,
                     bausteine: 
                      [
                         { "Info":"Melden Sie sich telefonisch im Brust-Zentrum/Onkozentrum bei anhaltenden Beschwerden."},
@@ -922,6 +922,15 @@ Model.prototype.dict =
                         { "Am Wochenende":" +41 44 209 2111"}
                     ]    
               },
+              { id: "iMeld2", title:"Kontakt bei Bedarf", kategorie:"Brustzentrum", likes:0, dislikes:0,
+                  bausteine: 
+                   [
+                      { "Info":"Melden Sie sich telefonisch im Brust-Zentrum/Onkozentrum."},
+                      { "Tagsüber":"+41 43 344 3333"},
+                      { "Nachts":" +41 44 209 2111"},
+                      { "Am Wochenende":" +41 44 209 2111"}
+                  ]    
+            },
               { id: "iShampoo", title:"Mildes Shampoo", kategorie:"Selbsthilfe", likes:0, dislikes:0,
                    bausteine: 
                     [
@@ -1064,15 +1073,7 @@ Model.prototype.dict =
                         { "Empfehlung": "Bevorzugen Sie Vollkornprodukte, Gemüse, Salat, Hülsenfrüchte, Weizenkleie, Leinsamen und Flohsamen. Trinken Sie dazu immer ausreichend Flüssigkeit"}
                    ]     
               },
-              { id: "iMeld2", title:"Im Brustzentrum melden", kategorie:"Brustzentrum", likes:0, dislikes:0,
-                    bausteine: 
-                     [
-                        { "Info":"Melden Sie sich telefonisch im Brust-Zentrum/Onkozentrum."},
-                        { "Tagsüber":"+41 43 344 3333"},
-                        { "Nachts":" +41 44 209 2111"},
-                        { "Am Wochenende":" +41 44 209 2111"}
-                    ]    
-              },
+
               { id: "iCalendula2", title:"Calendula-Tinktur", kategorie:"Selbsthilfe", likes:0, dislikes:0,
                    bausteine: 
                     [
