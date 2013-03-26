@@ -566,9 +566,11 @@ function zeit( pattern, milliSekunden  )
 		var minute = currentDate.getMinutes() < 10 ? "0"+currentDate.getMinutes() : currentDate.getMinutes();
 		var stunde = currentDate.getHours() < 10 ? "0"+currentDate.getHours() : currentDate.getHours();
 		
-		var day = currentDate.getDate() < 10 ? "0"+currentDate.getDate() : currentDate.getDate();
+		var day = currentDate.getDate() < 10 ? "0"+currentDate.getDate() : currentDate.getDate();	
 		var month = currentDate.getMonth() < 9 ? "0"+(currentDate.getMonth() + 1) : (currentDate.getMonth() + 1);
 		var year = currentDate.getFullYear();
+		
+		if(pattern == "yyyy-MM-dd") console.log( year + "-" + month+ "-"+day );
 			
 		switch( pattern )
 		{

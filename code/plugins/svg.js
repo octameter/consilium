@@ -9,8 +9,8 @@ function Svg()
 	// Padding
 	this.paddingLeft = 20;
 	this.paddingRight = 40;
-	this.paddingTop = 40;
-	this.paddingBottom = 40;
+	this.paddingTop = 50;
+	this.paddingBottom = 50;
 
 	this.minX = 0;
 	this.maxX = 0;
@@ -171,20 +171,20 @@ Svg.prototype.drawNotizen = function( datapoi )
 	if( datapoi.id == "privat")
 	{
 		y = -1;
-		height = 105;
+		height = 110;
 	}
 	
 	// ZYKLUS
 	if( datapoi.id == "zyklus") {
 		y = 116; 	
-		height = 105;
+		height = 110;
 	}
 	
 	// DIAGNOSE
 	if( datapoi.id == "diagnose") 
 	{
 		y = 99;
-		height = 22;
+		height = 27;
 	}
 	
 	//var pixelWidth = this.getPixelForX( this.minX + (24 * 60 * 60 * 1000) , false);

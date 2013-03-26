@@ -812,8 +812,10 @@ function dateCommand( event )
 		if( event.type == "yyyy-MM-dd")
 		{
 			update.setYear( Number( event.value.substr(0,4)) );
-			update.setMonth( Number( event.value.substr(5,2)) );
-			update.setDate( Number( event.value.substr(7,2)) );
+			
+			update.setMonth( Number( event.value.substr(5,2)) - 1 );
+			
+			update.setDate( Number( event.value.substr(8,2)) );
 		}
 		
 		if( event.type == "hh:mm")
@@ -848,7 +850,7 @@ function dateCommand( event )
 	DOM( this.properties.parent ).removeElements();
 
 	// CREATE ELEMENT DESKTOP ODER MOBILE
-	if( DO.plugins("agent").isDevice("Desktop"))
+	if( DO.plugins("agent").isDevice("Desktop") )
 	{		
 		DOM( this.properties.parent ).addChild("span",{ style:"margin-right:5px;" },"<b>Datum</b>"); 
 		DOM( this.properties.parent ).addChild("select", { id:"dd", class:"optionen" }).addOptions(1, zeit("ddInMonth",zeitInMs), zeit("dd",zeitInMs)).onChange( Events.DATE, { type:"dd", zeitInMs: zeitInMs, parent:"zeitArea"} );
