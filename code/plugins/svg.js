@@ -183,8 +183,8 @@ Svg.prototype.drawNotizen = function( datapoi )
 	// DIAGNOSE
 	if( datapoi.id == "diagnose") 
 	{
-		y = 100;
-		height = 20;
+		y = 99;
+		height = 22;
 	}
 	
 	//var pixelWidth = this.getPixelForX( this.minX + (24 * 60 * 60 * 1000) , false);

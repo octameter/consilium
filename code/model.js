@@ -37,8 +37,6 @@ Model.prototype.removeFavorite = function( type, item )
     if( idx > -1)
 	this.data["favorites"][type].splice(idx,1);
     
-    
-    localStorage.removeItem( "dataFavorite");
 	localStorage.setItem( "dataFavorite", JSON.stringify( this.data["favorites"]));	
 };
 
@@ -46,11 +44,13 @@ Model.prototype.removeFavorite = function( type, item )
 Model.prototype.addPunkt = function( punkt )
 {	
 	if(!punkt) return;
+		
+	var data = { id:punkt.id, x:punkt.x, y:punkt.y };
 	
-	var data = {id:punkt.id, x:punkt.x, y:punkt.y };
+	if( punkt.tipps ) data.tipps = punkt.tipps.slice(0);
 	
 	this.data.punkte.unshift( data );
-	
+
 	localStorage.setItem( "dataPunkte", JSON.stringify( this.data["punkte"] ));
 };
 
@@ -61,8 +61,7 @@ Model.prototype.removePunkt = function( punkt )
 	{
 		if( this.data.punkte[i].id === punkt.id && this.data.punkte[i].x == punkt.x) this.data.punkte.splice(i,1);				
 	}	
-	
-	localStorage.removeItem( "dataPunkte");
+
 	localStorage.setItem( "dataPunkte", JSON.stringify( this.data.punkte ));
 };
 
@@ -334,7 +333,6 @@ Model.prototype.setTipp = function( data )
 };
 /**
  * data { property : "liked" || "disliked" || "clicked" }
- * TODO SCHREIBT TIPP NICHT REIN
  */
 Model.prototype.trackPunktTipp = function( property )
 {
@@ -364,6 +362,8 @@ Model.prototype.trackPunktTipp = function( property )
 				
 				this.data.punkte[i].tipps.push( trackTipp );					
 			}
+			
+			localStorage.setItem( "dataPunkte", JSON.stringify( this.data["punkte"] ));
 		}
 	}
 };

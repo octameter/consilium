@@ -307,10 +307,8 @@ function tippsShowCommand ( event )
 	DOM( "fieldsetTipp").addChild( "ul", { class:"listeNext", id:"homeTipps" }).onTap( Events.TAP_HANDLER, { watch:"tagName:LI", command:Events.TIPPS_SELECTED } );
 	DOM( "fieldsetTipp").hide();	
 	
-	if( !data ) return;
-	
 	var tipps = this.model.getEmpfehlungen( data );
-	
+
 	for( var i = 0; i < tipps.length; i++)
 	{	
 		var likes = parseInt( tipps[i].likes );
@@ -644,9 +642,19 @@ function favoritesItemCommand( data )
  */
 function favoritesEditCommand( data )
 {		
-	var value = data.punkt || { y:data.type.zero };
+	var value = {};
 	
-	value.id = data.type.id;
+	value.id =  data.type.id;
+	
+	if( data.punkt )
+	{
+		value.y = data.punkt.y;
+		value.x = data.punkt.x;
+	}
+	else
+	{
+		value.y = data.type.zero;
+	}
 
 	value.command = Events.FAVORITE_TO_FAVORITES;
 	
@@ -780,8 +788,7 @@ function favoriteInitCommand( data )
 		dispatchCommand( Events.SLIDER );
 		dispatchCommand( Events.TIPPS_SHOW );				
 	}
-	//}
-	
+
 };
 
 function dateCommand( event )

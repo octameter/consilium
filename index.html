@@ -216,10 +216,10 @@
    						DOM("tippId").onStage( Events.TIPP_INIT ); 
    						DOM("tippBackButton").onTouch( Events.TIPP_EXIT );
    						
-   						// Browser
-   						DOM().onDOM( Events.START );
-   						// Device
-   						//DOM().onDevice( Events.START );
+   						var isDesktop = DOM().plugins("agent").isDevice("Desktop");
+   						
+   						// START DESKTOP OR DEVICE
+   						( isDesktop ) ? DOM().onDOM( Events.START ) : DOM().onDevice( Events.START );
 
    					},
    					initialize:function() 
@@ -233,10 +233,7 @@
    			app.initialize();
    			
    			
-   			var encrypted = CryptoJS.HmacSHA256("raw", "secret");
-
-
-              			
+   			// var encrypted = CryptoJS.HmacSHA256("raw", "secret");
 
    		</script>
 </html>
