@@ -325,8 +325,7 @@ function tippsShowCommand ( event )
 		// Community Bewertung
 		if( (likes + dislikes) > 0)
 		{
-			DOM( item1 ).appendChild("span", { style:"position:absolute; top:6px; right:18px; font-size:90%"}, "<i>Empfohlen</i>");
-				
+			DOM( item1 ).appendChild("span", { style:"position:absolute; top:6px; right:18px; font-size:90%"}, "<i>Empfohlen</i>");				
 			DOM( item1 ).appendChild("span", { style:"position:absolute; top:23px; right:18px; font-size:90%"}, "<i>" +likes+" von "+( likes + dislikes )+ "<i>");		
 			DOM( item1 ).appendChild("div", { class:"row_caret", style:"top:16px;"} ).appendChild( Assets.caret() );
 		}
@@ -944,8 +943,6 @@ function favoriteTextChangeCommand( data )
 function favoriteExitCommand( data )
 {
 	var command = this.model.getStateSymptom().command;
-	
-	console.log( this.model.getStateSymptom() );
 	
     // PERSIT TO MODEL IF SAVE EVENT
 	if( this.properties.type == "save") {
