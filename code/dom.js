@@ -432,6 +432,10 @@
                     
                     return DOM( element );
 				},
+				removeElement: function()
+				{
+					element.parentNode.removeChild( element );
+				},
 				removeElements: function()
 				{						
 					while(element.hasChildNodes())
@@ -451,7 +455,7 @@
 							{
 								plugins.svg = new Svg();
 								plugins.svg.setModel( new Model() );
-								element.appendChild( plugins.svg.exportTag() );
+								element.appendChild( plugins.svg.exportTag(), { id:"svgZeit"} );
 							}
 							
 							function refresh()

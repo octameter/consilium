@@ -2,12 +2,26 @@
 	position:absolute;
 	width:100%;
 	height:100%;
-	-webkit-transition: left 0.3s ease-in-out;
-	-moz-transition: left 0.3s ease-in-out;
-	-ms-transition: left 0.3s ease-in-out;
-	-o-transition: left 0.3s ease-in-out;
-	transition: left 0.3s ease-in-out;
+	-webkit-transition: all 0.3s ease-in-out;
+	-moz-transition: all 0.3s ease-in-out;
+	-ms-transition: all 0.3s ease-in-out;
+	-o-transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
 }
+
+
+.middle {
+	left:0;
+}
+
+.right {
+	left:100%;
+}
+
+.left {
+	left:-100%;
+}
+
 
 .view > header {
 	position:absolute;
@@ -42,8 +56,6 @@
 .view > header > h2 {
 	margin:0px;
 }
-
-
 
 .view > article {
 	position:absolute;

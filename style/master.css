@@ -44,27 +44,53 @@ html, body {
 
 /* SCROLLER */
 .scrollableX {
-	margin-left:30px;
-	margin-right:20px;
+	margin-left:4%;
+	margin-right:3%;
  	overflow-x:scroll; 
 	overflow-y:hidden;
  }
  
+ .info {
+	position:absolute;
+ 	left:50%;
+ 	top:50%; display: table-cell; vertical-align: middle; height:100%;
+
+ }
+ 
+ .innerText
+{
+	position:relative;
+	top:-50%; height:auto;
+	left:-50%;
+	width:100%;
+	
+/* 	transform: scale(0); */
+/* 	-webkit-transform: scale(0); */
+	
+ 	font-size:120%;
+ 	color:white;
+ 	border: 2px solid white;
+ 	background: rgba(100,100,100,0.5);
+	
+/* 	-webkit-transition: all 0.3s linear; */
+/* 	-moz-transition: all 0.3s linear; */
+/* 	-ms-transition: all 0.3s linear; */
+/* 	-o-transition: all 0.3s linear; */
+/* 	transition: all 0.3s linear; */
+	
+/* 	top:-50%; */
+}
+ 
+.infoShow
+{
+	transform: scale(1);
+	-webkit-transform: scale(1);
+}
+
+
 .scrollableY {
     overflow-y:scroll;
     -webkit-overflow-scrolling: touch;	
-}
-
-.middle {
-	left:0;
-}
-
-.right {
-	left:100%;
-}
-
-.left {
-	left:-100%;
 }
 
 /* Position the div wrapper as relative with overflow hidden and a specific width and height. */

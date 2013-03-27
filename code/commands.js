@@ -16,6 +16,7 @@ Events =
 	SYNC:"sync",
 		
 	START:"start",
+	INFO_START:"info_start",
 	
 	HOME_INIT:"homeInit",
 	HOME_EXIT:"homeExit",
@@ -169,13 +170,16 @@ function homeIntroCommand( event )
 
 function homeVerlaufCommand( data )
 {	
+	
 	var scroller = this.properties.scroller;
 	
 	if( ! DOM( scroller ).element() )
 	{
 		DOM( this.properties.id ).addChild( "div", { id:"homeVerlauf"} );
 		DOM( "homeVerlauf" ).addChild( "div", { id:"chart", class:"chart"} );
-		DOM( "chart").addChild("div", { id:scroller, class:"scrollableX"}); 			
+		
+		DOM( "chart").addChild("div", { id:scroller, class:"scrollableX"}).onTouch( Events.INFO_START, { id:scroller } ); 	
+		
 		DOM( scroller ).plugins( "svg" ).create();	
 	}
 	
@@ -191,6 +195,22 @@ function homeVerlaufCommand( data )
 	DOM().plugins( "svg" ).refresh();
     
 	dispatchCommand( Events.HOME_VERLAUF_SELECTED );
+};
+
+function infoStartCommand( event )
+{
+	if( this.model._data.punkte.length == 0)
+	{
+		if( ! DOM( "infoDisplayId" ).element() )
+		{
+			DOM( event.id ).addChild( "div", { class:"info", id:"infoDisplayId" }).addChild("div", { id:"xxx", class:"innerText" },"<p>Die Eingabe beginnen Sie über den rechten oberen Button.</p>");
+			
+			//var show = setTimeout( function() { DOM( "xxx" ).attrib("className").add("infoShow"); }, 0 );
+			
+			//var hide = setTimeout( function() {DOM( "infoDisplayId" ).removeElement(); }, 2000);
+		}
+		
+	}
 };
 
 function homeVerlaufSelectedCommand( event )

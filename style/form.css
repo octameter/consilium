@@ -7,10 +7,10 @@ form {
 	padding:0px;
 
     padding-top:5px;
-    padding-left:10px;
-    padding-right:10px;
-	/*border:1px solid #Ccc;*/
-    /* border-radius:10px */;
+    
+    /* Mobile 10px; */
+    padding-left:1%;
+    padding-right:1%;
 }
 
 fieldset {
@@ -27,7 +27,8 @@ fieldset {
    	background-image:      -o-linear-gradient( #FAFAFA, #F5F5F5);
    	background-image:         linear-gradient( #FAFAFA, #F5F5F5);
     
-   	margin-bottom:10px;
+    /* Mobile 10px */
+   	margin-bottom:1%;
 } 		
 
 fieldset > legend {

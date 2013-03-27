@@ -135,6 +135,8 @@
    						addCommand( Events.MODEL_FROM_STORAGE, modelFromStorageCommand ); 		  						
    						addCommand( Events.SYNC, syncCommand ); 		  						
    						
+   						addCommand( Events.INFO_START, infoStartCommand );
+   						
    						addCommand( Events.HOME_INIT, homeInitCommand, { id:"homeContentId", sync: "addOptionen", start:"addEingabe" ,intro: "rahmen", verlauf:"homeVerlauf"} ); 	
    						addCommand( Events.HOME_INTRO, homeIntroCommand, { id:"homeContentId" } ); 	
    						addCommand( Events.HOME_VERLAUF, homeVerlaufCommand, { id:"homeContentId", scroller:"homeScrollerId"} ); 	
@@ -229,7 +231,7 @@
    						this.bind();		
    					}
    			};
-            
+
    			app.initialize();
    			
    			// var encrypted = CryptoJS.HmacSHA256("raw", "secret");
