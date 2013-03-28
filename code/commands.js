@@ -116,8 +116,8 @@ function syncCommand( event )
 {
 	if( !this.model._data.customer.lastSync )
 	{
-		this.model.addPunkt( {"x":1363786891430, "y": "Chemotherapie mit\n\Methotrexat", "id": "zyklus"} ); 	 	
-		this.model.addPunkt( {"x":1363676891430, "y": "Adenocarcinom T3", "id": "diagnose"} ); 	 			
+		this.model.addPunkt( {"x":1364571509073, "y": "Chemotherapie mit\n\Methotrexat", "id": "zyklus"} ); 	 	
+		this.model.addPunkt( {"x":1364471509073, "y": "Adenocarcinom T3M2", "id": "diagnose"} ); 	 			
 	}
 	
 	this.model.setCustomer("lastSync", zeit());
