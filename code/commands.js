@@ -116,7 +116,7 @@ function syncCommand( event )
 {
 	if( !this.model._data.customer.lastSync )
 	{
-		this.model.addPunkt( {"x":1363786891430, "y": "\nChemotherapie mit\n\Methotrexat", "id": "zyklus"} ); 	 	
+		this.model.addPunkt( {"x":1363786891430, "y": "Chemotherapie mit\n\Methotrexat", "id": "zyklus"} ); 	 	
 		this.model.addPunkt( {"x":1363676891430, "y": "Adenocarcinom T3", "id": "diagnose"} ); 	 			
 	}
 	
@@ -201,13 +201,15 @@ function infoStartCommand( event )
 {
 	if( this.model._data.punkte.length == 0)
 	{
-		if( ! DOM( "infoDisplayId" ).element() )
+		if( ! DOM( "overlayId" ).element() )
 		{
-			DOM( event.id ).addChild( "div", { class:"info", id:"infoDisplayId" }).addChild("div", { id:"xxx", class:"innerText" },"<p>Die Eingabe beginnen Sie über den rechten oberen Button.</p>");
+			DOM( "homeVerlauf" ).addChild( "div", { id:"overlayId", class:"overlay" });
+			DOM( "overlayId").addChild("div", { id:"blockId", class:"block" });
+			DOM( "blockId").addChild("div", {id:"centeredId", class:"centered"},"<p>Die Eingabe beginnen Sie über den rechten oberen 'Start' Button.</p>");
 			
-			//var show = setTimeout( function() { DOM( "xxx" ).attrib("className").add("infoShow"); }, 0 );
+			var show = setTimeout( function() { DOM( "centeredId" ).attrib("className").add("zoomIn"); }, 0 );
 			
-			//var hide = setTimeout( function() {DOM( "infoDisplayId" ).removeElement(); }, 2000);
+			var hide = setTimeout( function() {DOM( "overlayId" ).removeElement(); }, 3000);
 		}
 		
 	}
@@ -225,7 +227,7 @@ function homeVerlaufSelectedCommand( event )
 	{
 		var type = this.model.getType(event.id);
 		var buttonLabel = ( type.kategorie != "Notizen" ) ? event.y +"%" : "&nbsp;";
-		var detailLabel = ( type.kategorie != "Notizen" ) ? "<b>Definition:</b> "+this.model.getGrad(event.id, event.y).info : "<b>Memo:</b> "+ event.y;
+		var detailLabel = ( type.kategorie != "Notizen" ) ? "<b>Definition</b> "+this.model.getGrad(event.id, event.y).info : event.y;
 
 		/* LEGEND */
 		DOM(cmd.legend).text( type.kategorie ); 				
@@ -253,8 +255,8 @@ function homeVerlaufSelectedCommand( event )
 	else
 	{
 		/* DEFAULT */
-		DOM(cmd.legend).text( "Auswahl" ); 
-		DOM(cmd.info).text( "Berühren Sie einen Datenpunkt in der Timeline für detaillierte Informationen oder gehen Sie über „Start“ zur Favoritenliste.");
+		DOM(cmd.legend).text( "Legende" ); 
+		DOM(cmd.info).text( "Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen.");
 	}
 	
 	/* DISPLAY */
@@ -425,7 +427,7 @@ function optionenInitCommand( data )
 		DOM( "fieldsetVerbindung"  ).addChild("div", { id:"optStatus"} );
 		DOM( "optStatus"  ).addChild( "span", { }, "<b>Mit Brustzentrum</b>" );
 		DOM( "optStatus"  ).addChild( "br" );
-		DOM( "optStatus"  ).addChild( "span", { style:"color:green; font-size:90%"}, "<i>&nbsp;</i>" ); 			
+		DOM( "optStatus"  ).addChild( "span", { style:"color:green; font-size:90%"}, (data.status) ? "<i>"+data.status+"</i>" :"&nbsp;" ); 			
 		DOM( "optStatus"  ).addChild( "a", {  style:"position:absolute;top:6px;right:2px;color:darkblue" }, "Verbunden" ); 	
 
 		// LOGIN
@@ -459,7 +461,7 @@ function optionenInitCommand( data )
 		DOM( "fieldsetVerbindung"  ).addChild("div", { id:"optStatus"} );
 		DOM( "optStatus"  ).addChild( "span", { }, "<b>Mit Brustzentrum</b>" );
 		DOM( "optStatus"  ).addChild( "br", { }, "" );
-		DOM( "optStatus"  ).addChild( "span", { }, "&nbsp;" );
+		DOM( "optStatus"  ).addChild( "span", { style:"color:red; font-size:90%"}, (data.status) ? "<i>"+data.status+"</i>":"&nbsp;" ); 	
 		DOM( "optStatus"  ).addChild( "a", { class:"button-action blue", style:"position:absolute;top:6px;right:2px;" }, "Verbinden" ).onTouch( Events.SCAN, {}); 	
 	}
 
@@ -477,7 +479,7 @@ function scanCommand( data )
                
             });
         } catch (ex) {        
-        	// DESKTOP WILL ALWAYS DISPATCH THIS
+        	// DESKTOP WILL ALWAYS DISPATCH THIS AND SOMETIMES DEVICE
         	dispatchCommand( Events.SCAN_RESULT, { error : ex.message} );
         }
 };
@@ -488,7 +490,8 @@ function scanCommand( data )
  */
 function scanResultCommand( event )
 {	
-	if( event.result == "Lmd98324jhkl234987234" || true)
+	
+	if( event.result == "Lmd98324jhkl234987234" || event.error == "Cannot read property 'barcodeScanner' of undefined")
 	{
 		this.model.setCustomer("login", { patId : "Pat001", pwd: "987234", gruppe:"B"});
 			
@@ -497,9 +500,14 @@ function scanResultCommand( event )
 			
 		if( this.model._data["customer"].login.gruppe == "C")
 		this.model.setCustomer("intro", 2);
+
+		dispatchCommand( Events.OPTIONEN_INIT, { status: "Erfolgreich"} );
+	}
+	else
+	{
+		dispatchCommand( Events.OPTIONEN_INIT, { status: "Fehlgeschlagen"} );		
 	}
 
-	dispatchCommand( Events.OPTIONEN_INIT );
 };
 
 /**
@@ -519,9 +527,10 @@ function symptomeInitCommand( data )
 	{		
 		var item = DOM( liste ).appendChild("li", { data: items[i].id });
 		
+		DOM( item ).appendChild("div", { class:"row_antiCaret", style:"top:16px; left:4px;"} ).appendChild( Assets.antiCaret() );
+		DOM( item ).appendChild("p", { style: 'padding:0px; margin:0px;' }, "<b>"+items[i].title+"</b>");
 		DOM( item ).appendChild("div", { style: 'background:'+items[i].farbwert }, "&nbsp;" ).className = "itemIcon";
-		DOM( item ).appendChild("span", { style: 'position:absolute; white-space:nowrap; top:5px; left:60px;' }, "<b>"+items[i].title+"</b>");
-		DOM( item ).appendChild("span", { style: 'position:absolute; white-space:nowrap; top:25px; left:60px;'}, "<i>" + items[i].kategorie + "</i>");		
+		//DOM( item ).appendChild("span", { style: 'position:absolute; white-space:nowrap; top:25px; left:60px;'}, "<i>" + items[i].sub + "</i>");		
 
 	}	
 	DOM( "symptomeListe" ).onTap( Events.TAP_HANDLER, { watch: "tagName:LI", command:Events.SYMPTOME_EXIT } );

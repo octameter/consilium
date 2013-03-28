@@ -32,6 +32,23 @@ html, body {
     font-family: Verdana;
 	background-color: #FAFAFA;
 }
+
+/* portrait */
+@media screen and (orientation:portrait) {
+	/* portrait-specific styles */
+	
+}
+/* landscape */
+@media screen and (orientation:landscape) and (max-device-width:768px) {
+	/* landscape-specific styles */
+	.disappear {
+		display:none;
+	}
+	.disappear + article {
+		top:0px !important;
+	}
+}
+
 /* CHART */     
 .chart {
 	position:relative;
@@ -42,6 +59,8 @@ html, body {
 	width:100%;
 }
 
+
+
 /* SCROLLER */
 .scrollableX {
 	margin-left:4%;
@@ -50,38 +69,49 @@ html, body {
 	overflow-y:hidden;
  }
  
- .info {
+ .overlay {
 	position:absolute;
- 	left:50%;
- 	top:50%; display: table-cell; vertical-align: middle; height:100%;
-
+	top:0; left:0;
+	width:100%;
  }
  
- .innerText
-{
-	position:relative;
-	top:-50%; height:auto;
-	left:-50%;
-	width:100%;
-	
-/* 	transform: scale(0); */
-/* 	-webkit-transform: scale(0); */
-	
+ .block {
+  position:relative;
+  text-align: center;
+  margin: 20px;
+  height:260px;
+}
+ 
+.block:before {
+  content: '';
+  display: inline-block;
+  height: 100%; 
+  vertical-align: middle;
+  margin-right: -0.25em; /* Adjusts for spacing */
+ }
+ 
+.centered {
+	display: inline-block;
+	vertical-align: middle;
+	width: 80%;
+	padding: 10px 15px;
+
  	font-size:120%;
  	color:white;
  	border: 2px solid white;
  	background: rgba(100,100,100,0.5);
-	
-/* 	-webkit-transition: all 0.3s linear; */
-/* 	-moz-transition: all 0.3s linear; */
-/* 	-ms-transition: all 0.3s linear; */
-/* 	-o-transition: all 0.3s linear; */
-/* 	transition: all 0.3s linear; */
-	
-/* 	top:-50%; */
+
+	transform: scale(0);
+	-webkit-transform: scale(0);
+
+	-webkit-transition: all 0.3s linear;
+	-moz-transition: all 0.3s linear;
+	-ms-transition: all 0.3s linear;
+	-o-transition: all 0.3s linear;
+	transition: all 0.3s linear;
 }
  
-.infoShow
+.zoomIn
 {
 	transform: scale(1);
 	-webkit-transform: scale(1);
@@ -104,10 +134,14 @@ html, body {
 	padding-left:10px;
 	padding-right:10px;
 	padding-bottom:30px;
+	
+	  background-color: #F5F5F5;
+   	background-image: -webkit-linear-gradient(#FAFAFA, #F5F5F5); 
+   	background-image:    -moz-linear-gradient( #FAFAFA, #F5F5F5);
+   	background-image:     -ms-linear-gradient( #FAFAFA, #F5F5F5);
+   	background-image:      -o-linear-gradient( #FAFAFA, #F5F5F5);
+   	background-image:         linear-gradient( #FAFAFA, #F5F5F5);
 }
-
-
-
 
 .movePoint {
     cursor: pointer;

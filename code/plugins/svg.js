@@ -8,7 +8,7 @@ function Svg()
 			
 	// Padding
 	this.paddingLeft = 20;
-	this.paddingRight = 40;
+	this.paddingRight = 20;
 	this.paddingTop = 50;
 	this.paddingBottom = 50;
 
@@ -47,7 +47,7 @@ Svg.prototype.drawCoordinates = function()
 	
 	this.minX = this.model.getMinX();
 
-	this.maxXRealtime = zeit();
+	this.maxXRealtime = zeit() + (12 * 60 * 60 * 1000);
 
 	this.maxX = Math.floor( zeit() / milliProTag) * milliProTag;
 	
@@ -56,23 +56,29 @@ Svg.prototype.drawCoordinates = function()
 	this.element.setAttribute("width", chartWidth);
 	this.element.setAttribute("height", this.getPixelForY( this.minY, true ) + this.paddingBottom);
 
+	// TODAY
+	this.drawKoordLine( zeit(), this.minY - 5, zeit(), this.maxY + 5, "rgba(220,220,220,0.4)" );
+	
 	// vLine
-	for(var x = this.minX; x <= this.maxX; x += (24 * 60 * 60 * 1000) )
+	for(var x = this.minX; x <= this.maxXRealtime; x += (24 * 60 * 60 * 1000) )
 	{
 		var breite = ( this.maxXRealtime > ( x + milliProTag )) ? milliProTag : ( this.maxXRealtime - this.maxX);  
 		
 		this.drawWeekend( x, this.maxY, this.minX + breite, this.minY);		
 
-		this.drawKoordLine( x, this.minY, x, this.maxY );		
+		this.drawKoordLine( x, this.minY, x, this.maxY, "rgba(255,255,255,0.6)" );		
 		
+		if( this.maxXRealtime > x + (16 * 60 * 60 * 1000))
 		this.drawLabelX( x, this.minY );	
 	}	
 	
 	// hLine
 	for(var y = 0; y <= this.maxY; y += 20)
 	{
-		this.drawKoordLine( this.minX, y, this.maxXRealtime, y );		
+		this.drawKoordLine( this.minX, y, this.maxXRealtime, y, "rgba(255,255,255,0.6)" );		
 	}
+	
+
 
 	// RIGHT TO LEFT
     var scrollerWidth = this.element.parentNode.clientWidth;
@@ -265,7 +271,7 @@ Svg.prototype.getPaddingFromPoint = function( x1, y1, x2, y2, padding)
 	return {x:xPad, y:yPad};
 };
 
-Svg.prototype.drawKoordLine = function(x1, y1, x2, y2)
+Svg.prototype.drawKoordLine = function(x1, y1, x2, y2, color)
 {	
 	x1 = this.getPixelForX(x1, true);
 	x2 = this.getPixelForX(x2, true);
@@ -273,8 +279,8 @@ Svg.prototype.drawKoordLine = function(x1, y1, x2, y2)
 	y2 = this.getPixelForY(y2, true);
 
 	var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-	line.setAttribute("fill", "rgba(255,55,55,0.6)" );
-	line.setAttribute("stroke", "rgba(255,255,255,0.6)" );
+	//line.setAttribute("fill", "rgba(255,55,55,0.6)" );
+	line.setAttribute("stroke", color );
 	line.setAttribute("stroke-width", "2");
 	line.setAttribute("x1", x1);
 	line.setAttribute("y1", y1);

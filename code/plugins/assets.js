@@ -93,6 +93,24 @@ var Assets = {
 	 	  	
 	 	  	return svg;
 		},
+		antiCaret : function() 
+		{		
+			var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+			
+			svg.setAttribute("viewBox","0 0 60 60");
+			svg.setAttribute("width", "100%");
+			svg.setAttribute("height", "100%");
+			svg.setAttribute("version", "1.1");
+			
+			var _caret = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+			_caret.setAttribute("stroke", "rgba(150,150,150,1)" );
+			_caret.setAttribute("stroke-width", "10");
+			_caret.setAttribute("fill", "none" );
+			_caret.setAttribute("points","45,5 15,30 45,55");
+			svg.appendChild(_caret);
+			
+			return svg;
+		},
 		play : function() 
 		{		
 			var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
