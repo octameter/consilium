@@ -919,7 +919,7 @@ Model.prototype.dict =
                         { "Info":"Melden Sie sich telefonisch im Brust-Zentrum/Onkozentrum bei anhaltenden Beschwerden."},
                         { "Tagsüber":"+41 43 344 3333"},
                         { "Nachts":" +41 44 209 2111"},
-                        { "Am Wochenende":" +41 44 209 2111"}
+                        { "Wochenende":" +41 44 209 2111"}
                     ]    
               },
               { id: "iMeld2", title:"Kontakt bei Bedarf", kategorie:"Brustzentrum", likes:0, dislikes:0,
@@ -928,7 +928,7 @@ Model.prototype.dict =
                       { "Info":"Melden Sie sich telefonisch im Brust-Zentrum/Onkozentrum."},
                       { "Tagsüber":"+41 43 344 3333"},
                       { "Nachts":" +41 44 209 2111"},
-                      { "Am Wochenende":" +41 44 209 2111"}
+                      { "Wochenende":" +41 44 209 2111"}
                   ]    
             },
               { id: "iShampoo", title:"Mildes Shampoo", kategorie:"Selbsthilfe", likes:0, dislikes:0,
@@ -1021,7 +1021,7 @@ Model.prototype.dict =
                         { "Grafik": "Akupressurpunkt P6<br><img src='img/assets/akupunkturP6.png'>"}
                    ]     
               },
-              { id: "iZwiebel", title:"Kleidung im <i>Zwiebellook</i>", kategorie:"Selbsthilfe", likes:0, dislikes:0,
+              { id: "iZwiebel", title:"Kleidung im Zwiebellook", kategorie:"Selbsthilfe", likes:0, dislikes:0,
                    bausteine: 
                     [
                            { "Erklärung": "Tragen Sie Kleidung in mehreren Schichten, um bei Bedarf einen Teil ausziehen zu können."}
@@ -1147,7 +1147,7 @@ Model.prototype.dict =
                         { "Info":"Nehmen Sie Ihre Reservemedikation grosszügig ein oder wenden Sie sich an das Brustzentrum/Onkozentrum."},
                         { "Tagsüber":"+41 43 344 3333"},
                         { "Nachts":" +41 44 209 2111"},
-                        { "Am Wochenende":" +41 44 209 2111"}
+                        { "Wochenende":" +41 44 209 2111"}
                     ]    
               },
               { id: "iAnanas", title:"Ananas und Zitronenwasser", kategorie:"Prophylaxe", likes:0, dislikes:0,

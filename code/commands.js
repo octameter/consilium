@@ -340,16 +340,16 @@ function tippsShowCommand ( event )
 		
 		var item1 = DOM( "homeTipps" ).addChild( "li", { style:"padding-top:5px;padding-bottom:5px;", data: JSON.stringify( exportData ) });
 		
-		DOM( item1 ).appendChild("span", { style:"padding-top:10px; padding-right:80px;"}, "<b>"+tipps[i].title+"</b>");	
+		DOM( item1 ).appendChild("span", { style:"padding-top:10px; padding-right:30px;"}, "<b>"+tipps[i].title+"</b>");	
 		DOM( item1 ).appendChild("br", {}, "");	
 		DOM( item1 ).appendChild("span", { style:"font-size:90%;margin:1px;float:left;" }, "<i>"+tipps[i].kategorie+"</i>");				
+		DOM( item1 ).appendChild("div", { class:"row_caret", style:"top:16px;"} ).appendChild( Assets.caret() );
 		
 		// Community Bewertung
-		if( (likes + dislikes) > 0)
+		if( (likes + dislikes) > 0 && false)
 		{
 			DOM( item1 ).appendChild("span", { style:"position:absolute; top:6px; right:18px; font-size:90%"}, "<i>Empfohlen</i>");				
 			DOM( item1 ).appendChild("span", { style:"position:absolute; top:23px; right:18px; font-size:90%"}, "<i>" +likes+" von "+( likes + dislikes )+ "<i>");		
-			DOM( item1 ).appendChild("div", { class:"row_caret", style:"top:16px;"} ).appendChild( Assets.caret() );
 		}
 		
 		DOM( "fieldsetTipp").show();
