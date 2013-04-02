@@ -64,7 +64,7 @@
         		<button id="symptomeBackButton" class="button-text colorless">Zurück</button>
                 <!-- <img src="img/icon/left.png" width="32"> -->
         		
-        		<h2>Symptome</h2>
+        		<h2>Auswahl</h2>
         	</header>
         	
         	<article id="symptomeContentId"></article>
@@ -134,6 +134,7 @@
    						addCommand( Events.START, startCommand ); 		  						
    						addCommand( Events.MODEL_FROM_STORAGE, modelFromStorageCommand ); 		  						
    						addCommand( Events.SYNC, syncCommand ); 		  						
+   						addCommand( Events.ROW, rowCommand ); 		  						
    						
    						addCommand( Events.INFO_START, infoStartCommand );
    						
@@ -142,6 +143,7 @@
    						addCommand( Events.HOME_VERLAUF, homeVerlaufCommand, { id:"homeContentId", scroller:"homeScrollerId"} ); 	
    						addCommand( Events.HOME_VERLAUF_SELECTED, homeVerlaufSelectedCommand, { legend:"homeAuswahlLegend", info:"homeAuswahlInfo"} ); 	
    						addCommand( Events.HOME_EXIT, homeExitCommand ); 	
+   						addCommand( Events.CHART_OVERLAY, chartOverlayCommand, { id:"homeVerlauf" } ); 		  						
    						addCommand( Events.HOME_TO_OPTIONEN, changeViewCommand,{ from: "homeId", to:"optionenId", direction:"right" }  );
    						addCommand( Events.HOME_TO_FAVORITES, changeViewCommand,{ from:"homeId", to:"favoritesId", direction:"left" } );					
    						addCommand( Events.HOME_TO_FAVORITE, changeViewCommand,{ from:"homeId", to:"favoriteId", direction:"left" } );					
@@ -168,7 +170,6 @@
    						addCommand( Events.FAVORITES_TO_FAVORITE, changeViewCommand, { from:"favoritesId", to:"favoriteId", direction:"left" } ); 	
    						addCommand( Events.FAVORITES_TO_SYMPTOME, changeViewCommand, { from:"favoritesId", to:"symptomeId", direction:"left" } ); 	
    						addCommand( Events.FAVORITES_ROW, favoritesRowCommand); 	
-   						addCommand( Events.FAVORITES_ITEM, favoritesItemCommand); 	
    						addCommand( Events.FAVORITES_EDIT, favoritesEditCommand); 	
    						addCommand( Events.FAVORITES_DELETE, favoritesDeleteCommand); 	
    						addCommand( Events.FAVORITES_CHANGE, favoritesChangeCommand, { editButton:"favoritesEditButton", backButton:"favoritesBackButton" }); 	
@@ -233,6 +234,7 @@
    			};
 
    			app.initialize();
+
 
    			
    			// var encrypted = CryptoJS.HmacSHA256("raw", "secret");
