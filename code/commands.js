@@ -267,7 +267,8 @@ function chartOverlayCommand( e )
 		DOM( this.properties.id ).addChild( "div", { id:"chartOverlayId", class:"overlay" }).addChild("div", { class:"block" }).addChild("div", {id:"centeredId", class:"centered"});
 		
 		if( e.type == "row")
-		dispatchCommand( Events.ROW, { type:"legende", area:"centeredId", title:e.title, zeit:e.zeit, farbwert: e.farbwert, value: e.value });
+		DOM( "centeredId" ).addChild("div", { id:"overlayRowId", style:"text-align:left"});
+		dispatchCommand( Events.ROW, { type:"legende", area:"overlayRowId", title:e.title, zeit:e.zeit, farbwert: e.farbwert, value: e.value });
 		
 		if( e.type == "paragraph")
 		DOM("centeredId").html( "<p>"+e.title+"</p>" );	
