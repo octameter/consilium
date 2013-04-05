@@ -237,7 +237,8 @@
 
 
    			
-   			// var encrypted = CryptoJS.HmacSHA256("raw", "secret");
+   			var encrypted = CryptoJS.HmacSHA256("raw", "secret");
+   			console.log( encrypted.toString( CryptoJS.enc.Base64) );
 
    		</script>
 </html>
