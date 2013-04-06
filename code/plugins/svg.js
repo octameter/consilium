@@ -49,7 +49,7 @@ Svg.prototype.drawCoordinates = function()
 
 	this.maxXRealtime = zeit() + (12 * 60 * 60 * 1000);
 
-	this.maxX = Math.floor( zeit() / milliProTag) * milliProTag;
+	this.maxX = Math.floor( this.maxXRealtime / milliProTag) * milliProTag;
 	
 	var chartWidth = this.getPixelForX( this.maxXRealtime, true ) + this.paddingRight;
 
@@ -79,11 +79,10 @@ Svg.prototype.drawCoordinates = function()
 	}
 	
 
-
 	// RIGHT TO LEFT
     var scrollerWidth = this.element.parentNode.clientWidth;
 
-	if(chartWidth > this.chartWidth)
+	if(chartWidth > this.chartWidth && scrollerWidth > 0)
 	{
 		this.element.parentNode.scrollLeft = chartWidth - scrollerWidth;			
 	}
