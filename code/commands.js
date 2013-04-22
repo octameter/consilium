@@ -918,7 +918,8 @@ function dateCommand( event )
 		DOM( this.properties.parent ).addChild("select", { class:"optionen" }).addOptions(1,60, zeit("mm", zeitInMs)).onChange( Events.DATE, { type:"mm", zeitInMs: zeitInMs, parent:"zeitArea"} );
 	}
 	else
-	{
+	{		
+		DOM( this.properties.parent ).addChild("input", { type:"datetime", value:zeit("yyyy-MM-dd hh:mm",zeitInMs), style:"width:105px;" }).onChange( Events.DATE, { type:"yyyy-MM-dd", zeitInMs: zeitInMs, parent:"zeitArea"});
 		DOM( this.properties.parent ).addChild("input", { type:"date", value:zeit("yyyy-MM-dd",zeitInMs), style:"width:105px;" }).onChange( Events.DATE, { type:"yyyy-MM-dd", zeitInMs: zeitInMs, parent:"zeitArea"});
 		DOM( this.properties.parent ).addChild("input", { type:"time", value:zeit("hh:mm",zeitInMs), style:"margin-left:10px;width:65px" }).onChange( Events.DATE, { type:"hh:mm", zeitInMs: zeitInMs, parent:"zeitArea"});
 	}
