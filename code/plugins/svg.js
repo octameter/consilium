@@ -20,6 +20,7 @@ function Svg()
 	this.maxY = 100;
 
 	this.chartWidth = 0;
+	this.scrollLeft = 0;
 	
 	return this;
 }
@@ -81,10 +82,10 @@ Svg.prototype.drawCoordinates = function()
 
 	// RIGHT TO LEFT
     var scrollerWidth = this.element.parentNode.clientWidth;
-
-	if(chartWidth > this.chartWidth && scrollerWidth > 0)
+    
+	if(this.element.parentNode.scrollLeft == 0)
 	{
-		this.element.parentNode.scrollLeft = chartWidth - scrollerWidth;			
+		this.element.parentNode.scrollLeft =  chartWidth - scrollerWidth;			
 	}
 
 	this.chartWidth = chartWidth;

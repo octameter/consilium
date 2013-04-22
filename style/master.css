@@ -38,8 +38,11 @@ html, body {
 	/* portrait-specific styles */
 	
 }
-/* landscape */
-@media screen and (orientation:landscape) and (max-device-width:768px) {
+/* landscape iPhone */
+/* http://www.stephentgilbert.com/mediaqueries/#iPhone */
+@media screen and (orientation:landscape)
+and (min-device-width : 320px) 
+and (max-device-width : 568px) {
 	/* landscape-specific styles */
 	.disappear {
 		display:none;
@@ -48,6 +51,8 @@ html, body {
 		top:0px !important;
 	}
 }
+
+
 
 /* CHART */     
 .chart {

@@ -13,6 +13,7 @@ Events =
 	DATE:"input_date",
 	ROW:"row_command",
 	CHART_OVERLAY:"chart_overlay",
+	CHANGE_VIEW:"change_view",
 	
 	MODEL_FROM_STORAGE:"model_from_storage",
 	SYNC:"sync",
@@ -408,8 +409,8 @@ function tippInitCommand( data )
 	
 	if( !this.model.trackPunktLikedOrNotExists() )
 	{
-		DOM( "tipArea" ).addChild("a", { style:"float:left;", class:"button-action green"}, "Hilfreich").onTouch( Events.TIPP_LIKED, { liked:true } );
-		DOM( "tipArea" ).addChild("a", { style:"float:right;", class:"button-action grey"}, "Nicht hilfreich").onTouch( Events.TIPP_LIKED, { liked:false });	
+		DOM( "tipArea" ).addChild("a", { style:"float:left;", class:"button-action green"}, "Erfolgreich").onTouch( Events.TIPP_LIKED, { liked:true } );
+		DOM( "tipArea" ).addChild("a", { style:"float:right;", class:"button-action grey"}, "Nicht erfolgreich").onTouch( Events.TIPP_LIKED, { liked:false });	
 	}
 	
 	this.model.trackPunktTipp("clicked");
@@ -905,7 +906,7 @@ function dateCommand( event )
 	DOM( this.properties.parent ).removeElements();
 
 	// CREATE ELEMENT DESKTOP ODER MOBILE
-	if( DO.plugins("agent").isDevice("Desktop") )
+	if( DO.plugins("agent").isDevice("Desktop") ) //|| (/Android/i.test(navigator.userAgent)))
 	{		
 		DOM( this.properties.parent ).addChild("span",{ style:"margin-right:5px;" },"<b>Datum</b>"); 
 		DOM( this.properties.parent ).addChild("select", { id:"dd", class:"optionen" }).addOptions(1, zeit("ddInMonth",zeitInMs), zeit("dd",zeitInMs)).onChange( Events.DATE, { type:"dd", zeitInMs: zeitInMs, parent:"zeitArea"} );
@@ -964,9 +965,10 @@ function sliderCommand( event )
 	
 	var temp = this.model._state.tempItem;
 	
-	// CREATE ELEMENT DESKTOP ODER MOBILE IF NO EVENT VALUE
+	// CREATE LEMENT DESKTOP ODER MOBILE IF NO EVENT VALUE
 	if( !event.value && event.tag != "A")
 	{
+		
 		if( DO.plugins("agent").isDevice("Desktop") )
 		{				
 			DOM( this.properties.parent ).addChild("div", { id:"favSliderId", class:"slider"} ).addChild("a", { id:"thumbId", class:"grey"} );		 
