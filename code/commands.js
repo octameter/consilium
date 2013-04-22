@@ -906,7 +906,7 @@ function dateCommand( event )
 	DOM( this.properties.parent ).removeElements();
 
 	// CREATE ELEMENT DESKTOP ODER MOBILE
-	if( DO.plugins("agent").isDevice("Desktop") ) //|| (/Android/i.test(navigator.userAgent)))
+	if( DO.plugins("agent").isDevice("Desktop") || (/Android/i.test(navigator.userAgent)))
 	{		
 		DOM( this.properties.parent ).addChild("span",{ style:"margin-right:5px;" },"<b>Datum</b>"); 
 		DOM( this.properties.parent ).addChild("select", { id:"dd", class:"optionen" }).addOptions(1, zeit("ddInMonth",zeitInMs), zeit("dd",zeitInMs)).onChange( Events.DATE, { type:"dd", zeitInMs: zeitInMs, parent:"zeitArea"} );
@@ -919,7 +919,6 @@ function dateCommand( event )
 	}
 	else
 	{		
-		DOM( this.properties.parent ).addChild("input", { type:"datetime", value:zeit("yyyy-MM-dd hh:mm",zeitInMs), style:"width:105px;" }).onChange( Events.DATE, { type:"yyyy-MM-dd", zeitInMs: zeitInMs, parent:"zeitArea"});
 		DOM( this.properties.parent ).addChild("input", { type:"date", value:zeit("yyyy-MM-dd",zeitInMs), style:"width:105px;" }).onChange( Events.DATE, { type:"yyyy-MM-dd", zeitInMs: zeitInMs, parent:"zeitArea"});
 		DOM( this.properties.parent ).addChild("input", { type:"time", value:zeit("hh:mm",zeitInMs), style:"margin-left:10px;width:65px" }).onChange( Events.DATE, { type:"hh:mm", zeitInMs: zeitInMs, parent:"zeitArea"});
 	}

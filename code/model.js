@@ -912,18 +912,18 @@ Model.prototype.dict =
                     bausteine: 
                      [
                         { "Info":"Melden Sie sich telefonisch im Brust-Zentrum/Onkozentrum bei anhaltenden Beschwerden."},
-                        { "Tagsüber":"+41 43 344 3333"},
-                        { "Nachts":" +41 44 209 2111"},
-                        { "Wochenende":" +41 44 209 2111"}
+                        { "Tagsüber":" <a href='tel:41-43-344-3333'>+41 43 344 3333</a>"},
+                        { "Nachts":" <a href='tel:41-44-209-2111'>+41 44 209 2111</a>"},
+                        { "Wochenende":" <a href='tel:41-44-209-2111'>+41 44 209 2111</a>"}
                     ]    
               },
               { id: "iMeld2", title:"Kontakt bei Bedarf", kategorie:"Brustzentrum", likes:0, dislikes:0,
                   bausteine: 
                    [
                       { "Info":"Melden Sie sich telefonisch im Brust-Zentrum/Onkozentrum."},
-                      { "Tagsüber":"+41 43 344 3333"},
-                      { "Nachts":" +41 44 209 2111"},
-                      { "Wochenende":" +41 44 209 2111"}
+                      { "Tagsüber":" <a href='tel:41-43-344-3333'>+41 43 344 3333</a>"},
+                      { "Nachts":" <a href='tel:41-44-209-2111'>+41 44 209 2111</a>"},
+                      { "Wochenende":" <a href='tel:41-44-209-2111'> +41 44 209 2111</a>"}
                   ]    
             },
               { id: "iShampoo", title:"Mildes Shampoo", kategorie:"Selbsthilfe", likes:0, dislikes:0,
