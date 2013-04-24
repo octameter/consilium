@@ -306,7 +306,7 @@ function tapHandlerCommand( event )
 		}
 		case("move"):
 		{		
-	        if (Math.abs(event.clientX - this.properties.startX) > 10 || Math.abs(event.clientY - this.properties.startY) > 10) 
+	        if (Math.abs(event.clientX - this.properties.startX) > 6 || Math.abs(event.clientY - this.properties.startY) > 6) 
 	        {
 	        	if(this.properties.element){ this.properties.element.className = ""; this.properties.element = null; }
 		    }
@@ -728,7 +728,7 @@ function favoriteChangeCommand( event )
 {	
 	if( this.model.getStateFavitEdit() || event.exit )
 	{
-		DOM( this.properties.id ).text("Edit");		
+		DOM( this.properties.id ).text("Löschen");		
 		DOM( this.properties.id ).attrib("className").replace("grey", "colorless");		
 	}
 	else
@@ -786,7 +786,7 @@ function favoriteInitCommand( data )
 		DOM( "favitFormId" ).addChild("fieldset", { id: "favitZeitId", disabled:"true" }).addChild("legend", {}, "Zeitpunkt");
 	}
 	else{
-		DOM( "favitFormId" ).addChild("fieldset", { id: "favitZeitId"} ).addChild("legend", {}, "Zeitpunkt");		
+		DOM( "favitFormId" ).addChild("fieldset", { id: "favitZeitId"} ).addChild("legend", {}, "Neuer Zeitpunkt");		
 	}
 	
 	DOM( "favitZeitId" ).addChild("div", {id:"zeitArea" });		
@@ -919,8 +919,8 @@ function dateCommand( event )
 	}
 	else
 	{		
-		DOM( this.properties.parent ).addChild("input", { type:"date", value:zeit("yyyy-MM-dd",zeitInMs), style:"width:105px;" }).onChange( Events.DATE, { type:"yyyy-MM-dd", zeitInMs: zeitInMs, parent:"zeitArea"});
-		DOM( this.properties.parent ).addChild("input", { type:"time", value:zeit("hh:mm",zeitInMs), style:"margin-left:10px;width:65px" }).onChange( Events.DATE, { type:"hh:mm", zeitInMs: zeitInMs, parent:"zeitArea"});
+		DOM( this.properties.parent ).addChild("input", { type:"date", value:zeit("yyyy-MM-dd",zeitInMs), style:"font-size:95%; width:105px;" }).onChange( Events.DATE, { type:"yyyy-MM-dd", zeitInMs: zeitInMs, parent:"zeitArea"});
+		DOM( this.properties.parent ).addChild("input", { type:"time", value:zeit("hh:mm",zeitInMs), style:"font-size:95%;margin-left:10px;width:65px" }).onChange( Events.DATE, { type:"hh:mm", zeitInMs: zeitInMs, parent:"zeitArea"});
 	}
 };
 
