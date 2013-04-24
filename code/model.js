@@ -477,7 +477,7 @@ Model.prototype.dict =
            { id: "10050068", title: "Ödeme an Gliedmassen", kategorie:"Symptom", sub: "Ödeme",zero:0, farbwert:"rgba(64,224,208,0.9)",
                 grad:[    
                           { info:"Sehr starke Schwellung, starke Bewegungseinschränkung, Selbstversorgung (z.B. Ankleiden und Waschen) ist unmöglich.", max:100, min:81, tipps:"iMeld2"},
-                          { info:"Starke Schwellung mit Bewegungseinschränkung, starkes Spannungsgefühl und deutliche Veränderung der Körperkontur." ,max:80, min:61, tipps:"iMeld2"},
+                          { info:"Starke Schwellung mit Bewegungseinschränkung, starkes Spannungsgefühl und deutliche Veränderung der Körperkontur, starke Einschränkung im Alltag und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld2"},
                           { info:"Mässige sichtbare Schwellung, Auslöschung von Hautfalten, veränderte Körperkontur, leichte Einschränkung im Alltag.", max:60, min:41, tipps:"iBeweg,iMeld1"},
                           { info:"Leichte sichtbare Schwellung mit erhöhtem Spannungsgefühl, leichte Hautstrukturveränderung.", max:40, min:21, tipps:"iBeweg"},
                           { info:"Sehr leichte Schwellung, leichtes Spannungsgefühl aber keine Veränderung der Hautstruktur.", max:20, min:0, tipps:"iBeweg"}
@@ -486,7 +486,7 @@ Model.prototype.dict =
               { id: "10013774", title: "Trockene Augen", kategorie:"Symptom", sub: "Augen",zero:0,  farbwert:"rgba(175,238,238,0.9)",
                 grad:[    
                           { info:"Sehr starke Symptome, Selbstversorgung stark eingeschränkt durch Seheinschränkung.", max:100, min:81, tipps:"iMeld1"},
-                          { info:"Starke Symptome, deutliche Einschränkung im Alltag (z.B. Lesen, Autofahren), Arbeitsfähigkeit ist stark eingeschränkt." ,max:80, min:61, tipps:"iMeld1"},
+                          { info:"Starke Symptome, deutliche Einschränkung im Alltag (z.B. Lesen, Autofahren) und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld1"},
                           { info:"Mässige Symptome, regelmässige Verwendung von Augentropfen notwendig, leichte Einschränkung im Alltag.", max:60, min:41},
                           { info:"Leichte Symptome, keine Einschränkung im Alltag, Augentropfen zur Befeuchtung sind ausreichend.", max:40, min:21},
                           { info:"Sehr milde Symptome, keine Einschränkung im Alltag.", max:20, min:0}
@@ -495,7 +495,7 @@ Model.prototype.dict =
             { id: "10037868", title: "Hautausschlag", kategorie:"Symptom", sub: "Haut und Haare",zero:0, farbwert:"rgba(70,130,180,0.9)",
                 grad:[    
                           { info:"Sehr starke Symptome (Juckreiz, Hautspannen, Rötung, Hautbrennen), lokal oder verteilt, Selbstversorgung unmöglich.", max:100, min:81, tipps:"iMeld2"},
-                          { info:"Starke Symptome (Juckreiz, Hautspannen, Rötung, Hautbrennen), lokal oder verteilt, starke Einschränkung im Alltag und bei der Arbeit." ,max:80, min:61, tipps:"iMeld2"},
+                          { info:"Starke Symptome (Juckreiz, Hautspannen, Rötung, Hautbrennen), lokal oder verteilt, starke Einschränkung im Alltag und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld2"},
                           { info:"Mässige Symptome, deutlicher Juckreiz, Hautspannen und Hautbrennen, lokal oder verteilt. Leichte Einschränkung im Alltag.", max:60, min:41, tipps:"iMeld2"},
                           { info:"Leichte Symptome, lokal eingeschränkt, leichte Rötung, leichter Juckreiz, Hautspannen oder Hautbrennen.", max:40, min:21, tipps:"iMeld2"},
                           { info:"Sehr milde Symptome, lokal eingeschränkt, keine Einschränkung im Alltag.", max:20, min:0}
@@ -506,7 +506,7 @@ Model.prototype.dict =
                           { info:"Sehr schwerer Bluthochdruck über 190 mmHg (1. Wert).", max:100, min:81},
                           { info:"Schwerer Bluthochdruck mit Werten über 160 mmHg (1. Wert) oder über 100 mmHg (2. Wert)." ,max:80, min:61, tipps:"iMeld2"},
                           { info:"Mässige Bluthochdruck mit 140-150 mmHg (1 Wert) oder 90-99 mmHg (2. Wert) oder plötzlicher Anstieg von mehr als 20 mmHg zum normalen Vorwert.", max:60, min:41, tipps:"iMeld2"},
-                          { info:"Milder Bluthochdruck 130-139 mmHg (1. Wert) oder 80-89 mmHg.", max:40, min:21},
+                          { info:"Milder Bluthochdruck 130-139 mmHg (1. Wert) oder 80-89 mmHg (2. Wert).", max:40, min:21},
                           { info:"Sehr milde Symptome.", max:20, min:0}
                     ]  
               }, 
@@ -514,7 +514,7 @@ Model.prototype.dict =
             { id: "10016791", title: "Erkältungssymptome", kategorie:"Symptom", sub: "Infekt",zero:0,  farbwert:"rgba(30,144,255,0.9)" ,
                 grad:[    
                           { info:"Sehr starke Symptome mit Einschränkung der Selbstversorgung (z.B. selbst Ankleiden und Waschen) ist unmöglich.", max:100, min:81, tipps:"iMeld1"},
-                          { info:"Starke Symptome, Selbstversorgung (z.B. Ankleiden und Waschen) stark eingeschränkt möglich, Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld1"},
+                          { info:"Starke Symptome, Selbstversorgung (z.B. Ankleiden und Waschen) stark eingeschränkt und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld1"},
                           { info:"Mässige Symptome, deutliche Einschränkung im Alltag, stark eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld1"},
                           { info:"Leichte Symptome, nur leichte Einschränkung des Alltags und bei der täglichen Arbeit.", max:40, min:21, tipps:"iMeld1"},
                           { info:"Sehr milde Symptome, keine Einschränkung im Alltag und bei der Arbeit.", max:20, min:0}
@@ -523,7 +523,7 @@ Model.prototype.dict =
             { id: "10046593", title: "Harndrang", kategorie:"Symptom", sub: "Niere und Harnblase",zero:0, farbwert:"rgba(0,0,205,0.9)",
                 grad:[    
                           { info:"Sehr starke Symptome mit Einschränkung der Selbstversorgung (z.B. selbst Ankleiden und Waschen) ist unmöglich.", max:100, min:81, tipps:"iMeld2"},
-                          { info:"Starke Symptome, hohe Toilettenfrequenz, Verlassen der Wohnung kaum möglich, Einschränkung des Alltags, Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld2"},
+                          { info:"Starke Symptome, hohe Toilettenfrequenz, Verlassen der Wohnung kaum möglich, Einschränkung des Alltags und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld2"},
                           { info:"Mässige Symptome, vermehrtes Wasserlassen, deutliche Einschränkung im Alltag, stark eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld2"},
                           { info:"Leichte Symptome, häufigeres Wasserlassen, nur leichte Einschränkung des Alltags und bei der täglichen Arbeit.", max:40, min:21},
                           { info:"Sehr milde Symptome, keine Einschränkung im Alltag und bei der Arbeit.", max:20, min:0}
@@ -679,20 +679,20 @@ Model.prototype.dict =
               },  
                 { id: "10047900", title: "Gewichtsverlust", kategorie:"Symptom", sub: "Allgemeinsymptome",zero:0,  farbwert:"rgba(135,206,235,0.9)",
                 grad:[    
-                          { info:"Abnahme von mehr als 20% des Ausgangsgewichts, Selbstversorgung (z.B. Ankleiden und Waschen) unmöglich.", max:100, min:81, tipps:"iMeld1"},
-                          { info:"Abnahme von 15-20% und mehr des Ausgangsgewichts, stark eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iAnreich,iHalten,iBerat,iMeld1"},
-                          { info:"Abnahme von 10-15% des Ausgangsgewichts, deutliche Einschränkung im Alltag, eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iAnreich,iHalten,iBerat,iMeld1"},
-                          { info:"Abnahme von 5-10% des Ausgangsgewichts, nur leichte Einschränkung des Alltags und bei der täglichen Arbeit.", max:40, min:21, tipps:"iAnreich,iHalten,iBerat"},
-                          { info:"Abnahme von weniger als 5% des Ausgangsgewichts.", max:20, min:0}
+                          { info:"Abnahme von mehr als 20% des Ausgangsgewichtes.", max:100, min:81, tipps:"iMeld1"},
+                          { info:"Abnahme von 15-20% des Ausgangsgewichtes." ,max:80, min:61, tipps:"iAnreich,iHalten,iBerat,iMeld1"},
+                          { info:"Abnahme von 10-15% des Ausgangsgewichtes.", max:60, min:41, tipps:"iAnreich,iHalten,iBerat,iMeld1"},
+                          { info:"Abnahme von 5-10% des Ausgangsgewichtes.", max:40, min:21, tipps:"iAnreich,iHalten,iBerat"},
+                          { info:"Abnahme von weniger als 5% des Ausgangsgewichtes.", max:20, min:0}
                     ]  
               },  
                 { id: "10047896", title: "Gewichtszunahme", kategorie:"Symptom", sub: "Allgemeinsymptome",zero:0,  farbwert:"rgba(135,206,235,0.9)",
                 grad:[    
-                          { info:"Gewichtszunahme von mehr als 20% des Ausgangsgewichts, Selbstversorgung (z.B. Ankleiden und Waschen) unmöglich.", max:100, min:81, tipps:"iMeld2,iBerat"},
-                          { info:"Gewichtszunahme von 15-20% und mehr des Ausgangsgewichts, stark eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld2,iBerat"},
-                          { info:"Gewichtszunahme von 10-15% des Ausgangsgewichts, deutliche Einschränkung im Alltag, eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld2,iBerat"},
-                          { info:"Gewichtszunahme von 5-10% des Ausgangskörpergewichts, nur leichte Einschränkung des Alltags und bei der täglichen Arbeit.", max:40, min:21, tipps:"iMeld1,iBerat,iGewkontrolle"},
-                          { info:"Gewichtszunahme von weniger als 5% des Ausgangsgewichts.", max:20, min:0}
+                          { info:"Gewichtszunahme von mehr als 20% des Ausgangsgewichtes.", max:100, min:81, tipps:"iMeld2,iBerat"},
+                          { info:"Gewichtszunahme von 15-20% des Ausgangsgewichtes." ,max:80, min:61, tipps:"iMeld2,iBerat"},
+                          { info:"Gewichtszunahme von 10-15% des Ausgangsgewichtes.", max:60, min:41, tipps:"iMeld2,iBerat"},
+                          { info:"Gewichtszunahme von 5-10% des Ausgangsgewichtes.", max:40, min:21, tipps:"iMeld1,iBerat,iGewkontrolle"},
+                          { info:"Gewichtszunahme von weniger als 5% des Ausgangsgewichtes.", max:20, min:0}
                     ]  
               },  
                 { id: "10001760", title: "Haarausfall", kategorie:"Symptom", sub: "Haut und Haare",zero:0, farbwert:"rgba(70,130,180,0.9)",
@@ -705,8 +705,8 @@ Model.prototype.dict =
                 { id: "10020407", title: "Hitzewallungen", kategorie:"Symptom", sub: "Allgemeinsymptome",zero:0, farbwert:"rgba(70,130,180,0.9)",
                 grad:[    
                           { info:"Sehr starke Symptome, Selbstversorgung (z.B. Ankleiden und Waschen) unmöglich.", max:100, min:81, tipps:"iMeld2"},
-                          { info:"Starke Symptome, starke Einschränkung im Alltag und bei der Arbeit." ,max:80, min:61, tipps:"iMeld2"},
-                          { info:"Mässige Symptome, deutliche Einschränkung im Alltag, eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iZwiebel,iGenuss,iCimici,iMeld1"},
+                          { info:"Starke Symptome, starke Einschränkung im Alltag und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld2"},
+                          { info:"Mässige Symptome, deutliche Einschränkung im Alltag und eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iZwiebel,iGenuss,iCimici,iMeld1"},
                           { info:"Leichte Symptome, nur leichte kurzfristige Einschränkung des Alltags und bei der täglichen Arbeit.", max:40, min:21, tipps:"iZwiebel,iGenuss,iCimici"},
                           { info:"Sehr milde kurze Symptome, keine Einschränkung im Alltag.", max:20, min:0, tipps:"iZwiebel,iGenuss"}
                     ]  
@@ -732,15 +732,16 @@ Model.prototype.dict =
                 { id: "10043882", title: "Ohrensausen", kategorie:"Symptom", sub: "Hals, Nase, Ohren",zero:0, farbwert:"rgba(70,130,180,0.9)",
                 grad:[    
                           { info:"Sehr starke Symptome, Selbstversorgung (z.B. Ankleiden und Waschen) unmöglich.", max:100, min:81, tipps:"iMeld2"},
-                          { info:"Starke Symptome, starke Einschränkung im Alltag und bei der Arbeit." ,max:80, min:61, tipps:"iMeld2"},
-                          { info:"Mässige Symptome, deutliche Einschränkung im Alltag, eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld2"},
+                          { info:"Starke Symptome, starke Einschränkung im Alltag und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld2"},
+                          { info:"Mässige Symptome, deutliche Einschränkung im Alltag und eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld2"},
                           { info:"Leichte Symptome, nur leichte kurzfristige Einschränkung des Alltags und bei der täglichen Arbeit.", max:40, min:21, tipps:"iMeld1"},
                           { info:"Sehr milde kurze Symptome, keine Einschränkung im Alltag.", max:20, min:0}
                     ]  
               }, 
                 { id: "10007810", title: "Katheterbeschwerden", kategorie:"Symptom", sub: "Therapiefolgen",zero:0, farbwert:"rgba(70,130,180,0.9)",
                 grad:[    
-                          { info:"Mässige Symptome, deutliche Rötung oder Schwellung oder Schmerzen.", max:100, min:41, tipps:"iMeld2"},
+                          { info:"Schwere Symptome, massive Rötung oder Schwellung oder Schmerzen.", max:100, min:61, tipps:"iMeld2"},
+                          { info:"Mässige Symptome, deutliche Rötung oder Schwellung oder Schmerzen.", max:60, min:41, tipps:"iMeld2"},
                           { info:"Leichte Symptome, nur leichte kurzfristige Rötung oder Schwellung.", max:40, min:21, tipps:"iMeld2"},
                           { info:"Sehr milde kurze Symptome, keine Einschränkung im Alltag.", max:20, min:0}
                     ]  
@@ -748,7 +749,7 @@ Model.prototype.dict =
                 { id: "10022437", title: "Schlafstörung", kategorie:"Symptom", sub: "Psychische Beschwerden",zero:0,  farbwert:"rgba(135,206,235,0.9)",
                 grad:[    
                           { info:"Schwere Einschlafstörung, Durchschlafstörung oder zu frühes Aufwachen, stark eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:100, min:61, tipps:"iMeld1" },
-                          { info:"Mässige Einschlafstörung, Durchschlafstörung oder zu frühes Aufwachenund, deutliche Einschränkung im Alltag, stark eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iBeweg,iMeld1"},
+                          { info:"Mässige Einschlafstörung, Durchschlafstörung oder zu frühes Aufwachenund, deutliche Einschränkung im Alltag und stark eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iBeweg,iMeld1"},
                           { info:"Leichte Einschlafstörung, Durchschlafstörung oder zu frühes Aufwachen, nur leichte Einschränkung des Alltags und bei der täglichen Arbeit.", max:40, min:21, tipps:"iBeweg,iBerat"},
                           { info:"Sehr milde Symptome, keine Einschränkung im Alltag und bei der Arbeit", max:20, min:0, tipps:"iBeweg"}
                     ]  
@@ -763,20 +764,24 @@ Model.prototype.dict =
               }, 
                 { id: "10022117", title: "OP-Wunde", kategorie:"Symptom", sub: "Therapiefolgen", zero:0, farbwert:"rgba(70,130,180,0.9)",
                 grad:[    
-                          { info:"Mässige Symptome, deutliche Rötung oder Schwellung oder Schmerzen.", max:100, min:41, tipps:"iMeld2"},
-                          { info:"Leichte Symptome, nur leichte kurzfristige Rötung oder Schwellung.", max:40, min:21},
-                          { info:"Sehr milde kurze Symptome, keine Einschränkung im Alltag.", max:20, min:0}
+                          { info:"Schwere Symptome, massive Rötung oder Schwellung oder Schmerzen.", max:100, min:61, tipps:"iMeld2"},
+                          { info:"Mässige Symptome, deutliche Rötung oder Schwellung oder Schmerzen.", max:60, min:41, tipps:"iMeld2"},
+                          { info:"Leichte Symptome, nur kurz anhaltende Rötung oder Schwellung.", max:40, min:21},
+                          { info:"Sehr milde kurzfristige Symptome, keine Einschränkung im Alltag.", max:20, min:0}
                     ]  
               }, 
                 { id: "10040102", title: "Serom, Wundwasser", kategorie:"Symptom", sub: "Therapiefolgen", zero:0, farbwert:"rgba(70,130,180,0.9)",
                 grad:[    
-                          { info:"Mässige Symptome, deutliche Rötung oder Schwellung oder Schmerzen.", max:100, min:41, tipps:"iMeld2"},
-                          { info:"Leichte Symptome, nur leichte kurzfristige Rötung oder Schwellung.", max:40, min:21, tipps:"iMeld2"},
-                          { info:"Sehr milde kurze Symptome, keine Einschränkung im Alltag.", max:20, min:0}
+                          { info:"Schwere Symptome, massive Rötung oder Schwellung oder Schmerzen.", max:100, min:61, tipps:"iMeld2"},
+                          { info:"Mässige Symptome, deutliche Rötung oder Schwellung oder Schmerzen.", max:60, min:41, tipps:"iMeld2"},
+                          { info:"Leichte Symptome, nur kurz anhaltende Rötung oder Schwellung.", max:40, min:21, tipps:"iMeld2"},
+                          { info:"Sehr milde kurzfristige Symptome, keine Einschränkung im Alltag.", max:20, min:0}
                     ]  
               }, 
                 { id: "10008481", title: "Brustschmerz", kategorie:"Symptom", sub: "Allgemeinsymptome",zero:0, farbwert:"rgba(70,130,180,0.9)",
                 grad:[    
+                          { info:"Sehr starke nicht auszuhaltende Schmerzen, Selbstversorgung (z.B. Ankleiden und Waschen) unmöglich.", max:100, min:81, tipps:"iMeld2"},
+                          { info:"Stark anhaltende Schmerzen, stark eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iReserve,iMeld2"},
                           { info:"Mässige anhaltende Schmerzen, deutliche Einschränkung im Alltag, stark eingeschränkte Arbeitsfähigkeit.", max:100, min:41, tipps:"iMeld2"},
                           { info:"Leichte kurzfristige Schmerzen, Einschränkung des Alltags und bei der täglichen Arbeit.", max:40, min:21, tipps:"iMeld2"},
                           { info:"Sehr milde kurze Schmerzen, keine Einschränkung im Alltag.", max:20, min:0}
@@ -784,7 +789,7 @@ Model.prototype.dict =
               },
                 { id: "10046904", title: "Vaginale Trockenheit", kategorie:"Symptom", sub: "Haut und Haare",zero:0, farbwert:"rgba(70,130,180,0.9)",
                 grad:[    
-                          { info:"Schwere Trockenheit und Schmerzen beim Sexualakt und einschränkende Reizung, starke Einschränkung im Alltag und bei der Arbeit." ,max:100, min:61, tipps:"iVagina,iBerat,iMeld1"},
+                          { info:"Schwere Trockenheit und Schmerzen beim Sexualakt und einschränkende Reizung, starke Einschränkung im Alltag und Arbeitsunfähigkeit." ,max:100, min:61, tipps:"iVagina,iBerat,iMeld1"},
                           { info:"Mässige Trockenheit, mittelschwere Trockenheit mit Einschränkung der Sexualfunktion und störende Reizung, Rötung, Brennen.", max:60, min:41, tipps:"iVagina,iBerat"},
                           { info:"Leichte Trockenheit, keine Einschränkung der Sexualfunktion, leichte Rötung, leichter Juckreiz, Brennen.", max:40, min:21, tipps:"iVagina,iBerat"},
                           { info:"Sehr milde Symptome, keine Einschränkung im Alltag.", max:20, min:0, tipps:"iVagina"}
@@ -821,7 +826,7 @@ Model.prototype.dict =
                 grad:[    
                           { info:"Sehr starke Benommenheit und Eintrübung, Selbstversorgung (z.B. Ankleiden und Waschen) ist unmöglich.", max:100, min:81, tipps:"iMeld2"},
                           { info:"Schwere Benommenheit, starke Eintrübung, eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld2"},
-                          { info:"Mässige Benommenheit, deutliche Einschränkung im Alltag, eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld2"},
+                          { info:"Mässige Benommenheit, deutliche Einschränkung im Alltag und eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld2"},
                           { info:"Leichte Benommenheit,leichte Einschränkung im Alltag.", max:40, min:21, tipps:"iBeweg,iMeld1"},
                           { info:"Sehr leichte Benommenheit, kurz anhaltend, keine Einschränkung im Alltag.", max:20, min:0, tipps:"iBeweg"}
                     ]  
@@ -830,7 +835,7 @@ Model.prototype.dict =
                 grad:[    
                           { info:"Sehr starke nicht auszuhaltende Schmerzen, Selbstversorgung (z.B. Ankleiden und Waschen) unmöglich.", max:100, min:81, tipps:"iMeld2"},
                           { info:"Stark anhaltende Schmerzen, stark eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iReserve,iMeld2"},
-                          { info:"Mässige und anhaltende Schmerzen, deutliche Einschränkung im Alltag, stark eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iReserve,iMeld1"},
+                          { info:"Mässige und anhaltende Schmerzen, deutliche Einschränkung im Alltag und stark eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iReserve,iMeld1"},
                           { info:"Leichte Schmerzen, nur leichte Einschränkung des Alltags und bei der täglichen Arbeit.", max:40, min:21, tipps:"iReserve"},
                           { info:"Sehr milde Symptome, keine Einschränkung im Alltag und bei der Arbeit", max:20, min:0}
                     ]  
@@ -839,7 +844,7 @@ Model.prototype.dict =
                 grad:[    
                           { info:"Sehr starke nicht auszuhaltende Schmerzen, Selbstversorgung (z.B. Ankleiden und Waschen) unmöglich.", max:100, min:81, tipps:"iMeld2"},
                           { info:"Stark anhaltende Schmerzen, stark eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iReserve,iMeld2"},
-                          { info:"Mässige und anhaltende Schmerzen, deutliche Einschränkung im Alltag, stark eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iReserve,iMeld1"},
+                          { info:"Mässige und anhaltende Schmerzen, deutliche Einschränkung im Alltag und stark eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iReserve,iMeld1"},
                           { info:"Leichte Schmerzen, nur leichte Einschränkung des Alltags und bei der täglichen Arbeit.", max:40, min:21, tipps:"iReserve"},
                           { info:"Sehr milde Symptome, keine Einschränkung im Alltag und bei der Arbeit", max:20, min:0}
                     ]  
@@ -848,7 +853,7 @@ Model.prototype.dict =
                 grad:[    
                           { info:"Sehr starke Muskelschwäche, Selbstversorgung (z.B. Ankleiden und Waschen) ist unmöglich.", max:100, min:81, tipps:"iMeld2"},
                           { info:"Schwere Muskelschwäche, eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld2"},
-                          { info:"Mässige Muskelschwäche, Bewegung eingeschränkt, deutliche Einschränkung im Alltag, eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld2"},
+                          { info:"Mässige Muskelschwäche, Bewegung eingeschränkt, deutliche Einschränkung im Alltag und eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld2"},
                           { info:"Leichte Muskelschwäche,leichte Einschränkung im Alltag.", max:40, min:21, tipps:"iBeweg,iMeld1"},
                           { info:"Sehr leichte Schwäche, kurz anhaltend, keine Einschränkung im Alltag.", max:20, min:0, tipps:"iBeweg"}
                     ]  
@@ -857,7 +862,7 @@ Model.prototype.dict =
                 grad:[    
                           { info:"Sehr starke Sehstörung, Selbstversorgung (z.B. Ankleiden und Waschen) ist unmöglich.", max:100, min:81, tipps:"iMeld2"},
                           { info:"Schwere Sehstörung, eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld2"},
-                          { info:"Mässige Sehstörung, Mobilität eingeschränkt, deutliche Einschränkung im Alltag, eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld2"},
+                          { info:"Mässige Sehstörung, Mobilität eingeschränkt, deutliche Einschränkung im Alltag und eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld2"},
                           { info:"Leichte Sehstörung,leichte Einschränkung im Alltag.", max:40, min:21, tipps:"iBerat,iMeld1"},
                           { info:"Sehr leichte Sehstörung, kurz anhaltend, keine Einschränkung im Alltag.", max:20, min:0}
                     ]  
@@ -866,7 +871,7 @@ Model.prototype.dict =
                 grad:[    
                           { info:"Sehr starke Empfindungsstörung, Selbstversorgung (z.B. Ankleiden und Waschen) ist unmöglich.", max:100, min:81, tipps:"iMeld2"},
                           { info:"Schwere Empfindungsstörung, eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld2"},
-                          { info:"Mässige Empfindungsstörung, deutliche Einschränkung im Alltag, eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld2"},
+                          { info:"Mässige Empfindungsstörung, deutliche Einschränkung im Alltag und eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld2"},
                           { info:"Leichte Empfindungsstörung,leichte Einschränkung im Alltag.", max:40, min:21, tipps:"iBeweg,iMeld1"},
                           { info:"Sehr leichte Störung, kurz anhaltend, keine Einschränkung im Alltag.", max:20, min:0, tipps:"iBeweg"}
                     ]  
@@ -875,16 +880,16 @@ Model.prototype.dict =
                 grad:[    
                           { info:"Sehr starke Gangstörung,Gehunfähigkeit, Selbstversorgung (z.B. Ankleiden und Waschen) ist unmöglich.", max:100, min:81, tipps:"iMeld2"},
                           { info:"Schwere Gangstörung, fast gehunfähig, eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld2"},
-                          { info:"Mässige Gangstörung, deutliche Einschränkung im Alltag, eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld2"},
+                          { info:"Mässige Gangstörung, deutliche Einschränkung im Alltag und eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld2"},
                           { info:"Leichte Gangstörung,leichte Einschränkung im Alltag.", max:40, min:21, tipps:"iBeweg,iMeld1"},
                           { info:"Sehr leichte Störung, kurz anhaltend, keine Einschränkung im Alltag.", max:20, min:0, tipps:"iBeweg"}
                     ]  
               }, 
                  { id: "10047065", title: "Entzündung der Venen", kategorie:"Symptom", sub: "Blutgefässe",zero:0, farbwert:"rgba(64,224,208,0.9)",
                 grad:[    
-                          { info:"Schwere Symptome mit starken Schmerzen." ,max:100, min:61, tipps:"iMeld2"},
-                          { info:"Mässige Symptome, deutliche Rötung oder Schwellung oder Schmerzen.", max:60, min:41, tipps:"iMeld2"},
-                          { info:"Leichte Symptome, nur kurzfristige Rötung oder Schwellung.", max:40, min:21, tipps:"iMeld1"},
+                          { info:"Schwere Symptome mit starken Schmerzen, eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:100, min:61, tipps:"iMeld2"},
+                          { info:"Mässige Symptome, deutliche Rötung oder Schwellung oder Schmerzen, deutliche Einschränkung im Alltag und eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld2"},
+                          { info:"Leichte Symptome, nur kurzfristige Rötung oder Schwellung, leichte Einschränkung im Alltag.", max:40, min:21, tipps:"iMeld1"},
                           { info:"Sehr milde Symptome, kurz anhaltend, keine Einschränkung im Alltag.", max:20, min:0}                        
                     ]  
               }, 
