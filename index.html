@@ -221,9 +221,9 @@
    						DOM("tippBackButton").onTouch( Events.TIPP_EXIT );
    						
    						// START DESKTOP OR DEVICE
-   						 DOM().onDOM( Events.START )
+   					    // DOM().onDOM( Events.START );
    						// PHONEGAP
-   						//DOM().onDevice( Events.START );
+   						DOM().onDevice( Events.START );
 
    					},
    					initialize:function() 
@@ -235,11 +235,9 @@
    			};
 
    			app.initialize();
-
-
-   			
-   			var encrypted = CryptoJS.HmacSHA256("raw", "secret");
-   			console.log( encrypted.toString( CryptoJS.enc.Base64) );
+	
+   			// var encrypted = CryptoJS.HmacSHA256("raw", "secret");
+   			// console.log( encrypted.toString( CryptoJS.enc.Base64) );
 
    		</script>
 </html>

@@ -304,7 +304,7 @@ Model.prototype._data =
 	     	],
 	     	Symptome:
 	     	[
-	     	 	{"id":"10047700","edit":true}
+	     	 	//{"id":"10047700","edit":true}
 	     	],
 			Tagebuch:
 			[
