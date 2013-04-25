@@ -2,8 +2,8 @@
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "ch.epha.consilium"
-        versionCode="011"
-        version   = "0.1.1">
+        versionCode="012"
+        version   = "0.1.2">
 	<!-- versionCode is optional and Android only -->
 
     <name>Consilium</name>
@@ -42,7 +42,7 @@
 
 
     <!-- PREFERENCES GENERIC -->
-    <preference name="phonegap-version" value="2.3.0" />
+    <preference name="phonegap-version" value="2.5.0" />
     <preference name="orientation"      value="default" />    
     <preference name="target-device"    value="universal" />
     <preference name="fullscreen"       value="false" />
@@ -72,7 +72,7 @@
 	<!-- PREFERENCE ANDROID -->
 	<!-- Minimum and Maximum SDK Version:android-minSdkVersion and/or android-maxSdkVersion, with integer values --> 
 	<!-- minSdkVersion defaults to 7 (Android 2.1 ) -->
-	<!-- <preference name="android-minSdkVersion" value="7" /> -->
+	<preference name="android-minSdkVersion" value="9" />
 	<!-- maxSdkVersion is unset by default -->	
 	<!-- <preference name="android-maxSdkVersion" value="15" /> -->
 	<!-- Install Location: android-installLocation with values internalOnly (default), auto or preferExternal -->
