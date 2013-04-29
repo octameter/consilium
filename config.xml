@@ -21,7 +21,7 @@
 	<!-- <gap:plugin name="ChildBrowser" />  -->
 	
 	<!-- FEATURE -->
-    <!-- <feature name="http://api.phonegap.com/1.0/device" /> -->
+    <feature name="http://api.phonegap.com/1.0/device" />
 
    	<!-- expanded to the appropriate Android and Windows Phone permissions -->
     <!-- <feature name="http://api.phonegap.com/1.0/battery" /> -->
@@ -87,7 +87,7 @@
     <icon src="img/icon/android/icon-48-mdpi.png"   gap:platform="android"    gap:density="mdpi" />
     <icon src="img/icon/android/icon-72-hdpi.png"   gap:platform="android"    gap:density="hdpi" />
     <icon src="img/icon/android/icon-96-xhdpi.png"  gap:platform="android"    gap:density="xhdpi" />
-    <icon src="img/icon/android/icon-72-hdpi.png"  gap:platform="android"    gap:density="213" />
+    <!-- <icon src="img/icon/android/icon-72-hdpi.png"  gap:platform="android"    gap:density="213" /> -->
     
     <!-- ICON Blackberry: must be smaller then 16kb -->
     <icon src="img/icon/blackberry/icon-80.png"     gap:platform="blackberry" />
@@ -118,7 +118,7 @@
     <gap:splash src="img/screen/android/screen-mdpi-portrait.png"  gap:platform="android" gap:density="mdpi" />
     <gap:splash src="img/screen/android/screen-hdpi-portrait.png"  gap:platform="android" gap:density="hdpi" />
     <gap:splash src="img/screen/android/screen-xhdpi-portrait.png" gap:platform="android" gap:density="xhdpi" />
-    <gap:splash src="img/screen/android/screen-xhdpi-portrait.png" gap:platform="android" gap:density="213" />
+    <!-- <gap:splash src="img/screen/android/screen-xhdpi-portrait.png" gap:platform="android" gap:density="213" /> -->
     
     <!-- SPLASH Blackberry  -->
     <gap:splash src="img/screen/blackberry/screen-225.png"         gap:platform="blackberry" />    

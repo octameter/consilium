@@ -440,8 +440,8 @@ Model.prototype.dict =
 			 [                 
               { id: "10016256", title: "Müdigkeit", kategorie:"Symptom", sub: "Allgemeinsymptome", zero:0, farbwert :"rgba(0,139,139,0.9)",
                 grad:[    
-                          { info:"Sehr starke Müdigkeit, auch in Ruhe, Selbstversorgung (z.B. Ankleiden und Waschen) ist unmöglich.", max:100, min:81, tipps:"iMeld1"},
-                          { info:"Starke Müdigkeit, auch in Ruhe, Selbstversorgung (z.B. Ankleiden und Waschen) stark eingeschränkt möglich, Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld1"},
+                          { info:"Sehr starke Müdigkeit, auch in Ruhe, Selbstversorgung (z.B. Ankleiden und Waschen) ist unmöglich.", max:100, min:81, tipps:"iMeld2"},
+                          { info:"Starke Müdigkeit, auch in Ruhe, Selbstversorgung (z.B. Ankleiden und Waschen) stark eingeschränkt möglich, Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld2"},
                           { info:"Mässige Müdigkeit, besteht auch bei Ruhe, deutliche Einschränkung im Alltag, Arbeitsfähigkeit stark eingeschränkt.", max:60, min:41, tipps:"iBeweg"},
                           { info:"Leichte Müdigkeit, bessert sich nach Ruhe, nur leichte Einschränkung des Alltags und bei der täglichen Arbeit.", max:40, min:21, tipps:"iBeweg"},
                           { info:"Sehr milde Müdigkeit, ohne Einschränkung im Alltag und bei der täglichen Arbeit.", max:20, min:0, tipps:"iBeweg"}
@@ -469,7 +469,7 @@ Model.prototype.dict =
                 grad:[    
                           { info:"Sehr starke Symptome, Selbstversorgung aufgrund Häufigkeit des Symptoms nicht mehr möglich.", max:100, min:81, tipps:"iMeld2"},
                           { info:"Starke Symptome, wässrige Stuhlgänge mehr als 7 Mal pro Tag, starke Einschränkung im Alltag und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld2"},
-                          { info:"Mässige Symptome, wässrige Stuhlgänge 4-6 Mal pro Tag, leichte Einschränkung im Alltag.", max:60, min:41, tipps:"iMeld1,iStuhlkonsis"},
+                          { info:"Mässige Symptome, wässrige Stuhlgänge 4-6 Mal pro Tag, leichte Einschränkung im Alltag.", max:60, min:41, tipps:"iMeld2,iStuhlkonsis"},
                           { info:"Leichte Symptome, wässriger Stuhlgang unter 4 Mal pro Tag.", max:40, min:21, tipps:"iStuhlkonsis, iFlüssig, iReserve"},
                           { info:"Sehr milde gelegentliche Symptome, keine Einschränkung im Alltag.", max:20, min:0, tipps:"iStuhlkonsis, iFlüssig, iReserve"}
                     ]  
@@ -485,9 +485,9 @@ Model.prototype.dict =
               }, 
               { id: "10013774", title: "Trockene Augen", kategorie:"Symptom", sub: "Augen",zero:0,  farbwert:"rgba(175,238,238,0.9)",
                 grad:[    
-                          { info:"Sehr starke Symptome, Selbstversorgung stark eingeschränkt durch Seheinschränkung.", max:100, min:81, tipps:"iMeld1"},
-                          { info:"Starke Symptome, deutliche Einschränkung im Alltag (z.B. Lesen, Autofahren) und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld1"},
-                          { info:"Mässige Symptome, regelmässige Verwendung von Augentropfen notwendig, leichte Einschränkung im Alltag.", max:60, min:41},
+                          { info:"Sehr starke Symptome, Selbstversorgung stark eingeschränkt durch Seheinschränkung.", max:100, min:81, tipps:"iMeld2"},
+                          { info:"Starke Symptome, deutliche Einschränkung im Alltag (z.B. Lesen, Autofahren) und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld2"},
+                          { info:"Mässige Symptome, regelmässige Verwendung von Augentropfen notwendig, leichte Einschränkung im Alltag.", max:60, min:41, tipps:"iMeld1"},
                           { info:"Leichte Symptome, keine Einschränkung im Alltag, Augentropfen zur Befeuchtung sind ausreichend.", max:40, min:21},
                           { info:"Sehr milde Symptome, keine Einschränkung im Alltag.", max:20, min:0}
                     ]  
@@ -513,9 +513,9 @@ Model.prototype.dict =
   
             { id: "10016791", title: "Erkältungssymptome", kategorie:"Symptom", sub: "Infekt",zero:0,  farbwert:"rgba(30,144,255,0.9)" ,
                 grad:[    
-                          { info:"Sehr starke Symptome mit Einschränkung der Selbstversorgung (z.B. selbst Ankleiden und Waschen) ist unmöglich.", max:100, min:81, tipps:"iMeld1"},
-                          { info:"Starke Symptome, Selbstversorgung (z.B. Ankleiden und Waschen) stark eingeschränkt und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld1"},
-                          { info:"Mässige Symptome, deutliche Einschränkung im Alltag, stark eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld1"},
+                          { info:"Sehr starke Symptome mit Einschränkung der Selbstversorgung (z.B. selbst Ankleiden und Waschen) ist unmöglich.", max:100, min:81, tipps:"iMeld2"},
+                          { info:"Starke Symptome, Selbstversorgung (z.B. Ankleiden und Waschen) stark eingeschränkt und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld2"},
+                          { info:"Mässige Symptome, deutliche Einschränkung im Alltag, stark eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld2"},
                           { info:"Leichte Symptome, nur leichte Einschränkung des Alltags und bei der täglichen Arbeit.", max:40, min:21, tipps:"iMeld1"},
                           { info:"Sehr milde Symptome, keine Einschränkung im Alltag und bei der Arbeit.", max:20, min:0}
                     ]  
@@ -625,17 +625,17 @@ Model.prototype.dict =
   
            { id: "10015090", title: "Nasenbluten", kategorie:"Symptom", sub: "Blutungen", zero:0,  farbwert:"rgba(70,130,180,0.9)",
                 grad:[    
-                          { info:"Massiver Blutverlust durch Nasenbluten.", max:100, min:81, tipps:"iMeld1"},
-                          { info:"Anhaltendes und nicht stillendes Nasenbluten." ,max:80, min:61, tipps:"iMeld1"},
-                          { info:"Länger anhaltendes und wiederholtes Nasenbluten.", max:60, min:41, tipps:"iMeld1"},
+                          { info:"Massiver Blutverlust durch Nasenbluten.", max:100, min:81, tipps:"iMeld2"},
+                          { info:"Anhaltendes und nicht stillendes Nasenbluten." ,max:80, min:61, tipps:"iMeld2"},
+                          { info:"Länger anhaltendes und wiederholtes Nasenbluten.", max:60, min:41, tipps:"iMeld2"},
                           { info:"Kurzes wiederholtes Nasenbluten, leichte Einschränkung des Alltags und bei der täglichen Arbeit.", max:40, min:21},
                           { info:"Kurzes und einmaliges Nasenbluten, keine Einschränkung im Alltag und bei der Arbeit.", max:20, min:0}
                     ]  
               },
            { id: "10002646", title: "Appetitverlust", kategorie:"Symptom", sub: "Allgemeinsymptome",zero:0,  farbwert:"rgba(135,206,235,0.9)",
                 grad:[    
-                          { info:"Sehr starke Symptome, deutlicher Gewichtsverlust, Selbstversorgung (z.B. Ankleiden und Waschen) unmöglich.", max:100, min:81},
-                          { info:"Stark anhaltende Symptome, ungenügende Nahrungs- und Flüssigkeitsaufnahme, deutlicher Gewichtsverlust." ,max:80, min:61, tipps:"iMedi1"},
+                          { info:"Sehr starke Symptome, deutlicher Gewichtsverlust, Selbstversorgung (z.B. Ankleiden und Waschen) unmöglich.", max:100, min:81, tipps:"iMeld2"},
+                          { info:"Stark anhaltende Symptome, ungenügende Nahrungs- und Flüssigkeitsaufnahme, deutlicher Gewichtsverlust." ,max:80, min:61, tipps:"iMeld1"},
                           { info:"Mässige und anhaltende Symptome, Einschränkung in Nahrungsaufnahme und beginnender Gewichtverlust.", max:60, min:41, tipps:"iBerat"},
                           { info:"Leichte Symptome, Appetitverlust aber kaum veränderte Nahrungsaufnahme und ohne Gewichtsverlust.", max:40, min:21, tipps:"iBerat"},
                           { info:"Geringradiger Appetitverlust ohne Einschränkung in der Nahrungsaufnahme.", max:20, min:0}
@@ -661,8 +661,8 @@ Model.prototype.dict =
               },   
            { id: "10012378", title: "Depression", kategorie:"Symptom", sub: "Psychische Beschwerden",zero:0,  farbwert:"rgba(135,206,235,0.9)",
                 grad:[    
-                          { info:"Sehr starke und nicht auszuhaltende Depression, Selbstversorgung (z.B. Ankleiden und Waschen) unmöglich.", max:100, min:81, tipps:"iBerat, iMeld1"},
-                          { info:"Stark anhaltende Depression, stark eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iBerat, iMeld1" },
+                          { info:"Sehr starke und nicht auszuhaltende Depression, Selbstversorgung (z.B. Ankleiden und Waschen) unmöglich.", max:100, min:81, tipps:"iBerat, iMeld2"},
+                          { info:"Stark anhaltende Depression, stark eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iBerat, iMeld2" },
                           { info:"Mässige und anhaltende Depression, deutliche Einschränkung im Alltag, stark eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iBeweg, iBerat"},
                           { info:"Leichte Depression, nur leichte Einschränkung des Alltags und bei der täglichen Arbeit.", max:40, min:21, tipps:"iBeweg, iBerat"},
                           { info:"Sehr milde Symptome, keine Einschränkung im Alltag und bei der Arbeit", max:20, min:0, tipps:"iBeweg"}
@@ -670,8 +670,8 @@ Model.prototype.dict =
               },  
             { id: "10013911", title: "Geschmacksstörung", kategorie:"Symptom", sub: "Allgemeinsymptome",zero:0,  farbwert:"rgba(135,206,235,0.9)",
                 grad:[    
-                          { info:"Sehr starke Symptome, deutlicher Gewichtsverlust, Selbstversorgung (z.B. Ankleiden und Waschen) unmöglich.", max:100, min:81, tipps:"iMeld1"},
-                          { info:"Stark anhaltende Symptome, ungenügende Nahrungs- und Flüssigkeitsaufnahme, deutlicher Gewichtsverlust." ,max:80, min:61, tipps:"iHalten,iAnreich, iMe1d1"},
+                          { info:"Sehr starke Symptome, deutlicher Gewichtsverlust, Selbstversorgung (z.B. Ankleiden und Waschen) unmöglich.", max:100, min:81, tipps:"iMeld2"},
+                          { info:"Stark anhaltende Symptome, ungenügende Nahrungs- und Flüssigkeitsaufnahme, deutlicher Gewichtsverlust." ,max:80, min:61, tipps:"iHalten,iAnreich, iMe1d2"},
                           { info:"Mässige und anhaltende Geschmacksveränderung, Einschränkung in Nahrungsaufnahme und beginnender Gewichtverlust.", max:60, min:41, tipps:"iNelke,iEntdeck,iHalten,iAnreich"},
                           { info:"Leicht veränderte Geschmackwahrnehmung, aber kaum veränderte Nahrungsaufnahme und ohne Gewichtsverlust.", max:40, min:21, tipps:"iNelke,iEntdeck"},
                           { info:"Gering veränderte Geschmackwahrnehmung aber keine Veränderung der Nahrungsaufnahme", max:20, min:0, tipps:"iNelke,iEntdeck"}
@@ -722,10 +722,10 @@ Model.prototype.dict =
           }, 
                 { id: "10013781", title: "Mundtrockenheit", kategorie:"Symptom", sub: "Magen- und Darmsystem", zero:0,  farbwert:"rgba(160,200,200,0.9)",
             grad:[ 
-                    { info:"Sehr starke Beschwerden, normale Nahrungsaufnahme ist nicht mehr möglich.", max:100, min:81},
-                    { info:"Starke Beschwerden, normale Nahrungsaufnahme ist kaum mehr möglich." ,max:80, min:61 },
-                    { info:"Mässige Beschwerden, erschwerte und eingeschränkte Nahrungsaufnahme (z.B. Verwendung weicher oder flüssiger  Nahrungsmittel).", max:60, min:41},
-                    { info:"Milde aber deutliche Beschwerden ohne relevante Einschränkung der Nahrungsaufnahme.", max:40, min:21},
+                    { info:"Sehr starke Beschwerden, normale Nahrungsaufnahme ist nicht mehr möglich.", max:100, min:81, tipps:"iMeld2"},
+                    { info:"Starke Beschwerden, normale Nahrungsaufnahme ist kaum mehr möglich." ,max:80, min:61, tipps:"iMeld2"},
+                    { info:"Mässige Beschwerden, erschwerte und eingeschränkte Nahrungsaufnahme (z.B. Verwendung weicher oder flüssiger  Nahrungsmittel).", max:60, min:41, tipps:"iMeld2,iSprüh,iTeenein,iSpeichel,iMundpfleg,iGenuss,iAnanas,iTeespül"},
+                    { info:"Milde aber deutliche Beschwerden ohne relevante Einschränkung der Nahrungsaufnahme.", max:40, min:21, tipps:"iSprüh,iTeenein,iSpeichel,iMundpfleg,iGenuss,iAnanas,iTeespül"},
                     { info:"Sehr milde Symptome, unveränderte Nahrungsaufnahme.", max:20, min:0, tipps:"iSprüh,iTeenein,iSpeichel,iMundpfleg,iGenuss,iAnanas,iTeespül"}
               ]  
           }, 
@@ -756,8 +756,8 @@ Model.prototype.dict =
               },
                 { id: "10008531", title: "Schüttelfrost", kategorie:"Symptom", sub: "Allgemeinsymptome",zero:0,  farbwert:"rgba(135,206,235,0.9)",
                 grad:[    
-                          { info:"Schweres und anhaltenes Zittern des ganzen Körpers, stark eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:100, min:61, tipps:"iMeld1"},
-                          { info:"Mässiges Zittern des gesamten Körpers, deutliche Einschränkung im Alltag, stark eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld1"},
+                          { info:"Schweres und anhaltenes Zittern des ganzen Körpers, stark eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:100, min:61, tipps:"iMeld2"},
+                          { info:"Mässiges Zittern des gesamten Körpers, deutliche Einschränkung im Alltag, stark eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld2"},
                           { info:"Leichtes Gefühl von Unterkühlung, Zittern, Zähleklappern.", max:40, min:21, tipps:"iMeld1"},
                           { info:"Sehr milde Symptome, kaum Beschwerden", max:20, min:0}
                     ]  
@@ -799,7 +799,7 @@ Model.prototype.dict =
                 grad:[    
                           { info:"Sehr schwerer Stuhlverhalt  Symptome, Selbstversorgung (z.B. Ankleiden und Waschen) unmöglich.", max:100, min:81, tipps:"iMeld2"},
                           { info:"Schwerer Stuhlverhalt, eigenständige Stuhlentleerung nicht mehr möglich, stark eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld2" },
-                          { info:"Mässiger anhaltender Stuhlverhalt, mehr als 3 Tage trotz Abführmitteln, deutliche Einschränkung im Alltag, stark eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld1"},
+                          { info:"Mässiger anhaltender Stuhlverhalt, mehr als 3 Tage trotz Abführmitteln, deutliche Einschränkung im Alltag, stark eingeschränkte Arbeitsfähigkeit.", max:60, min:41, tipps:"iMeld2"},
                           { info:"Leichter Stuhlverhalt, bis zu 3 Tage, leichte Einschränkung im Alltag.", max:40, min:21, tipps:"iFaserreich, iFlüssig"},
                           { info:"Sehr milde gelegentliche Symptome, keine Einschränkung im Alltag.", max:20, min:0, tipps:"iFaserreich, iFlüssig"}
                     ]  
@@ -913,7 +913,15 @@ Model.prototype.dict =
                         { "Zubereitung": "Kochen Sie hierfür ein paar Gewürznelken in Wasser auf und lassen Sie das Wasser abkühlen."}
                    ]     
               },         
-              { id: "iMeld1", title:"Kontakt aufnehmen", kategorie:"Brustzentrum", likes:0, dislikes:0,
+              { id: "iMeld1", title:"Kontakt bei Bedarf", kategorie:"Brustzentrum", likes:0, dislikes:0,
+                  bausteine: 
+                   [
+                      { "Info":"Melden Sie sich telefonisch im Brust-Zentrum."},
+                        { "Telefonnummern":"<table><tr style='height:30px'><td>Tagsüber:</td><td><a href='tel:41-44-384-9350'>+41-44-384-9350</a></td></tr><tr style='height:30px'><td>Nachts:</td><td><a href='tel:41-44-209-2111'>+41-44-209-2111</a></td></tr><tr style='height:30px'><td>Wochenende:</td><td><a href='tel:41-44-209-2111'>+41-44-209-2111</a></td></tr></table>"},
+                       { "Bürozeiten":"<table><tr><td>Mo</td><td>8:00-12:00</td><td>12:30-17:00<td/></tr><tr><td>Di</td><td>8:00-12:00</td><td>12:30-17:00</td></tr><tr><td>Mi</td><td>8:00-12:00</td></tr><tr><td>Do</td><td>8:00-12:00</td><td>12:30-17:00</td></tr><tr><td>Fr</td><td>geschlossen</td></tr></table>" }
+                ]    
+              },
+              { id: "iMeld2", title:"Kontakt aufnehmen", kategorie:"Brustzentrum", likes:0, dislikes:0,
                     bausteine: 
                      [
                         { "Info":"Melden Sie sich telefonisch im Brust-Zentrum bei anhaltenden Beschwerden."},
@@ -921,14 +929,6 @@ Model.prototype.dict =
                         { "Bürozeiten":"<table><tr><td>Mo</td><td>8:00-12:00</td><td>12:30-17:00<td/></tr><tr><td>Di</td><td>8:00-12:00</td><td>12:30-17:00</td></tr><tr><td>Mi</td><td>8:00-12:00</td></tr><tr><td>Do</td><td>8:00-12:00</td><td>12:30-17:00</td></tr><tr><td>Fr</td><td>geschlossen</td></tr></table>" }
                     ]    
               },
-              { id: "iMeld2", title:"Kontakt bei Bedarf", kategorie:"Brustzentrum", likes:0, dislikes:0,
-                  bausteine: 
-                   [
-                      { "Info":"Melden Sie sich telefonisch im Brust-Zentrum."},
-                        { "Telefonnummern":"<table><tr style='height:30px'><td>Tagsüber:</td><td><a href='tel:41-44-384-9350'>+41-44-384-9350</a></td></tr><tr style='height:30px'><td>Nachts:</td><td><a href='tel:41-44-209-2111'>+41-44-209-2111</a></td></tr><tr style='height:30px'><td>Wochenende:</td><td><a href='tel:41-44-209-2111'>+41-44-209-2111</a></td></tr></table>"},
-                       { "Bürozeiten":"<table><tr><td>Mo</td><td>8:00-12:00</td><td>12:30-17:00<td/></tr><tr><td>Di</td><td>8:00-12:00</td><td>12:30-17:00</td></tr><tr><td>Mi</td><td>8:00-12:00</td></tr><tr><td>Do</td><td>8:00-12:00</td><td>12:30-17:00</td></tr><tr><td>Fr</td><td>geschlossen</td></tr></table>" }
-                ]    
-            },
               { id: "iShampoo", title:"Mildes Shampoo", kategorie:"Selbsthilfe", likes:0, dislikes:0,
                    bausteine: 
                     [

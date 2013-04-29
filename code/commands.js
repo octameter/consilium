@@ -263,12 +263,16 @@ function infoStartCommand( event )
  */
 function chartOverlayCommand( e )
 {
-	if( ! DOM( "chartOverlayId" ).element() )
+	if( !DOM( "chartOverlayId" ).element() )
 	{
 		DOM( this.properties.id ).addChild( "div", { id:"chartOverlayId", class:"overlay" }).addChild("div", { class:"block" }).addChild("div", {id:"centeredId", class:"centered"});
 		
 		if( e.type == "row")
 		DOM( "centeredId" ).addChild("div", { id:"overlayRowId", style:"text-align:left"});
+        
+        if( e.type == "paragraph")
+		DOM( "centeredId" ).addChild("div", { id:"overlayRowId", style:"text-align:center"});
+        
 		dispatchCommand( Events.ROW, { type:"legende", area:"overlayRowId", title:e.title, zeit:e.zeit, farbwert: e.farbwert, value: e.value });
 		
 		if( e.type == "paragraph")

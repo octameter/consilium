@@ -17,7 +17,7 @@
         <section id="homeId" class="view middle">
         
         	<header class="disappear">
-        		<button id="addOptionen" class="button-text colorless">Sync
+        		<button id="addOptionen" class="button-text colorless" style="display:none !important;">Sync
                 <!-- <img src="img/icon/optionen.png" width="28"> -->
         		</button>
         		<h2>Consilium</h2>
@@ -105,8 +105,8 @@
 		<!-- <b>Beschleunigung</b><br><i>plus 12 Stunden alle 30 Sek.</i> -->
 		<!-- </div> -->
     </body>
-   		<script type="text/javascript" src="cordova.js"></script> 			
-		<script type="text/javascript" src="barcodescanner.js"></script> 	
+   	<script type="text/javascript" src="cordova.js"></script>			
+	<script type="text/javascript" src="barcodescanner.js"></script>	
 <!--  	<script type="text/javascript" src="childbrowser.js"></script>  -->
 <!-- 	<script type="text/javascript" src="GAPlugin.js"></script> 			-->		
 
@@ -236,6 +236,7 @@
 
    			app.initialize();
 	
+            //localStorage.clear();
    			// var encrypted = CryptoJS.HmacSHA256("raw", "secret");
    			// console.log( encrypted.toString( CryptoJS.enc.Base64) );
 
