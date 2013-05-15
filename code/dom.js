@@ -52,12 +52,25 @@
 						, false);			
 					}	
 				},
+				onDone: function(commandName, data)
+				{					
+					element.addEventListener( "blur", function(event)
+					{					
+						data["value"] = event.target.value;
+						data["target"] = event.target;
+						
+						dispatchCommand(commandName, data);
+					}
+					, false);
+				},
 				onChange: function(commandName, data)
 				{					
 					element.addEventListener( "change", function(event)
-					{
+					{		
+						
 						data["value"] = event.target.value;
 						data["target"] = event.target;
+						
 						dispatchCommand(commandName, data);
 					}
 					, false);
@@ -86,6 +99,14 @@
 		   				dispatchCommand( commandName, data);
 		   		   	}
 		   		   	, false);
+				},
+				onLoad: function(commandName, data)
+				{
+					element.addEventListener("load", function(event)
+					{
+						dispatchCommand( commandName, data);
+					}
+					, false);
 				},
 				onResume: function(commandName, data)
 				{

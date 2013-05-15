@@ -15,10 +15,13 @@ Events =
 	CHART_OVERLAY:"chart_overlay",
 	CHANGE_VIEW:"change_view",
 	
+	HALLO:"hello",
+	
 	MODEL_FROM_STORAGE:"model_from_storage",
 	SYNC:"sync",
 		
-	START:"start",
+	START_WEB:"start web",
+	START_APP:"start app",
 	INFO_START:"info_start",
 	
 	HOME_INIT:"homeInit",
@@ -83,14 +86,41 @@ function changeViewCommand( event )
 	DOM( cmd.from ).attrib("className").replace("middle", cmd.direction );		
 };
 
-function startCommand( event )
+function startWebCommand( event )
 {
+	app.client = "DESKTOP";
+
 	// CHECK LOCAL STORAGE
 	dispatchCommand( Events.MODEL_FROM_STORAGE );
 	
     // CLIENTWIDTH AVAILABLE
     DOM( "app" ).show();
     
+    DOM("titleId").text("Patient01");
+    
+    // Platz schaffen
+    DOM("xauth").addChild( "iframe", { id:"apiId", src:"http://localhost:8888/konto", style:"position:fixed; width:100%; height:42px; border:none;"} ).onLoad( Events.HALLO );
+    
+    app.api = document.getElementById( "apiId" ).contentWindow;
+    
+	dispatchCommand( Events.HOME_INIT );
+};
+
+function halloCommand( data )
+{
+	app.api.postMessage( { type:"NODE", daten:"blabla"}, "*");
+};
+
+function startAppCommand( event )
+{
+	app.client = "DEVICE";
+	
+	// CHECK LOCAL STORAGE
+	dispatchCommand( Events.MODEL_FROM_STORAGE );
+	
+	// CLIENTWIDTH AVAILABLE
+	DOM( "app" ).show();
+	
 	dispatchCommand( Events.HOME_INIT );
 };
 
@@ -923,8 +953,8 @@ function dateCommand( event )
 	}
 	else
 	{		
-		DOM( this.properties.parent ).addChild("input", { type:"date", value:zeit("yyyy-MM-dd",zeitInMs), style:"font-size:95%; width:105px;" }).onChange( Events.DATE, { type:"yyyy-MM-dd", zeitInMs: zeitInMs, parent:"zeitArea"});
-		DOM( this.properties.parent ).addChild("input", { type:"time", value:zeit("hh:mm",zeitInMs), style:"font-size:95%;margin-left:10px;width:65px" }).onChange( Events.DATE, { type:"hh:mm", zeitInMs: zeitInMs, parent:"zeitArea"});
+		DOM( this.properties.parent ).addChild("input", { type:"date", value:zeit("yyyy-MM-dd",zeitInMs), style:"font-size:95%; width:105px;" }).onDone( Events.DATE, { type:"yyyy-MM-dd", zeitInMs: zeitInMs, parent:"zeitArea"});
+		DOM( this.properties.parent ).addChild("input", { type:"time", value:zeit("hh:mm",zeitInMs), style:"font-size:95%;margin-left:10px;width:65px" }).onDone( Events.DATE, { type:"hh:mm", zeitInMs: zeitInMs, parent:"zeitArea"});
 	}
 };
 

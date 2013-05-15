@@ -3,9 +3,7 @@
  * Copyright 2013 EPha.ch. All rights reserved.
  */
 
-function Model() {
-
-}
+function Model() {}
 
 /**
  * GETTER AND SETTER SYNC LOCALSTORAGE
@@ -813,7 +811,7 @@ Model.prototype.dict =
                           { info:"Sehr leichte Schwellung, leichtes Spannungsgefühl aber keine Veränderung der Hautstruktur.", max:20, min:0, tipps:"iBeweg,iSport,iSchonen,iPunp,iKleidung,iSonne"}
                     ]  
               }, 
-                { id: "10010250", title: "Konzentrationsstörung", kategorie:"Symptom", sub: "Nervensystem",zero:0, farbwert:"rgba(64,224,208,0.9)",
+                { id: "10010250", title: "Konzentration eingeschränkt", kategorie:"Symptom", sub: "Nervensystem",zero:0, farbwert:"rgba(64,224,208,0.9)",
                 grad:[    
                           { info:"Sehr starke Konzentrations- und Aufmerksamkeitsstörung, Selbstversorgung (z.B. Ankleiden und Waschen) ist unmöglich.", max:100, min:81, tipps:"iMeld2"},
                           { info:"Schwere Konzentrations- und Aufmerksamkeitsstörung, stark eingeschränkter Alltag und Arbeitsunfähigkeit." ,max:80, min:61, tipps:"iMeld2"},

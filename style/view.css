@@ -7,6 +7,8 @@
 	-ms-transition: all 0.3s ease-in-out;
 	-o-transition: all 0.3s ease-in-out;
 	transition: all 0.3s ease-in-out;
+	
+	top:40px;
 }
 
 
@@ -30,13 +32,15 @@
 	line-height:50px;
 	text-align:center;
 	
+	/*
 	background-color: #FAFAFA;
    	background-image: -webkit-linear-gradient(#535454, #2C2D2D); 
    	background-image:    -moz-linear-gradient(#535454, #2C2D2D);
    	background-image:     -ms-linear-gradient( #535454, #2C2D2D);
    	background-image:      -o-linear-gradient(#535454, #2C2D2D);
    	background-image:         linear-gradient(#535454, #2C2D2D);
-
+   	*/
+    background:rgba( 128,148,166,1);
     color: #DDD;
     border-bottom: solid 1px #eee;
     
