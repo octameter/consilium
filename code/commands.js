@@ -15,7 +15,8 @@ Events =
 	CHART_OVERLAY:"chart_overlay",
 	CHANGE_VIEW:"change_view",
 	
-	HALLO:"hello",
+	REQUEST:"request",
+	RESPONSE:"response",
 	
 	MODEL_FROM_STORAGE:"model_from_storage",
 	SYNC:"sync",
@@ -88,27 +89,36 @@ function changeViewCommand( event )
 
 function startWebCommand( event )
 {
-	app.client = "DESKTOP";
-
 	// CHECK LOCAL STORAGE
 	dispatchCommand( Events.MODEL_FROM_STORAGE );
 	
     // CLIENTWIDTH AVAILABLE
     DOM( "app" ).show();
     
-    DOM("titleId").text("Patient01");
-    
     // Platz schaffen
-    DOM("xauth").addChild( "iframe", { id:"apiId", src:"http://localhost:8888/konto", style:"position:fixed; width:100%; height:42px; border:none;"} ).onLoad( Events.HALLO );
+    DOM("xauth").addChild( "iframe", { id:"apiId", src:"http://localhost:8888/konto", style:"position:fixed; width:100%; height:42px; border:none;"} ).onLoad( Events.REQUEST, { "request":"PATIENT_GET"} );
     
-    app.api = document.getElementById( "apiId" ).contentWindow;
+    app.storage = document.getElementById( "apiId" ).contentWindow;
     
 	dispatchCommand( Events.HOME_INIT );
 };
 
-function halloCommand( data )
+function requestCommand( data )
 {
-	app.api.postMessage( { type:"NODE", daten:"blabla"}, "*");
+	if( data.request == "PATIENT_GET")
+	{
+		app.storage.postMessage( { request:"PATIENT_GET" }, "*");		
+	}
+};
+
+function responseCommand( data )
+{
+	if( data.request == "PATIENT_GET")
+	{
+		DOM("titleId").text( data.patient.roleLabel);
+
+		
+	}
 };
 
 function startAppCommand( event )
@@ -161,7 +171,7 @@ function homeInitCommand( event )
 {	
 	// LOAD DATA INTO MEMORY
 	
-	if( event.introExit ) {
+	if( event.introExit || app.client == "DESKTOP" ) {
 		this.model.setCustomer("intro",-1);
 		DOM( this.properties.id ).removeElements();
 	}

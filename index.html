@@ -136,7 +136,8 @@
    					**/
    					addCommands: function()
    					{
-   						addCommand( Events.HALLO, halloCommand ); 	
+   						addCommand( Events.REQUEST, requestCommand ); 	
+   						addCommand( Events.RESPONSE, responseCommand ); 	
    						
    						addCommand( Events.CHANGE_VIEW, changeViewCommand ); 	
    						addCommand( Events.TAP_HANDLER, tapHandlerCommand ); 		  						
@@ -231,20 +232,27 @@
    						
    						// START DESKTOP OR DEVICE
    						if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) 
-   						{	// DEVICE
+   						{
+   							this.client = "DEVICE";
+   						
 	   						DOM().onDevice( Events.START_APP );
    						} 
    						else 
-   						{	// DESKTOP
+   						{
+   							this.client = "DESKTOP";
+   						
 	   					    DOM().onDOM( Events.START_WEB );
+   							DOM( window ).onMSG( Events.RESPONSE );
    						}
 
    					},
    					initialize:function() 
    					{
    						this.addCommands();
+   						this.bind();	
    						
-   						this.bind();		
+   						this.debug = true;
+   						this.context = "CONSILUM ->";
    					}
    			};
 

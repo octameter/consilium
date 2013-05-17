@@ -100,6 +100,18 @@
 		   		   	}
 		   		   	, false);
 				},
+                onMSG: function(commandName, data)
+				{
+					element.addEventListener("message", function(event)
+					{
+						event.preventDefault();
+                        
+                        data = event.data;
+                        
+						dispatchCommand( commandName, data);
+					}
+                    , false);
+				},  
 				onLoad: function(commandName, data)
 				{
 					element.addEventListener("load", function(event)
@@ -482,6 +494,8 @@ Controller.prototype.removeCommand = function( nameCommand, callback )
 Controller.prototype.dispatchCommand = function(eventName, data)
 {
 	(this.commands[eventName]) ?  this.commands[eventName].execute(data) : console.log("Command "+eventName+" not registered");	
+
+	if( app.debug ) console.log( app.context, this.commands[eventName].callback.name, data);
 };
 
 function Command( callback, properties )
