@@ -71,7 +71,9 @@ Events =
 	
 	SYMPTOME_INIT:"symptome_init",
 	SYMPTOME_EXIT:"symptome_exit",
-	SYMPTOME_TO_FAVORITES:"symptomeToFavorites"
+	SYMPTOME_TO_FAVORITES:"symptomeToFavorites",
+	
+	ACTS_QUERY:"acts_query"
 };
 
 /** 
@@ -87,6 +89,19 @@ function changeViewCommand( event )
 	DOM( cmd.from ).attrib("className").replace("middle", cmd.direction );		
 };
 
+function startAppCommand( event )
+{
+	// CHECK LOCAL STORAGE
+	dispatchCommand( Events.MODEL_FROM_STORAGE );
+	
+	// CLIENTWIDTH AVAILABLE
+	DOM( "app" ).show();
+	
+	DOM( "addOptionen" ).show();
+	
+	dispatchCommand( Events.HOME_INIT );
+};
+
 function startWebCommand( event )
 {
 	// CHECK LOCAL STORAGE
@@ -96,7 +111,7 @@ function startWebCommand( event )
     DOM( "app" ).show();
     
     // Platz schaffen
-    DOM("xauth").addChild( "iframe", { id:"apiId", src:"http://localhost:8888/konto", style:"position:fixed; width:100%; height:42px; border:none;"} ).onLoad( Events.REQUEST, { "request":"PATIENT_GET"} );
+    DOM("xauth").addChild( "iframe", { id:"apiId", src:"http://localhost:8888/konto", style:"position:fixed; width:100%; height:42px; border:none;"} ).onLoad( Events.REQUEST, { "request":"ACTOR_GET"} );
     
     app.storage = document.getElementById( "apiId" ).contentWindow;
     
@@ -105,33 +120,23 @@ function startWebCommand( event )
 
 function requestCommand( data )
 {
-	if( data.request == "PATIENT_GET")
-	{
-		app.storage.postMessage( { request:"PATIENT_GET" }, "*");		
-	}
+	if( data.request == "PATIENT_GET")	app.storage.postMessage( { request:"PATIENT_GET" }, "*");		
+	
+	if( data.request == "ACTOR_GET")	app.storage.postMessage( { request:"ACTOR_GET" }, "*");		
 };
 
 function responseCommand( data )
 {
-	if( data.request == "PATIENT_GET")
-	{
-		DOM("titleId").text( data.patient.roleLabel);
-
-		
-	}
+	if( data.request == "PATIENT_GET") DOM("titleId").text( data.patient.roleLabel);	
+	
+	if( data.request == "ACTOR_GET") dispatchCommand( Events.ACTS_QUERY, data.actor );
+	
+	if( data.request == "REDIRECT") location.assign(data.href); 
 };
 
-function startAppCommand( event )
+function actsQueryCommand( data )
 {
-	app.client = "DEVICE";
-	
-	// CHECK LOCAL STORAGE
-	dispatchCommand( Events.MODEL_FROM_STORAGE );
-	
-	// CLIENTWIDTH AVAILABLE
-	DOM( "app" ).show();
-	
-	dispatchCommand( Events.HOME_INIT );
+	this.model.setActor( data );
 };
 
 function modelFromStorageCommand( event )

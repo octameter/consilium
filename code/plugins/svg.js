@@ -63,7 +63,7 @@ Svg.prototype.drawCoordinates = function()
 	// vLine
 	for(var x = this.minX; x <= this.maxXRealtime; x += (24 * 60 * 60 * 1000) )
 	{
-		var breite = ( this.maxXRealtime > ( x + milliProTag )) ? milliProTag : ( this.maxXRealtime - this.maxX);  
+		var breite = ( this.maxXRealtime - (24 * 60 * 60 * 1000) > x ) ? milliProTag : ( this.maxXRealtime - x);  
 		
 		this.drawWeekend( x, this.maxY, this.minX + breite, this.minY);		
 

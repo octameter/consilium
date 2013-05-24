@@ -279,6 +279,7 @@ Model.prototype._state =
 
 Model.prototype._data = 
 {
+		// Acts
 		punkte: 
 		[
 //		 {"id":"privat","x":1364722335348,"y":"War bei der Physiotherapie\n"},
@@ -294,6 +295,7 @@ Model.prototype._data =
 //		 {"id":"zyklus","x":1364571509073,"y":"Chemotherapie mit\nMethotrexat"},
 //		 {"id":"diagnose","x":1364471509073,"y":"Adenocarcinom T3M2"}
 		],
+		// FavoritesObject in Actor
 	    favorites:
 	    {
 	    	Bewertung:
@@ -309,12 +311,18 @@ Model.prototype._data =
 			 	{ id: "privat"}
 			 ]
 	    },
+	    // CustomerObject in Actor
 	    customer:
 	    {
-	    	intro: 0,
-	    	login: null,
-	    	lastSync: null
-	    } 
+	    	intro: 0
+	    },
+	    // Actor
+	    actor:null
+};
+
+Model.prototype.setActor = function( actor )
+{
+	this._data.actor = actor;
 };
 
 // TIPP DISPLAY COUNTER

@@ -11,7 +11,7 @@
         <title>Consilium</title>
     </head>
     
-    <header id="xauth">
+    	<header id="xauth">
     
     </header>
     
@@ -102,12 +102,7 @@
         	<article id="optionenContentId" style="display:none"></article>
         	
         </section>
-        <!-- <div class="iphone-toggle-buttons">   -->
-		<!-- 	<label> -->
-		<!--		<input type="checkbox"><span></span> -->
-		<!--	</label> -->
-		<!-- <b>Beschleunigung</b><br><i>plus 12 Stunden alle 30 Sek.</i> -->
-		<!-- </div> -->
+
     </body>
     <!--
    	<script type="text/javascript" src="cordova.js"></script>			
@@ -176,7 +171,7 @@
    						addCommand( Events.SYMPTOME_EXIT, symptomeExitCommand ); 	
    						addCommand( Events.SYMPTOME_TO_FAVORITES, changeViewCommand, { from:"symptomeId", to:"favoritesId", direction:"right" } ); 	
    						  						
-   						addCommand( Events.FAVORITES_INIT, favoritesInitCommand, { id:"favoritesContentId" } ); 	
+   						addCommand( Events.FAVORITES_INIT, favoritesInitCommand, { id:"favoritesContentId"} ); 	
    						addCommand( Events.FAVORITES_TO_HOME, changeViewCommand, { from:"favoritesId", to:"homeId", direction:"right" } ); 	
    						addCommand( Events.FAVORITES_TO_FAVORITE, changeViewCommand, { from:"favoritesId", to:"favoriteId", direction:"left" } ); 	
    						addCommand( Events.FAVORITES_TO_SYMPTOME, changeViewCommand, { from:"favoritesId", to:"symptomeId", direction:"left" } ); 	
@@ -196,6 +191,8 @@
    						addCommand( Events.FAVORITE_TO_HOME, changeViewCommand, { from:"favoriteId", to:"homeId", direction:"right" }); 	
    						/* GO */
    						addCommand( Events.FAVORITE_TO_TIPP, changeViewCommand, { from:"favoriteId", to:"tippId", direction:"left" }); 	
+
+   						addCommand( Events.ACTS_QUERY, actsQueryCommand); 	
    					},				
    					/**
    					* BIND TO EVENT LISTENERS OF ELEMENTS. IF EVENT EXECUTE COMMAND  
@@ -235,7 +232,7 @@
    						{
    							this.client = "DEVICE";
    						
-	   						DOM().onDevice( Events.START_APP );
+	   						(this.debug) ? DOM().onDOM( Events.START_APP ) : DOM().onDevice( Events.START_APP );			
    						} 
    						else 
    						{
@@ -248,11 +245,11 @@
    					},
    					initialize:function() 
    					{
-   						this.addCommands();
-   						this.bind();	
-   						
    						this.debug = true;
    						this.context = "CONSILUM ->";
+
+   						this.addCommands();
+   						this.bind();	
    					}
    			};
 
