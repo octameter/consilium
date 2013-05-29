@@ -5,6 +5,46 @@
 
 function Model() {}
 
+Model.prototype._data = 
+{
+		// Acts
+		punkte: 
+		[
+//		 {"id":"privat","x":1364722335348,"y":"War bei der Physiotherapie\n"},
+//		 {"id":"10047700","x":1365154291081,"y":39},
+//		 {"id":"10047700","x":1364981506260,"y":8},
+//		 {"id":"10047700","x":1364808719334,"y":4},
+//		 {"id":"10025482","x":1365150803287,"y":12},
+//		 {"id":"10025482","x":1365067791706,"y":17},
+//		 {"id":"10025482","x":1364895001859,"y":34},
+//		 {"id":"10025482","x":1364808624402,"y":44},
+//		 {"id":"10025482","x":1364639432752,"y":44},
+//		 {"id":"10025482","x":1364553049117,"y":70},
+//		 {"id":"zyklus","x":1364571509073,"y":"Chemotherapie mit\nMethotrexat"},
+//		 {"id":"diagnose","x":1364471509073,"y":"Adenocarcinom T3M2"}
+		],
+		actor:
+		{
+			// DEFAULT
+			id:0,
+			role:null,
+			roleId:0,
+			
+			// FavoritesObject
+		    favorites:
+		    {
+		    	Bewertung:	[ {id : "10025482"} ],
+		     	Symptome:  	[ /*{"id":"10047700","edit":true}*/ ],
+				Tagebuch:	[ { id: "privat"} ]
+		    },
+		    // CustomerObject
+		    customer:
+		    {
+		    	intro:null
+		    }
+		}
+};
+
 /**
  * GETTER AND SETTER SYNC LOCALSTORAGE
  * @param type
@@ -12,32 +52,41 @@ function Model() {}
  */
 Model.prototype.addFavorite = function( type, id )
 {
-	this._data["favorites"][type].unshift( { id: String( id ), edit: true } );
+	this._data.actor["favorites"][type].unshift( { id: String( id ), edit: true } );
 	
-	localStorage.setItem( "dataFavorites", JSON.stringify( this._data["favorites"]));	
+	localStorage.setItem( "device_actor", JSON.stringify( this._data.actor ));	
+};
+
+Model.prototype.getFavorites = function( type )
+{
+	return ( type ) ? this._data.actor.favorites[ type ] : this._data.actor.favorites;
 };
 
 Model.prototype.setCustomer = function( type, id )
 {
-	this._data["customer"][type] = id; 
+	this._data.actor["customer"][type] = id; 
 	
-	localStorage.setItem( "dataCustomer", JSON.stringify( this._data["customer"]));
+	localStorage.setItem( "device_actor", JSON.stringify( this._data.actor));
 };
 
+Model.prototype.getCustomer = function( type )
+{
+	return this._data.actor.customer[type];
+};
 
 Model.prototype.removeFavorite = function( type, item )
 {
 	var idx = -1;
     
-	this._data["favorites"][type].forEach( function(element, index)
+	this._data.actor["favorites"][type].forEach( function(element, index)
 	{
 		if(element.id == item.id ) idx = index;
 	});
 	
     if( idx > -1)
-	this._data["favorites"][type].splice(idx,1);
+	this._data.actor["favorites"][type].splice(idx,1);
     
-	localStorage.setItem( "dataFavorites", JSON.stringify( this._data["favorites"]));	
+	localStorage.setItem( "device_actor", JSON.stringify( this._data.actor));	
 };
 
 // ADD MOST RECENT DATA POINT
@@ -54,7 +103,7 @@ Model.prototype.addPunkt = function( punkt )
 
 	this._data["punkte"].unshift( element );
 	
-	localStorage.setItem( "dataPunkte", JSON.stringify( this._data["punkte"] ));	
+	localStorage.setItem( "device_acts", JSON.stringify( this._data["punkte"] ));	
 };
 
 
@@ -65,7 +114,7 @@ Model.prototype.removePunkt = function( punkt )
 		if( this._data.punkte[i].id === punkt.id && this._data.punkte[i].x == punkt.x) this._data.punkte.splice(i,1);				
 	}	
 
-	localStorage.setItem( "dataPunkte", JSON.stringify( this._data["punkte"] ));
+	localStorage.setItem( "device_acts", JSON.stringify( this._data["punkte"] ));
 };
 
 /**
@@ -244,15 +293,7 @@ Model.prototype.getEmpfehlungen = function( data )
 	
     return _tipps;
 };
-/**GETTER AND SETTER 
- * STUPID IE
- * Model.prototype.__defineGetter__("favoritesEdit" function() { return this._state.favoritesEdit;  });
- * Model.prototype.__defineSetter__("favoritesEdit", function( value ) { this._state.favoritesEdit = value; });
- * Model.prototype.__defineGetter__("currentItem", function() { return this._state.currentItem;  });
- * Model.prototype.__defineSetter__("currentItem", function( value ) { this._state.currentItem = value; });
- * Model.prototype.__defineGetter__("introShow", function() { return this._state.introShow;  });
- * Model.prototype.__defineSetter__("introShow", function( value ) { this._state.introShow = value; });
- */
+
 Model.prototype.getStateFavEdit = function() { return this._state.favoritesEdit; };
 Model.prototype.setStateFavEdit = function( value ) { this._state.favoritesEdit = value; };
 Model.prototype.getStateFavitEdit = function() { return this._state.favitEdit; };
@@ -277,53 +318,8 @@ Model.prototype._state =
  * Punkt x:LocalTimeInMs, y [0 - 100], id: type.id
  */
 
-Model.prototype._data = 
-{
-		// Acts
-		punkte: 
-		[
-//		 {"id":"privat","x":1364722335348,"y":"War bei der Physiotherapie\n"},
-//		 {"id":"10047700","x":1365154291081,"y":39},
-//		 {"id":"10047700","x":1364981506260,"y":8},
-//		 {"id":"10047700","x":1364808719334,"y":4},
-//		 {"id":"10025482","x":1365150803287,"y":12},
-//		 {"id":"10025482","x":1365067791706,"y":17},
-//		 {"id":"10025482","x":1364895001859,"y":34},
-//		 {"id":"10025482","x":1364808624402,"y":44},
-//		 {"id":"10025482","x":1364639432752,"y":44},
-//		 {"id":"10025482","x":1364553049117,"y":70},
-//		 {"id":"zyklus","x":1364571509073,"y":"Chemotherapie mit\nMethotrexat"},
-//		 {"id":"diagnose","x":1364471509073,"y":"Adenocarcinom T3M2"}
-		],
-		// FavoritesObject in Actor
-	    favorites:
-	    {
-	    	Bewertung:
-	     	[
-	     	 	{id : "10025482"}
-	     	],
-	     	Symptome:
-	     	[
-	     	 	//{"id":"10047700","edit":true}
-	     	],
-			Tagebuch:
-			[
-			 	{ id: "privat"}
-			 ]
-	    },
-	    // CustomerObject in Actor
-	    customer:
-	    {
-	    	intro: 0
-	    },
-	    // Actor
-	    actor:null
-};
 
-Model.prototype.setActor = function( actor )
-{
-	this._data.actor = actor;
-};
+
 
 // TIPP DISPLAY COUNTER
 // data { liked: true || false }
@@ -369,7 +365,7 @@ Model.prototype.trackPunktTipp = function( property )
 				this._data.punkte[i].tipps.push( trackTipp );					
 			}
 			
-			localStorage.setItem( "dataPunkte", JSON.stringify( this._data["punkte"] ));
+			localStorage.setItem( "device_acts", JSON.stringify( this._data["punkte"] ));
 		}
 	}
 };
@@ -400,22 +396,33 @@ Model.prototype.trackPunktLikedOrNotExists = function()
 Model.prototype.dict =
 {
 		Intro:
-		[
-		 	{ id: "introDefault", title:"Liebe NutzerIn",
+		{
+			 DESKTOP: {
+				 title:"Willkommen",
+				 bausteine: [
+				             "Dieser Cloudservice unterstützt die Kommunikation zwischen Arzt und PatientInnen. Je nach Schwerpunkt begleitet er die Therapie oder dient der wissenschaftlichen Datenerfassung.",
+				             "TeilnehmerInnen melden sich bitte oben rechts mit Ihren Login-Daten an. Eingegebene Daten werden nur nach Anmeldung gespeichert.",
+				             "Wir danken für Ihr Interesse."
+				             ]		 						  
+			 },
+		 	DEVICE: {
+		 		title:"Liebe NutzerIn",
 		 		bausteine: [
 		 		             "Die App dient Ihnen als persönliches Logbuch für das Befinden während Ihrer Therapie. Wir empfehlen die App täglich zu nutzen.",
 		 		             "Über Start finden Sie Ihre Favoritenliste, um das Wohlbefinden, die Symptomen und Tagebucheintragungen einzugeben.",
 		 		             "Wir wünschen Ihnen viel Erfolg!"
 		 		            ]		 						  
 		 	},
-		 	{ id: "gruppeb", title:"Liebe Teilnehmerin",
+		 	"Gruppe B": {
+		 		title:"Liebe Teilnehmerin",
 		 		bausteine: [
 		 		            "Sie wurden in die Gruppe B eingeteilt. Teilnehmerinnen der Gruppe B nutzen die App, ohne den Arzt darüber zu informieren und ohne die App in der Arztvisite zu verwenden. Verhalten Sie sich ansonsten in Ihren Arztvisiten wie gewohnt, und informieren Sie den Arzt über Ihre Beschwerden und Wünsche.",
 		 		            "Bei der Beantwortung des Fragebogens können Sie gerne die App verwenden. Bitte verwenden Sie auf dem Fragbogen nur Ihre persönliche Patientenidentifikationsnummer und nicht ihren persönlichen Namen. Falls Sie diese Nummer vergessen haben sollten, so können Sie die Information durch Berühren der „Sync“-Taste abrufen.",
 		 		            "Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie."
 		 		            ]		 						  
 		 	},
-		 	{ id: "gruppec", title:"Liebe Teilnehmerin",
+		 	"Gruppe C": {
+		 		title:"Liebe Teilnehmerin",
 		 		bausteine: [
 		 		            "Sie wurden in die Gruppe C eingeteilt. Ist der Abstand zwischen zwei Eintragungen grösser als drei Tage wird die Verbindungslinie zwischen zwei Datenpunkten unterbrochen und beginnt von neuem. In Ihrer Favoritenliste finden Sie die Eingaben für Wohlbefinden, Symptomen und Tagebucheintragungen.",
 		 		            "Teilnehmerinnen der Gruppe C nutzen die App und betrachten zusammen mit dem Arzt den Verlauf der Eingaben. Die App dient hier als Ergänzung und soll Ihnen als Gedächtnisstütze helfen. Verhalten Sie sich ansonsten in Ihren Arztvisiten wie gewohnt, und informieren Sie den Arzt über Ihre Beschwerden und Wünsche.",
@@ -423,7 +430,7 @@ Model.prototype.dict =
 		 		            "Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie."
 		 		            ]		 						  
 		 	}
-		 ],
+		},
 		Bewertung:
 		[
 			{ id: "10025482", title:"Wohlbefinden", kategorie:"Lebensqualität", zero:100, farbwert:"rgba(154,205,50,0.9)",

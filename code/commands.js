@@ -21,8 +21,7 @@ Events =
 	MODEL_FROM_STORAGE:"model_from_storage",
 	SYNC:"sync",
 		
-	START_WEB:"start web",
-	START_APP:"start app",
+	START:"start",
 	INFO_START:"info_start",
 	
 	HOME_INIT:"homeInit",
@@ -72,8 +71,6 @@ Events =
 	SYMPTOME_INIT:"symptome_init",
 	SYMPTOME_EXIT:"symptome_exit",
 	SYMPTOME_TO_FAVORITES:"symptomeToFavorites",
-	
-	ACTS_QUERY:"acts_query"
 };
 
 /** 
@@ -89,33 +86,30 @@ function changeViewCommand( event )
 	DOM( cmd.from ).attrib("className").replace("middle", cmd.direction );		
 };
 
-function startAppCommand( event )
+
+function startCommand( event )
 {
-	// CHECK LOCAL STORAGE
-	dispatchCommand( Events.MODEL_FROM_STORAGE );
-	
 	// CLIENTWIDTH AVAILABLE
 	DOM( "app" ).show();
-	
-	DOM( "addOptionen" ).show();
-	
-	dispatchCommand( Events.HOME_INIT );
-};
 
-function startWebCommand( event )
-{
-	// CHECK LOCAL STORAGE
-	dispatchCommand( Events.MODEL_FROM_STORAGE );
+	if( app.client == "DEVICE")
+	{
+		// CHECK LOCAL STORAGE
+		dispatchCommand( Events.MODEL_FROM_STORAGE );
+		
+		dispatchCommand( Events.HOME_INIT );
+	}
 	
-    // CLIENTWIDTH AVAILABLE
-    DOM( "app" ).show();
-    
-    // Platz schaffen
-    DOM("xauth").addChild( "iframe", { id:"apiId", src:"http://localhost:8888/konto", style:"position:fixed; width:100%; height:42px; border:none;"} ).onLoad( Events.REQUEST, { "request":"ACTOR_GET"} );
-    
-    app.storage = document.getElementById( "apiId" ).contentWindow;
-    
-	dispatchCommand( Events.HOME_INIT );
+	if( app.client == "DESKTOP")
+	{
+		DOM( window ).onMSG( Events.RESPONSE );
+		
+		DOM("app").style("top","40px");
+		
+		DOM("xauth").addChild( "iframe", { id:"apiId", src:"http://localhost:8888/konto", style:"position:fixed; width:100%; height:42px; border:none;"} ).onLoad( Events.REQUEST, { "request":"ACTOR_GET"} );
+		
+		app.storage = document.getElementById( "apiId" ).contentWindow;
+	}
 };
 
 function requestCommand( data )
@@ -129,34 +123,26 @@ function responseCommand( data )
 {
 	if( data.request == "PATIENT_GET") DOM("titleId").text( data.patient.roleLabel);	
 	
-	if( data.request == "ACTOR_GET") dispatchCommand( Events.ACTS_QUERY, data.actor );
+	if( data.request == "ACTOR_GET") {
+		
+		if( data.actor == null ) this.model.setCustomer("intro", "DESKTOP");
+		
+		if( data.actor ) console.log( data );
+		
+		dispatchCommand( Events.HOME_INIT );		
+	}
 	
 	if( data.request == "REDIRECT") location.assign(data.href); 
 };
 
-function actsQueryCommand( data )
-{
-	this.model.setActor( data );
-};
 
 function modelFromStorageCommand( event )
-{
+{	
+	if( localStorage.getItem("device_acts") ) 
+	this.model._data["punkte"] = JSON.parse( localStorage.getItem("device_acts") );	
 	
-	if( localStorage.getItem("dataPunkte") ) 
-	this.model._data["punkte"] = JSON.parse( localStorage.getItem("dataPunkte") );	
-	
-	if( localStorage.getItem("dataFavorites") ) 
-	this.model._data["favorites"] = JSON.parse( localStorage.getItem("dataFavorites") );		
-	
-	if( localStorage.getItem("dataCustomer") ) 
-	this.model._data["customer"] = JSON.parse( localStorage.getItem("dataCustomer") );		
-
-
-//	this.model.dict["Intro"] = localStorage.getKey("dictIntro");
-//	this.model.dict["Bewertung"] = localStorage.getKey("dictBewertung");
-//	this.model.dict["Tagebuch"] = localStorage.getKey("dictTagebuch");
-//	this.model.dict["Symptome"] = localStorage.getKey("dictSymptome");
-//	this.model.dict["Tipps"] = localStorage.getKey("dictTipps");
+	if( localStorage.getItem("device_actor") ) 
+	this.model._data["actor"] = JSON.parse( localStorage.getItem("device_actor") );			
 };
 
 function syncCommand( event )
@@ -174,17 +160,18 @@ function syncCommand( event )
 
 function homeInitCommand( event )
 {	
-	// LOAD DATA INTO MEMORY
-	
-	if( event.introExit || app.client == "DESKTOP" ) {
-		this.model.setCustomer("intro",-1);
+	// LOAD DATA INTO MEMORY	
+	if( event.introExit) {
+		
+		this.model.setCustomer("intro", null);
+		
 		DOM( this.properties.id ).removeElements();
 	}
     
     // CLIENTWIDTH
     DOM( this.properties.id ).show();
     
-	if( this.model._data.customer.intro == -1 )
+	if( !this.model.getCustomer("intro") )
 	{
 		DOM( this.properties.sync ).show();
 		DOM( this.properties.start ).show();
@@ -196,6 +183,8 @@ function homeInitCommand( event )
 		DOM( this.properties.start ).hide();
 		dispatchCommand( Events.HOME_INTRO );
 	}
+	
+	//TODO show hide addOptionen
 };
 
 function homeIntroCommand( event )
@@ -203,7 +192,7 @@ function homeIntroCommand( event )
 	DOM( this.properties.id ).removeElements();
 	var div = DOM( this.properties.id ).appendChild("div", {class:"intro"});
     
-	var type = this.model._data.customer.intro;
+	var type = this.model.getCustomer( "intro" );
 	
 	DOM( div ).addChild( "p", {}, this.model.dict.Intro[type].title );
 	
@@ -640,7 +629,7 @@ function favoritesInitCommand( data )
 {		
 	DOM( this.properties.id ).removeElements().appendChild("form", { id : "favFormId" } );
 	
-	for(var favorite in this.model._data.favorites)
+	for(var favorite in this.model.getFavorites() )
 	{
 		DOM( "favFormId" ).addChild("fieldset", { id: favorite+"id" } ).addChild( "legend", {}, favorite);
 
@@ -650,15 +639,15 @@ function favoritesInitCommand( data )
 		{
 			DOM( liste ).onTap( Events.TAP_HANDLER, { watch:"tagName:LI", command:Events.FAVORITES_EDIT});
 		}
-
-        if((this.model.getStateFavEdit() && this.model.hasFavoriteEdit( favorite ) || this.model._data.favorites[ favorite ].length == 0 ) )
-        {
+		
+        if((this.model.getStateFavEdit() && this.model.hasFavoriteEdit( favorite ) || this.model.getFavorites( favorite ).length == 0 ) )
+        {	
             dispatchCommand( Events.FAVORITES_ROW, { row: {}, display: liste });
         }
 		
-		for(var i = 0; i < this.model._data.favorites[ favorite ].length; i++ )
+		for(var i = 0; i < this.model.getFavorites( favorite ).length; i++ )
 		{
-			dispatchCommand( Events.FAVORITES_ROW, { row: this.model._data.favorites[ favorite ][i], display: liste,  });		
+			dispatchCommand( Events.FAVORITES_ROW, { row: this.model.getFavorites( favorite )[i], display: liste,  });		
 		}
 	}
 

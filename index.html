@@ -11,9 +11,7 @@
         <title>Consilium</title>
     </head>
     
-    	<header id="xauth">
-    
-    </header>
+    <header id="xauth"></header>
     
     <body id="app" style="display:none;" >
     	
@@ -21,7 +19,7 @@
         <section id="homeId" class="view middle">
         
         	<header class="disappear">
-        		<button id="addOptionen" class="button-text colorless" style="display:none !important;">Sync
+        		<button id="addOptionen" class="button-text colorless" >Sync
                 <!-- <img src="img/icon/optionen.png" width="28"> -->
         		</button>
         		<h2 id="titleId">Consilium</h2>
@@ -114,6 +112,8 @@
    		<script type="text/javascript" charset="utf-8" src="code/plugins/sha256.js"></script>
    		<script type="text/javascript" charset="utf-8" src="code/plugins/aes.js"></script>
 
+   		<script type="text/javascript" charset="utf-8" src="code/pattern.js"></script>
+   		<script type="text/javascript" charset="utf-8" src="code/prototype.js"></script>
    		<script type="text/javascript" charset="utf-8" src="code/dom.js"></script>
    		<script type="text/javascript" charset="utf-8" src="code/model.js"></script>
    		<script type="text/javascript" charset="utf-8" src="code/commands.js"></script>
@@ -136,8 +136,7 @@
    						
    						addCommand( Events.CHANGE_VIEW, changeViewCommand ); 	
    						addCommand( Events.TAP_HANDLER, tapHandlerCommand ); 		  						
-   						addCommand( Events.START_WEB, startWebCommand ); 		  						
-   						addCommand( Events.START_APP, startAppCommand ); 		  						
+   						addCommand( Events.START, startCommand ); 		  							  						
    						addCommand( Events.MODEL_FROM_STORAGE, modelFromStorageCommand ); 		  						
    						addCommand( Events.SYNC, syncCommand ); 		  						
    						addCommand( Events.ROW, rowCommand ); 		  						
@@ -191,8 +190,6 @@
    						addCommand( Events.FAVORITE_TO_HOME, changeViewCommand, { from:"favoriteId", to:"homeId", direction:"right" }); 	
    						/* GO */
    						addCommand( Events.FAVORITE_TO_TIPP, changeViewCommand, { from:"favoriteId", to:"tippId", direction:"left" }); 	
-
-   						addCommand( Events.ACTS_QUERY, actsQueryCommand); 	
    					},				
    					/**
    					* BIND TO EVENT LISTENERS OF ELEMENTS. IF EVENT EXECUTE COMMAND  
@@ -230,16 +227,13 @@
    						// START DESKTOP OR DEVICE
    						if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) 
    						{
-   							this.client = "DEVICE";
-   						
-	   						(this.debug) ? DOM().onDOM( Events.START_APP ) : DOM().onDevice( Events.START_APP );			
+   							this.client = "DEVICE";				
+	   						(this.debug) ? DOM().onDOM( Events.START) : DOM().onDevice( Events.START);			
    						} 
    						else 
    						{
    							this.client = "DESKTOP";
-   						
-	   					    DOM().onDOM( Events.START_WEB );
-   							DOM( window ).onMSG( Events.RESPONSE );
+	   					    DOM().onDOM( Events.START );
    						}
 
    					},
