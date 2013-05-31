@@ -115,6 +115,7 @@
    		<script type="text/javascript" charset="utf-8" src="code/pattern.js"></script>
    		<script type="text/javascript" charset="utf-8" src="code/prototype.js"></script>
    		<script type="text/javascript" charset="utf-8" src="code/dom.js"></script>
+   		<script type="text/javascript" charset="utf-8" src="code/entities.js"></script>
    		<script type="text/javascript" charset="utf-8" src="code/model.js"></script>
    		<script type="text/javascript" charset="utf-8" src="code/commands.js"></script>
 	
@@ -137,6 +138,7 @@
    						addCommand( Events.CHANGE_VIEW, changeViewCommand ); 	
    						addCommand( Events.TAP_HANDLER, tapHandlerCommand ); 		  						
    						addCommand( Events.START, startCommand ); 		  							  						
+   						addCommand( Events.HIDDEN, hiddenCommand ); 		  							  						
    						addCommand( Events.MODEL_FROM_STORAGE, modelFromStorageCommand ); 		  						
    						addCommand( Events.SYNC, syncCommand ); 		  						
    						addCommand( Events.ROW, rowCommand ); 		  						
@@ -240,7 +242,7 @@
    					initialize:function() 
    					{
    						this.debug = true;
-   						this.context = "CONSILUM ->";
+   						this.context = "CONSILIUM ->";
 
    						this.addCommands();
    						this.bind();	

@@ -14,7 +14,7 @@ Events =
 	ROW:"row_command",
 	CHART_OVERLAY:"chart_overlay",
 	CHANGE_VIEW:"change_view",
-	
+	HIDDEN:"hidden",
 	REQUEST:"request",
 	RESPONSE:"response",
 	
@@ -86,6 +86,10 @@ function changeViewCommand( event )
 	DOM( cmd.from ).attrib("className").replace("middle", cmd.direction );		
 };
 
+function hiddenCommand( data )
+{
+	if( !data.hidden ) location.reload();
+};
 
 function startCommand( event )
 {
@@ -102,6 +106,8 @@ function startCommand( event )
 	
 	if( app.client == "DESKTOP")
 	{
+		DOM().onWindow( Events.HIDDEN, {});
+		
 		DOM( window ).onMSG( Events.RESPONSE );
 		
 		DOM("app").style("top","40px");
@@ -127,7 +133,7 @@ function responseCommand( data )
 		
 		if( data.actor == null ) this.model.setCustomer("intro", "DESKTOP");
 		
-		if( data.actor ) console.log( data );
+		if( data.actor ) console.log( "TODO Actor", data );
 		
 		dispatchCommand( Events.HOME_INIT );		
 	}
@@ -173,8 +179,10 @@ function homeInitCommand( event )
     
 	if( !this.model.getCustomer("intro") )
 	{
-		DOM( this.properties.sync ).show();
+		( app.client == "DEVICE") ? DOM( this.properties.sync ).show() : DOM( this.properties.sync ).hide();
+		
 		DOM( this.properties.start ).show();
+		
 		dispatchCommand( Events.HOME_VERLAUF ); 
 	}
 	else

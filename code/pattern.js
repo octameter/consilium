@@ -21,11 +21,13 @@ Controller.prototype.removeCommand = function( nameCommand, callback )
 	delete this.commands[nameCommand];    		
 };
 
+Controller.prototype.queue = [];
+
 Controller.prototype.dispatchCommand = function(eventName, data)
 {
-	(this.commands[eventName]) ?  this.commands[eventName].execute(data) : console.log("Command "+eventName+" not registered");	
-
 	if( app.debug ) console.log( app.context, this.commands[eventName].callback.name, data);
+
+	(this.commands[eventName]) ?  this.commands[eventName].execute(data) : console.log("Command "+eventName+" not registered");	
 };
 
 function Command( callback, properties )
