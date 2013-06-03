@@ -141,7 +141,7 @@ Svg.prototype.drawLabelX = function( x, y )
  */
 Svg.prototype.drawPunkte = function(id)
 {			
-	var punkteById = this.model._data.punkte.slice(0);	
+	var punkteById = this.model._data.acts.slice(0);	
 
 	var dots = punkteById.length;
 
@@ -149,7 +149,7 @@ Svg.prototype.drawPunkte = function(id)
 	
 	while(dots--)
 	{				
-		var punkt1 = { id:punkteById[dots].id, x:punkteById[dots].x, y:punkteById[dots].y }; 
+		var punkt1 = { id:punkteById[dots].entitiesId, x:punkteById[dots].zeit, y:punkteById[dots].wert }; 
 
 		if(punkt1.id == "privat" || punkt1.id == "diagnose" || punkt1.id == "zyklus")
 		{
@@ -161,7 +161,7 @@ Svg.prototype.drawPunkte = function(id)
 			
 			this.drawPunkt( punkt1 );									
 			
-			punkt2 = { id:punkt1.id, x:punkt1.x, y:punkt1.y };			
+			punkt2 = { id:punkt1.entitiesId, x:punkt1.zeit, y:punkt1.wert };			
 		}
 	}
 	

@@ -2,7 +2,8 @@ function Entities() {};
 
 Entities.prototype.Intro = 
 {
-	 DESKTOP: {
+
+	 "DESKTOP": {
 		 title:"Willkommen",
 		 bausteine: [
 		             "Dieser Cloudservice unterstützt die Kommunikation zwischen Arzt und PatientInnen. Je nach Schwerpunkt begleitet er die Therapie oder dient der wissenschaftlichen Datenerfassung.",
@@ -10,7 +11,7 @@ Entities.prototype.Intro =
 		             "Wir danken für Ihr Interesse."
 		             ]		 						  
 	 },
- 	DEVICE: {
+ 	"DEVICE": {
  		title:"Liebe NutzerIn",
  		bausteine: [
  		             "Die App dient Ihnen als persönliches Logbuch für das Befinden während Ihrer Therapie. Wir empfehlen die App täglich zu nutzen.",

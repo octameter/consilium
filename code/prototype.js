@@ -38,11 +38,11 @@ Array.prototype.notIn = function( key, array )
     });
 };
 
-Array.prototype.getId = function( key )
+Array.prototype.getObjectInArray = function( property,  value )
 {	
 	for(var i = 0; i < this.length; i++)
 	{
-		if( this[i]["id"] == key) return this[i];
+		if( this[i][property] == value) return this[i];
 	}
 	
 	return null;

@@ -8,8 +8,15 @@ function Model() {}
 Model.prototype._data = 
 {
 		// Acts
-		punkte: 
-		[
+		acts: [],
+		// ARZT OR PATIENT
+		protagonist:null,
+		// PATIENT
+		antagonist: null,
+		
+		// TODO UPGRADE
+//		punkte: 
+//			[
 //		 {"id":"privat","x":1364722335348,"y":"War bei der Physiotherapie\n"},
 //		 {"id":"10047700","x":1365154291081,"y":39},
 //		 {"id":"10047700","x":1364981506260,"y":8},
@@ -22,28 +29,70 @@ Model.prototype._data =
 //		 {"id":"10025482","x":1364553049117,"y":70},
 //		 {"id":"zyklus","x":1364571509073,"y":"Chemotherapie mit\nMethotrexat"},
 //		 {"id":"diagnose","x":1364471509073,"y":"Adenocarcinom T3M2"}
-		],
-		// Antagonist
-		actor:
+//],
+};
+
+Model.prototype.getActs = function()
+{
+	return this._data.acts;
+};
+
+Model.prototype.setProtagonist = function ( actor )
+{
+	// DEFAULT
+	if( !actor )
+	{
+		// APP AND NOT SYNCED
+		this._data.protagonist = 
 		{
-			// DEFAULT
-			id:0,
-			role:null,
-			roleId:0,
-			
-			// FavoritesObject
-		    favorites:
-		    {
-		    	Bewertung:	[ {id : "10025482"} ],
-		     	Symptome:  	[ /*{"id":"10047700","edit":true}*/ ],
-				Tagebuch:	[ { id: "privat"} ]
-		    },
-		    // CustomerObject
-		    customer:
-		    {
-		    	intro:null
-		    }
-		}
+				id:0,
+				role:"PATIENT",
+				favoritesObject: 
+				{
+					Bewertung:	[ {id : "10025482"} ],
+					Symptome:  	[ /*{"id":"10047700","edit":true}*/ ],
+					Tagebuch:	[ { id: "privat"} ]					
+				},
+				customerObject:
+				{
+					intro:"INTRO"
+				}
+		};
+	}
+	else this._data.protagonist = actor;
+};
+
+Model.prototype.getProtagonist = function() { return this._data.protagonist; };
+
+Model.prototype.isArzt = function()
+{
+	return (this._data.protagonist.role == "ARZT");
+};
+Model.prototype.isPatient = function()
+{
+	return (this._data.protagonist.role == "PATIENT");
+};
+
+Model.prototype.setIntro = function( type )
+{	
+	var customer = this._data.protagonist.customer || {};
+	
+	customer["intro"] = type;
+	
+	this._data.protagonist.customer = customer;
+};
+Model.prototype.getIntro = function()
+{
+	return (this._data.protagonist.customer) ? this._data.protagonist.customer.intro : null;
+};
+
+Model.prototype.setAntagonist = function ( actor )
+{
+	this._data.antagonist = actor;
+};
+Model.prototype.hasAntagonist = function( actor )
+{
+	return !!this._data.antagonist;
 };
 
 /**
@@ -53,46 +102,47 @@ Model.prototype._data =
  */
 Model.prototype.getFavorites = function( type )
 {
-	return ( type ) ? this._data.actor.favorites[ type ] : this._data.actor.favorites;
+	return ( type ) ? this._data.protagonist.favoritesObject[ type ] : this._data.protagonist.favoritesObject;
 };
 
 Model.prototype.addFavorite = function( type, id )
 {
-	this._data.actor["favorites"][type].unshift( { id: String( id ), edit: true } );
-	
-	localStorage.setItem( "device_actor", JSON.stringify( this._data.actor ));	
+	this._data.protagonist.favoritesObject[type].unshift( { entitiesId: String( id ), edit: true } );
 };
 
 Model.prototype.removeFavorite = function( type, item )
 {
 	var idx = -1;
     
-	this._data.actor["favorites"][type].forEach( function(element, index)
+	this._data.protagonist.favoritesObject[type].forEach( function(element, index)
 	{
 		if(element.id == item.id ) idx = index;
 	});
 	
     if( idx > -1)
-	this._data.actor["favorites"][type].splice(idx,1);
+	this._data.protagonist.favoritesObject[type].splice(idx,1);
     
-	localStorage.setItem( "device_actor", JSON.stringify( this._data.actor));	
+	localStorage.setItem( "device_protagonist", JSON.stringify( this._data.protagonist));	
 };
-
-
 
 Model.prototype.setCustomer = function( type, id )
 {
-	this._data.actor["customer"][type] = id; 
+	this._data.protagonist.customerObject[type] = id; 
 	
-	localStorage.setItem( "device_actor", JSON.stringify( this._data.actor));
+	localStorage.setItem( "device_protagonist", JSON.stringify( this._data.protagonist));
 };
 
 Model.prototype.getCustomer = function( type )
 {
-	return this._data.actor.customer[type];
+	return this._data.protagonist.customer[type];
 };
 
+Model.prototype.addActs = function( acts )
+{
+	this._data["acts"] = this._data["acts"].concat( acts );
+};
 
+// LEGACY
 
 // ADD MOST RECENT DATA POINT
 Model.prototype.addPunkt = function( punkt )
@@ -110,7 +160,6 @@ Model.prototype.addPunkt = function( punkt )
 	
 	localStorage.setItem( "device_acts", JSON.stringify( this._data["punkte"] ));	
 };
-
 
 Model.prototype.removePunkt = function( punkt )
 {
@@ -145,11 +194,11 @@ Model.prototype.getMinX = function()
 	// Default 14 Tage zurück
 	var minX = new Date().getTime() - ( 14 * 24 * 60 * 60 * 1000 );
 
-	var size = this._data.punkte.length;
+	var size = this._data.acts.length;
 	
 	while(size--)
 	{
-		minX = Math.min( this._data.punkte[size].x, minX);
+		minX = Math.min( this._data.acts[size].zeit, minX);
 	}
 	
 	return zeit( "dawn", minX );	
@@ -161,7 +210,7 @@ Model.prototype.getMinX = function()
  */
 Model.prototype.sortPunkteByTime = function(id)
 {
-	var punkte = this._data.punkte;
+	var punkte = this._data.acts;
 	
 	var ids = this.getUniquePunkte(id);
 	
@@ -169,14 +218,14 @@ Model.prototype.sortPunkteByTime = function(id)
 	punkte.sort( function( a, b )
 	{
 		// ID Ascending
-		if(ids.indexOf(b.id) !== ids.indexOf(a.id))
+		if(ids.indexOf(b.entitiesId) !== ids.indexOf(a.entitiesId))
 		{
-			return ids.indexOf(a.id) - ids.indexOf(b.id);
+			return ids.indexOf(a.entitiesId) - ids.indexOf(b.entitiesId);
 		}
 		// ID Descending
-		if(ids.indexOf(b.id) === ids.indexOf(a.id))
+		if(ids.indexOf(b.entitiesId) === ids.indexOf(a.entitiesId))
 		{
-			return ( b.x - a.x );				
+			return ( b.zeit - a.zeit );				
 		}
 	});
 };
@@ -187,7 +236,7 @@ Model.prototype.sortPunkteByTime = function(id)
  */
 Model.prototype.getSymptome = function()
 {    
-	var symptome = this.dict["Symptome"].notIn( "id", this._data.actor.favorites.Symptome );
+	var symptome = this.dict["Symptome"].notIn( "id", this.getFavorites().Symptome );
     
     symptome.sortABC( "title" );
 
@@ -202,20 +251,20 @@ Model.prototype.getSymptome = function()
 Model.prototype.getUniquePunkte = function(id)
 {
 	// Copy Array
-	var punkte = this._data.punkte.slice(0);
+	var punkte = this._data.acts.slice(0);
 	// First the selected element 
 	var ids = [];
 	punkte.push( String( id ) );
 	
 	// than descending by time
-	punkte.sort123("x"); 
+	punkte.sort123("zeit"); 
 	
 	// Unique ids
 	punkte.forEach( function(element, index)
 	{		
-		if( ids.indexOf( element.id ) === -1 && element.id !== id)
+		if( ids.indexOf( element.entitiesId ) === -1 && element.entitiesId !== id)
 		{
-			ids.push( element.id );
+			ids.push( element.entititesId );
 		}
 	});	
 	
@@ -245,7 +294,7 @@ Model.prototype.getType = function( id )
 {
 	var dictionary = [].concat(this.dict["Symptome"], this.dict["Bewertung"], this.dict["Tagebuch"], this.dict["Tipps"]);
 	
-	console.log( this.dict );
+	//console.log( this.dict );
 	
 	for( var i = 0; i < dictionary.length; i++)
 	{
@@ -270,11 +319,10 @@ Model.prototype.getGrad = function( id, value )
 * RETURNS MOST RECENT DATA POINT FOR KEY (TYPE)
 */
 Model.prototype.getPunkt = function( id )
-{	
-	for( var i = 0; i < this._data.punkte.length; i++)
-	{
-		if( this._data.punkte[i].id === id ) return this._data.punkte[i];				
-	}	
+{		
+	var acts = this.getActs();
+	
+	return acts.getObjectInArray("id", id);
 };
 
 

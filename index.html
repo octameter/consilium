@@ -100,8 +100,6 @@
         	<article id="optionenContentId" style="display:none"></article>
         	
         </section>
-
-    </body>
     <!--
    	<script type="text/javascript" src="cordova.js"></script>			
 	<script type="text/javascript" src="barcodescanner.js"></script>	
@@ -138,8 +136,7 @@
    						addCommand( Events.CHANGE_VIEW, changeViewCommand ); 	
    						addCommand( Events.TAP_HANDLER, tapHandlerCommand ); 		  						
    						addCommand( Events.START, startCommand ); 		  							  						
-   						addCommand( Events.HIDDEN, hiddenCommand ); 		  							  						
-   						addCommand( Events.MODEL_FROM_STORAGE, modelFromStorageCommand ); 		  						
+   						addCommand( Events.HIDDEN, hiddenCommand ); 		  							  						  						
    						addCommand( Events.SYNC, syncCommand ); 		  						
    						addCommand( Events.ROW, rowCommand ); 		  						
    						
@@ -226,6 +223,8 @@
    						DOM("tippId").onStage( Events.TIPP_INIT ); 
    						DOM("tippBackButton").onTouch( Events.TIPP_EXIT );
    						
+   				
+   						
    						// START DESKTOP OR DEVICE
    						if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) 
    						{
@@ -256,4 +255,5 @@
    			// console.log( encrypted.toString( CryptoJS.enc.Base64) );
 
    		</script>
+	</body>
 </html>

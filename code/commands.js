@@ -17,8 +17,6 @@ Events =
 	HIDDEN:"hidden",
 	REQUEST:"request",
 	RESPONSE:"response",
-	
-	MODEL_FROM_STORAGE:"model_from_storage",
 	SYNC:"sync",
 		
 	START:"start",
@@ -96,19 +94,19 @@ function startCommand( event )
 	// CLIENTWIDTH AVAILABLE
 	DOM( "app" ).show();
 
+	// HANDLER FOR STROAGE RESULTS
+	DOM( window ).onMSG( Events.RESPONSE );
+	
+	// LOCAL STORAGE
 	if( app.client == "DEVICE")
 	{
-		// CHECK LOCAL STORAGE
-		dispatchCommand( Events.MODEL_FROM_STORAGE );
-		
-		dispatchCommand( Events.HOME_INIT );
+		dispatchCommand( Events.REQUEST, { "request":"ACTOR_GET"} );
 	}
 	
+	// REMOTE STORAGE
 	if( app.client == "DESKTOP")
 	{
 		DOM().onWindow( Events.HIDDEN, {});
-		
-		DOM( window ).onMSG( Events.RESPONSE );
 		
 		DOM("app").style("top","40px");
 		
@@ -120,36 +118,119 @@ function startCommand( event )
 
 function requestCommand( data )
 {
-	if( data.request == "PATIENT_GET")	app.storage.postMessage( { request:"PATIENT_GET" }, "*");		
+	if( app.client == "DEVICE" )
+	{
+		if( data.request == "ACTOR_GET")	
+		{
+			if( localStorage.getItem("device_actor") ) 
+			data.actor = JSON.parse( localStorage.getItem("device_actor") );			
+		}
+		// NO PATIENT_GET
+		if( data.request == "ACTS_SAVE")
+		{
+			if( localStorage.getItem("device_acts") ) 
+			this.model._data["acts"] = JSON.parse( localStorage.getItem("device_acts") );		
+		}
+		
+		if( data.request == "FAVORITES_SAVE")
+		{
+			localStorage.setItem( "device_protagonist", JSON.stringify( this._data.protagonist ));	
+		}
+		
+		
+		dispatchCommand( Events.RESPONSE, data);
+	}
 	
-	if( data.request == "ACTOR_GET")	app.storage.postMessage( { request:"ACTOR_GET" }, "*");		
+	if( app.client == "DESKTOP" )
+	{
+		if( data.request == "ACTOR_GET") app.storage.postMessage( { request:"ACTOR_GET" }, "*");	
+
+		if( data.request == "PATIENT_GET") app.storage.postMessage( { request:"PATIENT_GET" }, "*");		
+		
+		if( data.request == "ACTS_GET")	app.storage.postMessage( { request:"ACTS_GET", antagonistId:data.antagonistId }, "*");	
+		
+		if( data.request == "REDIRECT")	app.storage.postMessage( { request:"REDIRECT", target:data.target }, "*");	
+		
+		if( data.request == "ACTS_SAVE") 
+		{
+			function remote( row )
+			{
+				var payload = {};
+				payload.protagonistId = 1;
+				payload.antagonistId = 2;
+				payload.entitiesId = row.id;
+				payload.zeit = row.x;
+				payload.wert = row.y;
+				
+				return payload;
+			}
+			
+			app.storage.postMessage( { request:"ACTS_SAVE", acts:data.acts.map( remote ) }, "*");	
+		}
+		
+		if( data.request == "FAVORITES_SAVE")
+		{
+			var payload = {
+				id : this.model.getProtagonist().id,
+				favoritesObject : this.model.getProtagonist().favoritesObject
+			};
+			
+			app.storage.postMessage( { request:"ACTOR_UPDATE", protagonist:payload }, "*");				
+		}
+	}
 };
 
 function responseCommand( data )
 {
-	if( data.request == "PATIENT_GET") DOM("titleId").text( data.patient.roleLabel);	
-	
-	if( data.request == "ACTOR_GET") {
+	if( data.request == "ACTS_GET" && data.type == "SUCCESS") {
+		// model
+		this.model.addActs( data.json );
 		
-		if( data.actor == null ) this.model.setCustomer("intro", "DESKTOP");
-		
-		if( data.actor ) console.log( "TODO Actor", data );
-		
-		dispatchCommand( Events.HOME_INIT );		
+		dispatchCommand( Events.HOME_INIT);
 	}
 	
-	if( data.request == "REDIRECT") location.assign(data.href); 
-};
+	if( data.request == "ACTOR_GET") {
+			
+		this.model.setProtagonist( data.actor );
+		
+		if( this.model.isArzt() )
+		dispatchCommand( Events.REQUEST, { request:"PATIENT_GET" } );
+		
+		// DEFAULT PROTAGONIST IS PATIENT
+		if( this.model.isPatient() && data.actor)
+		dispatchCommand( Events.REQUEST, { request:"ACTS_GET", antagonistId:data.actor.id } );
+		
+		if( !data.actor )
+		{
+			this.model.setIntro( "INTRO" );
+			dispatchCommand( Events.HOME_INIT );
+		}
+	}
 
-
-function modelFromStorageCommand( event )
-{	
-	if( localStorage.getItem("device_acts") ) 
-	this.model._data["punkte"] = JSON.parse( localStorage.getItem("device_acts") );	
+	if( data.request == "PATIENT_GET") 
+	{	
+		this.model.setAntagonist( data.patient );
+		
+		if( this.model.hasAntagonist() )
+		{
+			DOM("titleId").text( data.patient.roleLabel);
+			DOM("titleId").style( "position", "absolute");
+			DOM("titleId").style( "left", "20px");
+			
+			dispatchCommand( Events.REQUEST, { request:"ACTS_GET", antagonistId:data.patient.id } );
+		}
+		
+		
+		if( !this.model.hasAntagonist() )
+		dispatchCommand( Events.REQUEST, { request:"REDIRECT", target:"Akte"})
+	}
 	
-	if( localStorage.getItem("device_actor") ) 
-	this.model._data["actor"] = JSON.parse( localStorage.getItem("device_actor") );			
+	if( data.request == "REDIRECT") location.replace(data.target);  
+	
+	if( data.request == "FAVORITES_SAVE" ) dispatchCommand( Events.SYMPTOME_TO_FAVORITES);
 };
+
+
 
 function syncCommand( event )
 {
@@ -169,7 +250,7 @@ function homeInitCommand( event )
 	// LOAD DATA INTO MEMORY	
 	if( event.introExit) {
 		
-		this.model.setCustomer("intro", null);
+		this.model.setIntro( null );
 		
 		DOM( this.properties.id ).removeElements();
 	}
@@ -177,19 +258,22 @@ function homeInitCommand( event )
     // CLIENTWIDTH
     DOM( this.properties.id ).show();
     
-	if( !this.model.getCustomer("intro") )
-	{
-		( app.client == "DEVICE") ? DOM( this.properties.sync ).show() : DOM( this.properties.sync ).hide();
-		
-		DOM( this.properties.start ).show();
-		
-		dispatchCommand( Events.HOME_VERLAUF ); 
-	}
-	else
+	if( this.model.getIntro() )
 	{
 		DOM( this.properties.sync ).hide();
 		DOM( this.properties.start ).hide();
+		
 		dispatchCommand( Events.HOME_INTRO );
+	}
+	else
+	{
+		// SYNC BUTTON
+		( app.client == "DEVICE") ? DOM( this.properties.sync ).show() : DOM( this.properties.sync ).hide();
+		
+		// START BUTTON
+		DOM( this.properties.start ).show();
+		
+		dispatchCommand( Events.HOME_VERLAUF ); 
 	}
 	
 	//TODO show hide addOptionen
@@ -200,7 +284,13 @@ function homeIntroCommand( event )
 	DOM( this.properties.id ).removeElements();
 	var div = DOM( this.properties.id ).appendChild("div", {class:"intro"});
     
-	var type = this.model.getCustomer( "intro" );
+	var type = "";
+	
+	console.log( this.model.getIntro(),  this.model.isPatient(), app.client);
+	
+	if( this.model.getIntro() == "INTRO" && this.model.isPatient() && app.client == "DESKTOP") type = "DESKTOP";
+	
+	if( this.model.getIntro() == "INTRO" && app.client == "DEVICE") type = "DEVICE";
 	
 	DOM( div ).addChild( "p", {}, this.model.dict.Intro[type].title );
 	
@@ -293,7 +383,7 @@ function homeVerlaufSelectedCommand( event )
 
 function infoStartCommand( event )
 {
-	if( this.model._data.punkte.length == 0)
+	if( this.model.getActs().length == 0)
 	{
 		dispatchCommand( Events.CHART_OVERLAY, { type:"paragraph", title: "Die Eingabe beginnen Sie über den rechten oberen 'Start' Button."})
 	}
@@ -606,7 +696,7 @@ function symptomeExitCommand( event ) {
 		
 	this.model.addFavorite( "Symptome", event ); 
 	
-	dispatchCommand( Events.SYMPTOME_TO_FAVORITES);
+	dispatchCommand( Events.REQUEST, { request:"FAVORITES_SAVE" });
 }
 
 function favoritesChangeCommand( data )
@@ -634,7 +724,7 @@ function favoritesChangeCommand( data )
  *  @param data { id: "viewContentId", edit: true }
  */
 function favoritesInitCommand( data )
-{		
+{			
 	DOM( this.properties.id ).removeElements().appendChild("form", { id : "favFormId" } );
 	
 	for(var favorite in this.model.getFavorites() )
@@ -668,17 +758,18 @@ function favoritesInitCommand( data )
  */
 function favoritesRowCommand( data )
 {	
-	var infoData = this.model.getPunkt( data.row.id );
-	var infoType = this.model.getType( data.row.id );
-	var zeitpunkt = (infoData && !data.edit) ? "Zuletzt: "+zeit('dd.mm.yyyy hh:mm', infoData.x) : "&nbsp;";
-	var title = (infoData && infoType.kategorie != "Notizen") ? infoData.y + "%" : "&nbsp;";
+
+	var infoData = this.model.getPunkt( data.row.entitiesId );
+	var infoType = this.model.getType( data.row.entitiesId );
+	var zeitpunkt = (infoData && !data.edit) ? "Zuletzt: "+zeit('dd.mm.yyyy hh:mm', infoData.zeit) : "&nbsp;";
+	var title = (infoData && infoType.kategorie != "Notizen") ? infoData.wert + "%" : "&nbsp;";
 
 	var item = DOM( data.display ).appendChild("li", { data:JSON.stringify({ punkt:infoData, type:infoType }), style:"padding-top:10px;padding-bottom:10px;"});
 
 	// KEIN EDIT-MODE
 	if( !this.model.getStateFavEdit() )
 	{		
-		if(data.row.id)
+		if(data.row.entitiesId)
 		{
 			// Bewertung, Symptom, Notiz
 			dispatchCommand( Events.ROW, { type:"legende", area:item, title:infoType.title, zeit: zeitpunkt, farbwert : infoType.farbwert, value : title, caret:true })			
@@ -691,7 +782,7 @@ function favoritesRowCommand( data )
 	// EDIT-MODE
     else
 	{
-    	if( !data.row.id )
+    	if( !data.row.entitiesId )
     	{	// Neues Symptom ohne Caret und Button
     		dispatchCommand( Events.ROW, { type:"legende", area:item, title:"Neues Symptom", zeit:"Zur Liste hinzufügen", caret:false })			
 
@@ -1057,7 +1148,11 @@ function favoriteExitCommand( data )
 		
 		var toSave = this.model._state.tempItem;
 		
-		this.model.addPunkt( {id:toSave.id, x:toSave.x, y:toSave.y, tipps:toSave.tipps} );
+		toSave = { id:toSave.id, x:toSave.x, y:toSave.y, tipps:toSave.tipps };
+		
+		this.model.addPunkt( toSave);
+		
+		dispatchCommand( Events.REQUEST, { request:"ACTS_SAVE", acts: [ toSave ]  } );
 	}
 	// DELETE EVENT
 	if( this.properties.type == "delete") {
