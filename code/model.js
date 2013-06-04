@@ -156,9 +156,9 @@ Model.prototype.addPunkt = function( punkt )
 	
 	if( punkt.tipps ) element.tipps = punkt.tipps.slice(0);
 
-	this._data["punkte"].unshift( element );
+	this._data["acts"].unshift( element );
 	
-	localStorage.setItem( "device_acts", JSON.stringify( this._data["punkte"] ));	
+	localStorage.setItem( "device_acts", JSON.stringify( this._data["acts"] ));	
 };
 
 Model.prototype.removePunkt = function( punkt )
@@ -168,7 +168,7 @@ Model.prototype.removePunkt = function( punkt )
 		if( this._data.punkte[i].id === punkt.id && this._data.punkte[i].x == punkt.x) this._data.punkte.splice(i,1);				
 	}	
 
-	localStorage.setItem( "device_acts", JSON.stringify( this._data["punkte"] ));
+	localStorage.setItem( "device_acts", JSON.stringify( this._data["acts"] ));
 };
 
 /**
@@ -322,7 +322,7 @@ Model.prototype.getPunkt = function( id )
 {		
 	var acts = this.getActs();
 	
-	return acts.getObjectInArray("id", id);
+	return acts.getObjectInArray("entitiesId", id);
 };
 
 

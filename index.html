@@ -226,7 +226,7 @@
    				
    						
    						// START DESKTOP OR DEVICE
-   						if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)) 
+   						if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/) || true) 
    						{
    							this.client = "DEVICE";				
 	   						(this.debug) ? DOM().onDOM( Events.START) : DOM().onDevice( Events.START);			
@@ -250,7 +250,7 @@
 
    			app.initialize();
 	
-            //localStorage.clear();
+            // localStorage.clear();
    			// var encrypted = CryptoJS.HmacSHA256("raw", "secret");
    			// console.log( encrypted.toString( CryptoJS.enc.Base64) );
 

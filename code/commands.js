@@ -134,7 +134,7 @@ function requestCommand( data )
 		
 		if( data.request == "FAVORITES_SAVE")
 		{
-			localStorage.setItem( "device_protagonist", JSON.stringify( this._data.protagonist ));	
+			localStorage.setItem( "device_protagonist", JSON.stringify( this.model.getProtagonist() ));	
 		}
 		
 		
@@ -175,7 +175,7 @@ function requestCommand( data )
 				favoritesObject : this.model.getProtagonist().favoritesObject
 			};
 			
-			app.storage.postMessage( { request:"ACTOR_UPDATE", protagonist:payload }, "*");				
+			app.storage.postMessage( { request:"FAVORITES_SAVE", protagonist:payload }, "*");				
 		}
 	}
 };
@@ -203,8 +203,10 @@ function responseCommand( data )
 		if( !data.actor )
 		{
 			this.model.setIntro( "INTRO" );
+			
 			dispatchCommand( Events.HOME_INIT );
 		}
+		
 	}
 
 	if( data.request == "PATIENT_GET") 
@@ -573,14 +575,14 @@ function optionenInitCommand( data )
 	/* VERBINDUNG */
 	DOM( this.properties.id ).addChild( "form", { id:"optionenFormId"});
 		
-	if( this.model._data["customer"].login )
+	if( this.model.getProtagonist() )
 	{			
 		DOM("optionenFormId").addChild("fieldset", { id:"fieldsetVerbindung", style:"text-align:left;"}).addChild( "legend", {}, "Verbindung" );	
 		DOM( "fieldsetVerbindung"  ).addChild("div", { id:"optStatus"} );
 		DOM( "optStatus"  ).addChild( "span", { }, "<b>Mit Brustzentrum</b>" );
 		DOM( "optStatus"  ).addChild( "br" );
 		DOM( "optStatus"  ).addChild( "span", { style:"color:green; font-size:90%"}, (data.status) ? "<i>"+data.status+"</i>" :"&nbsp;" ); 			
-		DOM( "optStatus"  ).addChild( "a", {  style:"position:absolute;top:6px;right:2px;color:darkblue" }, "Verbunden" ); 	
+		DOM( "optStatus"  ).addChild( "a", { style:"position:absolute;top:6px;right:2px;color:darkblue" }, "Verbunden" ); 	
 
 		// LOGIN
 		DOM("optionenFormId").addChild("fieldset", { id:"fieldsetLogin", style:"text-align:left;"}).addChild( "legend", {}, "Login" );		
