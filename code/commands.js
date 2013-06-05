@@ -122,8 +122,7 @@ function requestCommand( data )
 	{
 		if( data.request == "ACTOR_GET")	
 		{
-			if( localStorage.getItem("device_actor") ) 
-			data.actor = JSON.parse( localStorage.getItem("device_actor") );			
+            data.actor = JSON.parse( localStorage.getItem("device_actor") );
 		}
 		// NO PATIENT_GET
 		if( data.request == "ACTS_SAVE")
@@ -193,13 +192,15 @@ function responseCommand( data )
 			
 		this.model.setProtagonist( data.actor );
 		
+        if( app.client == "DEVICE" ) localStorage.setItem("device_actor", JSON.stringify( this.model.getProtagonist() ) );
+        
 		if( this.model.isArzt() )
 		dispatchCommand( Events.REQUEST, { request:"PATIENT_GET" } );
 		
 		// DEFAULT PROTAGONIST IS PATIENT
 		if( this.model.isPatient() && data.actor)
 		dispatchCommand( Events.REQUEST, { request:"ACTS_GET", antagonistId:data.actor.id } );
-		
+        
 		if( !data.actor )
 		{
 			this.model.setIntro( "INTRO" );
@@ -253,6 +254,8 @@ function homeInitCommand( event )
 	if( event.introExit) {
 		
 		this.model.setIntro( null );
+        
+        localStorage.setItem("device_actor", JSON.stringify( this.model.getProtagonist() ) ); 
 		
 		DOM( this.properties.id ).removeElements();
 	}
@@ -575,7 +578,7 @@ function optionenInitCommand( data )
 	/* VERBINDUNG */
 	DOM( this.properties.id ).addChild( "form", { id:"optionenFormId"});
 		
-	if( this.model.getProtagonist() )
+	if( this.model.getProtagonist().id  > 0 )
 	{			
 		DOM("optionenFormId").addChild("fieldset", { id:"fieldsetVerbindung", style:"text-align:left;"}).addChild( "legend", {}, "Verbindung" );	
 		DOM( "fieldsetVerbindung"  ).addChild("div", { id:"optStatus"} );
@@ -645,23 +648,34 @@ function scanCommand( data )
 function scanResultCommand( event )
 {	
 	
-	if( event.result == "Lmd98324jhkl234987234" || event.error == "Cannot read property 'barcodeScanner' of undefined")
+	if( event.format == "QR_CODE" || event.error == "Cannot read property 'barcodeScanner' of undefined")
 	{
-		this.model.setCustomer("login", { patId : "Pat001", pwd: "987234", gruppe:"B"});
-			
-		if( this.model._data["customer"].login.gruppe == "B")
-		this.model.setCustomer("intro", 1);
-			
-		if( this.model._data["customer"].login.gruppe == "C")
-		this.model.setCustomer("intro", 2);
-
-		dispatchCommand( Events.OPTIONEN_INIT, { status: "Erfolgreich"} );
+        var request = new XMLHTTPRequest();
+        // TODO QUERY NODE
+        // MAYBE BUDY INDICATOR
 	}
 	else
 	{
 		dispatchCommand( Events.OPTIONEN_INIT, { status: "Fehlgeschlagen"} );		
 	}
 
+};
+
+function scanResultQueryCommand( data )
+{
+    if( data.status == 200 )
+    {
+        // CHECK ONLINE STATUS OF DEVICE
+  		this.model.setCustomer("login", { patId : "Pat001", pwd: "987234", gruppe:"B"});
+			
+		if( this.model._data["customer"].login.gruppe == "B")
+		this.model.setIntro("Gruppe B");
+			
+		if( this.model._data["customer"].login.gruppe == "C")
+		this.model.setIntro("Gruppe C");
+
+		dispatchCommand( Events.OPTIONEN_INIT, { status: "Erfolgreich"} );
+    }
 };
 
 /**
@@ -729,6 +743,8 @@ function favoritesInitCommand( data )
 {			
 	DOM( this.properties.id ).removeElements().appendChild("form", { id : "favFormId" } );
 	
+    console.log( this.model.getFavorites() , this.model.getProtagonist() );
+    
 	for(var favorite in this.model.getFavorites() )
 	{
 		DOM( "favFormId" ).addChild("fieldset", { id: favorite+"id" } ).addChild( "legend", {}, favorite);

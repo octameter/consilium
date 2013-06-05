@@ -49,9 +49,9 @@ Model.prototype.setProtagonist = function ( actor )
 				role:"PATIENT",
 				favoritesObject: 
 				{
-					Bewertung:	[ {id : "10025482"} ],
+					Bewertung:	[ { entitiesId : "10025482"} ],
 					Symptome:  	[ /*{"id":"10047700","edit":true}*/ ],
-					Tagebuch:	[ { id: "privat"} ]					
+					Tagebuch:	[ { entitiesId: "privat"} ]					
 				},
 				customerObject:
 				{
@@ -60,30 +60,32 @@ Model.prototype.setProtagonist = function ( actor )
 		};
 	}
 	else this._data.protagonist = actor;
+    
+    return this._data.protagonist;
 };
 
 Model.prototype.getProtagonist = function() { return this._data.protagonist; };
 
 Model.prototype.isArzt = function()
 {
-	return (this._data.protagonist.role == "ARZT");
+	return (this.getProtagonist().role == "ARZT");
 };
 Model.prototype.isPatient = function()
 {
-	return (this._data.protagonist.role == "PATIENT");
+	return (this.getProtagonist().role == "PATIENT");
 };
 
 Model.prototype.setIntro = function( type )
 {	
-	var customer = this._data.protagonist.customer || {};
+	var customerObject = this._data.protagonist.customerObject || {};
 	
-	customer["intro"] = type;
+	customerObject["intro"] = type;
 	
-	this._data.protagonist.customer = customer;
+	this._data.protagonist.customerObject = customerObject;
 };
 Model.prototype.getIntro = function()
 {
-	return (this._data.protagonist.customer) ? this._data.protagonist.customer.intro : null;
+	return (this._data.protagonist.customerObject) ? this._data.protagonist.customerObject.intro : null;
 };
 
 Model.prototype.setAntagonist = function ( actor )
@@ -122,14 +124,14 @@ Model.prototype.removeFavorite = function( type, item )
     if( idx > -1)
 	this._data.protagonist.favoritesObject[type].splice(idx,1);
     
-	localStorage.setItem( "device_protagonist", JSON.stringify( this._data.protagonist));	
+	localStorage.setItem( "device_actor", JSON.stringify( this._data.protagonist));	
 };
 
 Model.prototype.setCustomer = function( type, id )
 {
 	this._data.protagonist.customerObject[type] = id; 
 	
-	localStorage.setItem( "device_protagonist", JSON.stringify( this._data.protagonist));
+	localStorage.setItem( "device_actor", JSON.stringify( this._data.protagonist));
 };
 
 Model.prototype.getCustomer = function( type )
