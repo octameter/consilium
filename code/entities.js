@@ -38,6 +38,11 @@ Entities.prototype.Intro =
  	}
 };
 
+Entities.prototype.Device = 
+[
+ 
+]
+
 Entities.prototype.Bewertung = 
 [
 	{ id: "10025482", title:"Wohlbefinden", kategorie:"Lebensqualität", zero:100, farbwert:"rgba(154,205,50,0.9)",

@@ -1,6 +1,5 @@
 function Svg()
-{
-	
+{	
 	this.element = document.createElementNS("http://www.w3.org/2000/svg", "svg");		
 	this.element.setAttribute("version", "1.1");
 		
@@ -161,7 +160,7 @@ Svg.prototype.drawPunkte = function(id)
 			
 			this.drawPunkt( punkt1 );									
 			
-			punkt2 = { id:punkt1.entitiesId, x:punkt1.zeit, y:punkt1.wert };			
+			punkt2 = { id:punkt1.id, x:punkt1.x, y:punkt1.y };			
 		}
 	}
 	
@@ -224,7 +223,6 @@ Svg.prototype.drawLine = function( current, previous, padding )
 	
 	// Distance is more than three days
 	if(current.x > ( previous.x + msProTag * 3) ) return;
-
 	
 	var x1 = Number( this.getPixelForX(previous.x, true) );
 	var y1 = Number( this.getPixelForY(previous.y, true) );
@@ -362,7 +360,7 @@ Svg.prototype.getYForPixel = function(pixelY, padding)
 };
 
 Svg.prototype.getFarbwert = function(id)
-{
+{	
 	return this.model.getType(id).farbwert;
 };
 

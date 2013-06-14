@@ -12,29 +12,21 @@ Model.prototype._data =
 		// ARZT OR PATIENT
 		protagonist:null,
 		// PATIENT
-		antagonist: null,
-		
-		// TODO UPGRADE
-//		punkte: 
-//			[
-//		 {"id":"privat","x":1364722335348,"y":"War bei der Physiotherapie\n"},
-//		 {"id":"10047700","x":1365154291081,"y":39},
-//		 {"id":"10047700","x":1364981506260,"y":8},
-//		 {"id":"10047700","x":1364808719334,"y":4},
-//		 {"id":"10025482","x":1365150803287,"y":12},
-//		 {"id":"10025482","x":1365067791706,"y":17},
-//		 {"id":"10025482","x":1364895001859,"y":34},
-//		 {"id":"10025482","x":1364808624402,"y":44},
-//		 {"id":"10025482","x":1364639432752,"y":44},
-//		 {"id":"10025482","x":1364553049117,"y":70},
-//		 {"id":"zyklus","x":1364571509073,"y":"Chemotherapie mit\nMethotrexat"},
-//		 {"id":"diagnose","x":1364471509073,"y":"Adenocarcinom T3M2"}
-//],
+		antagonist: null
 };
+
 
 Model.prototype.getActs = function()
 {
 	return this._data.acts;
+};
+
+Model.prototype.updateActWithId = function( act, id )
+{
+	for( var i = 0; i < this._data.acts.length; i++)
+	{
+		if(this._data.acts[i].zeit == act.zeit && this._data.acts[i].entitiesId == act.entitiesId) this._data.acts[i].id = id;
+	}
 };
 
 Model.prototype.setProtagonist = function ( actor )
@@ -77,15 +69,15 @@ Model.prototype.isPatient = function()
 
 Model.prototype.setIntro = function( type )
 {	
-	var customerObject = this._data.protagonist.customerObject || {};
-	
-	customerObject["intro"] = type;
-	
-	this._data.protagonist.customerObject = customerObject;
+	this._data.protagonist.customerObject = this._data.protagonist.customerObject || {};	
+		
+	this._data.protagonist.customerObject["intro"] = type;
 };
 Model.prototype.getIntro = function()
 {
-	return (this._data.protagonist.customerObject) ? this._data.protagonist.customerObject.intro : null;
+	if( !this._data.protagonist.customerObject || !this._data.protagonist.customerObject["intro"] ) return null;
+	
+	return this.dict["Intro"][ this._data.protagonist.customerObject.intro ];
 };
 
 Model.prototype.setAntagonist = function ( actor )
@@ -127,20 +119,11 @@ Model.prototype.removeFavorite = function( type, item )
 	localStorage.setItem( "device_actor", JSON.stringify( this._data.protagonist));	
 };
 
-Model.prototype.setCustomer = function( type, id )
-{
-	this._data.protagonist.customerObject[type] = id; 
-	
-	localStorage.setItem( "device_actor", JSON.stringify( this._data.protagonist));
-};
 
-Model.prototype.getCustomer = function( type )
-{
-	return this._data.protagonist.customer[type];
-};
 
 Model.prototype.addActs = function( acts )
 {
+	if( acts )
 	this._data["acts"] = this._data["acts"].concat( acts );
 };
 
@@ -152,9 +135,10 @@ Model.prototype.addPunkt = function( punkt )
 	if(!punkt) return;
 		
 	var element = {};
-	element.id = punkt.id;
-	element.x = punkt.x;
-	element.y = punkt.y;
+	element.entitiesId = punkt.id;
+	element.zeit = punkt.x;
+	element.wert = punkt.y;
+	element.upToDate = null;
 	
 	if( punkt.tipps ) element.tipps = punkt.tipps.slice(0);
 
@@ -165,9 +149,9 @@ Model.prototype.addPunkt = function( punkt )
 
 Model.prototype.removePunkt = function( punkt )
 {
-	for( var i = 0; i < this._data.punkte.length; i++)
+	for( var i = 0; i < this._data["acts"].length; i++)
 	{
-		if( this._data.punkte[i].id === punkt.id && this._data.punkte[i].x == punkt.x) this._data.punkte.splice(i,1);				
+		if( this._data["acts"][i].entitiesId === punkt.id && this._data["acts"][i].zeit == punkt.x) this._data["acts"].splice(i,1);				
 	}	
 
 	localStorage.setItem( "device_acts", JSON.stringify( this._data["acts"] ));
@@ -183,7 +167,7 @@ Model.prototype.hasFavoriteEdit = function( type )
 {
     var found = false;
     
-    this._data.actor["favorites"][type].forEach( function(element, index)
+    this._data.protagonist.favoritesObject[type].forEach( function(element, index)
 	{
 		if(element.edit) found = true;
 	});
@@ -238,9 +222,13 @@ Model.prototype.sortPunkteByTime = function(id)
  */
 Model.prototype.getSymptome = function()
 {    
+	var favorites = this.getFavorites().Symptome.map( function( entity ) { entity.id = entity.entitiesId; return entity; } );
+	
 	var symptome = this.dict["Symptome"].notIn( "id", this.getFavorites().Symptome );
-    
+	    
     symptome.sortABC( "title" );
+    
+    console.log( this.getFavorites().Symptome );
 
 	return symptome;
 };
@@ -256,6 +244,8 @@ Model.prototype.getUniquePunkte = function(id)
 	var punkte = this._data.acts.slice(0);
 	// First the selected element 
 	var ids = [];
+
+	if( id )
 	punkte.push( String( id ) );
 	
 	// than descending by time
@@ -266,7 +256,7 @@ Model.prototype.getUniquePunkte = function(id)
 	{		
 		if( ids.indexOf( element.entitiesId ) === -1 && element.entitiesId !== id)
 		{
-			ids.push( element.entititesId );
+			ids.push( element.entitiesId );
 		}
 	});	
 	
@@ -295,8 +285,6 @@ Model.prototype.getTypesByPunkt = function( id )
 Model.prototype.getType = function( id )
 {
 	var dictionary = [].concat(this.dict["Symptome"], this.dict["Bewertung"], this.dict["Tagebuch"], this.dict["Tipps"]);
-	
-	//console.log( this.dict );
 	
 	for( var i = 0; i < dictionary.length; i++)
 	{
@@ -357,8 +345,6 @@ Model.prototype.getStateFavitEdit = function() { return this._state.favitEdit; }
 Model.prototype.setStateFavitEdit = function( value ) { this._state.favitEdit = value; };
 Model.prototype.getStateSymptom = function() { return this._state.currentItem;};
 Model.prototype.setStateSymptom = function( value ) { this._state.currentItem = value;};
-Model.prototype.getStateTipp = function() { return this._state.tipItem;};
-Model.prototype.setStateTipp = function( value ) { this._state.tipItem = value; };
 
 /**
  * APP TEMP STATUS
@@ -375,8 +361,8 @@ Model.prototype._state =
  * Punkt x:LocalTimeInMs, y [0 - 100], id: type.id
  */
 
-
-
+Model.prototype.getStateTipp = function() { return this._state.tipItem;};
+Model.prototype.setStateTipp = function( value ) { this._state.tipItem = value; };
 
 // TIPP DISPLAY COUNTER
 // data { liked: true || false }
@@ -391,6 +377,7 @@ Model.prototype.setTipp = function( data )
 	this.trackPunktTipp( (data.liked) ? "liked" : "disliked" );
 };
 /**
+ * TODO customize entitiesID
  * data { property : "liked" || "disliked" || "clicked" }
  */
 Model.prototype.trackPunktTipp = function( property )
@@ -431,11 +418,11 @@ Model.prototype.trackPunktLikedOrNotExists = function()
 {
 	var tippId = this.getStateTipp().id;
 	
-	if( this._data.punkte.length == 0 ) return true;
+	if( this._data.acts.length == 0 ) return true;
 	
-	for( var i = 0; i < this._data.punkte.length; i++)
+	for( var i = 0; i < this._data.acts.length; i++)
 	{
-		var punkt = this._data.punkte[i];
+		var punkt = this._data.acts[i];
 				
 		if( punkt.id == this.getStateSymptom().id && punkt.x == this.getStateSymptom().x)
 		{

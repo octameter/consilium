@@ -25,7 +25,8 @@ Controller.prototype.queue = [];
 
 Controller.prototype.dispatchCommand = function(eventName, data)
 {
-	if( app.debug ) console.log( app.context, this.commands[eventName].callback.name, data);
+	if( app.debug && this.commands[eventName].callback.name != "tapHandlerCommand") 
+	console.log( app.context, this.commands[eventName].callback.name, data);
 
 	(this.commands[eventName]) ?  this.commands[eventName].execute(data) : console.log("Command "+eventName+" not registered");	
 };

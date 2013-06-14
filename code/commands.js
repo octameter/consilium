@@ -18,6 +18,7 @@ Events =
 	REQUEST:"request",
 	RESPONSE:"response",
 	SYNC:"sync",
+	SYNC_RESULT:"sync result",
 		
 	START:"start",
 	INFO_START:"info_start",
@@ -35,6 +36,7 @@ Events =
 	OPTIONEN_TO_HOME:"optionenToHome",
 	SCAN:"scan",
 	SCAN_RESULT:"scan_result",
+	SCAN_RESULT_QUERY:"scan_result_query",
 
 	FAVORITES_INIT:"favorites_init",
 	FAVORITES_ROW:"favorites_row",
@@ -110,7 +112,7 @@ function startCommand( event )
 		
 		DOM("app").style("top","40px");
 		
-		DOM("xauth").addChild( "iframe", { id:"apiId", src:"http://localhost:8888/konto", style:"position:fixed; width:100%; height:42px; border:none;"} ).onLoad( Events.REQUEST, { "request":"ACTOR_GET"} );
+		DOM("xauth").addChild( "iframe", { id:"apiId", src : app.konto, style:"position:fixed; width:100%; height:42px; border:none;"} ).onLoad( Events.REQUEST, { "request":"ACTOR_GET"} );
 		
 		app.storage = document.getElementById( "apiId" ).contentWindow;
 	}
@@ -124,8 +126,20 @@ function requestCommand( data )
 		{
             data.actor = JSON.parse( localStorage.getItem("device_actor") );
 		}
+		
+		if( data.request == "ACTOR_UPDATE")
+		{
+			var lokal = JSON.parse( localStorage.getItem("device_actor") );
+			
+			if( lokal.upToDate > data.actor.upToDate )
+			{
+				data.actor.favoritesObject = lokal.favoritesObject;			
+				data.actor.customerObject = lokal.customerObject;			
+				data.actor.upToDate = lokal.upToDate;
+			}
+		}
 		// NO PATIENT_GET
-		if( data.request == "ACTS_SAVE")
+		if( data.request == "ACTS_GET")
 		{
 			if( localStorage.getItem("device_acts") ) 
 			this.model._data["acts"] = JSON.parse( localStorage.getItem("device_acts") );		
@@ -133,7 +147,7 @@ function requestCommand( data )
 		
 		if( data.request == "FAVORITES_SAVE")
 		{
-			localStorage.setItem( "device_protagonist", JSON.stringify( this.model.getProtagonist() ));	
+			localStorage.setItem( "device_actor", JSON.stringify( this.model.getProtagonist() ));	
 		}
 		
 		
@@ -181,53 +195,85 @@ function requestCommand( data )
 
 function responseCommand( data )
 {
-	if( data.request == "ACTS_GET" && data.type == "SUCCESS") {
-		// model
-		this.model.addActs( data.json );
-		
-		dispatchCommand( Events.HOME_INIT);
-	}
-	
-	if( data.request == "ACTOR_GET") {
-			
-		this.model.setProtagonist( data.actor );
-		
-        if( app.client == "DEVICE" ) localStorage.setItem("device_actor", JSON.stringify( this.model.getProtagonist() ) );
-        
-		if( this.model.isArzt() )
-		dispatchCommand( Events.REQUEST, { request:"PATIENT_GET" } );
-		
-		// DEFAULT PROTAGONIST IS PATIENT
-		if( this.model.isPatient() && data.actor)
-		dispatchCommand( Events.REQUEST, { request:"ACTS_GET", antagonistId:data.actor.id } );
-        
-		if( !data.actor )
+	if( app.client == "DEVICE")
+	{
+		if( data.request == "ACTOR_GET") 
 		{
-			this.model.setIntro( "INTRO" );
+			// DEFAULT OR REAL ACTOR AVAILABLE
+			this.model.setProtagonist( data.actor );			
+			localStorage.setItem("device_actor", JSON.stringify( this.model.getProtagonist() ) );
 			
-			dispatchCommand( Events.HOME_INIT );
+			dispatchCommand( Events.REQUEST, { request:"ACTS_GET", antagonistId:this.model.getProtagonist().id } );
 		}
 		
+		if( data.request == "ACTOR_UPDATE")
+		{
+			this.model.setProtagonist( data.actor );
+			
+			localStorage.setItem("device_actor", JSON.stringify( this.model.getProtagonist() ) );
+			
+			this.model.setIntro( data.actor.scope );
+			
+			dispatchCommand( Events.OPTIONEN_INIT, { status: "Erfolgreich"} );
+		}
+		
+		if( data.request == "ACTS_GET") 
+		{			
+			this.model.addActs( data.json );
+			
+			dispatchCommand( Events.HOME_INIT);		
+		}
+	}
+	
+	if( app.client == "DESKTOP")
+	{
+		if( data.request == "ACTOR_GET") 
+		{
+			// DEFAULT OR REAL ACTOR AVAILABLE		
+			this.model.setProtagonist( data.actor );
+			
+			if( this.model.isArzt() )
+			dispatchCommand( Events.REQUEST, { request:"PATIENT_GET" } );
+			
+			// DEFAULT PROTAGONIST IS PATIENT
+			if( this.model.isPatient() && data.actor)
+			dispatchCommand( Events.REQUEST, { request:"ACTS_GET", antagonistId:data.actor.id } );
+	        
+			if( !data.actor )
+			{
+				this.model.setIntro( "INTRO" );
+				
+				dispatchCommand( Events.HOME_INIT );
+			}			
+		}
+		
+		if( data.request == "ACTS_GET" && data.type == "SUCCESS") {
+			// model
+			this.model.addActs( data.json );
+			
+			dispatchCommand( Events.HOME_INIT);
+		}
+		
+		if( data.request == "PATIENT_GET") 
+		{	
+			this.model.setAntagonist( data.patient );
+			
+			if( this.model.hasAntagonist() )
+			{
+				DOM("titleId").text( data.patient.roleLabel);
+				DOM("titleId").style( "position", "absolute");
+				DOM("titleId").style( "left", "20px");
+				
+				dispatchCommand( Events.REQUEST, { request:"ACTS_GET", antagonistId:data.patient.id } );
+			}
+			
+			
+			if( !this.model.hasAntagonist() )
+			dispatchCommand( Events.REQUEST, { request:"REDIRECT", target:"Akte"})
+		}
 	}
 
-	if( data.request == "PATIENT_GET") 
-	{	
-		this.model.setAntagonist( data.patient );
-		
-		if( this.model.hasAntagonist() )
-		{
-			DOM("titleId").text( data.patient.roleLabel);
-			DOM("titleId").style( "position", "absolute");
-			DOM("titleId").style( "left", "20px");
-			
-			dispatchCommand( Events.REQUEST, { request:"ACTS_GET", antagonistId:data.patient.id } );
-		}
-		
-		
-		if( !this.model.hasAntagonist() )
-		dispatchCommand( Events.REQUEST, { request:"REDIRECT", target:"Akte"})
-	}
-	
+	// SAME FOR CLIENT DEVICE AND DEKSTOP
 	if( data.request == "REDIRECT") location.replace(data.target);  
 	
 	if( data.request == "FAVORITES_SAVE" ) dispatchCommand( Events.SYMPTOME_TO_FAVORITES);
@@ -235,21 +281,9 @@ function responseCommand( data )
 
 
 
-function syncCommand( event )
-{
-	if( !this.model._data.customer.lastSync )
-	{
-		this.model.addPunkt( {"x":1364571509073, "y": "Chemotherapie mit\n\Methotrexat", "id": "zyklus"} ); 	 	
-		this.model.addPunkt( {"x":1364471509073, "y": "Adenocarcinom T3M2", "id": "diagnose"} ); 	 			
-	}
-	
-	this.model.setCustomer("lastSync", zeit());
-	
-	dispatchCommand( Events.OPTIONEN_INIT);
-};
 
 function homeInitCommand( event )
-{	
+{		
 	// LOAD DATA INTO MEMORY	
 	if( event.introExit) {
 		
@@ -291,20 +325,25 @@ function homeIntroCommand( event )
     
 	var type = "";
 	
-	console.log( this.model.getIntro(),  this.model.isPatient(), app.client);
-	
 	if( this.model.getIntro() == "INTRO" && this.model.isPatient() && app.client == "DESKTOP") type = "DESKTOP";
 	
 	if( this.model.getIntro() == "INTRO" && app.client == "DEVICE") type = "DEVICE";
 	
-	DOM( div ).addChild( "p", {}, this.model.dict.Intro[type].title );
-	
-	for( var i = 0; i < this.model.dict.Intro[type].bausteine.length; i++)
-	{
-		DOM( div ).addChild( "p", {}, this.model.dict.Intro[type].bausteine[i] );		
-	}
+	if( this.model.getIntro() == "GRUPPE B" && this.model.isPatient() ) type = "Gruppe B"; 
 
-	DOM( div ).addChild( "a", { class:"button-action blue", style:"width:200px; height:40px" }, "Schliessen").onTouch( Events.HOME_INIT, { introExit: true } );
+	if( this.model.getIntro() == "GRUPPE C" && this.model.isPatient() ) type = "Gruppe C"; 
+	
+	if( this.model.dict.Intro[type] )
+	{		
+		DOM( div ).addChild( "p", {}, this.model.dict.Intro[type].title );
+		
+		for( var i = 0; i < this.model.dict.Intro[type].bausteine.length; i++)
+		{
+			DOM( div ).addChild( "p", {}, this.model.dict.Intro[type].bausteine[i] );		
+		}
+	
+		DOM( div ).addChild( "a", { class:"button-action blue", style:"width:200px; height:40px" }, "Schliessen").onTouch( Events.HOME_INIT, { introExit: true } );
+	}
 }
 
 function homeVerlaufCommand( data )
@@ -327,7 +366,7 @@ function homeVerlaufCommand( data )
 	DOM( "fieldsetAuswahl").addChild( "legend", { id:"homeAuswahlLegend"} );
 	DOM( "fieldsetAuswahl").addChild( "div", { id:"homeAuswahlInfo"} );
 	DOM( "fieldsetAuswahl").hide();
-	
+
 	this.model.sortPunkteByTime();
 	
 	DOM().plugins( "svg" ).refresh();
@@ -588,21 +627,21 @@ function optionenInitCommand( data )
 		DOM( "optStatus"  ).addChild( "a", { style:"position:absolute;top:6px;right:2px;color:darkblue" }, "Verbunden" ); 	
 
 		// LOGIN
-		DOM("optionenFormId").addChild("fieldset", { id:"fieldsetLogin", style:"text-align:left;"}).addChild( "legend", {}, "Login" );		
-		DOM( "fieldsetLogin"  ).addChild("div", { id:"optLogin"} );
-		DOM( "optLogin").addChild("p", {}, "<b>PatientIn-Id:</b> "+this.model._data["customer"].login.patId);
-		DOM( "optLogin").addChild("p", {}, "<b>Password:</b> "+this.model._data["customer"].login.pwd);
-		DOM( "optLogin").addChild("p", {}, "<b>Gruppe:</b> "+this.model._data["customer"].login.gruppe);
+//		DOM("optionenFormId").addChild("fieldset", { id:"fieldsetLogin", style:"text-align:left;"}).addChild( "legend", {}, "Login" );		
+//		DOM( "fieldsetLogin"  ).addChild("div", { id:"optLogin"} );
+//		DOM( "optLogin").addChild("p", {}, "<b>PatientIn-Id:</b> "+this.model._data["customer"].login.patId);
+//		DOM( "optLogin").addChild("p", {}, "<b>Password:</b> "+this.model._data["customer"].login.pwd);
+//		DOM( "optLogin").addChild("p", {}, "<b>Gruppe:</b> "+this.model._data["customer"].login.gruppe);
 		
 		// SYNC
 		DOM("optionenFormId").addChild("fieldset", { id:"fieldsetSync", style:"text-align:left;"}).addChild( "legend", {}, "Synchronisation" );	
 		DOM( "fieldsetSync"  ).addChild("div", { id:"optSync"} );
 		
-		if( this.model._data["customer"].lastSync )
+		if( this.model.getProtagonist().upToDate )
 		{
 			DOM( "optSync" ).addChild( "span", { }, "<b>Zuletzt</b>");
 			DOM( "optSync" ).addChild( "br" );
-			DOM( "optSync" ).addChild( "span", { style:"font-size:90%"}, "<i>"+zeit("dd.MM.yyyy hh:mm", this.model._data["customer"].lastSync)+"</i>" ); 					
+			DOM( "optSync" ).addChild( "span", { style:"font-size:90%"}, "<i>"+zeit("dd.MM.yyyy hh:mm", this.model.getProtagonist().upToDate)+"</i>" ); 					
 		}
 		else
 		{
@@ -610,7 +649,7 @@ function optionenInitCommand( data )
 			DOM( "optSync" ).addChild( "br" );
 			DOM( "optSync" ).addChild( "span", { style:"font-size:90%"}, "<i>&nbsp;</i>" ); 	
 		}
-		DOM( "optSync" ).addChild( "a", { class:"button-action blue", style:"position:absolute;top:6px;right:2px;"}, "Sync").onTouch(Events.SYNC);
+		DOM( "optSync" ).addChild( "a", { class:"button-action blue", style:"position:absolute;top:6px;right:2px;"}, "Sync").onTouch(Events.SYNC, { status:"START" });
 	}
 	else
 	{
@@ -637,7 +676,7 @@ function scanCommand( data )
             });
         } catch (ex) {        
         	// DESKTOP WILL ALWAYS DISPATCH THIS AND SOMETIMES DEVICE
-        	dispatchCommand( Events.SCAN_RESULT, { error : ex.message} );
+        	dispatchCommand( Events.SCAN_RESULT, { error : ex.message } );
         }
 };
 
@@ -645,14 +684,39 @@ function scanCommand( data )
  * event { result: "", format:"QR_CODE", error:"message" }
  * @param event
  */
-function scanResultCommand( event )
-{	
-	
-	if( event.format == "QR_CODE" || event.error == "Cannot read property 'barcodeScanner' of undefined")
+function scanResultCommand( data )
+{		
+	// DEKSTOP BROWSER TESTING
+	if( data.error == "Cannot read property 'barcodeScanner' of undefined" && app.debug)
 	{
-        var request = new XMLHTTPRequest();
-        // TODO QUERY NODE
-        // MAYBE BUDY INDICATOR
+		// Arzt
+		data.result = "VAXX2";
+		data.format = "QR_CODE";
+	}
+	// DEVICE BROWSER TESTING
+	if( data.error == "'undefined' is not an object" && app.debug ) 
+	{
+		
+		// Patient
+		data.result = "VAXX2";
+		data.format = "QR_CODE";
+	}
+	
+	if( data.format == "QR_CODE" )
+	{	
+		var node = new Node( app.server );
+		
+		function success( payload ) 
+		{ 
+			dispatchCommand( Events.SCAN_RESULT_QUERY, { type:"SUCCESS", json: payload }  );
+		};
+		
+		function error( message )
+		{
+			dispatchCommand(Events.SCAN_RESULT_QUERY, { type:"ERROR", message: message } );
+		}
+		
+		node.authorize( data.result, success, error );
 	}
 	else
 	{
@@ -661,22 +725,108 @@ function scanResultCommand( event )
 
 };
 
+/**
+ * 
+ */
 function scanResultQueryCommand( data )
 {
-    if( data.status == 200 )
+    if( data.json )
     {
-        // CHECK ONLINE STATUS OF DEVICE
-  		this.model.setCustomer("login", { patId : "Pat001", pwd: "987234", gruppe:"B"});
-			
-		if( this.model._data["customer"].login.gruppe == "B")
-		this.model.setIntro("Gruppe B");
-			
-		if( this.model._data["customer"].login.gruppe == "C")
-		this.model.setIntro("Gruppe C");
-
-		dispatchCommand( Events.OPTIONEN_INIT, { status: "Erfolgreich"} );
+    	dispatchCommand( Events.REQUEST, { request:"ACTOR_UPDATE", actor:data.json} );
     }
 };
+
+// ONLY DEVICE AND PATIENT CAN CALL
+// TODO SERVER NOT AVAIABLE
+function syncCommand( event )
+{
+	// UPDATE ACTS FROM REMOTE SINCE LAST UPDATE
+	if( event.status == "START" )
+	{
+		var node = new Node( app.server );
+		
+		var antagonistId = this.model.getProtagonist().id;
+		
+		node.listActsForAntagonistId( antagonistId, localStorage.getItem("device_upToDate" ), 
+				
+			function( payload )
+			{
+				dispatchCommand( Events.SYNC_RESULT, { status : "START", json : payload });
+			}, 
+			function( message ) {}
+		);
+	}
+	
+	if( event.status == "ACTS")
+	{
+		var acts = this.model.getActs();
+			
+		var counter = 0;
+		
+		for( var i = 0; i < acts.length; i++)
+		{		
+			if( !acts[i].id )
+			{		
+				counter++;		
+
+				var act = {};
+				
+				act.protagonistId = this.model.getProtagonist().id ;
+				act.antagonistId = this.model.getProtagonist().id;
+				act.entitiesId = acts[i].entitiesId;
+				act.zeit = acts[i].zeit;
+				act.wert = acts[i].wert;
+				
+				var node = new Node( app.server );
+				
+				node.createAct(act, 
+					function( payload )
+					{
+						dispatchCommand( Events.SYNC_RESULT, { status: "ACTS", act:act, json:payload });
+						
+						counter--;
+						
+						if( counter == 0) dispatchCommand( Events.SYNC_RESULT, { status: "ACTS" });
+					}, 
+					function( message )
+					{
+						console.log( message );
+					}
+				);
+			}
+		}			
+		if( counter == 0) dispatchCommand( Events.SYNC_RESULT, { status: "ACTS" });
+	}
+};
+
+function syncResultCommand( data )
+{
+	if( data.status == "START")
+	{
+		this.model._data.acts = this.model._data.acts.concat( data.json );
+		
+		localStorage.setItem("device_acts", JSON.stringify( this.model._data.acts ));
+				
+		dispatchCommand( Events.SYNC, { status:"ACTS"} );
+	}
+	
+	if( data.status == "ACTS")
+	{				
+		if( data.act && data.json )
+		{
+			this.model.updateActWithId( data.act, data.json.insertId );
+			
+			if(this.model.getActs().length > 0)
+				localStorage.setItem("device_acts", JSON.stringify( this.model._data.acts ));
+			
+			localStorage.setItem("device_upToDate", zeit() );			
+		}
+		// ENDE BATCH QUERY
+		else dispatchCommand( Events.OPTIONEN_INIT);
+	}
+	
+};
+
 
 /**
  * SYMPTOME INIT
@@ -742,8 +892,6 @@ function favoritesChangeCommand( data )
 function favoritesInitCommand( data )
 {			
 	DOM( this.properties.id ).removeElements().appendChild("form", { id : "favFormId" } );
-	
-    console.log( this.model.getFavorites() , this.model.getProtagonist() );
     
 	for(var favorite in this.model.getFavorites() )
 	{
@@ -848,6 +996,8 @@ function favoritesDeleteCommand( data )
  
 function favoritesEditCommand( data )
 {		
+	//console.log( data.punkt, data.type );
+
 	var value = {};
 	
 	if( !data.type )
@@ -859,8 +1009,8 @@ function favoritesEditCommand( data )
 	
 	if( data.punkt )
 	{
-		value.y = data.punkt.y;
-		value.x = data.punkt.x;
+		value.y = data.punkt.wert;
+		value.x = data.punkt.zeit;
 	}
 	else
 	{
@@ -907,7 +1057,7 @@ function favoriteInitCommand( data )
 {	
 	// ITEM TO MODIFY
 	var item = this.model.getStateSymptom(); 
-
+	
 	// LEGENDE LABEL
 	var kategorie = this.model.getType( item.id ).kategorie;
 		
@@ -999,6 +1149,8 @@ function favoriteInitCommand( data )
 		dispatchCommand( Events.SLIDER );
 		dispatchCommand( Events.TIPPS_SHOW );				
 	}
+	
+
 
 };
 

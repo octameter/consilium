@@ -116,6 +116,7 @@
    		<script type="text/javascript" charset="utf-8" src="code/entities.js"></script>
    		<script type="text/javascript" charset="utf-8" src="code/model.js"></script>
    		<script type="text/javascript" charset="utf-8" src="code/commands.js"></script>
+		<script type="text/javascript" charset="utf-8" src="code/node.js"></script>
 	
 		<script type="text/javascript" charset="utf-8" src="code/plugins/svg.js"></script>
 		<script type="text/javascript" charset="utf-8" src="code/plugins/agent.js"></script>
@@ -137,7 +138,8 @@
    						addCommand( Events.TAP_HANDLER, tapHandlerCommand ); 		  						
    						addCommand( Events.START, startCommand ); 		  							  						
    						addCommand( Events.HIDDEN, hiddenCommand ); 		  							  						  						
-   						addCommand( Events.SYNC, syncCommand ); 		  						
+   						addCommand( Events.SYNC, syncCommand ); 		  						  						
+   						addCommand( Events.SYNC_RESULT, syncResultCommand ); 		  						
    						addCommand( Events.ROW, rowCommand ); 		  						
    						
    						addCommand( Events.INFO_START, infoStartCommand );
@@ -163,6 +165,7 @@
    						addCommand( Events.OPTIONEN_INIT, optionenInitCommand, { id:"optionenContentId"} ); 	
    						addCommand( Events.SCAN, scanCommand); 	
    						addCommand( Events.SCAN_RESULT, scanResultCommand); 	
+   						addCommand( Events.SCAN_RESULT_QUERY, scanResultQueryCommand); 	
    						addCommand( Events.OPTIONEN_TO_HOME, changeViewCommand, { from:"optionenId", to:"homeId", direction:"left" } ); 	
    						
    						addCommand( Events.SYMPTOME_INIT, symptomeInitCommand, { id:"symptomeContentId" }); 	
@@ -223,10 +226,9 @@
    						DOM("tippId").onStage( Events.TIPP_INIT ); 
    						DOM("tippBackButton").onTouch( Events.TIPP_EXIT );
    						
-   				
-   						
+   				   						
    						// START DESKTOP OR DEVICE
-   						if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/) || true) 
+   						if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/) ) 
    						{
    							this.client = "DEVICE";				
 	   						(this.debug) ? DOM().onDOM( Events.START) : DOM().onDevice( Events.START);			
@@ -241,6 +243,19 @@
    					initialize:function() 
    					{
    						this.debug = true;
+   						
+   	   					/**
+   	   					* LOKAL
+   	   					*/
+   						this.server = "http://10.129.144.18:8080";
+   						this.konto = "http://localhost:8888/konto";
+   						
+   	   					/**
+   	   					* LIVE
+   						this.server = "https://node.epha.ch"; 
+   						this.konto = "http://konto.epha.ch";
+   	   					*/
+   						
    						this.context = "CONSILIUM ->";
 
    						this.addCommands();
@@ -250,7 +265,7 @@
 
    			app.initialize();
 	
-            // localStorage.clear();
+           //localStorage.clear();
    			// var encrypted = CryptoJS.HmacSHA256("raw", "secret");
    			// console.log( encrypted.toString( CryptoJS.enc.Base64) );
 
