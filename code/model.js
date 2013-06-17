@@ -345,6 +345,8 @@ Model.prototype.getStateFavitEdit = function() { return this._state.favitEdit; }
 Model.prototype.setStateFavitEdit = function( value ) { this._state.favitEdit = value; };
 Model.prototype.getStateSymptom = function() { return this._state.currentItem;};
 Model.prototype.setStateSymptom = function( value ) { this._state.currentItem = value;};
+Model.prototype.getStateTemp = function() { return this._state.tempItem;};
+Model.prototype.setStateTemp = function( value ) { this._state.tempItem = value;};
 
 /**
  * APP TEMP STATUS

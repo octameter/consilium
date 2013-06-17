@@ -100,28 +100,23 @@
         	<article id="optionenContentId" style="display:none"></article>
         	
         </section>
-    <!--
-   	<script type="text/javascript" src="cordova.js"></script>			
-	<script type="text/javascript" src="barcodescanner.js"></script>	
-  	<script type="text/javascript" src="childbrowser.js"></script>
-    <script type="text/javascript" src="GAPlugin.js"></script> 			
-    -->		
+  		<!-- TODO
+  		<script type="text/javascript" src="childbrowser.js"></script>
+    	<script type="text/javascript" src="GAPlugin.js"></script>
+  		 -->
 
-   		<script type="text/javascript" charset="utf-8" src="code/plugins/sha256.js"></script>
-   		<script type="text/javascript" charset="utf-8" src="code/plugins/aes.js"></script>
+    	<!-- BUILD PHONEGAP
+   		<script type="text/javascript" src="cordova.js"></script>			
+		<script type="text/javascript" src="barcodescanner.js"></script>	
+    	-->
 
-   		<script type="text/javascript" charset="utf-8" src="code/pattern.js"></script>
-   		<script type="text/javascript" charset="utf-8" src="code/prototype.js"></script>
-   		<script type="text/javascript" charset="utf-8" src="code/dom.js"></script>
+		<!-- MINIFIED REQUIRED LIBRARIES -->
+    	<script type="text/javascript" charset="utf-8" src="code/library.0.1.1.js"></script>
+
+		<!-- PROJECT SPECIFIC-->
    		<script type="text/javascript" charset="utf-8" src="code/entities.js"></script>
    		<script type="text/javascript" charset="utf-8" src="code/model.js"></script>
    		<script type="text/javascript" charset="utf-8" src="code/commands.js"></script>
-		<script type="text/javascript" charset="utf-8" src="code/node.js"></script>
-	
-		<script type="text/javascript" charset="utf-8" src="code/plugins/svg.js"></script>
-		<script type="text/javascript" charset="utf-8" src="code/plugins/agent.js"></script>
-		<script type="text/javascript" charset="utf-8" src="code/plugins/assets.js"></script>
-
    		<script type="text/javascript" charset="utf-8">
 
    			var app = {
@@ -155,6 +150,7 @@
    						addCommand( Events.HOME_TO_FAVORITE, changeViewCommand,{ from:"homeId", to:"favoriteId", direction:"left" } );					
    						
    						addCommand( Events.TIPPS_SHOW, tippsShowCommand ); 	
+   						addCommand( Events.TIPP_SHOW, tippShowCommand ); 	
    						addCommand( Events.TIPPS_SELECTED, tippsSelectedCommand ); 	
    						addCommand( Events.TIPP_INIT, tippInitCommand, { id:"tippContentId"} ); 	
    						addCommand( Events.TIPP_LIKED, tippLikedCommand ); 	
@@ -228,7 +224,7 @@
    						
    				   						
    						// START DESKTOP OR DEVICE
-   						if (navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/) ) 
+   						if ( navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/) ) 
    						{
    							this.client = "DEVICE";				
 	   						(this.debug) ? DOM().onDOM( Events.START) : DOM().onDevice( Events.START);			
@@ -240,32 +236,39 @@
    						}
 
    					},
-   					initialize:function() 
+   					initialize:function( live, debug ) 
    					{
-   						this.debug = true;
+   						this.debug = debug;
    						
-   	   					/**
-   	   					* LOKAL
-   	   					*/
-   						this.server = "http://10.129.144.18:8080";
-   						this.konto = "http://localhost:8888/konto";
+   						if( live )
+   						{
+   	   						this.server = new Node( "https://node.epha.ch" ); 
+   	   						this.konto = "http://konto.epha.ch";		
+   	   						this.live = true;
+   						}
    						
-   	   					/**
-   	   					* LIVE
-   						this.server = "https://node.epha.ch"; 
-   						this.konto = "http://konto.epha.ch";
-   	   					*/
+   						if( !live )
+   						{
+   	   						this.server = new Node( "http://10.129.144.18:8080" );
+   	   						this.konto = "http://localhost:8888/konto";	
+   	   						this.live = false;
+   						}
    						
+   	   					this.svg = new Svg("svgZeit");
+   	   					
+   	   					this.agent = new Agent();
+   	   					
    						this.context = "CONSILIUM ->";
 
    						this.addCommands();
+   						
    						this.bind();	
    					}
    			};
 
-   			app.initialize();
+   			// CUSTOMIZE FOR ENVIROMENT LIVE Boolean Debug Boolean
+   			app.initialize(false, false);
 	
-           //localStorage.clear();
    			// var encrypted = CryptoJS.HmacSHA256("raw", "secret");
    			// console.log( encrypted.toString( CryptoJS.enc.Base64) );
 

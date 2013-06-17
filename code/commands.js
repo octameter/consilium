@@ -62,6 +62,7 @@ Events =
 	FAVORITE_TO_TIPP:"favorite_to_tip",
 	
 	TIPPS_SHOW:"tipps_show",
+	TIPP_SHOW:"tipp_show",
 	TIPPS_SELECTED:"tipps_selected",
 	TIPP_INIT:"tipp_init",
 	TIPP_LIKED:"tipp_liked",
@@ -149,7 +150,7 @@ function requestCommand( data )
 		{
 			localStorage.setItem( "device_actor", JSON.stringify( this.model.getProtagonist() ));	
 		}
-		
+		// ENTITIY EVALUATION
 		
 		dispatchCommand( Events.RESPONSE, data);
 	}
@@ -164,21 +165,20 @@ function requestCommand( data )
 		
 		if( data.request == "REDIRECT")	app.storage.postMessage( { request:"REDIRECT", target:data.target }, "*");	
 		
-		if( data.request == "ACTS_SAVE") 
+		if( data.request == "ACT_SAVE") 
 		{
-			function remote( row )
-			{
-				var payload = {};
-				payload.protagonistId = 1;
-				payload.antagonistId = 2;
-				payload.entitiesId = row.id;
-				payload.zeit = row.x;
-				payload.wert = row.y;
+			app.storage.postMessage( { request:"ACTS_SAVE", 
 				
-				return payload;
-			}
+				act:{
+					protagonistId:1,
+					antagonistId:2,
+					entitiesId:data.id,
+					zeit:data.x,
+					wert:data.y
+				}
 			
-			app.storage.postMessage( { request:"ACTS_SAVE", acts:data.acts.map( remote ) }, "*");	
+			}, "*" );
+			
 		}
 		
 		if( data.request == "FAVORITES_SAVE")
@@ -189,6 +189,11 @@ function requestCommand( data )
 			};
 			
 			app.storage.postMessage( { request:"FAVORITES_SAVE", protagonist:payload }, "*");				
+		}
+		
+		if( data.request == "ENTITY_EVALUATION")
+		{
+			app.storage.postMessage( { request:"ENTITY_EVALUATION", tipp:data.tipp}, "*");
 		}
 	}
 };
@@ -223,6 +228,11 @@ function responseCommand( data )
 			
 			dispatchCommand( Events.HOME_INIT);		
 		}
+		
+		if( data.request == "ENTITY_EVALUATION")
+		{
+			dispatchCommand( Events.TIPP_SHOW, data.tipp);
+		}
 	}
 	
 	if( app.client == "DESKTOP")
@@ -247,7 +257,7 @@ function responseCommand( data )
 			}			
 		}
 		
-		if( data.request == "ACTS_GET" && data.type == "SUCCESS") {
+		if( data.request == "ACTS_GET") {
 			// model
 			this.model.addActs( data.json );
 			
@@ -348,16 +358,16 @@ function homeIntroCommand( event )
 
 function homeVerlaufCommand( data )
 {		
-	var scroller = this.properties.scroller;
+	var scrollerId = this.properties.scroller;
 	
-	if( ! DOM( scroller ).element() )
+	if( ! DOM( scrollerId ).element() )
 	{
 		DOM( this.properties.id ).addChild( "div", { id:"homeVerlauf"} );
 		DOM( "homeVerlauf" ).addChild( "div", { id:"chart", class:"chart"} );
 		
-		DOM( "chart").addChild("div", { id:scroller, class:"scrollableX"}).onTouch( Events.INFO_START, { id:scroller } ); 	
+		DOM( "chart").addChild("div", { id:scrollerId, class:"scrollableX"}).onTouch( Events.INFO_START, { id:scrollerId } ); 	
 		
-		DOM( scroller ).plugins( "svg" ).create();	
+		app.svg.setContainer( scrollerId );
 	}
 	
 	( ! DOM( "homeForm" ).element() ) ? DOM( "homeVerlauf" ).appendChild( "form", { id:"homeForm"} ) : DOM(  "homeForm" ).removeElements();
@@ -369,7 +379,7 @@ function homeVerlaufCommand( data )
 
 	this.model.sortPunkteByTime();
 	
-	DOM().plugins( "svg" ).refresh();
+	app.svg.refresh();
     
 	dispatchCommand( Events.HOME_VERLAUF_SELECTED );
 };
@@ -508,48 +518,46 @@ function tapHandlerCommand( event )
 };
 
 function tippsShowCommand ( event )
-{			
-	var temp = this.model._state.tempItem;
-	
-	data = { type:temp.id, value:temp.y, key:temp.x };
-	
-	if( DOM("fieldsetTipp").element() )
-	{
-		DOM("fieldsetTipp").removeElements();
-	}
-	else
-	{
-		DOM( "favitFormId").appendChild( "fieldset", { id:"fieldsetTipp"} );		
-	}
+{				
+	// CLEAN IF NECESSARY
+	( DOM("fieldsetTipp").element() ) ? DOM("fieldsetTipp").removeElements() : DOM( "favitFormId").appendChild( "fieldset", { id:"fieldsetTipp"} );		
+
+	// BASIC SETUP
 	DOM( "fieldsetTipp").addChild( "legend", {}, "Empfehlungen" );
 	DOM( "fieldsetTipp").addChild( "ul", { class:"listeNext", id:"homeTipps" }).onTap( Events.TAP_HANDLER, { watch:"tagName:LI", command:Events.TIPPS_SELECTED } );
 	DOM( "fieldsetTipp").hide();	
+
+	var temp = this.model.getStateTemp();
 	
-	var tipps = this.model.getEmpfehlungen( data );
+	var tipps = this.model.getEmpfehlungen( { type:temp.id, value:temp.y, key:temp.x } );
 
+	//OLD Array bausteine:Array, dislikes, id, kategorie, likes, title
+	
 	for( var i = 0; i < tipps.length; i++)
-	{	
-		var likes = parseInt( tipps[i].likes );
-		var dislikes = parseInt( tipps[i].dislikes );
-
-		var exportData =  tipps[i];
-		
-		var item1 = DOM( "homeTipps" ).addChild( "li", { style:"padding-top:5px;padding-bottom:5px;", data: JSON.stringify( exportData ) });
-		
-		DOM( item1 ).appendChild("span", { style:"padding-top:10px; padding-right:30px;"}, "<b>"+tipps[i].title+"</b>");	
-		DOM( item1 ).appendChild("br", {}, "");	
-		DOM( item1 ).appendChild("span", { style:"font-size:90%;margin:1px;float:left;" }, "<i>"+tipps[i].kategorie+"</i>");				
-		DOM( item1 ).appendChild("div", { class:"row_caret", style:"top:16px;"} ).appendChild( Assets.caret() );
-		
-		// Community Bewertung
-		if( (likes + dislikes) > 0 && false)
-		{
-			DOM( item1 ).appendChild("span", { style:"position:absolute; top:6px; right:18px; font-size:90%"}, "<i>Empfohlen</i>");				
-			DOM( item1 ).appendChild("span", { style:"position:absolute; top:23px; right:18px; font-size:90%"}, "<i>" +likes+" von "+( likes + dislikes )+ "<i>");		
-		}
-		
-		DOM( "fieldsetTipp").show();
+	{
+		dispatchCommand( Events.REQUEST, { "request":"ENTITY_EVALUATION", "tipp" : tipps[i] } );
 	}
+};
+
+function tippShowCommand( data )
+{
+	var tipp =  data;
+	
+	var item1 = DOM( "homeTipps" ).addChild( "li", { style:"padding-top:5px;padding-bottom:5px;", data: JSON.stringify( tipp ) });
+	
+	DOM( item1 ).appendChild("span", { style:"padding-top:10px; padding-right:30px;"}, "<b>"+tipp.title+"</b>");	
+	DOM( item1 ).appendChild("br", {}, "");	
+	DOM( item1 ).appendChild("span", { style:"font-size:90%;margin:1px;float:left;" }, "<i>"+tipp.kategorie+"</i>");				
+	DOM( item1 ).appendChild("div", { class:"row_caret", style:"top:16px;"} ).appendChild( Assets.caret() );
+	
+	// Community Bewertung
+	if( (tipp.likes + tipp.dislikes) > 0 )
+	{
+		DOM( item1 ).appendChild("span", { style:"position:absolute; top:6px; right:18px; font-size:90%"}, "<i>Empfohlen</i>");				
+		DOM( item1 ).appendChild("span", { style:"position:absolute; top:23px; right:18px; font-size:90%"}, "<i>" +likes+" von "+( likes + dislikes )+ "<i>");		
+	}
+	
+	DOM( "fieldsetTipp").show();
 };
 
 function tippsSelectedCommand( event )
@@ -581,7 +589,7 @@ function tippInitCommand( data )
 	{		
 		var baustein = bausteine[i];
 		
-		for( var typus in baustein)
+		for( var typus in baustein )
 		{
 			DOM( "tipArea" ).appendChild( "p", { style:'width:100%;padding-top:10px' }, "<i>"+typus+":</i> "+baustein[typus]);	
 		}
@@ -704,7 +712,6 @@ function scanResultCommand( data )
 	
 	if( data.format == "QR_CODE" )
 	{	
-		var node = new Node( app.server );
 		
 		function success( payload ) 
 		{ 
@@ -716,7 +723,7 @@ function scanResultCommand( data )
 			dispatchCommand(Events.SCAN_RESULT_QUERY, { type:"ERROR", message: message } );
 		}
 		
-		node.authorize( data.result, success, error );
+		app.node.authorize( data.result, success, error );
 	}
 	else
 	{
@@ -742,12 +749,10 @@ function syncCommand( event )
 {
 	// UPDATE ACTS FROM REMOTE SINCE LAST UPDATE
 	if( event.status == "START" )
-	{
-		var node = new Node( app.server );
-		
+	{		
 		var antagonistId = this.model.getProtagonist().id;
 		
-		node.listActsForAntagonistId( antagonistId, localStorage.getItem("device_upToDate" ), 
+		app.node.listActsForAntagonistId( antagonistId, localStorage.getItem("device_upToDate" ), 
 				
 			function( payload )
 			{
@@ -777,9 +782,7 @@ function syncCommand( event )
 				act.zeit = acts[i].zeit;
 				act.wert = acts[i].wert;
 				
-				var node = new Node( app.server );
-				
-				node.createAct(act, 
+				app.node.createAct(act, 
 					function( payload )
 					{
 						dispatchCommand( Events.SYNC_RESULT, { status: "ACTS", act:act, json:payload });
@@ -1213,7 +1216,7 @@ function dateCommand( event )
 	DOM( this.properties.parent ).removeElements();
 
 	// CREATE ELEMENT DESKTOP ODER MOBILE
-	if( DO.plugins("agent").isDevice("Desktop") || (/Android/i.test(navigator.userAgent)))
+	if( app.agent.isDevice("Desktop") || (/Android/i.test(navigator.userAgent)))
 	{		
 		DOM( this.properties.parent ).addChild("span",{ style:"margin-right:5px;" },"<b>Datum</b>"); 
 		DOM( this.properties.parent ).addChild("select", { id:"dd", class:"optionen" }).addOptions(1, zeit("ddInMonth",zeitInMs), zeit("dd",zeitInMs)).onChange( Events.DATE, { type:"dd", zeitInMs: zeitInMs, parent:"zeitArea"} );
@@ -1276,7 +1279,7 @@ function sliderCommand( event )
 	if( !event.value && event.tag != "A")
 	{
 		
-		if( DO.plugins("agent").isDevice("Desktop") )
+		if( app.agent.isDevice("Desktop") )
 		{				
 			DOM( this.properties.parent ).addChild("div", { id:"favSliderId", class:"slider"} ).addChild("a", { id:"thumbId", class:"grey"} );		 
 			
@@ -1322,7 +1325,7 @@ function favoriteExitCommand( data )
 		
 		this.model.addPunkt( toSave);
 		
-		dispatchCommand( Events.REQUEST, { request:"ACTS_SAVE", acts: [ toSave ]  } );
+		dispatchCommand( Events.REQUEST, { request:"ACT_SAVE", act: toSave } );
 	}
 	// DELETE EVENT
 	if( this.properties.type == "delete") {
