@@ -75,9 +75,9 @@ Model.prototype.setIntro = function( type )
 };
 Model.prototype.getIntro = function()
 {
-	if( !this._data.protagonist.customerObject || !this._data.protagonist.customerObject["intro"] ) return null;
+	if( !this._data.protagonist.customerObject && !this._data.protagonist.customerObject["intro"] ) return null;
 	
-	return this.dict["Intro"][ this._data.protagonist.customerObject.intro ];
+	return this._data.protagonist.customerObject["intro"];
 };
 
 Model.prototype.setAntagonist = function ( actor )
@@ -143,8 +143,6 @@ Model.prototype.addPunkt = function( punkt )
 	if( punkt.tipps ) element.tipps = punkt.tipps.slice(0);
 
 	this._data["acts"].unshift( element );
-	
-	localStorage.setItem( "device_acts", JSON.stringify( this._data["acts"] ));	
 };
 
 Model.prototype.removePunkt = function( punkt )

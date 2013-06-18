@@ -111,7 +111,7 @@
     	-->
 
 		<!-- MINIFIED REQUIRED LIBRARIES -->
-    	<script type="text/javascript" charset="utf-8" src="code/library.0.1.1.js"></script>
+    	<script type="text/javascript" charset="utf-8" src="code/library.0.1.2.js"></script>
 
 		<!-- PROJECT SPECIFIC-->
    		<script type="text/javascript" charset="utf-8" src="code/entities.js"></script>
@@ -161,7 +161,6 @@
    						addCommand( Events.OPTIONEN_INIT, optionenInitCommand, { id:"optionenContentId"} ); 	
    						addCommand( Events.SCAN, scanCommand); 	
    						addCommand( Events.SCAN_RESULT, scanResultCommand); 	
-   						addCommand( Events.SCAN_RESULT_QUERY, scanResultQueryCommand); 	
    						addCommand( Events.OPTIONEN_TO_HOME, changeViewCommand, { from:"optionenId", to:"homeId", direction:"left" } ); 	
    						
    						addCommand( Events.SYMPTOME_INIT, symptomeInitCommand, { id:"symptomeContentId" }); 	
@@ -222,40 +221,66 @@
    						DOM("tippId").onStage( Events.TIPP_INIT ); 
    						DOM("tippBackButton").onTouch( Events.TIPP_EXIT );
    						
-   				   						
-   						// START DESKTOP OR DEVICE
-   						if ( navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/) ) 
+						// PHONEGAP APP
+   						if( this.client == "DEVICE" && this.live)
    						{
-   							this.client = "DEVICE";				
-	   						(this.debug) ? DOM().onDOM( Events.START) : DOM().onDevice( Events.START);			
-   						} 
+   							DOM().onDevice( Events.START );
+   						}
    						else 
    						{
-   							this.client = "DESKTOP";
-	   					    DOM().onDOM( Events.START );
+   							DOM().onDOM( Events.START );
+   						}
+   						
+   					},
+   					initialize:function( buildPhonegap ) 
+   					{
+   						
+   						// DEVICE PHONEGAP BUILD
+   						if( buildPhonegap )
+   						{
+   	   						this.node = new Node( "https://node.epha.ch" ); 
+   	   						this.live = true;
+   							this.client = "DEVICE";	
+   	   						this.debug = false;
    						}
 
-   					},
-   					initialize:function( live, debug ) 
-   					{
-   						this.debug = debug;
-   						
-   						if( live )
+   						// WEBAPP LIVE
+   						if( !buildPhonegap && document.domain == "consilium.epha.ch" )
    						{
-   	   						this.server = new Node( "https://node.epha.ch" ); 
+   							document.domain = "epha.ch";
+   							
+   	   						this.node = new Node( "https://node.epha.ch" ); 
    	   						this.konto = "http://konto.epha.ch";		
    	   						this.live = true;
+   	   						this.client = "DESKTOP";
+   	   						this.debug = false;
    						}
    						
-   						if( !live )
+   						// DEVELOPMENT 
+   						if( !buildPhonegap && document.domain == "localhost" )
    						{
-   	   						this.server = new Node( "http://10.129.144.18:8080" );
-   	   						this.konto = "http://localhost:8888/konto";	
-   	   						this.live = false;
+   							// BROWSER
+   							if( false )
+   							{
+	   							document.domain = "localhost";
+	   							this.konto = "http://localhost:8888/konto";	
+	   	   						this.client = "DESKTOP";
+   							}
+   							// DEVICE 
+   							// navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/)
+   							else
+   							{
+	   							this.client = "DEVICE";	
+   							}
+
+   							this.node = new Node( "http://10.129.144.18:8080" );
+   							this.live = false;
+   	   						this.debug = true;
    						}
+					
    						
+   						// PLUGINS
    	   					this.svg = new Svg("svgZeit");
-   	   					
    	   					this.agent = new Agent();
    	   					
    						this.context = "CONSILIUM ->";
@@ -266,8 +291,7 @@
    					}
    			};
 
-   			// CUSTOMIZE FOR ENVIROMENT LIVE Boolean Debug Boolean
-   			app.initialize(false, false);
+   			app.initialize( false );
 	
    			// var encrypted = CryptoJS.HmacSHA256("raw", "secret");
    			// console.log( encrypted.toString( CryptoJS.enc.Base64) );
