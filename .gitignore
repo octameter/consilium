@@ -4,6 +4,10 @@ www/phonegap.js
 www/barcodescanner.js
 www/cordova.js
 
+#GOODSYNC
+*._gs
+*.gsl
+
 # TEST
 www/test.html
 www/test
