@@ -5,8 +5,7 @@ www/barcodescanner.js
 www/cordova.js
 
 #GOODSYNC
-*._gs
-*.gsl
+_gsdata_/
 
 # TEST
 www/test.html
