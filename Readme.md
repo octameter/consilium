@@ -1,7 +1,7 @@
 Build
 ---------
 1. Uncomment cordova.js and barcodescanner.js
-2. Switch onDom onDevice
+
 
 MERKEN
 - function mehr wiederverwenden durch Status Flags
