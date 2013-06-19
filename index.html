@@ -253,17 +253,19 @@
    	   						this.konto = "http://konto.epha.ch";		
    	   						this.live = true;
    	   						this.client = "DESKTOP";
-   	   						this.debug = false;
+   	   						this.debug = true;
    						}
    						
    						// DEVELOPMENT 
-   						if( !buildPhonegap && document.domain == "localhost" )
+   						if( !buildPhonegap && ( document.domain == "10.129.144.18" || document.domain == "localhost" ) )
    						{
+   							var domain = document.domain;
+   							
    							// BROWSER
-   							if( false )
+   							if( true )
    							{
-	   							document.domain = "localhost";
-	   							this.konto = "http://localhost:8888/konto";	
+	   							document.domain = domain;
+	   							this.konto = "http://"+domain+":8888/konto";	
 	   	   						this.client = "DESKTOP";
    							}
    							// DEVICE 
@@ -273,11 +275,10 @@
 	   							this.client = "DEVICE";	
    							}
 
-   							this.node = new Node( "http://10.129.144.18:8080" );
+   							this.node = new Node( "http://"+domain+":8080" );
    							this.live = false;
    	   						this.debug = true;
    						}
-					
    						
    						// PLUGINS
    	   					this.svg = new Svg("svgZeit");

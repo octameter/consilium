@@ -212,6 +212,7 @@ function responseCommand( data )
 		{
 			// DEFAULT OR REAL ACTOR AVAILABLE
 			this.model.setProtagonist( data.actor );			
+			
 			localStorage.setItem("device_actor", JSON.stringify( this.model.getProtagonist() ) );
 			
 			dispatchCommand( Events.REQUEST, { request:"ACTS_GET", antagonistId:this.model.getProtagonist().id } );
@@ -287,15 +288,15 @@ function responseCommand( data )
 			if( !this.model.hasAntagonist() )
 			dispatchCommand( Events.REQUEST, { request:"REDIRECT", target:"Akte"})
 		}
+
+		if( data.request == "REDIRECT") location.replace(data.target);  
+		
+		if( data.request == "REFRESH") location.reload();  // dispatchCommand( Events.START ); SONST IFRAME BLEIBT UND DATEN
 	}
 
-	// SAME FOR CLIENT DEVICE AND DEKSTOP
-	if( data.request == "REDIRECT") location.replace(data.target);  
-	
+	// SAME FOR DEVICE AND DESKTOP
 	if( data.request == "FAVORITES_SAVE" ) dispatchCommand( Events.SYMPTOME_TO_FAVORITES);
 };
-
-
 
 
 function homeInitCommand( event )
@@ -336,10 +337,7 @@ function homeInitCommand( event )
 };
 
 function homeIntroCommand( event )
-{
-	
-	console.log( "INTIR");
-	
+{	
 	DOM( this.properties.id ).removeElements();
 	var div = DOM( this.properties.id ).appendChild("div", {class:"intro"});
     
@@ -831,7 +829,7 @@ function symptomeInitCommand( data )
 {
 	DOM( this.properties.id ).removeElements().appendChild("form", { id : "symFormId" } );
 	
-    DOM( "symFormId" ).addChild("fieldset", { id: "symFieldsetId" } ).addChild( "legend", {}, "Symptome");
+    DOM( "symFormId" ).addChild("fieldset", { id: "symFieldsetId" } ).addChild( "legend", {}, "Symptome" );
 		
 	var liste =	DOM( "symFieldsetId" ).appendChild("ul", { id:"symptomeListe", class:"listeNext"} );	
 	

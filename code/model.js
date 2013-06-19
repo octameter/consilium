@@ -75,7 +75,7 @@ Model.prototype.setIntro = function( type )
 };
 Model.prototype.getIntro = function()
 {
-	if( !this._data.protagonist.customerObject && !this._data.protagonist.customerObject["intro"] ) return null;
+	if( !this._data.protagonist || !this._data.protagonist.customerObject || !this._data.protagonist.customerObject["intro"] ) return null;
 	
 	return this._data.protagonist.customerObject["intro"];
 };

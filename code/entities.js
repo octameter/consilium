@@ -643,7 +643,7 @@ Entities.prototype.Tipps =
     [
         { "Häufigkeit": "Drücken Sie den Akupressurpunkt P6 wiederholt und bei Bedarf oder verwenden Sie ein Akupressurband aus der Apotheke."},
         { "Erklärung": "Der Akupressurpunkt befindet sich drei Querfinger hinter der grossen Linie des Handgelenks an der Innenseite des Unterarms."},
-        { "Grafik": "Akupressurpunkt P6<br><img src='img/assets/akupunkturP6.png'>"}
+        { "Grafik": "Akupressurpunkt P6<br><img src='assets/akupunkturP6.png'>"}
        ]     
   },
   { id: "iZwiebel", title:"Kleidung im Zwiebellook", kategorie:"Selbsthilfe", likes:0, dislikes:0,
