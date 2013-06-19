@@ -232,9 +232,10 @@
    						}
    						
    					},
-   					initialize:function( buildPhonegap ) 
+   					initialize:function(  ) 
    					{
-   						
+   						var buildPhonegap = ( document.URL.indexOf("http://") == -1 );
+   							
    						// DEVICE PHONEGAP BUILD
    						if( buildPhonegap )
    						{
@@ -292,7 +293,7 @@
    					}
    			};
 
-   			app.initialize( false );
+   			app.initialize( );
 	
    			// var encrypted = CryptoJS.HmacSHA256("raw", "secret");
    			// console.log( encrypted.toString( CryptoJS.enc.Base64) );
