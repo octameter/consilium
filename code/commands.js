@@ -724,10 +724,10 @@ function scanResultCommand( data )
 		
 		function error( message )
 		{
+			alert( message );
+			
 			dispatchCommand( Events.OPTIONEN_INIT, { status: "Fehlgeschlagen"} );
 		}
-		
-		alert("access node");
 		
 		app.node.readActorByRequestToken( data.text, success, error );
 	}
