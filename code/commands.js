@@ -142,7 +142,7 @@ function requestCommand( data )
 		{
 			this.model.addPunkt( data.act );
 						
-			localStorage.setItem( "device_acts", JSON.stringify( this._data["acts"] ));	
+			localStorage.setItem( "device_acts", JSON.stringify( this.model.getActs() ) );	
 		}
 		
 		
@@ -723,9 +723,7 @@ function scanResultCommand( data )
 		};
 		
 		function error( message )
-		{
-			alert( message );
-			
+		{			
 			dispatchCommand( Events.OPTIONEN_INIT, { status: "Fehlgeschlagen"} );
 		}
 		
