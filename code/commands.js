@@ -97,7 +97,7 @@ function startCommand( event )
 	DOM( "app" ).show();
 	
 	// LOCAL STORAGE
-	if( app.client == "DEVICE") dispatchCommand( Events.REQUEST, { "request":"ACTOR_GET"} );
+	if( app.client == "DEVICE" ) dispatchCommand( Events.REQUEST, { "request":"ACTOR_GET"} );
 	
 	// REMOTE STORAGE
 	if( app.client == "DESKTOP")
@@ -119,7 +119,10 @@ function requestCommand( data )
 {
 	if( app.client == "DEVICE" )
 	{
-		if( data.request == "ACTOR_GET") data.actor = JSON.parse( localStorage.getItem("device_actor") );
+		if( data.request == "ACTOR_GET") 
+		{		
+			data.actor = JSON.parse( localStorage.getItem("device_actor") );
+		}
 
 		 // ACTOR RECEIVED FROM NODE VIA QR-CODE		
 		if( data.request == "ACTOR_UPDATE")
