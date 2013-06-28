@@ -124,10 +124,13 @@
     <gap:splash src="img/screen/blackberry/screen-225.png"         gap:platform="blackberry" />    
 
     <!-- SPLASH iPhone  -->
-    <gap:splash src="img/screen/ios/screen-iphone-portrait.png"    gap:platform="ios"     width="320" height="480" />
-    <gap:splash src="img/screen/ios/screen-iphone-portrait-2x.png" gap:platform="ios"     width="640" height="960" />
-    <gap:splash src="img/screen/ios/screen-ipad-portrait.png"      gap:platform="ios"     width="768" height="1024" />
-    <gap:splash src="img/screen/ios/screen-ipad-landscape.png"     gap:platform="ios"     width="1024" height="768" />
+    <gap:splash src="img/screen/ios/screen-iphone-portrait.png"    	gap:platform="ios"     	width="320" height="480" />
+    <gap:splash src="img/screen/ios/screen-iphone-portrait-2x.png" 	gap:platform="ios"     	width="640" height="960" />
+    <gap:splash src="img/screen/ios/screen-iphone5-portrait.png" 	gap:platform="ios"     	width="640" height="1136" />
+    <gap:splash src="img/screen/ios/screen-ipad-portrait.png"      	gap:platform="ios"     	width="768" height="1024" />
+    <gap:splash src="img/screen/ios/screen-ipad-landscape.png"     	gap:platform="ios"     	width="1024" height="768" /> 
+	<gap:splash src="img/screen/ios/screen-ipad-landscape-2x.png" 	gap:platform="ios" 		width="2048" height="1496" />
+	<gap:splash src="img/screen/ios/screen-ipad-portrait-2x.png" 	gap:platform="ios" 		width="1536" height="2008" />
    
     <!-- SPLASH Windows Phone  -->
     <gap:splash src="img/screen/windows-phone/screen-portrait.jpg" gap:platform="winphone" />
