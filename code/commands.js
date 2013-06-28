@@ -93,6 +93,8 @@ function hiddenCommand( data )
 
 function startCommand( event )
 {
+	alert("startCommand");
+	
 	// CLIENTWIDTH AVAILABLE
 	DOM( "app" ).show();
 	
