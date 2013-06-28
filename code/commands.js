@@ -715,8 +715,6 @@ function scanResultCommand( data )
 		data.format = "QR_CODE";
 	}
 	
-	alert( JSON.stringify( data ) );
-	
 	if( data.format == "QR_CODE" )
 	{			
 		function success( payload ) 
@@ -728,6 +726,8 @@ function scanResultCommand( data )
 		{
 			dispatchCommand( Events.OPTIONEN_INIT, { status: "Fehlgeschlagen"} );
 		}
+		
+		alert("access node");
 		
 		app.node.readActorByRequestToken( data.text, success, error );
 	}
