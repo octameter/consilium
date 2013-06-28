@@ -231,7 +231,6 @@
    								localStorage.clear();
    								localStorage.setItem("device_version","1.0");
    							}
-   							DOM().onDOM( Events.START );
    						}
    						else 
    						{
@@ -242,8 +241,6 @@
    					initialize:function(  ) 
    					{
    						var buildPhonegap = ( document.URL.indexOf("http://") == -1 );
-   						
-   						buildPhonegap = true;
    							
    						// DEVICE PHONEGAP BUILD
    						if( buildPhonegap )
