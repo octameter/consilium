@@ -715,6 +715,8 @@ function scanResultCommand( data )
 		data.format = "QR_CODE";
 	}
 	
+	alert( JSON.stringify( data ) );
+	
 	if( data.format == "QR_CODE" )
 	{			
 		function success( payload ) 
