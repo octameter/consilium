@@ -310,6 +310,7 @@ function homeInitCommand( event )
 		
 		this.model.setIntro( null );
         
+		if( app.client == "DEVICE")
         localStorage.setItem("device_actor", JSON.stringify( this.model.getProtagonist() ) ); 
 		
 		DOM( this.properties.id ).removeElements();
