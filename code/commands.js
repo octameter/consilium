@@ -678,18 +678,20 @@ function optionenInitCommand( data )
 
 function scanCommand( data )
 {	
-        try {
-            window.plugins.barcodeScanner.scan(function(args) 
-            {
-                console.log("Scanner result text: " + args.text + "format: " + args.format + "cancelled: " + args.cancelled + "\n");
-                
-                dispatchCommand( Events.SCAN_RESULT, { result: args.text, format: args.format  } );
-               
-            });
-        } catch (ex) {        
-        	// DESKTOP WILL ALWAYS DISPATCH THIS AND SOMETIMES DEVICE
-        	dispatchCommand( Events.SCAN_RESULT, { error : ex.message } );
-        }
+	var scanner = cordova.require("cordova/plugin/BarcodeScanner");
+
+	scanner.scan(
+
+	      function (result) 
+	      {  
+	    	  dispatchCommand( Events.SCAN_RESULT, { text: result.text, format: result.format, cancelled:result.cancelled  } );
+	      }, 
+	      function (error) 
+	      {  
+	    	  dispatchCommand( Events.SCAN_RESULT, { error : ex.message } );
+	      }
+	   );
+
 };
 
 /**
@@ -702,14 +704,14 @@ function scanResultCommand( data )
 	if( data.error == "Cannot read property 'barcodeScanner' of undefined" && app.debug)
 	{
 		// Arzt
-		data.result = "VAXX2";
+		data.text = "VAXX2";
 		data.format = "QR_CODE";
 	}
 	// DEVICE BROWSER TESTING
 	if( data.error == "'undefined' is not an object" && app.debug ) 
 	{		
 		// Patient
-		data.result = "VAXX2";
+		data.text = "VAXX2";
 		data.format = "QR_CODE";
 	}
 	
@@ -725,7 +727,7 @@ function scanResultCommand( data )
 			dispatchCommand( Events.OPTIONEN_INIT, { status: "Fehlgeschlagen"} );
 		}
 		
-		app.node.readActorByRequestToken( data.result, success, error );
+		app.node.readActorByRequestToken( data.text, success, error );
 	}
 	else
 	{
