@@ -322,13 +322,13 @@ Model.prototype.getPunkt = function( id )
 **/
 Model.prototype.getEmpfehlungen = function( data )
 {	
-	var tippsIds = this.getGrad(data.type, data.value).tipps;
-	
 	var _tipps = [];
 
-	if(!tippsIds) return _tipps;
+	var obj = this.getGrad(data.type, data.value);
+
+	if(!obj || !obj.tipps) return _tipps;
 	
-	var rows = tippsIds.split(",");	
+	var rows = obj.tipps.split(",");	
  
 	for( var i = 0; i < rows.length; i++)
 	{

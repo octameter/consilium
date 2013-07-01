@@ -1266,7 +1266,11 @@ function sliderCommand( event )
 		
 		// Update Displays
 		DOM( this.properties.output ).removeElements().text( event.value  + this.model.getType( item.id ).unit);
-		DOM( this.properties.grad ).element().innerHTML = "<b>Definition: </b>"+this.model.getGrad( item.id, item.y ).info;	
+		
+		var grad = this.model.getGrad( item.id, item.y );
+		
+		if( grad )
+		DOM( this.properties.grad ).element().innerHTML = "<b>Definition: </b>"+grad.info;	
 		
 		// SAVE AND CANCEL
 		DOM( this.properties.actions ).show();
