@@ -257,7 +257,13 @@ function responseCommand( data )
 			
 			// DEFAULT PROTAGONIST IS PATIENT
 			if( this.model.isPatient() && data.actor)
-			dispatchCommand( Events.REQUEST, { request:"ACTS_GET", antagonistId:data.actor.id } );
+			{
+				DOM("titleId").text( data.actor.scopeLabel);
+				DOM("titleId").style( "position", "absolute");
+				DOM("titleId").style( "left", "20px");
+
+				dispatchCommand( Events.REQUEST, { request:"ACTS_GET", antagonistId:data.actor.id } );
+			}
 	        
 			if( !data.actor )
 			{
@@ -280,6 +286,7 @@ function responseCommand( data )
 			
 			if( this.model.hasAntagonist() )
 			{
+				// Profiles displayName
 				DOM("titleId").text( data.patient.roleLabel);
 				DOM("titleId").style( "position", "absolute");
 				DOM("titleId").style( "left", "20px");
@@ -718,14 +725,14 @@ function scanResultCommand( data )
 		
 		function error( message )
 		{			
-			dispatchCommand( Events.OPTIONEN_INIT, { status: "Fehlgeschlagen"} );
+			dispatchCommand( Events.OPTIONEN_INIT, { status: "Autorisierung unbekannt"} );
 		}
 		
 		app.node.readActorByRequestToken( data.text, success, error );
 	}
 	else
 	{
-		dispatchCommand( Events.OPTIONEN_INIT, { status: "Fehlgeschlagen"} );	
+		dispatchCommand( Events.OPTIONEN_INIT, { status: "Autorisierung fehlgeschlagen"} );
 	}
 };
 
@@ -747,7 +754,7 @@ function syncCommand( event )
 			}, 
 			function( error ) 
 			{
-				alert( error.status + error.message );
+				dispatchCommand( Events.OPTIONEN_INIT, { status: "Synchronisierung fehlgeschlagen"} );
 			}
 		);
 	}
@@ -930,7 +937,7 @@ function favoritesRowCommand( data )
 	if( !this.model.getStateFavEdit() )
 	{		
 		if(data.row.entitiesId)
-		{
+		{			
 			// Bewertung, Symptom, Notiz
 			dispatchCommand( Events.ROW, { type:"legende", area:item, title:infoType.title, zeit: zeitpunkt, farbwert : infoType.farbwert, value : title, caret:true })			
 		}
@@ -1078,16 +1085,23 @@ function favoriteInitCommand( data )
     	
 	// FORM
 	DOM( this.properties.id ).addChild("form", {id:"favitFormId"});
-		
-	// ZEITPUNKT ONLY IF NOT EDITING
-	if( this.model.getStateFavitEdit() )
+	
+	// ZEITPUNKT EDITING
+	if( this.model.getStateFavitEdit() ) 
 	{
 		DOM( "favitFormId" ).addChild("fieldset", { id: "favitZeitId", disabled:"true" }).addChild("legend", {}, "Zeitpunkt");
 	}
-	else{
-		DOM( "favitFormId" ).addChild("fieldset", { id: "favitZeitId"} ).addChild("legend", {}, "Neuer Zeitpunkt");		
-	}
-	
+	// ZEITPUNKT EDITING NO
+	if( !this.model.getStateFavitEdit() )
+	{				
+		if( kategorie == "Device")	DOM( "favitFormId" ).addChild("fieldset", { id: "favitZeitId"} ).addChild("legend", {}, "Zeitraum");								
+		
+		if( kategorie == "Bewertung") DOM( "favitFormId" ).addChild("fieldset", { id: "favitZeitId"} ).addChild("legend", {}, "Neuer Zeitpunkt");	
+		
+		if( kategorie == "Symptom") DOM( "favitFormId" ).addChild("fieldset", { id: "favitZeitId"} ).addChild("legend", {}, "Neuer Zeitpunkt");	
+		
+		if( kategorie == "Notizen") DOM( "favitFormId" ).addChild("fieldset", { id: "favitZeitId"} ).addChild("legend", {}, "Neuer Zeitpunkt");	
+	}	
 	DOM( "favitZeitId" ).addChild("div", {id:"zeitArea" });		
 	
 	// SYMPTOM
@@ -1105,10 +1119,12 @@ function favoriteInitCommand( data )
 		DOM( "favArea" ).addChild("div",{ id:"favitReseter" }). addChild("a",{ class:"button-action grey", style:"float:left;"}, "Neuer Text").onTouch( Events.FAVORITE_TEXT_CHANGE, { action:"favitActions", type:"reset", reseter:"favitReseter"});
 		DOM( "favTextareaId" ).onChange( Events.FAVORITE_TEXT_CHANGE, { action:"favitActions", reseter:"favitReseter"} );
 	}
-	else
+	
+	if( kategorie == "Symptom" || kategorie == "Bewertung" || kategorie == "Device")
 	{
-		DOM( "favArea" ).appendChild( "span", { id:"favOutputId", style: "position:absolute; top:10px; right:2px; font-size:110%" }, item.y +"%");				
+		DOM( "favArea" ).appendChild( "span", { id:"favOutputId", style: "position:absolute; top:10px; right:2px; font-size:110%" }, item.y +this.model.getType( item.id ).unit);				
 	}
+
 
 	// SLIDER 
 	DOM( "favArea" ).appendChild( "div", { id:"sliderArea"});	
@@ -1116,7 +1132,10 @@ function favoriteInitCommand( data )
 	// DEFINITION DER KATEGORIE
 	if( !this.model.getStateFavitEdit() && kategorie != "Notizen" )
 	{
-		DOM( "favArea" ).appendChild( "p", { id:"favGradId", style: 'width:100%;padding-top:5px;'}, "<b>Definition: </b>"+this.model.getGrad(item.id, item.y).info );
+		var grad = this.model.getGrad(item.id, item.y);
+		
+		if( grad )
+		DOM( "favArea" ).appendChild( "p", { id:"favGradId", style: 'width:100%;padding-top:5px;'}, "<b>Definition: </b>"+grad.info);
 	}
 	
 	// SAVE AND CANCEL
@@ -1246,7 +1265,7 @@ function sliderCommand( event )
 		var item = this.model._state.tempItem;
 		
 		// Update Displays
-		DOM( this.properties.output ).removeElements().text( event.value  +"%");
+		DOM( this.properties.output ).removeElements().text( event.value  + this.model.getType( item.id ).unit);
 		DOM( this.properties.grad ).element().innerHTML = "<b>Definition: </b>"+this.model.getGrad( item.id, item.y ).info;	
 		
 		// SAVE AND CANCEL

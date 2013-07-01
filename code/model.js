@@ -282,10 +282,10 @@ Model.prototype.getTypesByPunkt = function( id )
 **/
 Model.prototype.getType = function( id )
 {
-	var dictionary = [].concat(this.dict["Symptome"], this.dict["Bewertung"], this.dict["Tagebuch"], this.dict["Tipps"]);
+	var dictionary = [].concat(this.dict["Symptome"], this.dict["Bewertung"], this.dict["Tagebuch"], this.dict["Tipps"], this.dict["Device"]);
 	
 	for( var i = 0; i < dictionary.length; i++)
-	{
+	{		
 		if( dictionary[i].id === id ) return dictionary[i];
 	}
 };
@@ -295,7 +295,9 @@ Model.prototype.getType = function( id )
 Model.prototype.getGrad = function( id, value )
 {
 	var grad = this.getType(id).grad;
-    
+    	
+	if( !grad ) return null;
+	
     for( var i = 0; i < grad.length; i++)
 	{
 		if( grad[i].min <= value && grad[i].max >= value) return grad[i];
