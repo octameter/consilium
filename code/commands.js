@@ -678,20 +678,27 @@ function optionenInitCommand( data )
 };
 
 function scanCommand( data )
-{	
-	var scanner = cordova.require("cordova/plugin/BarcodeScanner");
-
-	scanner.scan(
-
-	      function (result) 
-	      {  
-	    	  dispatchCommand( Events.SCAN_RESULT, { text: result.text, format: result.format, cancelled:result.cancelled  } );
-	      }, 
-	      function (error) 
-	      {  
-	    	  dispatchCommand( Events.SCAN_RESULT, { error : ex.message } );
-	      }
-	   );
+{
+	if( app.debug )
+	{
+		dispatchCommand( Events.SCAN_RESULT, { text:"VAXX2", format:"QR_CODE", cancelled:false });
+	}
+	else
+	{		
+		var scanner = cordova.require("cordova/plugin/BarcodeScanner");
+	
+		scanner.scan(
+	
+		      function (result) 
+		      {  
+		    	  dispatchCommand( Events.SCAN_RESULT, { text: result.text, format: result.format, cancelled:result.cancelled  } );
+		      }, 
+		      function (error) 
+		      {  
+		    	  dispatchCommand( Events.SCAN_RESULT, { error : ex.message } );
+		      }
+		);
+	}
 
 };
 
@@ -701,20 +708,6 @@ function scanCommand( data )
  */
 function scanResultCommand( data )
 {		
-	// DEKSTOP BROWSER TESTING
-	if( data.error == "Cannot read property 'barcodeScanner' of undefined" && app.debug)
-	{
-		// Arzt
-		data.text = "VAXX2";
-		data.format = "QR_CODE";
-	}
-	// DEVICE BROWSER TESTING
-	if( data.error == "'undefined' is not an object" && app.debug ) 
-	{		
-		// Patient
-		data.text = "VAXX2";
-		data.format = "QR_CODE";
-	}
 	
 	if( data.format == "QR_CODE" )
 	{			
