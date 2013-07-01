@@ -745,9 +745,9 @@ function syncCommand( event )
 			{
 				dispatchCommand( Events.SYNC_RESULT, { status : "START", json : payload });
 			}, 
-			function( message ) 
+			function( error ) 
 			{
-				alert( message );
+				alert( error.status + error.message );
 			}
 		);
 	}
