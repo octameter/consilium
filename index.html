@@ -271,7 +271,7 @@
    							var device_browser = navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry)/);
    								
    							// BROWSER
-   							if( !device_browser)
+   							if( !device_browser )
    							{
 	   							document.domain = domain;
 	   							this.konto = "http://"+domain+":8888/konto";	
@@ -305,6 +305,10 @@
 	
    			// var encrypted = CryptoJS.HmacSHA256("raw", "secret");
    			// console.log( encrypted.toString( CryptoJS.enc.Base64) );
+   			
+   			var logo = new Logo();
+   			
+   			logo.getBloodPressurePulse(15,30, function() {}, function() {});
 
    		</script>
 	</body>
