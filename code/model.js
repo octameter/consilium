@@ -29,6 +29,16 @@ Model.prototype.updateActWithId = function( act, id )
 	}
 };
 
+Model.prototype.getActForPunkt = function( punkt )
+{
+	for( var i = 0; i < this._data.acts.length; i++)
+	{
+		if(this._data.acts[i].entitiesId == punkt.id && this._data.acts[i].wert == punkt.y && this._data.acts[i].zeit == punkt.x) return this._data.acts[i];
+	}
+	
+	return null;
+};
+
 Model.prototype.setProtagonist = function ( actor )
 {
 	// DEFAULT
@@ -83,6 +93,10 @@ Model.prototype.getIntro = function()
 Model.prototype.setAntagonist = function ( actor )
 {
 	this._data.antagonist = actor;
+};
+Model.prototype.getAntagonist = function ()
+{
+	return ( this.isPatient() ) ? this._data.protagonist : this._data.antagonist;
 };
 Model.prototype.hasAntagonist = function( actor )
 {
@@ -149,11 +163,16 @@ Model.prototype.removePunkt = function( punkt )
 {
 	for( var i = 0; i < this._data["acts"].length; i++)
 	{
+		// If Punkt with y,x,id
 		if( this._data["acts"][i].entitiesId === punkt.id && this._data["acts"][i].zeit == punkt.x) this._data["acts"].splice(i,1);				
-	}	
 
-	localStorage.setItem( "device_acts", JSON.stringify( this._data["acts"] ));
+		// If Act with entitiesId, zeit, wert
+		if( punkt.entitiesId && this._data["acts"][i].id === punkt.id ) this._data["acts"].splice(i,1);				
+	}	
 };
+
+
+
 
 /**
  * UTILITY
@@ -302,6 +321,8 @@ Model.prototype.getGrad = function( id, value )
 	{
 		if( grad[i].min <= value && grad[i].max >= value) return grad[i];
 	}
+    
+    return grad[0];
 };
 
 

@@ -145,6 +145,13 @@ function requestCommand( data )
 			localStorage.setItem( "device_acts", JSON.stringify( this.model.getActs() ) );	
 		}
 		
+		if( data.request == "ACT_DELETE")
+		{
+			this.model.removePunkt( data.act );
+			
+			localStorage.setItem( "device_acts", JSON.stringify( this.model.getActs() ) );	
+		}
+		
 		
 		// NO PATIENT_GET
 		if( data.request == "ACTS_GET")
@@ -179,15 +186,21 @@ function requestCommand( data )
 			app.storage.postMessage( { request:"ACT_SAVE", 
 				
 				act:{
-					protagonistId:1,
-					antagonistId:2,
+					protagonistId:this.model.getProtagonist().id, 		
+					antagonistId:this.model.getAntagonist().id,
 					entitiesId:data.act.id,
 					zeit:data.act.x,
 					wert:data.act.y
 				}
 			
 			}, "*" );
-			
+		}
+		
+		if( data.request == "ACT_DELETE") 
+		{
+			this.model.removePunkt( data.act );
+						
+			app.storage.postMessage( { request:"ACT_DELETE", act: data.act }, "*" );
 		}
 		
 		if( data.request == "FAVORITES_SAVE")
@@ -414,9 +427,57 @@ function homeVerlaufSelectedCommand( event )
 	if(event.id)
 	{		
 		var type = this.model.getType(event.id);
-		var value = ( type.kategorie != "Notizen" ) ? event.y +"%" : "&nbsp;";
-		var detail = ( type.kategorie != "Notizen" ) ? "<b>Definition</b> "+this.model.getGrad(event.id, event.y).info : event.y.replace(/\n\r?/g, '<br />');
 
+		var value = event.y +"%";
+		var detail = ""; 
+		
+		if( type.kategorie == "Notizen")
+		{
+			value = "&nbsp;";
+			detail = event.y.replace(/\n\r?/g, '<br />');
+		}
+		
+		if( type.kategorie == "Bewertung")
+		{
+			value = event.y + " " +type.unit;
+			detail = "<b>Definition</b> "+this.model.getGrad(event.id, event.y).info;
+		}
+		
+		if( type.kategorie == "Device")
+		{
+			var json = (typeof event.y == "string") ? JSON.parse( event.y ) : event.y;
+			
+			if( event.id == "stepcounter" )
+			{
+				value = json[ "step" ] + " "+ type.unit;			
+				detail = "<b>Definition</b> Messung mittels Device";
+				detail += "<br>Entfernung: "+json["km"]+"km";
+				detail += "<br>Kalorien: "+json["kcal"]+"kcal";
+				detail += "<br>Ex: "+json["ex"];
+				detail += "<br>Zeitraum: "+json["sportTime"]+"min";
+			}
+			else if( event.id == "bp" )
+			{			
+				value = json[ "systolic" ] + " "+ type.unit;			
+				detail = "<b>Definition</b> Messung mittels Device";
+				detail += "<br>Sys: "+json["systolic"]+"mmHg";
+				detail += "<br>Dia: "+json["diastolic"]+"mmHg";
+				detail += "<br>Pulse "+json["pulse"]+" Pulse";
+			}
+			else
+			{
+				// event.y { weight:50 }
+				value = json[ event.id ] + type.unit;				
+				detail = "<b>Definition</b> Messung mittels Device";
+			}
+		}
+		
+		if( type.kategorie == "Symptom")
+		{
+			value = event.y + " " +type.unit;
+			detail = "<b>Definition</b> "+this.model.getGrad(event.id, event.y).info;
+		}
+		
 		/* LEGEND */
 		DOM(cmd.legend).text( type.kategorie ); 				
 
@@ -427,7 +488,7 @@ function homeVerlaufSelectedCommand( event )
 		var row = DOM( cmd.info ).addChild("div", { id:"homeRowDiv", style:"cursor:pointer;padding:5px;", data:exportData });	
 
 		/* MAY PROCEED TO EDIT IF */
-		var caret = ( type.kategorie != "Notizen" || event.id == "privat");
+		var caret = ( type.kategorie == "Symptom" || type.kategorie == "Bewertung" || event.id == "privat");
 		if( caret )
 		{	// GOTO EDIT
 			DOM("homeRowDiv").onTap( Events.TAP_HANDLER, { watch: "id:homeRowDiv", command:Events.HOME_EXIT } );			
@@ -925,11 +986,31 @@ function favoritesInitCommand( data )
  */
 function favoritesRowCommand( data )
 {	
-
+	// TODO Sync with homeVerlaufCommand
 	var infoData = this.model.getPunkt( data.row.entitiesId );
 	var infoType = this.model.getType( data.row.entitiesId );
 	var zeitpunkt = (infoData && !data.edit) ? "Zuletzt: "+zeit('dd.mm.yyyy hh:mm', infoData.zeit) : "&nbsp;";
-	var title = (infoData && infoType.kategorie != "Notizen") ? infoData.wert + "%" : "&nbsp;";
+	
+	var title = (infoData) ? infoData.wert + "%" : "&nbsp;";
+	
+	if(infoType && infoType.kategorie == "Notizen") 
+	{
+		title = "&nbsp;";
+	}
+	
+	if(infoType && infoType.kategorie == "Device" && infoData)
+	{
+		if( typeof infoData.wert == "string") infoData.wert = JSON.parse( infoData.wert );
+
+		if( data.row.entitiesId == "weight"		)	title = infoData.wert["weight" ] + infoType.unit;
+		if( data.row.entitiesId == "stepcounter") 	title = infoData.wert["step" ] + infoType.unit;
+		if( data.row.entitiesId == "bp"	) 			title = infoData.wert["systolic" ] + infoType.unit;	
+	}
+	
+	if(infoType && infoType.kategorie == "Bewertung" && infoData)
+	{
+		title =  infoData.wert + infoType.unit;
+	}
 
 	var item = DOM( data.display ).appendChild("li", { data:JSON.stringify({ punkt:infoData, type:infoType }), style:"padding-top:10px;padding-bottom:10px;"});
 
@@ -997,8 +1078,31 @@ function favoritesDeleteCommand( data )
  
 function favoritesEditCommand( data )
 {		
-	//console.log( data.punkt, data.type );
 
+	if( data.type.kategorie == "Device" )
+	{			
+		console.log( JSON.stringify( data ) );
+		
+		var type = data.type.id;
+		var bis = (data.punkt) ? data.punkt.zeit : null;
+		
+		var model = this.model;
+		
+		// ECHTE ID AUS FAVORITEN AUSLESEN
+		app.node.getDevice(36, type, bis, model.getProtagonist().id, model.getAntagonist().id,
+				
+			function(payload) 
+			{ 
+				model.addActs( payload );
+				
+				dispatchCommand( Events.FAVORITES_INIT );
+			}, 
+			function(msg) { console.log(msg); } 
+		);
+		
+		return;
+	}
+	
 	var value = {};
 	
 	if( !data.type )
@@ -1338,8 +1442,10 @@ function favoriteExitCommand( data )
 	if( this.properties.type == "delete") {
 		
 		var toDelete = this.model.getStateSymptom();
+
+		var actToDelete = this.model.getActForPunkt( toDelete );
 		
-		this.model.removePunkt( toDelete );
+		dispatchCommand( Events.REQUEST, { request:"ACT_DELETE", act: actToDelete } );
 	}
 	
 	// Cleaning
