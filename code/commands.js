@@ -628,7 +628,7 @@ function tippShowCommand( data )
 	DOM( item1 ).appendChild("span", { style:"padding-top:10px; padding-right:30px;"}, "<b>"+tipp.title+"</b>");	
 	DOM( item1 ).appendChild("br", {}, "");	
 	DOM( item1 ).appendChild("span", { style:"font-size:90%;margin:1px;float:left;" }, "<i>"+tipp.kategorie+"</i>");				
-	DOM( item1 ).appendChild("div", { class:"row_caret", style:"top:16px;"} ).appendChild( Assets.caret() );
+	DOM( item1 ).appendChild("div", { "class":"row_caret", style:"top:16px;"} ).appendChild( Assets.caret() );
 	
 	// Community Bewertung
 	if( (tipp.likes + tipp.dislikes) > 0 )

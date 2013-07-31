@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="de-CH">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
@@ -126,10 +126,11 @@
    					**/
    					addCommands: function()
    					{
+   						addCommand( Events.CHANGE_VIEW, changeViewCommand ); 	
+
    						addCommand( Events.REQUEST, requestCommand ); 	
    						addCommand( Events.RESPONSE, responseCommand ); 	
    						
-   						addCommand( Events.CHANGE_VIEW, changeViewCommand ); 	
    						addCommand( Events.TAP_HANDLER, tapHandlerCommand ); 		  						
    						addCommand( Events.START, startCommand ); 		  							  						
    						addCommand( Events.HIDDEN, hiddenCommand ); 		  							  						  						
