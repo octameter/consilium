@@ -5,8 +5,6 @@
 
 function Model(){}
 
-console.log(util);
-
 Model.prototype._data = 
 {
 		// Acts

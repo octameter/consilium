@@ -1,10 +1,39 @@
-/**
- * Created by Marco Egbring on March 2013
- * Copyright 2013 EPha.ch. All rights reserved.
- */
+var app = new App();
 
-var app =
-{
+var Commands = {
+  "TEST": { func:testCommand, prop:{ id:1 } }
+};
+
+app.addCommands( Commands );
+
+function testCommand() {
+  console.log( "!!", this.properties.id );
+};
+
+app.dispatch( Commands.TEST );
+
+var startView = {
+  settings: { 
+  
+  },
+  init:function() {
+    DOM("app").show();
+    
+    this.bind();
+  },
+  bind:function() {
+    DOM("addOptionen").on("touch", Commands.TEST);
+  }
+  
+};
+
+app.addView( startView );
+
+function dispatchCommand(command, data) {
+  app.dispatch(command, data);
+}
+/**                          
+var app = {
 	
 	setup: function()
 	{
@@ -120,16 +149,16 @@ var app =
 	
 	initialize: function(domain)
 	{
-		this.domain = domain;
-		this.setup();
-		this.bind();
+		//this.domain = domain;
+		//this.setup();
+		//this.bind();
 	}
 
 };
 
 /** 
  * FRONTCONTROLLER PATTERN
- */
+
 // TODO LOGGING console.log(app.domain, "->", this.callback.name, "<- properties:", this.properties, "data:", data); 
 //
 function createCommand( command, properties)
