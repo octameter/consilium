@@ -1461,7 +1461,7 @@ function favoriteInitCommand(data)
 
 
 	// SLIDER 
-	favArea.add("div", {id: "sliderArea"});	
+	var sliderArea = favArea.add("div");
 	
 	// DEFINITION DER KATEGORIE
 	if (!app.model.getStateFavitEdit() && kategorie != "Notizen")
@@ -1486,18 +1486,19 @@ function favoriteInitCommand(data)
 	
 	if (app.model.getStateFavitEdit())
 	{
-		DOM("sliderArea").add("a", {id: "sliderAreaLink", "class": "button red", style: "float:right;margin-bottom:20px;"}, "Löschen");
-		DOM("sliderAreaLink").on("touch", Commands.FAVORITE_DELETE);
+	  sliderArea
+	    .add("a", {"class": "button red", style: "float:right;margin-bottom:20px;"}, "Löschen")
+	    .on("touch", Commands.FAVORITE_DELETE);
 	}
 	
 	if (!app.model.getStateFavitEdit() && kategorie != "Notizen")
 	{
 		// REGISTER COMMANDS
-		addCommand("SLIDER", sliderCommand, {parent: "sliderArea", actions: "favitActions", zeit: "favitZeitLabel", output: "favOutputId", grad: "favGradId", edit: this.properties.edit});
+		addCommand("SLIDER", sliderCommand, {parent: sliderArea, actions: "favitActions", zeit: "favitZeitLabel", output: "favOutputId", grad: "favGradId", edit: this.properties.edit});
 		
 		// DISPATCH COMMANDS
 		dispatchCommand(Commands.SLIDER);
-		dispatchCommand(Commands.TIPPS_SHOW);				
+		dispatchCommand(Commands.TIPPS_SHOW);
 	}
 }
 
@@ -1598,21 +1599,19 @@ function sliderCommand(event)
 {	
 	// TRANSFORM CUSTOM RESULT IF CLICKED ON SLIDER NOT THUMB
 	if (event.custom && event.tag == "DIV")
-	{	
+	{
 		var hundert = DOM("favSliderId").width() - DOM("thumbId").width();
 		var calibrate = DOM("thumbId").width() / 2;	 
 		var value = parseInt((event.offsetX - calibrate)/ hundert * 100);
-		 
-		if (value < 0) value = 0; if (value > 100) value = 100;
-		 
+		
+		event.value = value = Math.max(Math.min(value, 100), 0);
+		
 		DOM("thumbId").style("left", parseInt(hundert * value / 100) + "px");
-		 
-		event.value = value;
 	}
 	
 	// HANDLE RESULT
 	if (event.value) 
-	{	
+	{
 		app.model._state.tempItem.y = event.value;
 
 		var item = app.model._state.tempItem;
@@ -1639,23 +1638,23 @@ function sliderCommand(event)
 	
 	var temp = app.model._state.tempItem;
 	
-	// CREATE LEMENT DESKTOP ODER MOBILE IF NO EVENT VALUE
+	// CREATE ELEMENT DESKTOP OR MOBILE IF NO EVENT VALUE
 	if (!event.value && event.tag != "A")
 	{
 		
 		if (app.agent.isDevice("Desktop"))
-		{				
-			DOM(this.properties.parent).add("div", {id: "favSliderId", "class": "slider"});
-			DOM("favSliderId").add("a", {id: "thumbId", "class": "grey"});		 
+		{
+		  var favSlider = DOM(this.properties.parent).add("div", {id: "favSliderId", "class": "slider"});
+		  favSlider.add("a", {id: "thumbId", "class": "grey"});		 
 			
-			var hundert = DOM("favSliderId").width() - DOM("thumbId").width();
+			var hundert = favSlider.width() - DOM("thumbId").width();
 			
 			DOM("thumbId").style("left", parseInt(hundert * temp.y / 100) + "px");
 			
-			DOM("favSliderId").on("touch", Commands.SLIDER, {custom:true});
+			favSlider.on("touch", Commands.SLIDER, {custom:true});
 		}
 		else
-		{//, , style:"margin-bottom:20px"
+		{
 			DOM(this.properties.parent).add("input", {id: "favRangeId", type: "range", min: 0, max: 100, value: temp.y});
 			DOM("favRangeId").on("change", Commands.SLIDER, {});
 		}	
