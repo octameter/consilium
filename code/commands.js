@@ -115,16 +115,16 @@ var app = {
 	
 	initialize: function(domain)
 	{
-		//this.domain = domain;
-		//this.setup();
-		//this.bind();
+		this.domain = domain;
+		this.setup();
+		this.bind();
 	}
 
 };
 
 /** 
  * FRONTCONTROLLER PATTERN
-
+*/
 // TODO LOGGING console.log(app.domain, "->", this.callback.name, "<- properties:", this.properties, "data:", data); 
 //
 function createCommand( command, properties)

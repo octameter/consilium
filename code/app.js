@@ -33,9 +33,7 @@ var App = {
   ,  
   // COMMANDS
   READY:[],
-  CATALOG:[],
-  SEARCH:[],
-  DOCUMENT:[]
+  HOME_TO_OPTIONEN:[]
   ,
   // MODEL
   model:new Model()
@@ -43,15 +41,14 @@ var App = {
   // VIEWS
   views:function() {
     Konto.init();
-    Search.init();
-    Intro.init();
-    Result.init();
-    Document.init();
+    Home.init();
   },
   // BINDING 
   bind:function() {
     DOM(window).on("ready", function() {
-      App.dispatch( App.READY );
+      DOM("app").show();
+      
+      //App.dispatch( App.READY );
     });
   },
   // ENVIROMENT
@@ -77,7 +74,6 @@ var App = {
     
     if(!App.live && !new Node) console.log( "- MODULE Node required");
     this.node = ( this.live ) ? new Node( "https://node.epha.ch" ) : new Node( "http://"+this.domain+":8080" );
-    this.fachinfo = ( this.live ) ? "http://kompendium.epha.ch" : "http://"+this.domain+":8888/kompendium";
     this.konto = ( this.live ) ? "http://konto.epha.ch" : "http://"+this.domain+":8888/konto"; 
     
     this.views();
@@ -129,4 +125,33 @@ var Konto = {
     // RESPONSE
       if( data.request == "REDIRECT") location.replace(data.target);    
     }
+};
+
+var Home = {
+// VIEW
+  //DOMELEMENTS
+  container:DOM("homeId")
+  ,
+  sync:DOM("addOptionen")
+  ,
+  // BINDING
+  bind:function() {
+    this.sync.on("touch", function(data) {
+      
+      console.log("touch");
+      App.dispatch( App.HOME_TO_OPTIONEN );
+      
+      Home.container.replaceClass( "middle", "right" );
+    });
+    
+    this.container.on("
+
+  }
+  ,
+  //INIT
+  init:function() {
+    this.bind();
+    
+    this.container.show();
+  }
 };
