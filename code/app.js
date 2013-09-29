@@ -33,18 +33,27 @@ var App = {
   ,  
   // COMMANDS
   READY:[],
-  HOME_TO_OPTIONEN:[]
+  HOME:[],
+  OPTIONEN:[],
+  FAVORITES:[],
+  FAVORITE:[],
+  SYMPTOME:[]
   ,
   // MODEL
   model:new Model()
   ,
   // VIEWS
-  views:function() {
+  views:function() 
+  {
     Konto.init();
     Home.init();
+    Favorites.init();
+    Favorite.init();
+    Optionen.init();
   },
   // BINDING 
-  bind:function() {
+  bind:function() 
+  {
     DOM(window).on("ready", function() {
       DOM("app").show();
       
@@ -52,10 +61,10 @@ var App = {
     });
   },
   // ENVIROMENT
-  initialize: function( domain ) {
+  initialize: function( domain ) 
+  {
     
     if(!App.live) console.log( "- DOMAIN "+domain);
-
     if(!App.live && !DOM) console.log( "- MODULE DOM required");
     
     this.device = DOM().device();
@@ -83,6 +92,7 @@ var App = {
 
 var Konto = {
 //VIEW
+    
     // DOMELEMENTS
     body:DOM("app")
     ,
@@ -90,9 +100,15 @@ var Konto = {
     ,
     remote:null
     ,
-    // INIT
-    init: function() {
+    // TEST
+    test:function() 
+    {
       
+    }
+    ,
+    // INIT
+    init: function() 
+    {    
       if(!App.live) console.log( "- VIEW Konto");
       if(!App.live && !App.konto) console.log( "Missing App.konto");
       
@@ -100,8 +116,8 @@ var Konto = {
         Konto.response(data);
       });
       
-      if( App.device == "desktop") {
-      // CREATE
+      if( App.device == "desktop") 
+      {
         this.body.style("top", "42px");
         this.container.show();        
         this.remote = this.container.konto( App.konto ).on( "load", function(data) {
@@ -116,42 +132,270 @@ var Konto = {
     }
     ,
     // FUNCTION
-    request: function( data ) {
-    // REQUEST
+    request: function( data ) 
+    {
       if( data.request == "REDIRECT") Konto.remote.postMessage( { request:"REDIRECT", target:data.target }, "*"); 
     }
     ,
-    response: function(data) {
-    // RESPONSE
+    response: function(data) 
+    {
       if( data.request == "REDIRECT") location.replace(data.target);    
     }
 };
 
 var Home = {
 // VIEW
+    
   //DOMELEMENTS
-  container:DOM("homeId")
+  container:DOM("homeId"),
+  gotoOptionen:DOM("addOptionen"),
+  gotoFavorites:DOM("addEingabe"),
+  content:DOM("homeContentId")
   ,
-  sync:DOM("addOptionen")
+  // TEST
+  test:function() 
+  {
+    if(!App.live) console.log( "- VIEW Home");
+    if(!App.live && !App.OPTIONEN) console.log( "Missing: App.OPTIONEN");
+    if(!App.live && !App.FAVORITES) console.log( "Missing: App.FAVORITES");  
+  }
   ,
   // BINDING
-  bind:function() {
-    this.sync.on("touch", function(data) {
-      
-      console.log("touch");
-      App.dispatch( App.HOME_TO_OPTIONEN );
-      
-      Home.container.replaceClass( "middle", "right" );
+  bind:function() 
+  {    
+    this.gotoOptionen.on("touch", function() {
+      App.dispatch( App.OPTIONEN );
+      Home.container.swipe("right");
+    });
+    this.gotoFavorites.on("touch", function() {      
+      App.dispatch( App.FAVORITES );     
+      Home.container.swipe("left"); 
     });
     
-    this.container.on("
-
+    App.on( App.HOME, function() {     
+      Home.container.swipe("middle").on("stage", function(  ) {
+        Home.update();
+      })
+    });
   }
   ,
   //INIT
-  init:function() {
-    this.bind();
+  init:function() 
+  {
+    this.test();
+    this.bind();  
+    this.content.show();
+  }
+  ,
+  // FUNCTIONS
+  update:function()
+  {
     
+    
+    Home.content.show();
+  }
+};
+
+var Favorites = {
+// VIEW
+    
+  //DOMELEMENTS
+  container:DOM("favoritesId"),
+  gotoHome:DOM("favoritesBackButton"),
+  gotoFavorite:DOM("favoritesEditButton"),
+  content:DOM("favoritesContentId"),
+  
+  // TEST
+  test:function() 
+  {
+    if(!App.live) console.log( "- VIEW Favorites");
+    if(!App.live && !App.FAVORITES) console.log( "Missing: App.FAVORITES");
+  },
+  
+  // BINDING
+  bind:function() 
+  {       
+    this.gotoHome.on("touch", function() {      
+      App.dispatch( App.HOME );
+      Favorites.container.swipe("right");
+    });     
+    this.gotoFavorite.on("touch", function() {
+      App.dispatch( App.FAVORITE );
+      Favorites.container.swipe("left");
+    });
+    App.on( App.FAVORITES, function() {   
+      Favorites.container.swipe("middle").on("stage", function() {
+        Favorites.content.show();
+      })
+    });
+  },
+  
+  //INIT
+  init:function() 
+  {
+    this.test();
+    this.bind();  
+    this.container.show();
+  }
+};
+
+var Favorite = {
+ // VIEW
+    
+   //DOMELEMENTS
+   container:DOM("favoriteId"),
+   gotoFavorites:DOM("favoriteBackId"),
+   gotoSymptome:DOM("favoriteEditId"),
+   content:DOM("favoriteContentId"),
+   
+   // TEST
+   test:function() 
+   {
+     if(!App.live) console.log( "- VIEW Favorite");
+     if(!App.live && !App.FAVORITES) console.log( "Missing: App.FAVORITES");
+     if(!App.live && !App.FAVORITE) console.log( "Missing: App.FAVORITE");
+     if(!App.live && !App.SYMPTOME) console.log( "Missing: App.SYMPTOME");
+   },
+   
+   // BINDING
+   bind:function() 
+   {       
+     this.gotoFavorites.on("touch", function() {      
+       App.dispatch( App.FAVORITES );
+       Favorite.container.swipe("right");
+     });     
+     this.gotoSymptome.on("touch", function() {
+       App.dispatch( App.SYMPTOME );
+       Favorite.container.swipe("left");
+     });
+     App.on( App.FAVORITE, function() {   
+       Favorite.container.swipe("middle").on("stage", function() {
+         Favorite.content.show();
+       })
+     });
+   },
+   
+   //INIT
+   init:function() 
+   {
+     this.test();
+     this.bind();  
+     this.container.show();
+   }
+ };
+
+var Symptome = {
+// VIEW
+    
+  //DOMELEMENTS
+  container:DOM("symptomeId"),
+  gotoFavorite:DOM("symptomeBackButton"),
+  content:DOM("symptomeContentId"),
+  
+  // TEST
+  test:function() 
+  {
+    if(!App.live) console.log( "- VIEW Symptome");
+    if(!App.live && !App.FAVORITE) console.log( "Missing: App.FAVORITE");
+    if(!App.live && !App.SYMPTOME) console.log( "Missing: App.SYMPTOME");
+  },
+  
+  // BINDING
+  bind:function() 
+  {       
+    this.gotoFavorite.on("touch", function() {      
+      App.dispatch( App.FAVORITE );
+      Symptome.container.swipe("right");
+    });     
+    App.on( App.SYMPTOME, function() {   
+      Symptome.container.swipe("middle").on("stage", function() {
+        Symptome.content.show();
+      })
+    });
+  },
+  
+  //INIT
+  init:function() 
+  {
+    this.test();
+    this.bind();  
+    this.container.show();
+  }
+};
+
+var Tipps = {
+ // VIEW
+    
+   //DOMELEMENTS
+   container:DOM("tippId"),
+   gotoFavorite:DOM("tippBackButton"),
+   content:DOM("tippContentId"),
+   
+   // TEST
+   test:function() 
+   {
+     if(!App.live) console.log( "- VIEW Tipps");
+     if(!App.live && !App.FAVORITE) console.log( "Missing: App.FAVORITE");
+     if(!App.live && !App.TIPPS) console.log( "Missing: App.TIPPS");
+   },
+   
+   // BINDING
+   bind:function() 
+   {       
+     this.gotoFavorite.on("touch", function() {      
+       App.dispatch( App.FAVORITE );
+       Tipps.container.swipe("right");
+     });     
+     App.on( App.TIPPS, function() {   
+       Tipps.container.swipe("middle").on("stage", function() {
+         Tipps.content.show();
+       })
+     });
+   },
+   
+   //INIT
+   init:function() 
+   {
+     this.test();
+     this.bind();  
+     this.container.show();
+   }
+ };
+
+var Optionen = {
+// VIEW
+    
+  //DOMELEMENTS
+  container:DOM("optionenId"),
+  gotoHome:DOM("optionenBackButton"),
+  content:DOM("optionenContentId"),
+  
+  // TEST
+  test:function() 
+  {
+    if(!App.live) console.log( "- VIEW Optionen");
+    if(!App.live && !App.HOME) console.log( "Missing: App.HOME");
+  },
+  
+  // BINDING
+  bind:function() 
+  {
+    this.gotoHome.on("touch", function() {      
+      App.dispatch( App.HOME );
+      Optionen.container.swipe( "left" );
+    });
+    App.on( App.OPTIONEN, function() {   
+      Optionen.container.swipe("middle").on("stage", function() {
+      Optionen.content.show();
+    })
+  });
+  },
+  
+  //INIT
+  init:function() 
+  {
+    this.test();
+    this.bind();  
     this.container.show();
   }
 };

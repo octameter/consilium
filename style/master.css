@@ -167,3 +167,14 @@ and (max-device-width : 568px) {
 	cursor:pointer;
 }
 
+.blur {
+	
+    display:block;
+    -webkit-filter: blur(1px);
+    -moz-filter: blur(1px);
+    -o-filter: blur(1px);
+    -ms-filter: blur(1px);
+    filter: blur(1px);
+    opacity: 0.95;
+}
+

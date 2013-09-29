@@ -1,137 +1,128 @@
 <!DOCTYPE html>
 <html lang="de-CH">
-    <head>
-        <title>Consilium</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+  <head>
+	  <title>Consilium</title>
+	  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	  <meta name="format-detection" content="telephone=no" />
+	  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
-				
-        <link rel="stylesheet" type="text/css" href="style/master.css" />
-        
-    </head>
-        
-    <body id="app" style="display:none;" >
-    	
-        <header id="xauth" class="konto"></header>
-		
+    <link rel="stylesheet" type="text/css" href="style/master.css" />       
+  </head>
+  <body id="app" style="display:none;" >
+	 	
+	 	<header id="xauth" class="konto"></header>
+	
 		<!-- HOME -->     
-        <section id="homeId" class="view middle">
-        
-        	<header class="disappear">
-        		<button id="addOptionen" class="button-text colorless" >Sync
-                <!-- <img src="img/icon/optionen.png" width="28"> -->
-        		</button>
-        		<h2 id="titleId">Consilium</h2>
-        		<button id="addEingabe" class="button-text colorless">Start
-                <!-- <img src="img/icon/plus.png" width="28"> -->
-        		</button>
-        	</header>
- 	
- 			<article id="homeContentId">
-        		<!-- <svg id="svgZeit"></svg> -->
-        	</article>
-      	
-        </section>
-               
-        <!-- FAVORITES --> 
-        <section id="favoritesId" class="view right">
-        
-        	<header>
-        		<button id="favoritesBackButton" class="button-text colorless">Zurück
-        		<!-- <img src="img/icon/left.png" width="28"> -->
-        		</button>
-        		<h2>Favoriten</h2>
-                <button id="favoritesEditButton" class="button-text colorless">Ändern</button>
-        	</header>
-        	
-        	<article id="favoritesContentId"></article>
-        	 
-        </section>
-        
-        <!-- FAVORITE --> 
-        <section id="favoriteId" class="view right">
-        
-        	<header>
-        		<button id="favoriteBackId" class="button-text colorless">Zurück</button>
-        		<h2>Eingabe</h2>
-        		<button id="favoriteEditId" class="button-text colorless" style="display:none">Löschen</button>
-        	</header>
-        	
-        	<article id="favoriteContentId"></article>
-        	 
-        </section>
-        
-        <!-- SYMPTOME --> 
-        <section id="symptomeId" class="view right">
-        
-        	<header>
-        		<button id="symptomeBackButton" class="button-text colorless">Zurück</button>
-                <!-- <img src="img/icon/left.png" width="32"> -->
-        		
-        		<h2>Auswahl</h2>
-        	</header>
-        	
-        	<article id="symptomeContentId"></article>
-        	 
-        </section>
-        
-        <!-- TiPPS --> 
-        <section id="tippId" class="view right">
-        
-        	<header>
-        		<button id="tippBackButton" class="button-text colorless">Zurück</button>
-        		<h2>Empfehlung</h2>
-                <!-- <img src="img/icon/right.png" width="32"> -->
-        	</header>
-        	
-        	<article id="tippContentId"></article>
-        	 
-        </section>
-        
-        <!-- OPTIONEN -->
-        <section id="optionenId" class="view left">
-        
-        	<header>
-        		<h2>Einstellung</h2>
-        		<button id="optionenBackButton" class="button-text colorless">Zurück
-        			<!-- <img src="img/icon/right.png" width="32"> -->
-        		</button>
-        	</header>
-        	
-        	<article id="optionenContentId" style="display:none"></article>
-        	
-        </section>
-  		<!-- TODO
-  		<script type="text/javascript" src="childbrowser.js"></script>
-    	<script type="text/javascript" src="GAPlugin.js"></script>
-  		 -->
-
-    	<!-- BUILD PHONEGAP
-    	-->
-   		<script src="cordova.js"></script>			
+	  <article id="homeId" class="view middle">		    
+	  
+	  	<header class="disappear">
+	  		<button id="addOptionen" class="button-text colorless" >Sync
+	          <!-- <img src="img/icon/optionen.png" width="28"> -->
+	  		</button>
+	  		<h2 id="titleId">Consilium</h2>
+	  		<button id="addEingabe" class="button-text colorless">Start
+	          <!-- <img src="img/icon/plus.png" width="28"> -->
+	  		</button>
+	  	</header>
+	  	
+	    <section id="homeContentId">
+        <div id="chart" class="chart">
+          <div id="homeScrollerId" class="scrollableX">
+            <svg id="svgZeit"></svg>
+          </div>
+        </div>
+	      <form id="homeForm">
+	       <fieldset id="fieldsetAuswahl">
+	         <legend id="homeAuswahlLegend"></legend>
+	         <div id="homeAuswahlInfo"></div>
+	       </fieldset>
+	      </form>
+	  	</section>	
+	  	
+	  </article>
+	            
+		<!-- FAVORITES --> 
+		<article id="favoritesId" class="view right"> 
+			<header>
+				<button id="favoritesBackButton" class="button-text colorless">Zurück
+				<!-- <img src="img/icon/left.png" width="28"> -->
+				</button>
+				<h2>Favoriten</h2>
+		    <button id="favoritesEditButton" class="button-text colorless">Ändern</button>
+			</header>
+			<section id="favoritesContentId"></section>
+		</article>
+	   
+		<!-- FAVORITE --> 
+		<article id="favoriteId" class="view right">
+			<header>
+				<button id="favoriteBackId" class="button-text colorless">Zurück</button>
+				<h2>Eingabe</h2>
+				<button id="favoriteEditId" class="button-text colorless" style="display:none">Löschen</button>
+			</header>
+			<section id="favoriteContentId"></section>
+		</article>
+	     
+		<!-- SYMPTOME --> 
+		<article id="symptomeId" class="view right">
+			<header>
+				<button id="symptomeBackButton" class="button-text colorless">Zurück</button>
+		     <!-- <img src="img/icon/left.png" width="32"> -->
+				<h2>Auswahl</h2>
+			</header>
+			<section id="symptomeContentId"></section>
+		</article>
+		  
+		<!-- TiPPS --> 
+		<article id="tippId" class="view right">   
+			<header>
+				<button id="tippBackButton" class="button-text colorless">Zurück</button>
+				<h2>Empfehlung</h2>
+		    <!-- <img src="img/icon/right.png" width="32"> -->
+			</header>
+			<section id="tippContentId"></section>
+		</article>
+	     
+		<!-- OPTIONEN -->
+		<article id="optionenId" class="view left">
+			<header>
+				<h2>Einstellung</h2>
+				<button id="optionenBackButton" class="button-text colorless">Zurück
+					<!-- <img src="img/icon/right.png" width="32"> -->
+				</button>
+			</header>
+			<section id="optionenContentId" style="display:none"></section>
+		</article>
+		
+		<!-- TODO
+		<script type="text/javascript" src="childbrowser.js"></script>
+	 	<script type="text/javascript" src="GAPlugin.js"></script>
+		 -->
+		 
+	 	<!-- BUILD PHONEGAP
+	 	-->
+		<script src="cordova.js"></script>			
 		<script src="barcodescanner.js"></script>	
-
-		  <!-- MINIFIED REQUIRED LIBRARIES -->
-    	<script src="code/library.0.1.4.js"></script>
-
-		  <!-- PROJECT SPECIFIC-->
-   		<script src="code/entities.js"></script>
-   		<script src="code/model.js"></script>
-        <script src="code/app.js"></script>
-   	
-      <script>
-        
-          if ("addEventListener" in window) {
-          // INIT
-            App.initialize("consilium.epha.ch");
-            //app.initialize("consilium.epha.ch");	
-          }
-          else {
-          // ABORT
-            window.location = "error.html#oldbrowser";		
-          }
-  
-      </script>
+	
+		<!-- MINIFIED REQUIRED LIBRARIES -->
+		<script src="code/library.0.1.4.js"></script>
+	
+		<!-- PROJECT SPECIFIC-->
+		<script src="code/entities.js"></script>
+		<script src="code/model.js"></script>
+		<script src="code/app.js"></script>	
+		
+		<!-- FOR REFRACTORING-->
+		<script src="code/svg.js"></script>	
+    <script>     
+			if ("addEventListener" in window) {
+			// INIT
+			  App.initialize("consilium.epha.ch");
+			}
+			else {
+			// ABORT
+			  window.location = "error.html#oldbrowser";		
+			}
+    </script>
 	</body>
 </html>
