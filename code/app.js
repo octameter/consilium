@@ -184,15 +184,172 @@ var Home = {
   {
     this.test();
     this.bind();  
-    this.content.show();
+    this.update();
   }
   ,
   // FUNCTIONS
   update:function()
   {
+    this.chart.update();
+    this.content.show();
+  }
+  ,
+  chart: {
+    board:DOM("svgZeit"),
+    xInMs: 1000000,
+	stepInMs: 86400000,
+	minInMs: 0,
+	maxInMs: 0
+    ,
+	yInValue:0.5,
+	stepInValue:20,
+	minInValue:0,
+	maxInValue:40
+    ,
+	top:30,
+	right:0,
+	left:0,
+	bottom:20
+    ,
+    x: function( ms ) { return this.left + ( ms - this.minInMs ) / this.xInMs; }
+    ,
+	y: function( value ) {	return this.top + ( value - this.minInValue ) / this.yInValue; }
+    ,
+    update:function( data ) {
+      this.minInMs = util.zeit("midnight") - 5 * this.stepInMs;
+      this.maxInMs = this.minInMs + ( 30 * this.stepInMs );
+	  this.realInMs = util.zeit();
+      this.board.attrib( "width", this.x( this.maxInMs ) + this.right );
+      this.board.attrib( "height", this.y( this.maxInValue ) + this.bottom ); 
+      this.coordinates();
+    }
+    ,
+    coordinates:function() {
+      var yStep = this.stepInValue / this.yInValue;
+      var yMin = this.y( this.minInValue );
+      var yMax = this.y( this.maxInValue );
+	
+      var xStep = this.stepInMs / this.xInMs;
+      var xMin = this.x( this.minInMs );
+      var xMax = this.x( this.maxInMs );
+	
+      for(var x = xMin; x <= xMax; x += xStep )
+      {
+          // Vertical Line
+          this.board.drawLine( x, yMin - 5, x, yMax, "rgba(255,255,255,1)");
+  
+          // Horizontal Label
+          this.board.drawLabel( x + xStep / 2, this.top, util.zeit( "dd.MM", this.minInMs + x * this.xInMs) );
+      
+          // Weekends
+          if( util.zeit("weekend", this.minInMs + x * this.xInMs ) )
+          {
+              this.board.drawRectangel( x, yMin, xStep, yMax - yMin, "rgba(255,255,255,0.3)" );			
+          }
+      }	
+      // Horizontal Line      
+      for(var y = yMin; y <= yMax; y+= yStep) this.board.drawLine( xMin, y, xMax, y, "rgba(255,255,255,1)" );
+    }
+  }
+  ,
+  form: {
     
-    
-    Home.content.show();
+    legende:DOM("homeAuswahlLegend"),
+    info:DOM("homeAuswahlInfo")
+    ,
+    update:function( event ) 
+    {
+      /* DEFAULT */
+      legend.text("Legende"); 
+      info.text("Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen.");
+
+      /* FIGUR SELECTED */
+      if (event.id)
+      {		
+		var type = app.model.getType(event.id);
+
+		var value = event.y + "%";
+		var detail = ""; 
+		
+		if (type.kategorie == "Notizen")
+		{
+			value = "&nbsp;";
+			detail = event.y.replace(/\n\r?/g, "<br/>");
+		}
+		
+		if (type.kategorie == "Bewertung")
+		{
+			value = event.y + " " + type.unit;
+			detail = "<b>Definition</b> " + app.model.getGrad(event.id, event.y).info;
+		}
+		
+		if (type.kategorie == "Device")
+		{
+			var json = (typeof event.y == "string") ? JSON.parse(event.y) : event.y;
+			
+			if (event.id == "stepcounter")
+			{
+				value = json["step"] + " " + type.unit;			
+				detail = "<b>Definition</b> Messung mittels Device";
+				detail += "<br>Entfernung: " + json["km"] + "km";
+				detail += "<br>Kalorien: " + json["kcal"] + "kcal";
+				detail += "<br>Ex: " + json["ex"];
+				detail += "<br>Zeitraum: " + json["sportTime"] + "min";
+			}
+			else if (event.id == "bp")
+			{			
+				value = json["systolic"] + " " + type.unit;			
+				detail = "<b>Definition</b> Messung mittels Device";
+				detail += "<br>Sys: " + json["systolic"] + "mmHg";
+				detail += "<br>Dia: " + json["diastolic"] + "mmHg";
+				detail += "<br>Pulse " + json["pulse"] + " Pulse";
+			}
+			else
+			{
+				// event.y {weight:50}
+				value = json[event.id] + type.unit;				
+				detail = "<b>Definition</b> Messung mittels Device";
+			}
+		}
+		
+		if (type.kategorie == "Symptom")
+		{
+			value = event.y + " " + type.unit;
+			detail = "<b>Definition</b> " + app.model.getGrad(event.id, event.y).info;
+		}
+
+		legend.text(type.kategorie); 				
+
+		/* CURRENT ITEM */
+		var exportData = JSON.stringify({x: event.x, y: event.y, id: event.id, command: Commands.FAVORITE_TO_HOME});
+		
+		/* ROW */
+		var row = DOM(cmd.info).add("div", {id: "homeRowDiv", style: "cursor:pointer;padding:5px;", data: exportData});
+		
+		/* MAY PROCEED TO EDIT IF */
+		var caret = (type.kategorie == "Symptom" || type.kategorie == "Bewertung" || event.id == "privat");
+		if (caret)
+		{	// GOTO EDIT
+			row.on("tap", Commands.TAP_HANDLER, {watch: "id:homeRowDiv", command: Commands.HOME_EXIT});			
+		}
+		dispatchCommand(Commands.ROW, {
+			type: "legende", area: row, title: type.title, zeit: "am " + util.zeit("dd.mm.yyyy hh:mm", event.x),
+			farbwert: type.farbwert, value: value, caret: caret
+		});			
+		
+		/* DETAIL */
+		DOM(cmd.info).addChild("p", {"class": "row_detail"}, detail);	
+		
+		// SMALL SCREEN HAS OVERLAY IN TIMELINE
+		if (window.matchMedia("(orientation:landscape) and (max-device-width:768px)").matches) 
+		{		
+			dispatchCommand(Commands.CHART_OVERLAY, {
+				type: "row", title: type.title, zeit: "am " + util.zeit("dd.mm.yyyy hh:mm", event.x),
+				farbwert: type.farbwert, value: value
+			});
+		}
+      }
+	}
   }
 };
 

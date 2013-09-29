@@ -24,299 +24,134 @@
   FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.          
  */
+var Svg = {
 
-var Chart = 
-{
-	xInMs: 1000000,
-	stepInMs: 86400000,
-	minInMs: 0,
-	maxInMs: 0,
-	
-	yInValue:0.5,
-	stepInValue:20,
-	minInValue:0,
-	maxInValue:40,
-	
-	top:30,
-	right:0,
-	left:0,
-	bottom:20,
-	
-
-	x: function( ms )
-	{
-		return this.left + ( ms - this.minInMs ) / this.xInMs;		
-	},
-	
-	y: function( value )
-	{	
-		return this.top + ( value - this.minInValue ) / this.yInValue;
-	},
-	
-	drawLine: function( x1, y1, x2, y2, color)
+	line: function( params )
 	{
 		var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-		line.setAttribute("fill", color );
-		line.setAttribute("stroke", color );
-		line.setAttribute("stroke-width", "1");
-		line.setAttribute("x1", x1);
-		line.setAttribute("y1", y1);
-		line.setAttribute("x2", x2);
-		line.setAttribute("y2", y2);
-		
+        line.setAttribute("fill", params.color || "white");
+        line.setAttribute("stroke", params.color || "white");
+        line.setAttribute("stroke-width", params.strokeWidth || "1");
+		line.setAttribute("x1", params.x1);
+        line.setAttribute("y1", params.y1);
+        line.setAttribute("x2", params.x2);
+        line.setAttribute("y2", params.y2);
 		return line;
 	},
-	/**
-	 * LABEL ABSZISSE
-	 * @param x
-	 * @param y
-	 */
-	drawLabel: function( x, y, legend )
-	{
+	label: function( params )
+    {
 		var labelX = document.createElementNS("http://www.w3.org/2000/svg", "text");
 		labelX.setAttribute("width", 50);
 		labelX.setAttribute("height", 20);
-		labelX.setAttribute("x", x - 50 / 2);
-		labelX.setAttribute("y", y - 20 / 2);
+		labelX.setAttribute("x", params.x - 25);
+		labelX.setAttribute("y", params.y - 10);
 		labelX.setAttribute("fill", "rgba(255,255,255,1)");
-		labelX.setAttribute("font-size", "1em");
-		
-		labelX.textContent = legend; 
-		
+		labelX.setAttribute("font-size", "1em");		
+		labelX.textContent = params.text; 
 		return labelX;
 	},
-	drawRectangel: function (x, y, width, height, data, fill, stroke)
+	rect: function ( params )
 	{
-		fill = fill || "";
-		stroke = stroke || "";
-		
 		var area = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-
 		area.setAttribute("class","movePoint");
-		area.setAttribute("x", x);
-		area.setAttribute("y", y);
-		area.setAttribute("width", width);
-		area.setAttribute("height", height);
-		area.setAttribute("data", data);
-		area.setAttribute("fill", fill);
-		area.setAttribute("stroke", stroke);
+		area.setAttribute("x", params.x);
+		area.setAttribute("y", params.y);
+		area.setAttribute("width", params.width);
+		area.setAttribute("height", params.height);
+		area.setAttribute("data", params.data);
+		area.setAttribute("fill", params.fill || "");
+		area.setAttribute("stroke", params.stroke || "");
 	    area.setAttribute("stroke-width", "2");
-
     	return area;
-	}
-};
-
-DOModule.chart = function()
-{
-	// this.removeChilds();
-	
-	Chart.minInMs = util.zeit("dawn") - 5 * Chart.stepInMs;
-	Chart.maxInMs = Chart.minInMs + ( 30 * Chart.stepInMs );
-	Chart.realInMs = util.zeit();
-
-	this.element.setAttribute( "width", Chart.x(Chart.maxInMs) + Chart.right );
-	this.element.setAttribute( "height", Chart.y(Chart.maxInValue) + Chart.bottom );
-};
-
-DOModule.chartSchema = function( schemaArray, produkt )
-{
-	
-	var nodes = this.element.getElementsByTagName("rect");
-
-	for( var n = nodes.length; n > 0 ; n--)
-	{
-		var data = JSON.parse( nodes[ n - 1 ].getAttribute("data") );
-	
-		if( !data || !produkt ) continue;
-		
-		if( data.EAN13 == produkt.EAN13) this.element.removeChild( nodes[ n - 1 ] );
-	}
-	
-	var menge = parseInt( produkt.Menge );
-	var verwendet = 0;
-	
-	for( var i = 0; i < menge && verwendet <= menge; i++ )
-	{
-		var x = (5 * Chart.stepInMs  / Chart.xInMs ) + ( i * Chart.stepInMs / Chart.xInMs );
-		var y = 60;
-		var width = 10;
-
-		for( var j = 0; j < schemaArray.length && verwendet <= menge; j++)
-		{
-			var xSchema = x + ( schemaArray[j].zeit / 30 * Chart.stepInMs / Chart.xInMs );
-			
-			var height = ( parseInt( schemaArray[j].value ) * 0.25 ) * 30;
-			
-			verwendet += parseInt( schemaArray[j].value );
-		
-
-			if( verwendet <= menge )
-			this.add( Chart.drawRectangel(xSchema, y - height, width, height, JSON.stringify( produkt ), "#cc5" ) );		
-		}	
-	}
-};
-
-DOModule.chartCoordinates = function() 
-{ 	
-	var yStep = Chart.stepInValue / Chart.yInValue;
-	var yMin = Chart.y( Chart.minInValue );
-	var yMax = Chart.y( Chart.maxInValue );
-	
-	var xStep = Chart.stepInMs / Chart.xInMs;
-	var xMin = Chart.x( Chart.minInMs );
-	var xMax = Chart.x( Chart.maxInMs );
-	
-	for(var x = xMin; x <= xMax; x += xStep )
-	{
-		// Vertical Line
-		this.add( Chart.drawLine( x, yMin - 5, x, yMax,"rgba(255,255,255,1)") );
-
-		// Horizontal Label
-		this.add( Chart.drawLabel( x + xStep / 2, Chart.top, util.zeit( "dd.MM", Chart.minInMs + x * Chart.xInMs)) );
-	
-		// Weekends
-		if( util.zeit("weekend", Chart.minInMs + x * Chart.xInMs ) )
-		{
-			this.add( Chart.drawRectangel( x, yMin, xStep, yMax - yMin, null, "rgba(255,255,255,0.3)" ) );			
-		}
-	}	
-	
-	for(var y = yMin; y <= yMax; y+= yStep)
-	{
-		// Horizontal Line
-		this.add( Chart.drawLine( xMin, y, xMax, y, "rgba(255,255,255,1)") );
-	}	
-}; 
-
-
-var Symbols =
-{    
-    busy : function(detail) 
+	},
+    circle:function( params )
     {
-      var spinners = document.createElement("div");     
-      
-      for(var i = 0; i < 12; i++)
-      {
-        var spinner =  document.createElement("div");
-        spinner.className = "spinner";
-
-        this.setStylePrefix( spinner, "transform", "rotate("+(i*30)+"deg) translate(0, -120%)");
-        this.setStylePrefix( spinner, "animationDelay", (i / 12)+"s");
-
-        spinners.appendChild(spinner);
-      }
-        
-      return spinners;
+      var kreis = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      kreis.setAttribute("fill", params.fill);
+      kreis.setAttribute("stroke", params.stroke || "#FFFFFF" );
+      kreis.setAttribute("stroke-width", params.strokeWidth || "0");
+      kreis.setAttribute("cx", params.x);
+      kreis.setAttribute("cy", params.y);
+      kreis.setAttribute("r", params.r);
+      return kreis;
     },
-    pause : function() 
+    polygon:function( params )
     {
-      var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      svg.setAttribute("viewBox","0 0 60 60");
-      svg.setAttribute("width","100%");
-      svg.setAttribute("height","100%");
-      
-          var first = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-          first.setAttribute("fill", "rgba(100,100,100,0.8)");
-          first.setAttribute("stroke", "#CCCCCC" );
-          first.setAttribute("stroke-width", "2");  
-          first.setAttribute("x","5");
-          first.setAttribute("y","10");
-          first.setAttribute("width","20");
-          first.setAttribute("height","40");
-        svg.appendChild(first);
-        
-          var second = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-          second.setAttribute("fill", "rgba(100,100,100,0.8)");
-          second.setAttribute("stroke", "#CCCCCC" );
-          second.setAttribute("stroke-width", "2");
-          second.setAttribute("x","35");
-          second.setAttribute("y","10");
-          second.setAttribute("width","20");
-          second.setAttribute("height","40");
-        svg.appendChild(second);
-        
-      return svg;
+      var poly = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+      poly.setAttribute("fill", params.fill);
+      poly.setAttribute("points", params.points);
+      return poly;
     },
-    error : function() 
-    {   
-      var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-
-      svg.setAttribute("viewBox","0 0 60 60");
-      svg.setAttribute("width", "100%");
-      svg.setAttribute("height", "100%");
-      svg.setAttribute("version", "1.1");
-      
-        var kreis = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        kreis.setAttribute("fill", "rgba(255,55,55,0.6)" );
-        kreis.setAttribute("stroke", "#FFFFFF" );
-        kreis.setAttribute("stroke-width", "0");
-        kreis.setAttribute("cx","30");
-        kreis.setAttribute("cy","30");
-        kreis.setAttribute("r","27");
-      svg.appendChild(kreis);
-        
-        var kreuz = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-          kreuz.setAttribute("fill", "rgba(255,255,255,0.8)" );
-          kreuz.setAttribute("points","15,15 20,15 30,25 40,15 45,15 45,20 35,30 45,40 45,45 40,45 30,35 20,45 15,45 15,40 25,30 15,20 15,15");
-      svg.appendChild(kreuz);
-        
-        return svg;
+    polyline:function( params )
+    {
+      var caret = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+      caret.setAttribute("stroke",params.stroke);
+      caret.setAttribute("stroke-width", params.strokeWidth);
+      caret.setAttribute("fill", params.fill);
+      caret.setAttribute("points", params.points);
+      return caret;
+    },
+    path:function( params )
+    {
+      var grenze = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      grenze.setAttribute("fill",params.fill);
+      grenze.setAttribute("stroke", params.stroke);
+      grenze.setAttribute("stroke-width", params.strokeWidth);
+      grenze.setAttribute("d",params.d);
+      return grenze;
+    },
+    symbol:function() 
+    {
+      var sym = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      sym.setAttribute("viewBox","0 0 60 60");
+      sym.setAttribute("width","100%");
+      sym.setAttribute("height","100%");
+      return sym;
     },
     play : function() 
     {   
-      var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-
-      svg.setAttribute("viewBox","0 0 60 60");
-      svg.setAttribute("width","100%");
-      svg.setAttribute("height","100%");
-      svg.setAttribute("version", "1.1");
+      var params = { "fill":"rgba(255,255,255,1)", "stroke":"rgba(204,204,204,0.8)","strokeWidth":"1" };
+      params.d = "d","M 15 30 L 15 15 C 15 5, 20 6, 25 10 L 45 25 C 50 28, 50 32, 45 35 L 25 50 C 20 55, 15 54, 15 45 L 15 30 Z");
       
-          var grenze = document.createElementNS("http://www.w3.org/2000/svg", "path");
-          grenze.setAttribute("fill", "rgba(255,255,255,1)" );
-          grenze.setAttribute("stroke", "rgba(204,204,204,0.8)" );
-          grenze.setAttribute("stroke-width", "1");
-        grenze.setAttribute("d","M 15 30 L 15 15 C 15 5, 20 6, 25 10 L 45 25 C 50 28, 50 32, 45 35 L 25 50 C 20 55, 15 54, 15 45 L 15 30 Z");
-      svg.appendChild(grenze);
-      
-      return svg;
+      return this.symbol().appendChild( this.path( params ) );
     },
-    caret : function() 
-    {   
-      var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-
-      svg.setAttribute("viewBox","0 0 60 60");
-      svg.setAttribute("width", "100%");
-      svg.setAttribute("height", "100%");
-      svg.setAttribute("version", "1.1");
-              
-        var _caret = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-        _caret.setAttribute("stroke", "rgba(150,150,150,1)" );
-        _caret.setAttribute("stroke-width", "10");
-          _caret.setAttribute("fill", "none" );
-          _caret.setAttribute("points","15,5 45,30 15,55");
-      svg.appendChild(_caret);
+    pause : function() 
+    {
+      var pauseIcon = this.symbol();
+    
+      var params = { "fill":"rgba(100,100,100,0.8)", "stroke":"#CCCCCC", "stroke-width":"2", "width":"20", "height":"40","y":"10" };
+      params.x = "5";
+      pauseIcon.appendChild( this.rect( params ) );
+      params.x = "35";
+      pauseIcon.appendChild( this.rect( params ) );
         
-        return svg;
+      return pauseIcon;
     },
-    antiCaret : function() 
+    error : function() 
     {   
-      var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      var params = {
+        fill:"rgba(255,255,255,0.8)",
+        points:"15,15 20,15 30,25 40,15 45,15 45,20 35,30 45,40 45,45 40,45 30,35 20,45 15,45 15,40 25,30 15,20 15,15"
+      };
       
-      svg.setAttribute("viewBox","0 0 60 60");
-      svg.setAttribute("width", "100%");
-      svg.setAttribute("height", "100%");
-      svg.setAttribute("version", "1.1");
-      
-      var _caret = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-      _caret.setAttribute("stroke", "rgba(150,150,150,1)" );
-      _caret.setAttribute("stroke-width", "10");
-      _caret.setAttribute("fill", "none" );
-      _caret.setAttribute("points","45,5 15,30 45,55");
-      svg.appendChild(_caret);
-      
+      var svg = this.symbol(); 
+      svg.appendChild( this.circle( {x:"30",y:"30",r:"27", fill:"rgba(255,55,55,0.6)", stroke:"#FFFFFF", "strokeWidth":0 } ) );
+      svg.appendChild( this.polygon( params ) );                        
       return svg;
+    },    
+    caretL : function() 
+    {   
+      var params = { "stroke":"rgba(150,150,150,1)", "stroke-width":"10","fill":"none" ,"points","15,5 45,30 15,55" };
+      
+      return this.symbol().appendChild( this.polyline( params ) );
     },
-    /**
+    caretR : function() 
+    {   
+      var params = { "stroke":"rgba(150,150,150,1)", "stroke-width":"10","fill":"none" ,"points","45,5 15,30 45,55" };
+      
+      return this.symbol().appendChild( this.polyline( params ) );
+    },
+                        /**
      * CLOSE BUTTON
      * @param percentSize
      * @returns svgElement
@@ -408,39 +243,7 @@ var Symbols =
       return svg;
     },
     
-    /**
-     * PAUSE
-     * @returns
-     */
-    pause : function() 
-    {
-      var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      svg.setAttribute("viewBox","0 0 60 60");
-      svg.setAttribute("width","100%");
-      svg.setAttribute("height","100%");
-      
-          var first = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-          first.setAttribute("fill", "rgba(100,100,100,0.8)");
-          first.setAttribute("stroke", "#CCCCCC" );
-          first.setAttribute("stroke-width", "2");  
-          first.setAttribute("x","5");
-          first.setAttribute("y","10");
-          first.setAttribute("width","20");
-          first.setAttribute("height","40");
-        svg.appendChild(first);
-        
-          var second = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-          second.setAttribute("fill", "rgba(100,100,100,0.8)");
-          second.setAttribute("stroke", "#CCCCCC" );
-          second.setAttribute("stroke-width", "2");
-          second.setAttribute("x","35");
-          second.setAttribute("y","10");
-          second.setAttribute("width","20");
-          second.setAttribute("height","40");
-        svg.appendChild(second);
-        
-      return svg;
-    },
+
     /**
      * THUMBS UP
      * @param votes
@@ -480,7 +283,101 @@ var Symbols =
       }
       
       return svg;
+    }
+};
+
+DOModule.drawLine = function(x1, y1, x2, y2, color) 
+{ 
+  this.add( Svg.line( {x1:x1, y1:y1, x2:x2, y2:y2, color:color } ) );
+};
+
+DOModule.drawRectangel = function (x, y, width, height, fill)
+{ 
+  this.add( Svg.rect( {x:x, y:y, width:width, height:height, fill:fill } ) );
+};
+
+DOModule.drawLabel = function( x, y, text )
+{ 
+  this.add( Svg.label( { x:x, y:y, text:text } ) );
+};
+
+DOModule.drawSymbol = function( type )
+{
+  switch(type)
+  {    
+    case "error": this.add( Svg.error() );    break;
+    case "busy":  this.add( Svg.busy() );     break;
+    case "play":  this.add( Svg.play() );     break;
+    case "close":   this.add( Svg.close(11) );  break;
+    case "caretL": this.add( Svg.caretL() );  break;
+    case "caretR": this.add( Svg.caretR() );  break;
+  }
+ 
+  return this;
+};
+
+DOModule.chartSchema = function( schemaArray, produkt )
+{
+	
+	var nodes = this.element.getElementsByTagName("rect");
+
+	for( var n = nodes.length; n > 0 ; n--)
+	{
+		var data = JSON.parse( nodes[ n - 1 ].getAttribute("data") );
+	
+		if( !data || !produkt ) continue;
+		
+		if( data.EAN13 == produkt.EAN13) this.element.removeChild( nodes[ n - 1 ] );
+	}
+	
+	var menge = parseInt( produkt.Menge );
+	var verwendet = 0;
+	
+	for( var i = 0; i < menge && verwendet <= menge; i++ )
+	{
+		var x = (5 * Chart.stepInMs  / Chart.xInMs ) + ( i * Chart.stepInMs / Chart.xInMs );
+		var y = 60;
+		var width = 10;
+
+		for( var j = 0; j < schemaArray.length && verwendet <= menge; j++)
+		{
+			var xSchema = x + ( schemaArray[j].zeit / 30 * Chart.stepInMs / Chart.xInMs );
+			
+			var height = ( parseInt( schemaArray[j].value ) * 0.25 ) * 30;
+			
+			verwendet += parseInt( schemaArray[j].value );
+		
+
+			if( verwendet <= menge )
+			this.add( Chart.drawRectangel(xSchema, y - height, width, height, JSON.stringify( produkt ), "#cc5" ) );		
+		}	
+	}
+};
+
+
+var Symbols =
+{    
+    busy : function(detail) 
+    {
+      var spinners = document.createElement("div");     
+      
+      for(var i = 0; i < 12; i++)
+      {
+        var spinner =  document.createElement("div");
+        spinner.className = "spinner";
+
+        this.setStylePrefix( spinner, "transform", "rotate("+(i*30)+"deg) translate(0, -120%)");
+        this.setStylePrefix( spinner, "animationDelay", (i / 12)+"s");
+
+        spinners.appendChild(spinner);
+      }
+        
+      return spinners;
     },
+
+
+
+
     setStylePrefix: function(element, property, value){
       
       var prefix = ["Webkit","Moz","Ms","O"];
@@ -496,17 +393,6 @@ var Symbols =
 
 };
 
-DOModule.addSymbol = function( type )
-{
-  switch(type)
-  {    
-    case "error": this.add( Symbols.error() ); break;
-    case "busy": this.add( Symbols.busy() ); break;
-    case "play": this.add( Symbols.play() ); break;
-    case "close": this.add( Symbols.close(11) );
-  }
- 
-  return this;
-};
+
 
 
