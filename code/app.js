@@ -57,14 +57,6 @@ var App = {
     DOM(window).on("ready", function() {
       DOM("app").show();
       
-
-      
-      App.model.setData("lexikon", Entities.Bewertung, ["id"]);
-      console.log( App.model._data["lexikon"].length );
-      App.model.setData("lexikon", Entities.Symptome, ["id"]);
-      console.log( App.model._data["lexikon"].length );
-      App.model.setData("lexikon", Entities.Tagebuch, ["id"]);
-      
       App.dispatch( App.READY );
     });
   },
@@ -93,8 +85,11 @@ var App = {
     this.node = ( this.live ) ? new Node( "https://node.epha.ch" ) : new Node( "http://"+this.domain+":8080" );
     this.konto = ( this.live ) ? "http://konto.epha.ch" : "http://"+this.domain+":8888/konto"; 
     
-    
-    //this.model.setData( "Symptome", Entities.Symptome, ["id"] );
+    this.model.setData("lexikon", Entities.Symptome, ["id"] );
+    this.model.setData("lexikon", Entities.Bewertung, ["id"] );
+    this.model.setData("lexikon", Entities.Tagebuch, ["id"]);
+    this.model.setData("lexikon", Entities.Device, ["id"]) ;
+    this.model.setData("lexikon", Entities.Tipps, ["id"]) ;
     
     this.views();
     this.bind();
@@ -291,6 +286,8 @@ var Home = {
     ,
     update:function( event ) 
     {
+      event = event || {};
+      
       /* FIGUR SELECTED */
       var id = event.id || "";
       var zeit = "am " + util.zeit("dd.mm.yyyy hh:mm", event.x);
@@ -384,11 +381,12 @@ var Favorites = {
         Favorites.content.show();
       })
     });
+    
     App.on( App.READY, function() {
       
       App.model.setProtagonist();
       
-      for (var favorite in App.model.getFavorites())
+      for (var favorite in App.model.getFavorites() )
       {
         var liste = Favorites.form.content.add("fieldset")
                     .add("legend").text(favorite)
@@ -401,8 +399,8 @@ var Favorites = {
           
           var search = App.model.searchData( "lexikon", entity.entitiesId );
           
-          if( search[0] )
-          {
+          if( search[0] ) {
+            
             var params = {};
             params.title = search[0].title;
             params.farbe = search[0].farbwert;
@@ -411,36 +409,28 @@ var Favorites = {
             params.event = {};
             
             liste.addRow( params ).on("touch", function(data) {
-              
-              console.log( data.element );
-              DOM( data.element ).addClass("selected");
-//                
-//                that.addClass("selected");
-//                //App.dispatch( App.FAVORITE, params.event );
-//                
-//                that.off( "touch" );
-//              });    
-              
-              App.dispatch( App.FAVORITE );
-              Favorites.container.swipe("left");
-            });
-            
+
+              var touch = DOM( data.element ).addClass("selected").on("touched", function(data2) 
+              {  
+                  console.log( data2.type );
+                  if( data.element == data2.element )
+                  {
+                    App.dispatch( App.FAVORITE );
+                    Favorites.container.swipe("left");
+                  }
+                  touch.removeClass("selected");
+                  touch.off("touched");
+              }
+              , {watch:"LI"});   
+                     
+            }
+            , { watch:"LI" } );
             // TODO Sync with homeVerlaufCommand
             //var infoData = App.model.getPunkt(data.row.entitiesId);
             //var infoType = App.model.getType(data.row.entitiesId);
             //var zeitpunkt = (infoData && !data.edit) ? "Zuletzt: " + util.zeit("dd.mm.yyyy hh:mm", infoData.zeit) : "&nbsp;";
-            
-            
           }
         }
-        
-//        if (!app.model.getStateFavEdit())
-//        {
-//          liste.on("tap", Commands.TAP_HANDLER, {
-//            watch: "tagName:LI",
-//            command: Commands.FAVORITES_EDIT
-//          });
-//        }
       }
     });
   },

@@ -377,12 +377,5 @@ DOModule.chartSchema = function( schemaArray, produkt )
 };
 
 
-var Symbols =
-{    
-
-
-};
-
-
 
 
