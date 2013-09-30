@@ -5,6 +5,7 @@
 @import "button.css";
 @import "form.css";
 @import "slider.css";
+@import "row.css";
 
 * {
     -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
@@ -29,9 +30,10 @@ html, body {
 	padding: 0px;
 	margin: 0px;
 	border:none;
-    font-family: ARIAL;
+  font-family: ARIAL;
 	background-color: #FAFAFA;
 }
+
 
 /* portrait */
 @media screen and (orientation:portrait) {

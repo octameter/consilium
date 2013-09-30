@@ -5,16 +5,99 @@
 
 function Model(){}
 
-Model.prototype._data = 
+//Model.prototype._data = {};
+
+Model.prototype.getData = function( type )
 {
-		// Acts
-		acts: [],
-		// ARZT OR PATIENT
-		protagonist: null,
-		// PATIENT
-		antagonist: null
+  return this._data[type];  
 };
 
+Model.prototype.setData = function( type, value, searchterms )
+{
+  var scope;
+  
+  for( var i = 0; i < value.length; i++)
+  {
+    scope = value[i];
+    scope["_term"] = '';
+    
+      for( var t = 0; t < searchterms.length; t++)
+      {
+        if( scope[searchterms[t]] ) scope["_term"] += scope[searchterms[t]].toUpperCase() + " ";
+      }
+  }
+  
+  if( this._data[ type ] )
+  this._data[ type ] = this._data[ type ].concat( value );
+  
+  else 
+  this._data[ type ] = value;
+};
+
+Model.prototype.removeData = function( type )
+{
+  delete this._data[type];
+};
+
+Model.prototype.searchData = function( type, searchString )
+{
+  var search = searchString.toUpperCase().split(" ");
+  
+  var source = this._data[type].slice(0);
+  
+  var filtered = source.filter( function(ele)
+  {   
+      for( var i = 0; i < search.length; i++)
+      {
+        if( ele["_term"] && ele["_term"].indexOf( search[i] ) > -1) { continue; }
+
+        return false;
+      }
+
+      return true;
+  });
+  
+  return filtered;
+};
+
+/**
+ * PERSISTENT STORAGE
+ */
+Model.prototype.hasSavedData = function( type ) {
+  
+  if( "localStorage" in window ) {
+    return !!localStorage.getItem( type );
+  }
+  else return false;
+} ;
+
+Model.prototype.setSavedData = function( type, data ) {
+  if( "localStorage" in window ) {
+    return localStorage.setItem( type, JSON.stringify( data ) );
+  }
+  return null;
+};
+
+Model.prototype.getSavedData = function( type ) {
+  if( "localStorage" in window ) {
+    return JSON.parse( localStorage.getItem( type) );
+  }
+  return null;
+};
+
+
+
+
+
+Model.prototype._data = 
+{
+    // Acts
+    acts: [],
+    // ARZT OR PATIENT
+    protagonist: null,
+    // PATIENT
+    antagonist: null
+};
 
 Model.prototype.getActs = function()
 {
@@ -460,6 +543,6 @@ Model.prototype.trackPunktLikedOrNotExists = function()
 	return false;
 };
 
-Model.prototype.dict = new Entities();
+Model.prototype.dict = Entities;
 
 

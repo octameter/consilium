@@ -258,7 +258,7 @@ function changeViewCommand(event)
 
 function hiddenCommand(data)
 {
-	if (!data.hidden) location.reload();
+	//if (!data.hidden) location.reload();
 }
 
 function startCommand(event)
@@ -275,7 +275,7 @@ function startCommand(event)
 		// HANDLER FOR STROAGE RESULTS
 		DOM(window).on("msg", Commands.RESPONSE);
 
-		DOM().on("window", Commands.HIDDEN, {});
+		//DOM().on("window", Commands.HIDDEN, {});
 		
 		DOM("app").style("top", "40px");
 

@@ -94,38 +94,3 @@
 	height:180px !important;
     overflow-x:scroll !important;
 }
-
-/**
- * ROW
-**/
-.row_title { 
-	font-size:110%; 
-	padding-right:80px; 
-	}
-.row_zeit { font-size:90%; }
-.row_detail {
-	border-top:1px solid rgba(200,200,200,1);
-	padding:4px;
-	margin:4px;
-}
-.row_caret {
-	position:absolute;
-	top:24px;
-	right:2px; 
-	width:18px; 
-	height:18px
-}
-.row_antiCaret {
-	position:absolute;
-	left:0px; 
-	width:18px; 
-	height:18px
-}
-.row_value {
-	position:absolute; top:12px; right:16px;
-	font-size:110%;
-	color:white;
-	padding:8px;
-	border-radius:3px;
-	margin-right:5px;
-}

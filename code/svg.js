@@ -32,23 +32,23 @@ var Svg = {
         line.setAttribute("fill", params.color || "white");
         line.setAttribute("stroke", params.color || "white");
         line.setAttribute("stroke-width", params.strokeWidth || "1");
-		line.setAttribute("x1", params.x1);
+        line.setAttribute("x1", params.x1);
         line.setAttribute("y1", params.y1);
         line.setAttribute("x2", params.x2);
         line.setAttribute("y2", params.y2);
 		return line;
 	},
 	label: function( params )
-    {
+  {
 		var labelX = document.createElementNS("http://www.w3.org/2000/svg", "text");
-		labelX.setAttribute("width", 50);
-		labelX.setAttribute("height", 20);
-		labelX.setAttribute("x", params.x - 25);
-		labelX.setAttribute("y", params.y - 10);
-		labelX.setAttribute("fill", "rgba(255,255,255,1)");
-		labelX.setAttribute("font-size", "1em");		
-		labelX.textContent = params.text; 
-		return labelX;
+    		labelX.setAttribute("x", params.x);
+    		labelX.setAttribute("dx", - params.text.length * 3);
+    		labelX.setAttribute("y", params.y - 10);
+    		labelX.setAttribute("fill", "rgba(255,255,255,1)");
+    		labelX.setAttribute("font-size", "11pt");		
+    		labelX.setAttribute("style", "background:blue");		
+    		labelX.textContent = params.text; 
+    		return labelX;
 	},
 	rect: function ( params )
 	{
@@ -64,93 +64,97 @@ var Svg = {
 	    area.setAttribute("stroke-width", "2");
     	return area;
 	},
-    circle:function( params )
-    {
-      var kreis = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-      kreis.setAttribute("fill", params.fill);
-      kreis.setAttribute("stroke", params.stroke || "#FFFFFF" );
-      kreis.setAttribute("stroke-width", params.strokeWidth || "0");
-      kreis.setAttribute("cx", params.x);
-      kreis.setAttribute("cy", params.y);
-      kreis.setAttribute("r", params.r);
-      return kreis;
-    },
-    polygon:function( params )
-    {
-      var poly = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-      poly.setAttribute("fill", params.fill);
-      poly.setAttribute("points", params.points);
-      return poly;
-    },
-    polyline:function( params )
-    {
-      var caret = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-      caret.setAttribute("stroke",params.stroke);
-      caret.setAttribute("stroke-width", params.strokeWidth);
-      caret.setAttribute("fill", params.fill);
-      caret.setAttribute("points", params.points);
-      return caret;
-    },
-    path:function( params )
-    {
-      var grenze = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      grenze.setAttribute("fill",params.fill);
-      grenze.setAttribute("stroke", params.stroke);
-      grenze.setAttribute("stroke-width", params.strokeWidth);
-      grenze.setAttribute("d",params.d);
-      return grenze;
-    },
-    symbol:function() 
-    {
-      var sym = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      sym.setAttribute("viewBox","0 0 60 60");
-      sym.setAttribute("width","100%");
-      sym.setAttribute("height","100%");
-      return sym;
-    },
-    play : function() 
-    {   
-      var params = { "fill":"rgba(255,255,255,1)", "stroke":"rgba(204,204,204,0.8)","strokeWidth":"1" };
-      params.d = "d","M 15 30 L 15 15 C 15 5, 20 6, 25 10 L 45 25 C 50 28, 50 32, 45 35 L 25 50 C 20 55, 15 54, 15 45 L 15 30 Z");
-      
-      return this.symbol().appendChild( this.path( params ) );
-    },
-    pause : function() 
-    {
-      var pauseIcon = this.symbol();
+  circle:function( params )
+  {
+    var kreis = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    kreis.setAttribute("fill", params.fill);
+    kreis.setAttribute("stroke", params.stroke || "#FFFFFF" );
+    kreis.setAttribute("stroke-width", params.strokeWidth || "0");
+    kreis.setAttribute("cx", params.x);
+    kreis.setAttribute("cy", params.y);
+    kreis.setAttribute("r", params.r);
+    return kreis;
+  },
+  polygon:function( params )
+  {
+    var poly = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+    poly.setAttribute("fill", params.fill);
+    poly.setAttribute("points", params.points);
+    return poly;
+  },
+  polyline:function( params )
+  {
+    var caret = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    caret.setAttribute("stroke",params.stroke);
+    caret.setAttribute("stroke-width", params.strokeWidth);
+    caret.setAttribute("fill", params.fill);
+    caret.setAttribute("points", params.points);
+    return caret;
+  },
+  path:function( params )
+  {
+    var grenze = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    grenze.setAttribute("fill",params.fill);
+    grenze.setAttribute("stroke", params.stroke);
+    grenze.setAttribute("stroke-width", params.strokeWidth);
+    grenze.setAttribute("d",params.d);
+    return grenze;
+  },
+  symbol:function() 
+  {
+    var sym = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    sym.setAttribute("viewBox","0 0 60 60");
+    sym.setAttribute("width","100%");
+    sym.setAttribute("height","100%");
+    return sym;
+  },
+  play : function() 
+  {   
+    var params = { "fill":"rgba(255,255,255,1)", "stroke":"rgba(204,204,204,0.8)","strokeWidth":"1" };
+    params.d = "M 15 30 L 15 15 C 15 5, 20 6, 25 10 L 45 25 C 50 28, 50 32, 45 35 L 25 50 C 20 55, 15 54, 15 45 L 15 30 Z";
     
-      var params = { "fill":"rgba(100,100,100,0.8)", "stroke":"#CCCCCC", "stroke-width":"2", "width":"20", "height":"40","y":"10" };
-      params.x = "5";
-      pauseIcon.appendChild( this.rect( params ) );
-      params.x = "35";
-      pauseIcon.appendChild( this.rect( params ) );
-        
-      return pauseIcon;
-    },
-    error : function() 
-    {   
-      var params = {
-        fill:"rgba(255,255,255,0.8)",
-        points:"15,15 20,15 30,25 40,15 45,15 45,20 35,30 45,40 45,45 40,45 30,35 20,45 15,45 15,40 25,30 15,20 15,15"
-      };
+    return this.symbol().appendChild( this.path( params ) );
+  },
+  pause : function() 
+  {
+    var pauseIcon = this.symbol();
+  
+    var params = { "fill":"rgba(100,100,100,0.8)", "stroke":"#CCCCCC", "stroke-width":"2", "width":"20", "height":"40","y":"10" };
+    params.x = "5";
+    pauseIcon.appendChild( this.rect( params ) );
+    params.x = "35";
+    pauseIcon.appendChild( this.rect( params ) );
       
-      var svg = this.symbol(); 
-      svg.appendChild( this.circle( {x:"30",y:"30",r:"27", fill:"rgba(255,55,55,0.6)", stroke:"#FFFFFF", "strokeWidth":0 } ) );
-      svg.appendChild( this.polygon( params ) );                        
-      return svg;
-    },    
-    caretL : function() 
-    {   
-      var params = { "stroke":"rgba(150,150,150,1)", "stroke-width":"10","fill":"none" ,"points","15,5 45,30 15,55" };
-      
-      return this.symbol().appendChild( this.polyline( params ) );
-    },
-    caretR : function() 
-    {   
-      var params = { "stroke":"rgba(150,150,150,1)", "stroke-width":"10","fill":"none" ,"points","45,5 15,30 45,55" };
-      
-      return this.symbol().appendChild( this.polyline( params ) );
-    },
+    return pauseIcon;
+  },
+  error : function() 
+  {   
+    var params = {
+      fill:"rgba(255,255,255,0.8)",
+      points:"15,15 20,15 30,25 40,15 45,15 45,20 35,30 45,40 45,45 40,45 30,35 20,45 15,45 15,40 25,30 15,20 15,15"
+    };
+    
+    var svg = this.symbol(); 
+    svg.appendChild( this.circle( {x:"30",y:"30",r:"27", fill:"rgba(255,55,55,0.6)", stroke:"#FFFFFF", "strokeWidth":0 } ) );
+    svg.appendChild( this.polygon( params ) );                        
+    return svg;
+  },    
+  caretL : function() 
+  {   
+    var params = { "stroke":"rgba(150,150,150,1)", "strokeWidth":"10","fill":"none" ,"points":"45,5 15,30 45,55" };
+    
+    var symbol = this.symbol();
+    symbol.appendChild( this.polyline( params ) );
+    return symbol;
+  },
+  caretR : function() 
+  {   
+    var params = { "stroke":"rgba(150,150,150,1)", "strokeWidth":"10","fill":"none" ,"points":"15,5 45,30 15,55" };
+    
+    var symbol = this.symbol();
+    symbol.appendChild( this.polyline( params ) );
+    return symbol;
+  },
                         /**
      * CLOSE BUTTON
      * @param percentSize
@@ -286,22 +290,40 @@ var Svg = {
     }
 };
 
-DOModule.drawLine = function(x1, y1, x2, y2, color) 
-{ 
-  this.add( Svg.line( {x1:x1, y1:y1, x2:x2, y2:y2, color:color } ) );
+DOModule.timeLegend = function( xMin, xMax, xStep, y, minInMs, xInMs ) {
+
+  for(var x = xMin; x <= xMax; x += xStep )
+  {
+    var params = {
+        x: x + xStep / 2,
+        y: y,
+        text: util.zeit( "dd.MM", minInMs + x * xInMs) 
+    };
+    
+    this.add( Svg.label( params) );    
+  }
 };
 
-DOModule.drawRectangel = function (x, y, width, height, fill)
-{ 
-  this.add( Svg.rect( {x:x, y:y, width:width, height:height, fill:fill } ) );
+DOModule.timeGrid = function( xMin, xMax, xStep, yMin, yMax, yStep, minInMs, xInMs) {
+
+  for(var x = xMin; x <= xMax; x += xStep )
+  {
+      // Vertical Line
+      this.add( Svg.line( { x1:x, y1:yMin, x2:x, y2:yMax, color: "rgba(255,255,255,1)"} ) ); 
+      
+      // Weekends
+      if( util.zeit("weekend", minInMs + x * xInMs ) )
+      {
+          this.add( Svg.rect( { x:x, y:yMin, width: xStep, height:yMax - yMin,fill:"rgba(255,255,255,0.3)" } ) );     
+      }
+  }       
+  // Horizontal Line      
+  for(var y = yMin; y <= yMax; y+= yStep) this.add( Svg.line( { x1:xMin, y1:y, x2:xMax,y2:y, color:"rgba(255,255,255,1)" } ) );
+
 };
 
-DOModule.drawLabel = function( x, y, text )
-{ 
-  this.add( Svg.label( { x:x, y:y, text:text } ) );
-};
 
-DOModule.drawSymbol = function( type )
+DOModule.addSymbol = function( type )
 {
   switch(type)
   {    
@@ -357,39 +379,7 @@ DOModule.chartSchema = function( schemaArray, produkt )
 
 var Symbols =
 {    
-    busy : function(detail) 
-    {
-      var spinners = document.createElement("div");     
-      
-      for(var i = 0; i < 12; i++)
-      {
-        var spinner =  document.createElement("div");
-        spinner.className = "spinner";
 
-        this.setStylePrefix( spinner, "transform", "rotate("+(i*30)+"deg) translate(0, -120%)");
-        this.setStylePrefix( spinner, "animationDelay", (i / 12)+"s");
-
-        spinners.appendChild(spinner);
-      }
-        
-      return spinners;
-    },
-
-
-
-
-    setStylePrefix: function(element, property, value){
-      
-      var prefix = ["Webkit","Moz","Ms","O"];
-      
-      prefix.forEach(function(item)
-      {
-        element.style[ item + property[0].toUpperCase() + property.slice(1) ] = value;        
-      });
-      
-      element.style[ property ] = value;
-          
-    }
 
 };
 

@@ -33,8 +33,15 @@
         </div>
 	      <form id="homeForm">
 	       <fieldset id="fieldsetAuswahl">
-	         <legend id="homeAuswahlLegend"></legend>
-	         <div id="homeAuswahlInfo"></div>
+	         <legend></legend>
+	         <ul class="listeNext">
+	           <li class="row">
+	             <span class="row_title"></span>
+	             <br><span class="row_zeit"></span>
+	             <a class="row_value"></a><div class="row_caret"></div>
+	             <p class="row_detail"></p>
+	           </li>
+	         </ul>
 	       </fieldset>
 	      </form>
 	  	</section>	
@@ -50,7 +57,9 @@
 				<h2>Favoriten</h2>
 		    <button id="favoritesEditButton" class="button-text colorless">Ändern</button>
 			</header>
-			<section id="favoritesContentId"></section>
+			<section id="favoritesContentId">
+			 <form id="favFormId"></form>
+			</section>
 		</article>
 	   
 		<!-- FAVORITE --> 
@@ -114,6 +123,7 @@
 		
 		<!-- FOR REFRACTORING-->
 		<script src="code/svg.js"></script>	
+		<script src="code/liste.js"></script>	
     <script>     
 			if ("addEventListener" in window) {
 			// INIT

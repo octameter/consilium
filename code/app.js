@@ -57,7 +57,15 @@ var App = {
     DOM(window).on("ready", function() {
       DOM("app").show();
       
-      //App.dispatch( App.READY );
+
+      
+      App.model.setData("lexikon", Entities.Bewertung, ["id"]);
+      console.log( App.model._data["lexikon"].length );
+      App.model.setData("lexikon", Entities.Symptome, ["id"]);
+      console.log( App.model._data["lexikon"].length );
+      App.model.setData("lexikon", Entities.Tagebuch, ["id"]);
+      
+      App.dispatch( App.READY );
     });
   },
   // ENVIROMENT
@@ -84,6 +92,9 @@ var App = {
     if(!App.live && !new Node) console.log( "- MODULE Node required");
     this.node = ( this.live ) ? new Node( "https://node.epha.ch" ) : new Node( "http://"+this.domain+":8080" );
     this.konto = ( this.live ) ? "http://konto.epha.ch" : "http://"+this.domain+":8888/konto"; 
+    
+    
+    //this.model.setData( "Symptome", Entities.Symptome, ["id"] );
     
     this.views();
     this.bind();
@@ -116,7 +127,7 @@ var Konto = {
         Konto.response(data);
       });
       
-      if( App.device == "desktop") 
+      if( App.device == "desktop" && false) 
       {
         this.body.style("top", "42px");
         this.container.show();        
@@ -184,172 +195,163 @@ var Home = {
   {
     this.test();
     this.bind();  
-    this.update();
+    
+    this.content.show();
+    this.chart.init();
+    this.form.init();
   }
   ,
   // FUNCTIONS
   update:function()
   {
-    this.chart.update();
     this.content.show();
+    this.chart.update();
+    this.form.update();
   }
   ,
   chart: {
-    board:DOM("svgZeit"),
+    scroller:DOM("homeScrollerId"),
+    board:DOM("svgZeit")
+    ,
     xInMs: 1000000,
-	stepInMs: 86400000,
-	minInMs: 0,
-	maxInMs: 0
+  	stepInMs: 86400000,
+  	minInMs: 0,
+  	maxInMs: 0
     ,
-	yInValue:0.5,
-	stepInValue:20,
-	minInValue:0,
-	maxInValue:40
+  	yInValue:0.5,
+  	stepInValue:20,
+  	minInValue:0,
+  	maxInValue:100
     ,
-	top:30,
-	right:0,
-	left:0,
-	bottom:20
+  	top:40,
+  	right:0,
+  	left:0,
+  	bottom:30
     ,
     x: function( ms ) { return this.left + ( ms - this.minInMs ) / this.xInMs; }
     ,
-	y: function( value ) {	return this.top + ( value - this.minInValue ) / this.yInValue; }
+    y: function( value ) {	return this.top + ( value - this.minInValue ) / this.yInValue; }
     ,
-    update:function( data ) {
+    init:function() {
+      
       this.minInMs = util.zeit("midnight") - 5 * this.stepInMs;
       this.maxInMs = this.minInMs + ( 30 * this.stepInMs );
-	  this.realInMs = util.zeit();
+      this.realInMs = util.zeit();
+      
       this.board.attrib( "width", this.x( this.maxInMs ) + this.right );
       this.board.attrib( "height", this.y( this.maxInValue ) + this.bottom ); 
-      this.coordinates();
+      
+      // xMin, xMax, xStep, yMin, yMax, yStep, minInMs, xInMs
+      this.board.timeGrid( 
+          this.x( this.minInMs ), this.x( this.maxInMs ), this.stepInMs / this.xInMs,
+          this.y( this.minInValue ), this.y( this.maxInValue ), this.stepInValue / this.yInValue,
+          this.minInMs, this.xInMs 
+          );
+      //xMin, xMax, xStep, y
+      this.board.timeLegend( 
+          this.x( this.minInMs ), this.x( this.maxInMs ), 
+          this.stepInMs / this.xInMs, this.y( 100 ),
+          this.minInMs, this.xInMs );
+
+      // Ganz nach Links
+      this.board.on("load", function( data ) {      
+        Home.chart.scroller.scrollTo("scrollLeft", Home.chart.board.attrib("width") - Home.chart.scroller.width(), 2000);
+      });
     }
     ,
-    coordinates:function() {
-      var yStep = this.stepInValue / this.yInValue;
-      var yMin = this.y( this.minInValue );
-      var yMax = this.y( this.maxInValue );
-	
-      var xStep = this.stepInMs / this.xInMs;
-      var xMin = this.x( this.minInMs );
-      var xMax = this.x( this.maxInMs );
-	
-      for(var x = xMin; x <= xMax; x += xStep )
-      {
-          // Vertical Line
-          this.board.drawLine( x, yMin - 5, x, yMax, "rgba(255,255,255,1)");
-  
-          // Horizontal Label
-          this.board.drawLabel( x + xStep / 2, this.top, util.zeit( "dd.MM", this.minInMs + x * this.xInMs) );
+    update:function( data ) {
       
-          // Weekends
-          if( util.zeit("weekend", this.minInMs + x * this.xInMs ) )
-          {
-              this.board.drawRectangel( x, yMin, xStep, yMax - yMin, "rgba(255,255,255,0.3)" );			
-          }
-      }	
-      // Horizontal Line      
-      for(var y = yMin; y <= yMax; y+= yStep) this.board.drawLine( xMin, y, xMax, y, "rgba(255,255,255,1)" );
+      // SMALL SCREEN HAS OVERLAY IN TIMELINE
+//      if (window.matchMedia("(orientation:landscape) and (max-device-width:768px)").matches) 
+//      {   
+//        dispatchCommand(Commands.CHART_OVERLAY, {
+//          type: "row", title: type.title, zeit: "am " + util.zeit("dd.mm.yyyy hh:mm", event.x),
+//          farbwert: type.farbwert, value: value
+//        });
+//      }
     }
+    ,
   }
   ,
   form: {
-    
-    legende:DOM("homeAuswahlLegend"),
-    info:DOM("homeAuswahlInfo")
+
+    fieldset:DOM("fieldsetAuswahl")
+    ,
+    init:function()
+    {  
+      /* DEFAULT */
+      this.fieldset.legend( "Legende" );
+      this.fieldset.fillRow( 
+      {
+         title:"Datenpunkte"
+         , 
+         detail:"Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen." 
+       });
+    }
     ,
     update:function( event ) 
     {
-      /* DEFAULT */
-      legend.text("Legende"); 
-      info.text("Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen.");
-
       /* FIGUR SELECTED */
-      if (event.id)
-      {		
-		var type = app.model.getType(event.id);
-
-		var value = event.y + "%";
-		var detail = ""; 
-		
-		if (type.kategorie == "Notizen")
-		{
-			value = "&nbsp;";
-			detail = event.y.replace(/\n\r?/g, "<br/>");
-		}
-		
-		if (type.kategorie == "Bewertung")
-		{
-			value = event.y + " " + type.unit;
-			detail = "<b>Definition</b> " + app.model.getGrad(event.id, event.y).info;
-		}
-		
-		if (type.kategorie == "Device")
-		{
-			var json = (typeof event.y == "string") ? JSON.parse(event.y) : event.y;
-			
-			if (event.id == "stepcounter")
-			{
-				value = json["step"] + " " + type.unit;			
-				detail = "<b>Definition</b> Messung mittels Device";
-				detail += "<br>Entfernung: " + json["km"] + "km";
-				detail += "<br>Kalorien: " + json["kcal"] + "kcal";
-				detail += "<br>Ex: " + json["ex"];
-				detail += "<br>Zeitraum: " + json["sportTime"] + "min";
-			}
-			else if (event.id == "bp")
-			{			
-				value = json["systolic"] + " " + type.unit;			
-				detail = "<b>Definition</b> Messung mittels Device";
-				detail += "<br>Sys: " + json["systolic"] + "mmHg";
-				detail += "<br>Dia: " + json["diastolic"] + "mmHg";
-				detail += "<br>Pulse " + json["pulse"] + " Pulse";
-			}
-			else
-			{
-				// event.y {weight:50}
-				value = json[event.id] + type.unit;				
-				detail = "<b>Definition</b> Messung mittels Device";
-			}
-		}
-		
-		if (type.kategorie == "Symptom")
-		{
-			value = event.y + " " + type.unit;
-			detail = "<b>Definition</b> " + app.model.getGrad(event.id, event.y).info;
-		}
-
-		legend.text(type.kategorie); 				
-
-		/* CURRENT ITEM */
-		var exportData = JSON.stringify({x: event.x, y: event.y, id: event.id, command: Commands.FAVORITE_TO_HOME});
-		
-		/* ROW */
-		var row = DOM(cmd.info).add("div", {id: "homeRowDiv", style: "cursor:pointer;padding:5px;", data: exportData});
-		
-		/* MAY PROCEED TO EDIT IF */
-		var caret = (type.kategorie == "Symptom" || type.kategorie == "Bewertung" || event.id == "privat");
-		if (caret)
-		{	// GOTO EDIT
-			row.on("tap", Commands.TAP_HANDLER, {watch: "id:homeRowDiv", command: Commands.HOME_EXIT});			
-		}
-		dispatchCommand(Commands.ROW, {
-			type: "legende", area: row, title: type.title, zeit: "am " + util.zeit("dd.mm.yyyy hh:mm", event.x),
-			farbwert: type.farbwert, value: value, caret: caret
-		});			
-		
-		/* DETAIL */
-		DOM(cmd.info).addChild("p", {"class": "row_detail"}, detail);	
-		
-		// SMALL SCREEN HAS OVERLAY IN TIMELINE
-		if (window.matchMedia("(orientation:landscape) and (max-device-width:768px)").matches) 
-		{		
-			dispatchCommand(Commands.CHART_OVERLAY, {
-				type: "row", title: type.title, zeit: "am " + util.zeit("dd.mm.yyyy hh:mm", event.x),
-				farbwert: type.farbwert, value: value
-			});
-		}
-      }
-	}
+      var id = event.id || "";
+      var zeit = "am " + util.zeit("dd.mm.yyyy hh:mm", event.x);
+      // string or json
+      var value = event.y (typeof event.y == "string") ? JSON.parse(event.y) : event.y;
+      // kategorie, unit, farbwert
+      var type = app.model.getType(event.id);
+      // einteilung
+      var definition = "<b>Definition</b>"+ app.model.getGrad(event.id, event.y).info;
+        
+  		if (type.kategorie == "Notizen")
+  		{
+  		  var params = {
+            zeit:zeit,
+            value:"&nbsp", 
+            color:type.farbwert, 
+            detail:value.replace(/\n\r?/g, "<br/>")
+  		  }; 		  
+  		  if( id == "privat") { params.event = event; }
+  		  
+  		  this.fieldset.legend( type.kategorie);
+  		  this.fieldset.fillRow( params ); 
+  		}
+  		else if( type.kategorie == "Bewertung" || type.kategorie == "Symptom")
+    	{
+  		  this.fieldset.legend( type.kategorie);
+  		  this.fieldset.fillRow( 
+  		  { 
+  		    legend:type.kategorie, zeit:zeit, event:event, value:value + " " + type.unit, detail:definition 
+  		  });
+    	}
+  		else if(type.kategorie == "Device")
+  		{    			
+  		  this.fieldset.legend( type.kategorie);
+  			if(id == "stepcounter")
+  			{
+  			  this.fieldset.fillRow( { zeit:zeit, value:value["step"] + " " +type.unit, detail:
+  			    "<b>Definition</b> Messung mittels Device" +
+            "<br>Entfernung: " + value["km"] + "km" +
+            "<br>Kalorien: " + value["kcal"] + "kcal" +
+            "<br>Ex: " + value["ex"] +
+            "<br>Zeitraum: " + value["sportTime"] + "min"
+  			  });
+  			}
+  			else if (id == "bp")
+  			{	
+  			  this.fieldset.fillRow( { zeit:zeit, value:value["systolic"] + " " +type.unit, detail:
+            "<b>Definition</b> Messung mittels Device" +
+            "<br>Sys: " + value["systolic"] + "mmHg" +
+            "<br>Dia: " + value["diastolic"] + "mmHg" +
+            "<br>Pulse " + value["pulse"] + " Pulse"
+          });
+  			}
+  			else
+  			{
+  			  this.fieldset.fillRow( { zeit:zeit, value:value[id] + " " +type.unit, detail:
+            "<b>Definition</b> Messung mittels Device"
+          });
+  			}
+  		}
+    }
   }
 };
 
@@ -376,14 +378,70 @@ var Favorites = {
       App.dispatch( App.HOME );
       Favorites.container.swipe("right");
     });     
-    this.gotoFavorite.on("touch", function() {
-      App.dispatch( App.FAVORITE );
-      Favorites.container.swipe("left");
-    });
+    
     App.on( App.FAVORITES, function() {   
       Favorites.container.swipe("middle").on("stage", function() {
         Favorites.content.show();
       })
+    });
+    App.on( App.READY, function() {
+      
+      App.model.setProtagonist();
+      
+      for (var favorite in App.model.getFavorites())
+      {
+        var liste = Favorites.form.content.add("fieldset")
+                    .add("legend").text(favorite)
+                    .addNext("ul").addClass("listeNext");
+
+        for (var i = 0; i < App.model.getFavorites(favorite).length; i++)
+        {
+
+          var entity = App.model.getFavorites(favorite)[i];
+          
+          var search = App.model.searchData( "lexikon", entity.entitiesId );
+          
+          if( search[0] )
+          {
+            var params = {};
+            params.title = search[0].title;
+            params.farbe = search[0].farbwert;
+            params.value = "&nbsp;";
+            params.zeit = "";
+            params.event = {};
+            
+            liste.addRow( params ).on("touch", function(data) {
+              
+              console.log( data.element );
+              DOM( data.element ).addClass("selected");
+//                
+//                that.addClass("selected");
+//                //App.dispatch( App.FAVORITE, params.event );
+//                
+//                that.off( "touch" );
+//              });    
+              
+              App.dispatch( App.FAVORITE );
+              Favorites.container.swipe("left");
+            });
+            
+            // TODO Sync with homeVerlaufCommand
+            //var infoData = App.model.getPunkt(data.row.entitiesId);
+            //var infoType = App.model.getType(data.row.entitiesId);
+            //var zeitpunkt = (infoData && !data.edit) ? "Zuletzt: " + util.zeit("dd.mm.yyyy hh:mm", infoData.zeit) : "&nbsp;";
+            
+            
+          }
+        }
+        
+//        if (!app.model.getStateFavEdit())
+//        {
+//          liste.on("tap", Commands.TAP_HANDLER, {
+//            watch: "tagName:LI",
+//            command: Commands.FAVORITES_EDIT
+//          });
+//        }
+      }
     });
   },
   
@@ -392,7 +450,13 @@ var Favorites = {
   {
     this.test();
     this.bind();  
-    this.container.show();
+  }
+  ,
+  form:{
+    content:DOM("favFormId"),
+    init:function() {},
+    update:function() {}
+    
   }
 };
 
