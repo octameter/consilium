@@ -412,16 +412,16 @@ var Favorites = {
     // DEV
     App.model.setData("favorites",
     [
-       {entitiesId : "10025482"},
-       {entitiesId : "10047700", "edit":true},
-       {entitiesId : "10013963", "edit":true},
-       {entitiesId : "privat"}  
+       {id : "10025482"},
+       {id : "10047700", "edit":true},
+       {id : "10013963", "edit":true},
+       {id : "privat"}  
     ]);
     
     // DEV
     App.model.setData("acts",
     [
-       { entitiesId:"10025482", x:"1380725392804", y:"80" }
+       { id:"10025482", x:"1380725392804", y:"80" }
     ]);
 
   }
@@ -429,25 +429,25 @@ var Favorites = {
   update:function()
   {
     var faves = App.model.getData("favorites");
-    console.log("--", faves);
     
-    var kategories = App.model.getData("lexikon").has("entitiesId", faves ); 
+    var kategories = App.model.getData("lexikon").has("id", faves ); //.unique("kategorie"); 
 
-    console.log(App.model.getData("lexikon"));
-    console.log("!!!", kategories);
-    
-    return;
     // EACH FAVORIT GETS FIELDSET
-    for (var favorite in App.model.getUnique("favorites") )
+    for (var favorite in kategories )
     {     
-      var fieldset = Favorites.form.add("fieldset").add("legend").text(favorite);     
+      var fieldset = Favorites.form.add("fieldset");
+      
+      console.log( favorite );
+      
+      fieldset.add("legend").text(favorite.kategorie);  
+   
       var rows = fieldset.add("ul").addClass("listeNext");
 
-      for (var i = 0; i < App.model.getFavorites(favorite).length; i++)
+      for (var i = 0; i < 1; i++) //App.model.getFavorites(favorite).length; i++)
       {
-        var entity = App.model.getFavorites(favorite)[i];
+        //var entity = App.model.getFavorites(favorite)[i];
         
-        var search = App.model.searchData( "lexikon", entity.entitiesId );
+        var search = kategories;
         
         if( search[0] ) {
           
@@ -458,7 +458,7 @@ var Favorites = {
           params.caretRight = true;
           params.event = {};
           
-          liste.addRow( params ).on("touch", function(data) {
+          rows.addRow( params ).on("touch", function(data) {
 
             App.dispatch( App.FAVORITE );
             Favorites.container.swipe("left");     

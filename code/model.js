@@ -67,25 +67,23 @@ Model.prototype.searchData = function( type, searchString )
 **/
 Array.prototype.has = function( property, array )
 {
-  console.log( "?????", array[1]["entitiesId"], array.length );
-  
   return this.filter( function(element) 
   {
       var flag = false;
       
       for(var i = 0; i < array.length; i++)
       {
-        //console.log( property, element[property], array[i][property]);
-         if( element[property] == array[i][property]) flag = true;
+        if( element[property] == array[i][property]) flag = true;
       }
       
       return flag;
    });
 };
 
+
 Array.prototype.sortABC = function( property )
 {
-    this.sort( function( a,b) 
+  this.sort( function( a,b) 
   {
     var links = a[property].replace(/Ö/, "Oe").replace(/Ä/, "Ae").replace(/Ü/,"Ue");
     var rechts = b[property].replace(/Ö/, "Oe").replace(/Ä/, "Ae").replace(/Ü/,"Ue");
@@ -123,7 +121,7 @@ Array.prototype.getObjectInArray = function( property,  value )
 { 
   for(var i = 0; i < this.length; i++)
   {
-    if( this[i][property] == value) return this[i];
+    if( this[i][property] == value ) return this[i];
   }
   
   return null;
@@ -147,15 +145,16 @@ Array.prototype.changeItem = function( key, property, value )
 /**
  * PERSISTENT STORAGE
  */
-Model.prototype.hasSavedData = function( type ) {
-  
+Model.prototype.hasSavedData = function( type ) 
+{  
   if( "localStorage" in window ) {
     return !!localStorage.getItem( type );
   }
   else return false;
 } ;
 
-Model.prototype.setSavedData = function( type, data ) {
+Model.prototype.setSavedData = function( type, data ) 
+{
   if( "localStorage" in window ) {
     return localStorage.setItem( type, JSON.stringify( data ) );
   }
