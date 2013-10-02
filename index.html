@@ -8,7 +8,8 @@
 		<meta name="apple-mobile-web-app-capable" content="yes" />
     <link rel="stylesheet" type="text/css" href="style/master.css" />       
   </head>
-  <body id="app" style="display:none;" >
+  
+  <body id="app" >
 	 	
 	 	<header id="xauth" class="konto"></header>
 	
@@ -19,7 +20,7 @@
 	  		<button id="addOptionen" class="button-text colorless" >Sync
 	          <!-- <img src="img/icon/optionen.png" width="28"> -->
 	  		</button>
-	  		<h2 id="titleId">Consilium</h2>
+	  		<span id="titleId">Consilium</span>
 	  		<button id="addEingabe" class="button-text colorless">Start
 	          <!-- <img src="img/icon/plus.png" width="28"> -->
 	  		</button>
@@ -32,16 +33,9 @@
           </div>
         </div>
 	      <form id="homeForm">
-	       <fieldset id="fieldsetAuswahl">
+	       <fieldset id="homeFieldsetAuswahl">
 	         <legend></legend>
-	         <ul class="listeNext">
-	           <li class="row">
-	             <span class="row_title"></span>
-	             <br><span class="row_zeit"></span>
-	             <a class="row_value"></a><div class="row_caret"></div>
-	             <p class="row_detail"></p>
-	           </li>
-	         </ul>
+	         <ul class="listeNext"></ul>
 	       </fieldset>
 	      </form>
 	  	</section>	
@@ -54,7 +48,7 @@
 				<button id="favoritesBackButton" class="button-text colorless">Zurück
 				<!-- <img src="img/icon/left.png" width="28"> -->
 				</button>
-				<h2>Favoriten</h2>
+				<span>Favoriten</span>
 		    <button id="favoritesEditButton" class="button-text colorless">Ändern</button>
 			</header>
 			<section id="favoritesContentId">
@@ -64,12 +58,87 @@
 	   
 		<!-- FAVORITE --> 
 		<article id="favoriteId" class="view right">
+		
 			<header>
 				<button id="favoriteBackId" class="button-text colorless">Zurück</button>
-				<h2>Eingabe</h2>
+				<span>Eingabe</span>
 				<button id="favoriteEditId" class="button-text colorless" style="display:none">Löschen</button>
 			</header>
-			<section id="favoriteContentId"></section>
+			
+			<section id="favoriteContentId">
+			
+			 <form id="favitFormId">
+			 
+			   <fieldset id="favitZeitId">
+			     <legend>Neuer Zeitpunkt</legend>
+			     
+			     <div id="zeitArea">
+			     <span style="margin-right:5px;"><b>Datum</b></span>
+			     <select id="dd" class="optionen"></select>
+			     <select id="MM" class="optionen"></select>
+			     <select id="yyyy" class="optionen"></select>
+			     <span style="margin-left:10px;margin-right:5px"><b>Zeit</b></span>
+			     <select id="hh" class="optionen"></select>
+			     <select id="mm" class="optionen"></select>
+			     </div>
+			     
+			     <div id="zeitArea_mobile">
+			       <input type="date" class="optionen" value="2011-10-10" />
+			       <input type="time" class="optionen" value="08:16"/>
+			     </div>
+			   </fieldset>
+			   
+			   <fieldset id="favoriteFieldsetId">
+			     <legend>Bewertung</legend>
+			     
+			     <div id="favArea">
+			       <span style="width:100%; padding-right:80px;"><b>Wohlbefinden</b></span>
+			       <p id="favitZeitLabel" style="width:100%;font-size:90%;margin:1px">&nbsp;</p>
+			       
+			       <span id="favOutputId" style="position:absolute; top:10px; right:2px; font-size:110%">100Pkte</span>
+			       
+			       <div id="sliderArea">
+			         <div id="favSliderId" class="slider">
+			           <a id="thumbId" class="grey" style="left: 1174px;"></a>
+			         </div>			       
+			       </div>
+
+             <input type="range" min="0" max="100"  />
+             
+			       <p id="favGradId" style="width:100%;padding-top:5px;"><b>Definition: </b>Normale uneingeschränkte Aktivität wie vor der Erkrankung.</p>
+			       <div id="favitActions">
+			         <a id="favitSaveId" class="button-action blue" style="float:left;">Erstellen</a>
+			         <a id="favitCancelId" class="button-action grey" style="float:right;">Abbrechen</a>
+			       </div>
+			     </div>
+			   </fieldset>
+			   
+			   <fieldset id="favoriteFieldsetId">
+			     <legend>Notizen</legend>
+			     <div id="favArea">
+			       <span style="width:100%; padding-right:80px;"><b>Privates Memo</b></span>
+			       <p id="favitZeitLabel" style="width:100%;font-size:90%;margin:1px">&nbsp;</p>
+
+             <div style="position:relative; font-size:100%;width:100%; height:200px; ">
+				       <textarea id="favTextareaId" style="position:absolute; top:0px; right:0px; left:0px; bottom:5px; font-size:100%; -webkit-user-select: text;" name="notizEintrag" placeholder="Text eingeben"></textarea>
+             </div>
+             
+			       
+			       <div id="favitActions" style="">
+			         <a class="button-action grey" style="float:left;">Neuer Text</a>
+			         <a id="favitSaveId" class="button-action blue" style="float:left;">Erstellen</a>
+			         <a id="favitCancelId" class="button-action grey" style="float:right;">Abbrechen</a>
+			       </div>
+			     </div>
+			   </fieldset>
+			   
+			   <fieldset id="fieldsetTipp" style="display: none;">
+			     <legend>Empfehlungen</legend>
+			     <ul class="listeNext" id="homeTipps"></ul>
+			   </fieldset>
+			   
+			 </form>
+			</section>
 		</article>
 	     
 		<!-- SYMPTOME --> 
@@ -77,16 +146,23 @@
 			<header>
 				<button id="symptomeBackButton" class="button-text colorless">Zurück</button>
 		     <!-- <img src="img/icon/left.png" width="32"> -->
-				<h2>Auswahl</h2>
+				<span>Auswahl</span>
 			</header>
-			<section id="symptomeContentId"></section>
+			<section id="symptomeContentId">
+			 <form id="symFormId">
+			   <fieldset id="symFieldsetId">
+			     <legend></legend>
+			     <ul id="symptomListe" class="listeNext"></ul>
+			   </fieldset>
+			 </form>
+			</section>
 		</article>
 		  
 		<!-- TiPPS --> 
 		<article id="tippId" class="view right">   
 			<header>
 				<button id="tippBackButton" class="button-text colorless">Zurück</button>
-				<h2>Empfehlung</h2>
+				<span>Empfehlung</span>
 		    <!-- <img src="img/icon/right.png" width="32"> -->
 			</header>
 			<section id="tippContentId"></section>
@@ -95,7 +171,7 @@
 		<!-- OPTIONEN -->
 		<article id="optionenId" class="view left">
 			<header>
-				<h2>Einstellung</h2>
+				<span>Einstellung</span>
 				<button id="optionenBackButton" class="button-text colorless">Zurück
 					<!-- <img src="img/icon/right.png" width="32"> -->
 				</button>
@@ -114,16 +190,13 @@
 		<script src="barcodescanner.js"></script>	
 	
 		<!-- MINIFIED REQUIRED LIBRARIES -->
-		<script src="code/library.0.1.4.js"></script>
-	
+		<script src="code/library.0.1.5.js"></script>
+		
 		<!-- PROJECT SPECIFIC-->
 		<script src="code/entities.js"></script>
 		<script src="code/model.js"></script>
 		<script src="code/app.js"></script>	
 		
-		<!-- FOR REFRACTORING-->
-		<script src="code/svg.js"></script>	
-		<script src="code/liste.js"></script>	
     <script>     
 			if ("addEventListener" in window) {
 			// INIT

@@ -5,38 +5,39 @@
 
 function Model(){}
 
-//Model.prototype._data = {};
-
-Model.prototype.getData = function( type )
-{
-  return this._data[type];  
-};
+Model.prototype._data = {};
 
 Model.prototype.setData = function( type, value, searchterms )
-{
-  var scope;
-  
-  for( var i = 0; i < value.length; i++)
+{ 
+  if( value instanceof Array )
   {
-    scope = value[i];
-    scope["_term"] = '';
-    
-      for( var t = 0; t < searchterms.length; t++)
+    if( searchterms )
+    {
+      for( var i = 0; i < value.length; i++)
       {
-        if( scope[searchterms[t]] ) scope["_term"] += scope[searchterms[t]].toUpperCase() + " ";
-      }
+        value[i]["_term"] = '';
+        
+        for( var t = 0; t < searchterms.length; t++)
+        {
+          if( value[i][searchterms[t]] ) value[i]["_term"] += value[i][searchterms[t]].toUpperCase() + " ";
+        }
+      }          
+    }
+    // DATA MAY EXIST
+    this._data[ type ] = ( !this._data[ type ] ) ? value : this._data[ type ].concat( value );
   }
-  
-  if( this._data[ type ] )
-  this._data[ type ] = this._data[ type ].concat( value );
-  
-  else 
+  else
   this._data[ type ] = value;
 };
 
 Model.prototype.removeData = function( type )
 {
   delete this._data[type];
+};
+
+Model.prototype.getData = function( type )
+{
+  return this._data[type];  
 };
 
 Model.prototype.searchData = function( type, searchString )
@@ -58,6 +59,89 @@ Model.prototype.searchData = function( type, searchString )
   });
   
   return filtered;
+};
+
+
+/** 
+* EXTEND ARRAY
+**/
+Array.prototype.has = function( property, array )
+{
+  console.log( "?????", array[1]["entitiesId"], array.length );
+  
+  return this.filter( function(element) 
+  {
+      var flag = false;
+      
+      for(var i = 0; i < array.length; i++)
+      {
+        //console.log( property, element[property], array[i][property]);
+         if( element[property] == array[i][property]) flag = true;
+      }
+      
+      return flag;
+   });
+};
+
+Array.prototype.sortABC = function( property )
+{
+    this.sort( function( a,b) 
+  {
+    var links = a[property].replace(/Ö/, "Oe").replace(/Ä/, "Ae").replace(/Ü/,"Ue");
+    var rechts = b[property].replace(/Ö/, "Oe").replace(/Ä/, "Ae").replace(/Ü/,"Ue");
+    
+    if( links < rechts) return -1;
+    if( links > rechts) return 1;
+    return 0;
+  });
+};
+
+Array.prototype.sort123 = function( key )
+{
+    this.sort( function( a,b)
+    {
+        return ( b[key] - a[key] );
+    });
+};
+
+Array.prototype.notIn = function( key, array )
+{
+    return this.filter( function(element) 
+    {
+        var flag = true;
+        
+        for(var i = 0; i < array.length; i++)
+        {
+            if( element[key] == array[i][key]) flag = false;
+        }
+        
+        return flag;
+    });
+};
+
+Array.prototype.getObjectInArray = function( property,  value )
+{ 
+  for(var i = 0; i < this.length; i++)
+  {
+    if( this[i][property] == value) return this[i];
+  }
+  
+  return null;
+};
+
+Array.prototype.changeItem = function( key, property, value )
+{
+  var done = false;
+  
+    for(var i = 0; i < this.length; i++)
+    {
+        if( this[i]["id"] == key)
+        {
+          this[i][property] = value ; done = true;
+        }
+    }
+    
+    return done;
 };
 
 /**
@@ -84,7 +168,6 @@ Model.prototype.getSavedData = function( type ) {
   }
   return null;
 };
-
 
 
 
@@ -135,7 +218,7 @@ Model.prototype.setProtagonist = function(actor)
 				favoritesObject: 
 				{
 					Bewertung:	[{entitiesId : "10025482"}],
-					Symptome:  	[/*{"id":"10047700","edit":true}*/],
+					Symptome:  	[ {"entitiesId":"10047700","edit":true}],
 					Tagebuch:	[{entitiesId: "privat"}]					
 				},
 				customerObject:

@@ -37,8 +37,7 @@ var App = {
   OPTIONEN:[],
   FAVORITES:[],
   FAVORITE:[],
-  SYMPTOME:[]
-  ,
+  SYMPTOME:[],
   // MODEL
   model:new Model()
   ,
@@ -49,12 +48,14 @@ var App = {
     Home.init();
     Favorites.init();
     Favorite.init();
+    Symptome.init();
     Optionen.init();
   },
   // BINDING 
   bind:function() 
   {
-    DOM(window).on("ready", function() {
+    DOM(window).on("load", function(data) {
+
       DOM("app").show();
       
       App.dispatch( App.READY );
@@ -85,11 +86,11 @@ var App = {
     this.node = ( this.live ) ? new Node( "https://node.epha.ch" ) : new Node( "http://"+this.domain+":8080" );
     this.konto = ( this.live ) ? "http://konto.epha.ch" : "http://"+this.domain+":8888/konto"; 
     
-    this.model.setData("lexikon", Entities.Symptome, ["id"] );
-    this.model.setData("lexikon", Entities.Bewertung, ["id"] );
-    this.model.setData("lexikon", Entities.Tagebuch, ["id"]);
-    this.model.setData("lexikon", Entities.Device, ["id"]) ;
-    this.model.setData("lexikon", Entities.Tipps, ["id"]) ;
+    this.model.setData("lexikon", Entities.Symptome, ["id","kategorie"] );
+    this.model.setData("lexikon", Entities.Bewertung, ["id","kategorie"] );
+    this.model.setData("lexikon", Entities.Tagebuch, ["id","kategorie"]);
+    this.model.setData("lexikon", Entities.Device, ["id","kategorie"]) ;
+    this.model.setData("lexikon", Entities.Tipps, ["id","kategorie"]) ;
     
     this.views();
     this.bind();
@@ -270,29 +271,34 @@ var Home = {
   ,
   form: {
 
-    fieldset:DOM("fieldsetAuswahl")
+    fieldset:DOM("homeFieldsetAuswahl")
     ,
     init:function()
     {  
       /* DEFAULT */
+
       this.fieldset.legend( "Legende" );
-      this.fieldset.fillRow( 
+      this.fieldset.find("ul").addRow( 
       {
-         title:"Datenpunkte"
-         , 
+         title:"Datenpunkte",
+         caretLeft:false,
+         caretRight:false,
+         value:"",
+         farbe:"",
          detail:"Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen." 
        });
     }
     ,
     update:function( event ) 
     {
+      return;
       event = event || {};
       
       /* FIGUR SELECTED */
       var id = event.id || "";
       var zeit = "am " + util.zeit("dd.mm.yyyy hh:mm", event.x);
       // string or json
-      var value = event.y (typeof event.y == "string") ? JSON.parse(event.y) : event.y;
+      var value = (typeof event.y == "string") ? JSON.parse(event.y) : event.y;
       // kategorie, unit, farbwert
       var type = app.model.getType(event.id);
       // einteilung
@@ -358,8 +364,9 @@ var Favorites = {
   //DOMELEMENTS
   container:DOM("favoritesId"),
   gotoHome:DOM("favoritesBackButton"),
-  gotoFavorite:DOM("favoritesEditButton"),
+  gotoSymptome:DOM("favoritesEditButton"),
   content:DOM("favoritesContentId"),
+  form:DOM("favFormId"),
   
   // TEST
   test:function() 
@@ -376,62 +383,23 @@ var Favorites = {
       Favorites.container.swipe("right");
     });     
     
-    App.on( App.FAVORITES, function() {   
+    this.gotoSymptome.on("touch", function() {      
+      App.dispatch( App.SYMPTOME);
+      Favorites.container.swipe("left");
+    });     
+    
+    App.on( App.FAVORITES, function( data ) {
+      
+      // Symptom selected
+      //if( data ) App.model.addFavorite("Symptome", data.id );
+      
       Favorites.container.swipe("middle").on("stage", function() {
         Favorites.content.show();
       })
     });
     
-    App.on( App.READY, function() {
-      
-      App.model.setProtagonist();
-      
-      for (var favorite in App.model.getFavorites() )
-      {
-        var liste = Favorites.form.content.add("fieldset")
-                    .add("legend").text(favorite)
-                    .addNext("ul").addClass("listeNext");
-
-        for (var i = 0; i < App.model.getFavorites(favorite).length; i++)
-        {
-
-          var entity = App.model.getFavorites(favorite)[i];
-          
-          var search = App.model.searchData( "lexikon", entity.entitiesId );
-          
-          if( search[0] ) {
-            
-            var params = {};
-            params.title = search[0].title;
-            params.farbe = search[0].farbwert;
-            params.value = "&nbsp;";
-            params.zeit = "";
-            params.event = {};
-            
-            liste.addRow( params ).on("touch", function(data) {
-
-              var touch = DOM( data.element ).addClass("selected").on("touched", function(data2) 
-              {  
-                  console.log( data2.type );
-                  if( data.element == data2.element )
-                  {
-                    App.dispatch( App.FAVORITE );
-                    Favorites.container.swipe("left");
-                  }
-                  touch.removeClass("selected");
-                  touch.off("touched");
-              }
-              , {watch:"LI"});   
-                     
-            }
-            , { watch:"LI" } );
-            // TODO Sync with homeVerlaufCommand
-            //var infoData = App.model.getPunkt(data.row.entitiesId);
-            //var infoType = App.model.getType(data.row.entitiesId);
-            //var zeitpunkt = (infoData && !data.edit) ? "Zuletzt: " + util.zeit("dd.mm.yyyy hh:mm", infoData.zeit) : "&nbsp;";
-          }
-        }
-      }
+    App.on( App.READY, function () {
+      Favorites.update(); 
     });
   },
   
@@ -440,13 +408,69 @@ var Favorites = {
   {
     this.test();
     this.bind();  
+    
+    // DEV
+    App.model.setData("favorites",
+    [
+       {entitiesId : "10025482"},
+       {entitiesId : "10047700", "edit":true},
+       {entitiesId : "10013963", "edit":true},
+       {entitiesId : "privat"}  
+    ]);
+    
+    // DEV
+    App.model.setData("acts",
+    [
+       { entitiesId:"10025482", x:"1380725392804", y:"80" }
+    ]);
+
   }
   ,
-  form:{
-    content:DOM("favFormId"),
-    init:function() {},
-    update:function() {}
+  update:function()
+  {
+    var faves = App.model.getData("favorites");
+    console.log("--", faves);
     
+    var kategories = App.model.getData("lexikon").has("entitiesId", faves ); 
+
+    console.log(App.model.getData("lexikon"));
+    console.log("!!!", kategories);
+    
+    return;
+    // EACH FAVORIT GETS FIELDSET
+    for (var favorite in App.model.getUnique("favorites") )
+    {     
+      var fieldset = Favorites.form.add("fieldset").add("legend").text(favorite);     
+      var rows = fieldset.add("ul").addClass("listeNext");
+
+      for (var i = 0; i < App.model.getFavorites(favorite).length; i++)
+      {
+        var entity = App.model.getFavorites(favorite)[i];
+        
+        var search = App.model.searchData( "lexikon", entity.entitiesId );
+        
+        if( search[0] ) {
+          
+          var params = {};
+          params.title = search[0].title;
+          params.farbe = search[0].farbwert;
+          params.value = "&nbsp;";
+          params.caretRight = true;
+          params.event = {};
+          
+          liste.addRow( params ).on("touch", function(data) {
+
+            App.dispatch( App.FAVORITE );
+            Favorites.container.swipe("left");     
+          }
+          , { watch:"LI" } );
+          // TODO Sync with homeVerlaufCommand
+          //var infoData = App.model.getPunkt(data.row.entitiesId);
+          //var infoType = App.model.getType(data.row.entitiesId);
+          //var zeitpunkt = (infoData && !data.edit) ? "Zuletzt: " + util.zeit("dd.mm.yyyy hh:mm", infoData.zeit) : "&nbsp;";
+        }
+      }
+    }
   }
 };
 
@@ -500,8 +524,9 @@ var Symptome = {
     
   //DOMELEMENTS
   container:DOM("symptomeId"),
-  gotoFavorite:DOM("symptomeBackButton"),
+  gotoFavorites:DOM("symptomeBackButton"),
   content:DOM("symptomeContentId"),
+  fieldset:DOM("symFieldsetId"),
   
   // TEST
   test:function() 
@@ -514,13 +539,14 @@ var Symptome = {
   // BINDING
   bind:function() 
   {       
-    this.gotoFavorite.on("touch", function() {      
-      App.dispatch( App.FAVORITE );
+    this.gotoFavorites.on("touch", function() {      
+      App.dispatch( App.FAVORITES );
       Symptome.container.swipe("right");
     });     
     App.on( App.SYMPTOME, function() {   
       Symptome.container.swipe("middle").on("stage", function() {
-        Symptome.content.show();
+        //Symptome.content.show();
+        Symptome.update();
       })
     });
   },
@@ -530,7 +556,28 @@ var Symptome = {
   {
     this.test();
     this.bind();  
-    this.container.show();
+    //this.container.show();
+  }
+  ,
+  update:function() {
+    
+    this.fieldset.find("legend").text("Symptome");
+    
+    var liste = this.fieldset.find("ul").on("touch", function( data )
+    {    
+      Symptome.container.swipe("right");
+      App.dispatch( App.FAVORITES, JSON.parse( data.element.getAttribute("data") ) );
+    }
+    , {watch:"LI"});
+    
+    var symptome = App.model.searchData( "lexikon", "Symptom" );
+    
+    symptome.sortABC("title");
+    
+    for( var i = 0; i < symptome.length; i++)
+    {
+      liste.addRow({ title:symptome[i].title, value:"&nbsp;", farbe:symptome[i].farbwert, caretLeft:true, data:symptome[i]})
+    }
   }
 };
 

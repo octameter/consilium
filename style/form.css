@@ -19,6 +19,7 @@ fieldset {
     border-radius: 6px;
 	height:auto;
     
+    border: 1px solid #696969;
     background-color: #F5F5F5;
    	background-image: -webkit-linear-gradient( #FAFAFA, #F5F5F5); 
    	background-image:    -moz-linear-gradient(#FAFAFA, #F5F5F5);
