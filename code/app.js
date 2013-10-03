@@ -322,26 +322,30 @@ var Home = {
 
     fieldset:DOM("homeFieldsetAuswahl")
     ,
-    init:function()
-    {  
+    start:function()
+    {
       /* DEFAULT */
-
-      this.fieldset.legend( "Legende" );
+      this.fieldset.find("ul").off("touch");
+      this.fieldset.legend( "Start" );
       this.fieldset.find("ul").addRow( 
       {
-         title:"Symptom",
-         zeit:"Neues Symptom erfassen",
-         caretLeft:false,
-         caretRight:true,
-         value:"",
-         farbe:"",
-         //detail:"Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen." 
-       }).on("touch", function(data) {
-          
-          Home.content.hide();
-          Home.container.swipe("left");
-          App.dispatch(App.SYMPTOME);
+        title:"Symptom erfassen",
+        caretLeft:false,
+        caretRight:true,
+        value:"",
+        farbe:"",
+        //detail:"Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen." 
+       }).on("touch", function(data) 
+      {    
+        Home.content.hide();
+        Home.container.swipe("left");
+        App.dispatch(App.SYMPTOME);
       });
+    }
+    ,
+    init:function()
+    {  
+      this.start();
     }
     ,
     update:function( event ) 
@@ -476,7 +480,9 @@ var Favorites = {
     // DEV
     App.model.setData("acts",
     [
-       { id:"10025482", x:"1380725392804", y:"80" }
+      { id:"10025482", x:"1380725392804", y:"80" },
+      { id:"10013963", x:"1380725392804", y:"20" },
+      { id:"privat", x:"1380725392804", y:"Ein schlechter Tag" }
     ], ["id","x"]);
 
   }
@@ -506,15 +512,19 @@ var Favorites = {
           if( acts.length > 0 ) 
           {
             var last = acts.pop();
-            params.value = last.y;
+            
+            if( /^\d+$/.test(last.y))
+            params.value = last.y + "<br>"+entities[i].unit;
+               
             params.zeit = "Zuletzt: "+util.zeit("dd.mm.yyyy hh:mm", Math.floor( last.x ) ); 
           }
         
           rows.addRow( params ).on("touch", function(data) 
-          {
-            var item = data.element.getAttribute("data");
+          { 
+            var item = JSON.parse( data.element.getAttribute("data") );
+            item.back = App.FAVORITES;
             
-            App.dispatch( App.FAVORITE, JSON.parse( item ) );
+            App.dispatch( App.FAVORITE, item );
             Favorites.container.swipe("left");     
           }
           , { watch:"LI" } );
@@ -551,7 +561,6 @@ var Symptome = {
     });     
     
     App.on( App.SYMPTOME, function() {   
-      Symptome.container.replaceClass("left","right");
       Symptome.container.swipe("middle").on("stage", function() {
         Symptome.update();
       })
@@ -570,19 +579,23 @@ var Symptome = {
     
     Symptome.content.show();
     
-    this.fieldset.find("legend").text("Symptome");
-    
-    
     var liste = this.fieldset.find("ul").on("touch", function( data )
     {    
+      Symptome.content.hide();
       Symptome.container.swipe("left");
-      App.dispatch( App.FAVORITE, JSON.parse( data.element.getAttribute("data") ) );
+      
+      var item = JSON.parse( data.element.getAttribute("data") );
+      item.back = App.SYMPTOME;
+      
+      App.dispatch( App.FAVORITE,  item );
     }
     , {watch:"LI"});
     
     var symptome = App.model.searchData( "lexikon", "Symptom" );
     
     symptome.sortABC("title");
+    
+    liste.removeChilds();
     
     for( var i = 0; i < symptome.length; i++)
     {
@@ -596,10 +609,11 @@ var Favorite = {
     
    //DOMELEMENTS
    container:DOM("favoriteId"),
-   gotoHome:DOM("favoriteBackId"),
+   goBack:DOM("favoriteBackId"),
    gotoSymptome:DOM("favoriteEditId"),
    content:DOM("favoriteContentId"),
    
+   BACK:App.HOME,
    // TEST
    test:function() 
    {
@@ -612,17 +626,17 @@ var Favorite = {
    // BINDING
    bind:function() 
    {       
-     this.gotoHome.on("touch", function() {      
-       App.dispatch( App.HOME );
+    this.goBack.on("touch", function() {      
+       App.dispatch( Favorite.BACK );
        Favorite.container.swipe("right");
-     });     
+     });    
      this.gotoSymptome.on("touch", function() {
        App.dispatch( App.SYMPTOME );
        Favorite.container.swipe("left");
      });
      App.on( App.FAVORITE, function(data) {
-       
-       console.log( "FAVORITE", data );
+
+       Favorite.BACK = data.back || App.HOME;
        
        Favorite.container.swipe("middle").on("stage", function() {
          Favorite.content.show();

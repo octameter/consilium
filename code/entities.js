@@ -74,7 +74,7 @@ var Entities = {
      	  ,
      	  Bewertung:
         [
-        	{ id: "10025482", title:"Wohlbefinden", sub:"Lebensqualität", kategorie:"Bewertung", zero:100, unit:"Pkte", farbwert:"rgba(154,205,50,0.9)",
+        	{ id: "10025482", title:"Wohlbefinden", sub:"Lebensqualität", kategorie:"Bewertung", zero:100, unit:"Punkte", farbwert:"rgba(154,205,50,0.9)",
         		  grad:[ 	
         			  	{ info:"Normale uneingeschränkte Aktivität wie vor der Erkrankung.", max:100, min:81},
         			  	{ info:"Einschränkung bei körperlicher Anstrengung, aber mobil." ,max:80, min:61 },

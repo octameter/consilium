@@ -56,6 +56,7 @@
 .row_value {
   font-size:110%;
   position:absolute;
+  text-align:right;
   top:0px; bottom:0px; right:30px;
   margin:auto;
   min-width:20px;

@@ -58,7 +58,7 @@
 	          <!-- <img src="img/icon/optionen.png" width="28"> -->
 	  		</button>
 	  		<span id="titleId">Consilium</span>
-	  		<button id="addEingabe" class="button-text colorless">Favoriten
+	  		<button id="addEingabe" class="button-text colorless">Auswahl
 	          <!-- <img src="img/icon/plus.png" width="28"> -->
 	  		</button>
 	  	</header>
@@ -98,12 +98,16 @@
       <header>
         <button id="symptomeBackButton" class="button-text colorless">Zurück</button>
          <!-- <img src="img/icon/left.png" width="32"> -->
-        <span>Auswahl</span>
+        <span>Symptome</span>
       </header>
       <section id="symptomeContentId">
        <form id="symFormId">
+         <fieldset style="text-align:left">
+          <legend>Information</legend>
+           <span>Die Symptome werden automatisch der Auswahl hinzugefügt. Die Auswahl erscheint rechts oben im Home-View.</span>
+         </fieldset>
          <fieldset id="symFieldsetId">
-           <legend></legend>
+           <legend>Erfassung</legend>
            <ul id="symptomListe" class="listeNext"></ul>
          </fieldset>
        </form>
@@ -114,7 +118,7 @@
 		<article id="favoriteId" class="view right">
 		
 			<header>
-				<button id="favoriteBackId" class="button-text colorless">Home</button>
+				<button id="favoriteBackId" class="button-text colorless">Zurück</button>
 				<span>Eingabe</span>
 				<button id="favoriteEditId" class="button-text colorless" style="display:none">Löschen</button>
 			</header>
