@@ -30,7 +30,13 @@ var App = {
   // CONTROLLER
   on: function ( type, call) { ( type.indexOf( call ) != -1 ) ?  console.log( "Function already exists") : type.push( call); },
   off: function( type, call ) {  type.splice( type.indexOf( call), 1); },
-  dispatch: function( type, data ) {  for( var i = 0; i < type.length; i++) { type[i]( data ); } }
+  dispatch: function(type, data) {
+    // TODO: support passing a string
+    // if (typeof type == "string" && type in App) type = App[type];
+    for (var i = 0; i < type.length; i++){
+      type[i]( data );
+    } 
+  }
   ,  
   // COMMANDS
   READY:[],
@@ -619,36 +625,64 @@ var Optionen = {
 // VIEW
     
   //DOMELEMENTS
-  container:DOM("optionenId"),
-  gotoHome:DOM("optionenBackButton"),
-  content:DOM("optionenContentId"),
+  container: DOM("optionenId"),
+  gotoHome: DOM("optionenBackButton"),
+  content: DOM("optionenContentId"),
+
+  connectContainer: DOM("optionenVerbindung"),
+  verbundenContainer: DOM("optionenVerbunden"),
+  verbundenStatus: DOM("optionenVerbundenStatus"),
+  verbindenContainer: DOM("optionenVerbinden"),
+  verbindenStatus: DOM("optionenVerbindenStatus"),
   
+  syncContainer: DOM("optionenSync"),
+  optionenSyncStatus: DOM("optionenSyncStatus"),
+  optionenSyncInfo: DOM("optoinenSyncInfo"),
+  
+  test: function(){
   // TEST
-  test:function() 
-  {
-    if(!App.live) console.log( "- VIEW Optionen");
-    if(!App.live && !App.HOME) console.log( "Missing: App.HOME");
+    if (!App.live) console.log( "- VIEW Optionen");
+    if (!App.live && !App.HOME) console.log( "Missing: App.HOME");
   },
   
+  bind: function(){
   // BINDING
-  bind:function() 
-  {
-    this.gotoHome.on("touch", function() {      
-      App.dispatch( App.HOME );
-      Optionen.container.swipe( "left" );
+    this.gotoHome.on("touch", function(){
+      App.dispatch(App.HOME);
+      Optionen.container.swipe("left");
     });
-    App.on( App.OPTIONEN, function() {   
-      Optionen.container.swipe("middle").on("stage", function() {
+    App.on(App.OPTIONEN, function(){
+      Optionen.container.swipe("middle").on("stage", function(){
       Optionen.content.show();
     })
   });
   },
   
+  checkState: function(){
+  // View
+    //if (App.model.getProtagonist().id > 0){
+    if (false){
+      var uptodate = localStorage.getItem("device_upToDate");
+      //if (uptodate){
+      if (true){
+        util.zeit("dd.MM.yyyy hh:mm", parseInt(uptodate))
+      } else {
+        
+      }
+      this.connectContainer.show();
+      this.syncContainer.hide();
+    } else {
+      this.connectContainer.hide();
+      this.syncContainer.show();
+    }
+  },
+  
+  init: function(){
   //INIT
-  init:function() 
-  {
     this.test();
-    this.bind();  
+    this.bind();
+    this.checkState();
     this.container.show();
   }
+  
 };

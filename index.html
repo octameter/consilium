@@ -12,9 +12,46 @@
   <body id="app" >
 	 	
 	 	<header id="xauth" class="konto"></header>
+       
+    <!-- OPTIONEN -->
+    <article id="optionenId" class="view left">
+      <header>
+        <span>Einstellung</span>
+        <button id="optionenBackButton" class="button-text colorless">Zurück
+          <!-- <img src="img/icon/right.png" width="32"> -->
+        </button>
+      </header>
+      <section id="optionenContentId" style="display:none">
+       <form>
+         <fieldset id="optionenVerbindung">
+          <legend>Verbindung</legend>
+          <div id="optionenVerbunden">
+            <strong>Mit Brustzentrum</strong>
+            <div>
+              <h3 id="optionenVerbundenStatus">optionenStatus</h3>
+              <a class="button-action blue">Verbunden</a>
+            </div>
+          </div>
+          <div id="optionenVerbinden">
+            <h3 id="optionenVerbindenStatus"></h3>
+            <a class="button-action blue">Verbinden</a>
+          </div>
+         </fieldset>
+         <fieldset id="optionenSync">
+           <legend>Synchronisation</legend>
+           <div>
+             <strong id="optionenSyncStatus">Zuletzt</strong>
+             <span id="optoinenSyncInfo"></span>
+             <br>
+             <a class="button-action blue">Sync</a>
+           </div>
+         </fieldset>
+       </form>
+      </section>
+    </article>
 	
 		<!-- HOME -->     
-	  <article id="homeId" class="view middle">		    
+	  <article id="homeId" class="view middle">
 	  
 	  	<header class="disappear">
 	  		<button id="addOptionen" class="button-text colorless" >Sync
@@ -38,7 +75,7 @@
 	         <ul class="listeNext"></ul>
 	       </fieldset>
 	      </form>
-	  	</section>	
+	  	</section>
 	  	
 	  </article>
 	            
@@ -55,6 +92,23 @@
 			 <form id="favFormId"></form>
 			</section>
 		</article>
+       
+    <!-- SYMPTOME --> 
+    <article id="symptomeId" class="view right">
+      <header>
+        <button id="symptomeBackButton" class="button-text colorless">Zurück</button>
+         <!-- <img src="img/icon/left.png" width="32"> -->
+        <span>Auswahl</span>
+      </header>
+      <section id="symptomeContentId">
+       <form id="symFormId">
+         <fieldset id="symFieldsetId">
+           <legend></legend>
+           <ul id="symptomListe" class="listeNext"></ul>
+         </fieldset>
+       </form>
+      </section>
+    </article>
 	   
 		<!-- FAVORITE --> 
 		<article id="favoriteId" class="view right">
@@ -140,24 +194,7 @@
 			 </form>
 			</section>
 		</article>
-	     
-		<!-- SYMPTOME --> 
-		<article id="symptomeId" class="view right">
-			<header>
-				<button id="symptomeBackButton" class="button-text colorless">Zurück</button>
-		     <!-- <img src="img/icon/left.png" width="32"> -->
-				<span>Auswahl</span>
-			</header>
-			<section id="symptomeContentId">
-			 <form id="symFormId">
-			   <fieldset id="symFieldsetId">
-			     <legend></legend>
-			     <ul id="symptomListe" class="listeNext"></ul>
-			   </fieldset>
-			 </form>
-			</section>
-		</article>
-		  
+		
 		<!-- TiPPS --> 
 		<article id="tippId" class="view right">   
 			<header>
@@ -166,17 +203,6 @@
 		    <!-- <img src="img/icon/right.png" width="32"> -->
 			</header>
 			<section id="tippContentId"></section>
-		</article>
-	     
-		<!-- OPTIONEN -->
-		<article id="optionenId" class="view left">
-			<header>
-				<span>Einstellung</span>
-				<button id="optionenBackButton" class="button-text colorless">Zurück
-					<!-- <img src="img/icon/right.png" width="32"> -->
-				</button>
-			</header>
-			<section id="optionenContentId" style="display:none"></section>
 		</article>
 		
 		<!-- TODO
