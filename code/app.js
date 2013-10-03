@@ -24,6 +24,7 @@
   FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.          
  */
+
 var App = {  
     
   // CONTROLLER
@@ -54,12 +55,12 @@ var App = {
   // BINDING 
   bind:function() 
   {
-    DOM(window).on("load", function(data) {
+//    DOM(window).on("load", function(data) {
 
       DOM("app").show();
       
       App.dispatch( App.READY );
-    });
+//    });
   },
   // ENVIROMENT
   initialize: function( domain ) 
@@ -261,7 +262,7 @@ var Home = {
 //      if (window.matchMedia("(orientation:landscape) and (max-device-width:768px)").matches) 
 //      {   
 //        dispatchCommand(Commands.CHART_OVERLAY, {
-//          type: "row", title: type.title, zeit: "am " + util.zeit("dd.mm.yyyy hh:mm", event.x),
+//          type: "row", title: type.title, zeiit: "am " + util.zeit("dd.mm.yyyy hh:mm", event.x),
 //          farbwert: type.farbwert, value: value
 //        });
 //      }
@@ -412,53 +413,41 @@ var Favorites = {
     // DEV
     App.model.setData("favorites",
     [
-       {entitiesId : "10025482"},
-       {entitiesId : "10047700", "edit":true},
-       {entitiesId : "10013963", "edit":true},
-       {entitiesId : "privat"}  
+       {id : "10025482"},
+       {id : "10047700", "edit":true},
+       {id : "10013963", "edit":true},
+       {id : "privat"}  
     ]);
     
     // DEV
     App.model.setData("acts",
     [
-       { entitiesId:"10025482", x:"1380725392804", y:"80" }
+       { id:"10025482", x:"1380725392804", y:"80" }
     ]);
 
   }
   ,
   update:function()
   {
-    var faves = App.model.getData("favorites");
-    console.log("--", faves);
-    
-    var kategories = App.model.getData("lexikon").has("entitiesId", faves ); 
+    var lexiFav = App.model.getData("lexikon").has("id", App.model.getData("favorites") ); 
 
-    console.log(App.model.getData("lexikon"));
-    console.log("!!!", kategories);
-    
-    return;
     // EACH FAVORIT GETS FIELDSET
-    for (var favorite in App.model.getUnique("favorites") )
-    {     
-      var fieldset = Favorites.form.add("fieldset").add("legend").text(favorite);     
-      var rows = fieldset.add("ul").addClass("listeNext");
+    for (var kategorie in lexiFav.unique("kategorie") )
+    {           
+      var legend = Favorites.form.add("fieldset").add("legend").text( kategorie );    
+      var rows = legend.addNext("ul").addClass("listeNext");
+      var entities = lexiFav.has( "kategorie", [ { "kategorie":kategorie} ] );
 
-      for (var i = 0; i < App.model.getFavorites(favorite).length; i++)
-      {
-        var entity = App.model.getFavorites(favorite)[i];
-        
-        var search = App.model.searchData( "lexikon", entity.entitiesId );
-        
-        if( search[0] ) {
-          
+      for (var i = 0; i < entities.length; i++)
+      {        
           var params = {};
-          params.title = search[0].title;
-          params.farbe = search[0].farbwert;
+          params.title = entities[i].title;
+          params.farbe = entities[i].farbwert;
           params.value = "&nbsp;";
           params.caretRight = true;
           params.event = {};
           
-          liste.addRow( params ).on("touch", function(data) {
+          rows.addRow( params ).on("touch", function(data) {
 
             App.dispatch( App.FAVORITE );
             Favorites.container.swipe("left");     
@@ -468,7 +457,6 @@ var Favorites = {
           //var infoData = App.model.getPunkt(data.row.entitiesId);
           //var infoType = App.model.getType(data.row.entitiesId);
           //var zeitpunkt = (infoData && !data.edit) ? "Zuletzt: " + util.zeit("dd.mm.yyyy hh:mm", infoData.zeit) : "&nbsp;";
-        }
       }
     }
   }
