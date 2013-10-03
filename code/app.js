@@ -428,32 +428,20 @@ var Favorites = {
   ,
   update:function()
   {
-    var faves = App.model.getData("favorites");
-    
-    var kategories = App.model.getData("lexikon").has("id", faves ); //.unique("kategorie"); 
+    var lexiFav = App.model.getData("lexikon").has("id", App.model.getData("favorites") ); 
 
     // EACH FAVORIT GETS FIELDSET
-    for (var favorite in kategories )
-    {     
-      var fieldset = Favorites.form.add("fieldset");
-      
-      console.log( favorite );
-      
-      fieldset.add("legend").text(favorite.kategorie);  
-   
-      var rows = fieldset.add("ul").addClass("listeNext");
+    for (var kategorie in lexiFav.unique("kategorie") )
+    {           
+      var legend = Favorites.form.add("fieldset").add("legend").text( kategorie );    
+      var rows = legend.addNext("ul").addClass("listeNext");
+      var entities = lexiFav.has( "kategorie", [ { "kategorie":kategorie} ] );
 
-      for (var i = 0; i < 1; i++) //App.model.getFavorites(favorite).length; i++)
-      {
-        //var entity = App.model.getFavorites(favorite)[i];
-        
-        var search = kategories;
-        
-        if( search[0] ) {
-          
+      for (var i = 0; i < entities.length; i++)
+      {        
           var params = {};
-          params.title = search[0].title;
-          params.farbe = search[0].farbwert;
+          params.title = entities[i].title;
+          params.farbe = entities[i].farbwert;
           params.value = "&nbsp;";
           params.caretRight = true;
           params.event = {};
@@ -468,7 +456,6 @@ var Favorites = {
           //var infoData = App.model.getPunkt(data.row.entitiesId);
           //var infoType = App.model.getType(data.row.entitiesId);
           //var zeitpunkt = (infoData && !data.edit) ? "Zuletzt: " + util.zeit("dd.mm.yyyy hh:mm", infoData.zeit) : "&nbsp;";
-        }
       }
     }
   }

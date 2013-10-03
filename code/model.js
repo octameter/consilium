@@ -7,19 +7,19 @@ function Model(){}
 
 Model.prototype._data = {};
 
-Model.prototype.setData = function( type, value, searchterms )
+Model.prototype.setData = function( type, value, sterms )
 { 
   if( value instanceof Array )
   {
-    if( searchterms )
+    if( sterms )
     {
       for( var i = 0; i < value.length; i++)
       {
         value[i]["_term"] = '';
         
-        for( var t = 0; t < searchterms.length; t++)
+        for( var t = 0; t < sterms.length; t++)
         {
-          if( value[i][searchterms[t]] ) value[i]["_term"] += value[i][searchterms[t]].toUpperCase() + " ";
+          if( value[i][sterms[t]] ) value[i]["_term"] += value[i][sterms[t]].toUpperCase() + " ";
         }
       }          
     }
@@ -61,10 +61,24 @@ Model.prototype.searchData = function( type, searchString )
   return filtered;
 };
 
-
 /** 
 * EXTEND ARRAY
 **/
+Array.prototype.unique = function( property ) 
+{
+  var uniques = {};
+  
+  this.forEach( function( element, index ) {
+    
+    var unique = element[ property ];
+    
+    if( uniques[ unique ] == null ) uniques[ unique ] = property; 
+    
+  });
+               
+  return uniques;
+};
+
 Array.prototype.has = function( property, array )
 {
   return this.filter( function(element) 
@@ -79,7 +93,6 @@ Array.prototype.has = function( property, array )
       return flag;
    });
 };
-
 
 Array.prototype.sortABC = function( property )
 {
@@ -117,7 +130,7 @@ Array.prototype.notIn = function( key, array )
     });
 };
 
-Array.prototype.getObjectInArray = function( property,  value )
+Array.prototype.get = function( property,  value )
 { 
   for(var i = 0; i < this.length; i++)
   {
