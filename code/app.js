@@ -549,7 +549,9 @@ var Symptome = {
       Symptome.container.swipe("right");
       App.dispatch( App.HOME );     
     });     
+    
     App.on( App.SYMPTOME, function() {   
+      Symptome.container.replaceClass("left","right");
       Symptome.container.swipe("middle").on("stage", function() {
         Symptome.update();
       })
@@ -569,6 +571,7 @@ var Symptome = {
     Symptome.content.show();
     
     this.fieldset.find("legend").text("Symptome");
+    
     
     var liste = this.fieldset.find("ul").on("touch", function( data )
     {    
