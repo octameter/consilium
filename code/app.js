@@ -24,6 +24,7 @@
   FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.          
  */
+
 var App = {  
     
   // CONTROLLER
@@ -54,12 +55,12 @@ var App = {
   // BINDING 
   bind:function() 
   {
-    DOM(window).on("load", function(data) {
+//    DOM(window).on("load", function(data) {
 
       DOM("app").show();
       
       App.dispatch( App.READY );
-    });
+//    });
   },
   // ENVIROMENT
   initialize: function( domain ) 
@@ -261,7 +262,7 @@ var Home = {
 //      if (window.matchMedia("(orientation:landscape) and (max-device-width:768px)").matches) 
 //      {   
 //        dispatchCommand(Commands.CHART_OVERLAY, {
-//          type: "row", title: type.title, zeit: "am " + util.zeit("dd.mm.yyyy hh:mm", event.x),
+//          type: "row", title: type.title, zeiit: "am " + util.zeit("dd.mm.yyyy hh:mm", event.x),
 //          farbwert: type.farbwert, value: value
 //        });
 //      }
