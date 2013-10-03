@@ -46,11 +46,12 @@ var App = {
   views:function() 
   {
     Konto.init();
-    Home.init();
-    Favorites.init();
-    Favorite.init();
-    Symptome.init();
     Optionen.init();
+    Home.init();
+    Favorites.init();    
+    Symptome.init();
+    Favorite.init();
+
   },
   // BINDING 
   bind:function() 
@@ -151,6 +152,45 @@ var Konto = {
     }
 };
 
+
+var Optionen = {
+// VIEW
+    
+  //DOMELEMENTS
+  container:DOM("optionenId"),
+  gotoHome:DOM("optionenBackButton"),
+  content:DOM("optionenContentId"),
+  
+  // TEST
+  test:function() 
+  {
+    if(!App.live) console.log( "- VIEW Optionen");
+    if(!App.live && !App.HOME) console.log( "Missing: App.HOME");
+  },
+  
+  // BINDING
+  bind:function() 
+  {
+    this.gotoHome.on("touch", function() {      
+      App.dispatch( App.HOME );
+      Optionen.container.swipe( "left" );
+    });
+    App.on( App.OPTIONEN, function() {   
+      Optionen.container.swipe("middle").on("stage", function() {
+      Optionen.content.show();
+    })
+  });
+  },
+  
+  //INIT
+  init:function() 
+  {
+    this.test();
+    this.bind();  
+    this.container.show();
+  }
+};
+
 var Home = {
 // VIEW
     
@@ -173,10 +213,12 @@ var Home = {
   {    
     this.gotoOptionen.on("touch", function() {
       App.dispatch( App.OPTIONEN );
+      Home.content.hide();
       Home.container.swipe("right");
     });
     this.gotoFavorites.on("touch", function() {      
-      App.dispatch( App.FAVORITES );     
+      App.dispatch( App.FAVORITES ); 
+      Home.content.hide();
       Home.container.swipe("left"); 
     });
     
@@ -281,13 +323,19 @@ var Home = {
       this.fieldset.legend( "Legende" );
       this.fieldset.find("ul").addRow( 
       {
-         title:"Datenpunkte",
+         title:"Symptom",
+         zeit:"Neues Symptom erfassen",
          caretLeft:false,
-         caretRight:false,
+         caretRight:true,
          value:"",
          farbe:"",
-         detail:"Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen." 
-       });
+         //detail:"Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen." 
+       }).on("touch", function(data) {
+          
+          Home.content.hide();
+          Home.container.swipe("left");
+          App.dispatch(App.SYMPTOME);
+      });
     }
     ,
     update:function( event ) 
@@ -423,7 +471,7 @@ var Favorites = {
     App.model.setData("acts",
     [
        { id:"10025482", x:"1380725392804", y:"80" }
-    ]);
+    ], ["id","x"]);
 
   }
   ,
@@ -445,81 +493,36 @@ var Favorites = {
           params.farbe = entities[i].farbwert;
           params.value = "&nbsp;";
           params.caretRight = true;
-          params.event = {};
-        
-        
-          var last = App.model.searchData("acts", entities[i].id );
+          params.data = entities[i];
+                
+          var acts = App.model.getData("acts").has("id", [{ id: entities[i].id }] );
           
-        console.log( "XX", entities[i].id );
-          //if( last )
-          //params.zeit = "Zuletzt: " + util.zeit("dd.mm.yyyy hh:mm", );
+          if( acts.length > 0 ) 
+          {
+            var last = acts.pop();
+            params.value = last.y;
+            params.zeit = "Zuletzt: "+util.zeit("dd.mm.yyyy hh:mm", Math.floor( last.x ) ); 
+          }
         
-          rows.addRow( params ).on("touch", function(data) {
-
-            App.dispatch( App.FAVORITE );
+          rows.addRow( params ).on("touch", function(data) 
+          {
+            var item = data.element.getAttribute("data");
+            
+            App.dispatch( App.FAVORITE, JSON.parse( item ) );
             Favorites.container.swipe("left");     
           }
           , { watch:"LI" } );
-          // TODO Sync with homeVerlaufCommand
-          //var infoData = App.model.getPunkt(data.row.entitiesId);
-          //var infoType = App.model.getType(data.row.entitiesId);
-          //var zeitpunkt = (infoData && !data.edit) ? "Zuletzt: " + util.zeit("dd.mm.yyyy hh:mm", infoData.zeit) : "&nbsp;";
       }
     }
   }
 };
-
-var Favorite = {
- // VIEW
-    
-   //DOMELEMENTS
-   container:DOM("favoriteId"),
-   gotoFavorites:DOM("favoriteBackId"),
-   gotoSymptome:DOM("favoriteEditId"),
-   content:DOM("favoriteContentId"),
-   
-   // TEST
-   test:function() 
-   {
-     if(!App.live) console.log( "- VIEW Favorite");
-     if(!App.live && !App.FAVORITES) console.log( "Missing: App.FAVORITES");
-     if(!App.live && !App.FAVORITE) console.log( "Missing: App.FAVORITE");
-     if(!App.live && !App.SYMPTOME) console.log( "Missing: App.SYMPTOME");
-   },
-   
-   // BINDING
-   bind:function() 
-   {       
-     this.gotoFavorites.on("touch", function() {      
-       App.dispatch( App.FAVORITES );
-       Favorite.container.swipe("right");
-     });     
-     this.gotoSymptome.on("touch", function() {
-       App.dispatch( App.SYMPTOME );
-       Favorite.container.swipe("left");
-     });
-     App.on( App.FAVORITE, function() {   
-       Favorite.container.swipe("middle").on("stage", function() {
-         Favorite.content.show();
-       })
-     });
-   },
-   
-   //INIT
-   init:function() 
-   {
-     this.test();
-     this.bind();  
-     this.container.show();
-   }
- };
 
 var Symptome = {
 // VIEW
     
   //DOMELEMENTS
   container:DOM("symptomeId"),
-  gotoFavorites:DOM("symptomeBackButton"),
+  gotoHome:DOM("symptomeBackButton"),
   content:DOM("symptomeContentId"),
   fieldset:DOM("symFieldsetId"),
   
@@ -534,13 +537,14 @@ var Symptome = {
   // BINDING
   bind:function() 
   {       
-    this.gotoFavorites.on("touch", function() {      
-      App.dispatch( App.FAVORITES );
+    this.gotoHome.on("touch", function() {      
+
+      Symptome.content.hide();
       Symptome.container.swipe("right");
+      App.dispatch( App.HOME );     
     });     
     App.on( App.SYMPTOME, function() {   
       Symptome.container.swipe("middle").on("stage", function() {
-        //Symptome.content.show();
         Symptome.update();
       })
     });
@@ -556,12 +560,14 @@ var Symptome = {
   ,
   update:function() {
     
+    Symptome.content.show();
+    
     this.fieldset.find("legend").text("Symptome");
     
     var liste = this.fieldset.find("ul").on("touch", function( data )
     {    
-      Symptome.container.swipe("right");
-      App.dispatch( App.FAVORITES, JSON.parse( data.element.getAttribute("data") ) );
+      Symptome.container.swipe("left");
+      App.dispatch( App.FAVORITE, JSON.parse( data.element.getAttribute("data") ) );
     }
     , {watch:"LI"});
     
@@ -571,10 +577,60 @@ var Symptome = {
     
     for( var i = 0; i < symptome.length; i++)
     {
-      liste.addRow({ title:symptome[i].title, value:"&nbsp;", farbe:symptome[i].farbwert, caretLeft:true, data:symptome[i]})
+      liste.addRow({ title:symptome[i].title, value:"&nbsp;", farbe:symptome[i].farbwert, caretRight:true, data:symptome[i]})
     }
   }
 };
+
+var Favorite = {
+ // VIEW
+    
+   //DOMELEMENTS
+   container:DOM("favoriteId"),
+   gotoHome:DOM("favoriteBackId"),
+   gotoSymptome:DOM("favoriteEditId"),
+   content:DOM("favoriteContentId"),
+   
+   // TEST
+   test:function() 
+   {
+     if(!App.live) console.log( "- VIEW Favorite");
+     if(!App.live && !App.FAVORITES) console.log( "Missing: App.FAVORITES");
+     if(!App.live && !App.FAVORITE) console.log( "Missing: App.FAVORITE");
+     if(!App.live && !App.SYMPTOME) console.log( "Missing: App.SYMPTOME");
+   },
+   
+   // BINDING
+   bind:function() 
+   {       
+     this.gotoHome.on("touch", function() {      
+       App.dispatch( App.HOME );
+       Favorite.container.swipe("right");
+     });     
+     this.gotoSymptome.on("touch", function() {
+       App.dispatch( App.SYMPTOME );
+       Favorite.container.swipe("left");
+     });
+     App.on( App.FAVORITE, function(data) {
+       
+       console.log( "FAVORITE", data );
+       
+       Favorite.container.swipe("middle").on("stage", function() {
+         Favorite.content.show();
+       })
+     });
+   },
+   
+   //INIT
+   init:function() 
+   {
+     this.test();
+     this.bind();  
+     this.container.show();
+   }
+ };
+
+
 
 var Tipps = {
  // VIEW
@@ -615,40 +671,3 @@ var Tipps = {
    }
  };
 
-var Optionen = {
-// VIEW
-    
-  //DOMELEMENTS
-  container:DOM("optionenId"),
-  gotoHome:DOM("optionenBackButton"),
-  content:DOM("optionenContentId"),
-  
-  // TEST
-  test:function() 
-  {
-    if(!App.live) console.log( "- VIEW Optionen");
-    if(!App.live && !App.HOME) console.log( "Missing: App.HOME");
-  },
-  
-  // BINDING
-  bind:function() 
-  {
-    this.gotoHome.on("touch", function() {      
-      App.dispatch( App.HOME );
-      Optionen.container.swipe( "left" );
-    });
-    App.on( App.OPTIONEN, function() {   
-      Optionen.container.swipe("middle").on("stage", function() {
-      Optionen.content.show();
-    })
-  });
-  },
-  
-  //INIT
-  init:function() 
-  {
-    this.test();
-    this.bind();  
-    this.container.show();
-  }
-};
