@@ -702,15 +702,17 @@ var Optionen = {
   gotoHome: DOM("optionenBackButton"),
   content: DOM("optionenContentId"),
 
-  connectContainer: DOM("optionenVerbindung"),
-  verbundenContainer: DOM("optionenVerbunden"),
-  verbundenStatus: DOM("optionenVerbundenStatus"),
-  verbindenContainer: DOM("optionenVerbinden"),
-  verbindenStatus: DOM("optionenVerbindenStatus"),
+  verbundenContainer: DOM("optionenVerbundenId"),
+  verbindenContainer: DOM("optionenVerbindenId"),
+  syncContainer: DOM("optionenSyncId"),
   
-  syncContainer: DOM("optionenSync"),
+  verbundenStatus: DOM("optionenVerbundenStatus"),
+  verbindenStatus: DOM("optionenVerbindenStatus"),
   optionenSyncStatus: DOM("optionenSyncStatus"),
-  optionenSyncInfo: DOM("optoinenSyncInfo"),
+  
+  optionenSyncInfo: DOM("optionenSyncInfo"),
+
+  verbindenButton: DOM("optionenVerbindenBtn"),
   
   test: function(){
   // TEST
@@ -727,26 +729,32 @@ var Optionen = {
     App.on(App.OPTIONEN, function(){
       Optionen.container.swipe("middle").on("stage", function(){
       Optionen.content.show();
-    })
+    });
+    this.verbindenButton.on("touch", function(){
+      App.dispatch(Optionen.SCAN);
+    });
   });
   },
   
   checkState: function(){
-  // View
+  //
     //if (App.model.getProtagonist().id > 0){
-    if (false){
+    if (true){
       var uptodate = localStorage.getItem("device_upToDate");
       //if (uptodate){
-      if (true){
-        util.zeit("dd.MM.yyyy hh:mm", parseInt(uptodate))
+      if (false){
+        this.optionenSyncStatus.text("Zuletzt");
+        this.optionenSyncInfo.text(util.zeit("dd.MM.yyyy hh:mm", parseInt(uptodate)));
       } else {
-        
+        this.optionenSyncStatus.text("Initialisierung");
       }
-      this.connectContainer.show();
-      this.syncContainer.hide();
-    } else {
-      this.connectContainer.hide();
+      this.verbundenContainer.show();
       this.syncContainer.show();
+      this.verbindenContainer.hide();
+    } else {
+      this.verbundenContainer.hide();
+      this.syncContainer.hide();
+      this.verbindenContainer.show();
     }
   },
   

@@ -23,29 +23,35 @@
       </header>
       <section id="optionenContentId" style="display:none">
        <form>
-         <fieldset id="optionenVerbindung">
+       
+         <fieldset id="optionenVerbundenId">
           <legend>Verbindung</legend>
-          <div id="optionenVerbunden">
+          <div>
             <strong>Mit Brustzentrum</strong>
             <div>
-              <h3 id="optionenVerbundenStatus">optionenStatus</h3>
-              <a class="button-action blue">Verbunden</a>
+              <span id="optionenVerbundenStatus">optionenStatus</span>
+              <a style="color: darkblue;">Verbunden</a>
             </div>
           </div>
-          <div id="optionenVerbinden">
-            <h3 id="optionenVerbindenStatus"></h3>
-            <a class="button-action blue">Verbinden</a>
-          </div>
          </fieldset>
-         <fieldset id="optionenSync">
+         
+         <fieldset id="optionenSyncId">
            <legend>Synchronisation</legend>
            <div>
-             <strong id="optionenSyncStatus">Zuletzt</strong>
-             <span id="optoinenSyncInfo"></span>
-             <br>
-             <a class="button-action blue">Sync</a>
+             <strong id="optionenSyncStatus">Initialisierung</strong>
+             <span id="optionenSyncInfo"></span>
+             <a class="button-action blue" style="position:absolute;top:6px;right:2px;">Sync</a>
            </div>
          </fieldset>
+         
+         <fieldset id="optionenVerbindenId">
+          <legend>Verbindung</legend>
+          <div>
+            <h3 id="optionenVerbindenStatus"></h3>
+            <a id="optionenVerbindenBtn" class="button-action blue">Verbinden</a>
+          </div>
+         </fieldset>
+         
        </form>
       </section>
     </article>
