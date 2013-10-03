@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<title>CSS</title>
+
+<style>
+html, textarea, input, select, button {
+  color: #696969;
+  font: 500 16px/22px "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Grid */
+
+.row {
+  margin-right: -15px;
+  margin-left: -15px;
+}
+
+.col4, .col6, .col8, .col12 {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  float: left;
+  padding: 0 15px;
+}
+.col4 { width: 33.3333%; }
+.col6 { width: 50%; }
+.col8 { width: 66.6666%; }
+.col12 { width: 100%; }
+
+.row:after,
+.row:before,
+.clearfix:after,
+.clearfix:before {
+  display: table;
+  content: "";
+}
+
+.row:after,
+.clearfix:after {
+  clear: both;
+}
+
+.row, .clearfix {
+  zoom: 1;
+}
+
+/* Forms */
+
+form {
+  margin: 30px auto;
+  width: 700px;
+}
+
+fieldset {
+  border: none;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 50px 20px 5px 20px;
+  position: relative;
+}
+
+fieldset.footer {
+  padding-top: 0;
+}
+
+legend {
+  color: #696969;
+  display: block;
+  padding: 15px 20px 0 20px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.form-block {
+  margin-bottom: 15px;
+}
+
+/* Labels and Descriptions */
+
+label {
+  cursor: pointer;
+  display: block;
+  margin-bottom: 15px;
+}
+
+label.inline {
+  display: inline-block;
+}
+
+label.checkbox,
+label.radio {
+  margin-bottom: 0;
+  margin-right: 10px;
+}
+
+.description {
+  color: #bbb;
+  display: block;
+  font-size: 14px;
+  line-height: 18px;
+  position: relative;
+  top: -10px;
+}
+
+label .description {
+  margin-top: -10px;
+  top: 0;
+}
+
+label.checkbox .description,
+label.radio .description {
+  display: inline;
+  margin-top: 0;
+}
+
+/* General Form Elements: Input, Select, Textarea */
+
+input,
+select,
+textarea {
+  background: #fff;
+  border: 1px solid #ccc;
+  -moz-box-sizing: border-box;
+       box-sizing: border-box;
+  display: block;
+  margin-bottom: 15px;
+  margin-top: 5px;
+  min-height: 30px;
+  max-width: 100%;
+  padding: 2px 5px;
+  width: 100%;
+  /* -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; */
+}
+
+textarea {
+  resize: vertical;
+}
+
+input[disabled] {
+  background: #f1f1f1;
+  color: #aaa;
+}
+
+:-moz-placeholder { color: #bbb; }
+:-ms-input-placeholder { color: #bbb; }
+::-webkit-input-placeholder { color: #bbb; }
+
+input:invalid,
+select:invalid,
+textarea:invalid { 
+  border: 1px solid #d33;
+  -webkit-box-shadow: 0 0 5px #d00;
+  -moz-box-shadow: 0 0 5px #d00;
+  -ms-box-shadow: 0 0 5px #d00;
+  -o-box-shadow: 0 0 5px #d00;
+  box-shadow: 0 0 5px #d33;
+}
+
+input:required:valid,
+select:required:valid,
+textarea:required:valid { 
+  border: 1px solid #8b8;
+  -webkit-box-shadow: 0 0 5px #8b8;
+  -moz-box-shadow: 0 0 5px #8b8;
+  -ms-box-shadow: 0 0 5px #8b8;
+  -o-box-shadow: 0 0 5px #8b8;
+  box-shadow: 0 0 5px #8b8;
+}
+
+input:focus, input:hover,
+select:focus, select:hover,
+textarea:focus, textarea:hover {
+  outline: 2px solid #9af;
+}
+
+input[disabled]:focus, input[disabled]:hover {
+  outline: none;
+}
+
+/* Checkbox, Radio */
+
+input[type=checkbox],
+input[type=radio] {
+  border: none;
+  display: inline-block;
+  margin: 0 5px 0 0;
+  min-height: 0;
+  width: auto;
+}
+
+input[type=checkbox]:invalid,
+input[type=radio]:invalid {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -ms-box-shadow: none;
+  -o-box-shadow: none;
+  box-shadow: none;
+}
+
+input[type=checkbox]:invalid:focus,
+input[type=radio]:invalid:focus {
+  background: #ddd;
+  border-color: #ddd;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  -ms-box-shadow: none;
+  -o-box-shadow: none;
+  box-shadow: none;
+  outline: 2px solid red;
+}
+
+input[type=checkbox]:required:valid,
+input[type=radio]:required:valid {
+  border: none;
+  -webkit-box-shadow: none; -moz-box-shadow: none; -ms-box-shadow: none; -o-box-shadow: none; box-shadow: none;
+}
+
+/* Submit, Reset */
+
+input[type=submit],
+input[type=reset] {
+  border: none;
+  cursor: pointer;
+  float: left;
+  display: block;
+  margin-right: 20px;
+  padding: 10px 20px;
+  width: auto;
+}
+
+input[type=submit] {
+  background: #45f;
+  clear: left;
+  color: #fff;
+}
+
+input[type=reset] {
+  background: #d9d9d9;
+}
+
+</style>
+
+<div class=row>
+  <div class=col12>
+    <div style="background: #eee">
+      full
+    </div>
+  </div>
+</div>
+<div class=row>
+  <div class=col6>
+    <div style="background: #eee">
+  50%
+    </div>
+  </div>
+  <div class=col6>
+    <div style="background: #eee">
+  50%
+    </div>
+  </div>
+</div>
+
+<form id=patientenfilm action="/batch" method="POST" >
+
+  <input type=hidden name=domain value="batch:msd">
+  <input type=hidden name=likes value="msd/janumet">
+
+   
+  <div class=row>
+    <div class=col8>
+      <fieldset>
+       <legend>Patientenfilm</legend>
+     
+        <select name=film required>
+          <option value="" selected disabled>Film auswählen</option>
+          <option value="msd/janumet_de">Janumet Deutsch</option>
+          <option value="msd/janumet_fr">Janumet Französisch</option>
+        </select>
+          
+        <label>Autorisierung</label>
+        <input type=text name=key value="" required>
+              
+        <textarea name=nachricht rows=7 placeholder="z.B. Lieber Messebesucher&hellip;"></textarea>
+
+        <input type=text value="MSD Schweiz" disabled>
+
+        <input type=hidden name=plattform value="MSD Schweiz">
+  
+        <label>End Datum</label>
+        <input type=datetime-local name=ende>
+        <span class=description>2013-12-24 19:30:55</span>
+        
+        <div class=form-block>
+          <label>Zielgruppe</label>
+          <input type=radio name=share value="janumet" required>
+          <label class="radio inline">Arzt</label>          
+          <input type=radio name=share value="" required>
+          <label class="radio inline">Patient</label>
+        </div>
+      </fieldset>
+    </div>
+    <div class=col4>
+      <fieldset>
+        <legend>Konfiguration</legend>
+        
+        <label>Anzahl QR-Codes</label>
+        <input type=number name=anzahl min=1 max=10 step=1 value=1>
+       
+        <label>Limite</label>
+        <input type=number name=limite min=5 max=250 value=5 step=1>
+        <span class=description>Max. 250</span>
+
+        <label>Anzahl Zeichen</label>
+        <input type=number name=zeichen min=10 max=25 step=1 value=15>
+    
+        <div class=form-block>
+          <label>Zeichen Set</label>
+            <select name=zeichenset>
+              <option value="easy">Easy</option>
+              <option value="medium" selected>Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+
+  <fieldset class=footer>
+
+     <div class=clearfix>
+       <input type=submit value="Download">
+       <input type=reset value="Reset">
+     </div>
+ 
+  </fieldset>
+</form>
