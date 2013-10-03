@@ -437,7 +437,7 @@ var Favorites = {
       var legend = Favorites.form.add("fieldset").add("legend").text( kategorie );    
       var rows = legend.addNext("ul").addClass("listeNext");
       var entities = lexiFav.has( "kategorie", [ { "kategorie":kategorie} ] );
-
+     
       for (var i = 0; i < entities.length; i++)
       {        
           var params = {};
@@ -446,7 +446,14 @@ var Favorites = {
           params.value = "&nbsp;";
           params.caretRight = true;
           params.event = {};
+        
+        
+          var last = App.model.searchData("acts", entities[i].id );
           
+        console.log( "XX", entities[i].id );
+          //if( last )
+          //params.zeit = "Zuletzt: " + util.zeit("dd.mm.yyyy hh:mm", );
+        
           rows.addRow( params ).on("touch", function(data) {
 
             App.dispatch( App.FAVORITE );

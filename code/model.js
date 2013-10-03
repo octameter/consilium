@@ -46,7 +46,7 @@ Model.prototype.searchData = function( type, searchString )
   
   var source = this._data[type].slice(0);
   
-  var filtered = source.filter( function(ele)
+  return source.filter( function(ele)
   {   
       for( var i = 0; i < search.length; i++)
       {
@@ -57,8 +57,7 @@ Model.prototype.searchData = function( type, searchString )
 
       return true;
   });
-  
-  return filtered;
+
 };
 
 /** 
@@ -96,7 +95,7 @@ Array.prototype.has = function( property, array )
 
 Array.prototype.sortABC = function( property )
 {
-  this.sort( function( a,b) 
+  return this.sort( function( a,b) 
   {
     var links = a[property].replace(/Ö/, "Oe").replace(/Ä/, "Ae").replace(/Ü/,"Ue");
     var rechts = b[property].replace(/Ö/, "Oe").replace(/Ä/, "Ae").replace(/Ü/,"Ue");
@@ -109,7 +108,7 @@ Array.prototype.sortABC = function( property )
 
 Array.prototype.sort123 = function( key )
 {
-    this.sort( function( a,b)
+    return this.sort( function( a,b)
     {
         return ( b[key] - a[key] );
     });
