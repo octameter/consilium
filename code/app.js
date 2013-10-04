@@ -28,23 +28,27 @@
 var App = {  
     
   // CONTROLLER
-  on: function ( type, call) { ( type.indexOf( call ) != -1 ) ?  console.log( "Function already exists") : type.push( call); },
-  off: function( type, call ) {  type.splice( type.indexOf( call), 1); },
+  on: function(type, call) {
+    if (!(type in this.events)) this.events[type] = [call];
+    else (this.events[type].indexOf( call ) != -1 ) ?  console.log( "Function exists") : this.events[type].push( call);
+  },
+  off: function( type, call ) {  this.events[type].splice( this.events[type].indexOf( call), 1); },
   dispatch: function(type, data) {
-    // TODO: support passing a string
-    // if (typeof type == "string" && type in App) type = App[type];
-    for (var i = 0; i < type.length; i++){
-      type[i]( data );
+    for (var i = 0; i < this.events[type].length; i++){
+      this.events[type][i]( data );
     } 
   }
-  ,  
-  // COMMANDS
-  READY:[],
-  HOME:[],
-  OPTIONEN:[],
-  FAVORITES:[],
-  FAVORITE:[],
-  SYMPTOME:[],
+  ,
+  events: {},
+  
+  // Events
+  READY: "READY",
+  HOME: "HOME",
+  OPTIONEN: "OPTIONEN",
+  FAVORITES: "FAVORITES",
+  FAVORITE: "FAVORITE",
+  SYMPTOME: "SYMPTOME",
+  
   // MODEL
   model:new Model()
   ,
@@ -514,7 +518,7 @@ var Favorites = {
             var last = acts.pop();
             
             if( /^\d+$/.test(last.y))
-            params.value = last.y + "<br>"+entities[i].unit;
+            params.value = last.y + " " + entities[i].unit;
                
             params.zeit = "Zuletzt: "+util.zeit("dd.mm.yyyy hh:mm", Math.floor( last.x ) ); 
           }
@@ -708,11 +712,11 @@ var Optionen = {
   
   verbundenStatus: DOM("optionenVerbundenStatus"),
   verbindenStatus: DOM("optionenVerbindenStatus"),
-  optionenSyncStatus: DOM("optionenSyncStatus"),
+  syncStatus: DOM("optionenSyncStatus"),
   
   optionenSyncInfo: DOM("optionenSyncInfo"),
 
-  verbindenButton: DOM("optionenVerbindenBtn"),
+  verbindenBtn: DOM("optionenVerbindenBtn"),
   
   test: function(){
   // TEST
@@ -730,23 +734,27 @@ var Optionen = {
       Optionen.container.swipe("middle").on("stage", function(){
       Optionen.content.show();
     });
+/*      console.log(this.verbindenButton); 
     this.verbindenButton.on("touch", function(){
       App.dispatch(Optionen.SCAN);
-    });
+    });*/
   });
   },
   
-  checkState: function(){
+  checkState: function(data){
   //
     //if (App.model.getProtagonist().id > 0){
     if (true){
       var uptodate = localStorage.getItem("device_upToDate");
+      
+      //if (data.status) this.verbundenStatus.text(data.status);
+      
       //if (uptodate){
       if (false){
-        this.optionenSyncStatus.text("Zuletzt");
+        this.syncStatus.text("Zuletzt");
         this.optionenSyncInfo.text(util.zeit("dd.MM.yyyy hh:mm", parseInt(uptodate)));
       } else {
-        this.optionenSyncStatus.text("Initialisierung");
+        this.syncStatus.text("Initialisierung");
       }
       this.verbundenContainer.show();
       this.syncContainer.show();

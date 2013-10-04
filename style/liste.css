@@ -54,6 +54,7 @@
 }
 
 .row_value {
+	display: table;
   font-size:110%;
   position:absolute;
   text-align:right;
