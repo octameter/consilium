@@ -183,9 +183,10 @@ var Optionen = {
   {
     this.gotoHome.on("touch", function() {      
       App.dispatch( App.HOME );
+      Optionen.content.hide();
       Optionen.container.swipe( "left" );
     });
-    App.on( App.OPTIONEN, function() {   
+    App.on( App.OPTIONEN, function() {  
       Optionen.container.swipe("middle").on("stage", function() {
       Optionen.content.show();
     })
@@ -198,6 +199,10 @@ var Optionen = {
     this.test();
     this.bind();  
     this.container.show();
+  }
+  ,update:function()
+  {
+    
   }
 };
 
