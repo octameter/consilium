@@ -82,14 +82,14 @@ var App = {
     
     this.device = DOM().device();
     
-    if( document.domain == this.domain ) {
-    //
+    if( document.domain == this.domain || window.device) 
+    {
       this.domain = domain;
       document.domain = "epha.ch";
       this.live = true;
     }
-    else {
-    //
+    else 
+    {
       this.domain = document.domain = document.domain;
       this.live = false;  
     }
