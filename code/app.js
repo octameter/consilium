@@ -131,8 +131,7 @@ var Konto = {
 //VIEW
     
     // DOMELEMENTS
-    body:DOM("app")
-    ,
+    body:DOM("app"),
     container: DOM( "xauth" )
     ,
     remote:null
@@ -140,32 +139,43 @@ var Konto = {
     // TEST
     test:function() 
     {
-      
+      if(!App.live) console.log( "- VIEW Konto");
+      if(!App.live && !App.konto) console.log( "Missing App.konto");           
     }
     ,
     // INIT
     init: function() 
     {    
-      if(!App.live) console.log( "- VIEW Konto");
-      if(!App.live && !App.konto) console.log( "Missing App.konto");
+      this.test();
       
-      DOM(window).on("msg", function( data) {
-        Konto.response(data);
-      });
+      this.container.hide();
       
-      if( App.device == "desktop" && false) 
+      App.on( App.READY, function() 
       {
-        this.body.style("top", "42px");
-        this.container.show();        
-        this.remote = this.container.konto( App.konto ).on( "load", function(data) {
-        // FIRST QUERY
+        // WEB mit KONTO
+        if( App.device == "desktop") 
+        {
+          this.body.style("top", "42px");
           
-        }).get("contentWindow");        
-      }
-      else {
-        this.body.style("top", "0px");
-        this.container.hide();        
-      }
+          DOM(window).on("msg", function( data) {  Konto.response(data); });
+          
+          // FIRST QUERY
+          this.remote = this.container.konto( App.konto ).on( "load", function(data) 
+          {
+            this.container.show();        
+            
+          }).get("contentWindow");        
+        }
+        // PHONEGAP IPHONE 7 FIX STATUSBAR
+        else if( window.device.phonegap == "3.0.0" && window.device.platform == "iPhone" && parseFloat(window.device.version) === 7.0 ) 
+        {
+          document.body.style.marginTop = "20px";
+          this.container.hide();   
+        }
+        else {
+          this.body.style("top", "0px");
+        }
+      });
     }
     ,
     // FUNCTION
