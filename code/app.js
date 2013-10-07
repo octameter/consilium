@@ -66,12 +66,12 @@ var App = {
   // BINDING 
   bind:function() 
   {
-//    DOM(window).on("load", function(data) {
+    DOM(window).on("ready", function(data) {
 
       DOM("app").show();
       
       App.dispatch( App.READY );
-//    });
+    });
   },
   // ENVIROMENT
   initialize: function( domain ) 
@@ -106,7 +106,25 @@ var App = {
     
     this.views();
     this.bind();
-  },
+    
+    console.log("setting data");
+    // DEV
+    App.model.setData("favorites",
+    [
+       {id : "10025482"},
+       {id : "10047700", "edit":true},
+       {id : "10013963", "edit":true},
+       {id : "privat"}  
+    ]);
+    
+    // DEV
+    App.model.setData("acts",
+    [
+      { id:"10025482", x:"1380725392804", y:"80" },
+      { id:"10013963", x:"1380725392804", y:"20" },
+      { id:"privat", x:"1380725392804", y:"Ein schlechter Tag" }
+    ], ["id","x"]);
+  }
 };
 
 var Konto = {
@@ -197,8 +215,10 @@ var Optionen = {
   init:function() 
   {
     this.test();
-    this.bind();  
+    this.bind();
+    
     this.container.show();
+    this.content.hide();
   }
   ,update:function()
   {
@@ -237,10 +257,14 @@ var Home = {
       Home.container.swipe("left"); 
     });
     
-    App.on( App.HOME, function() {     
-      Home.container.swipe("middle").on("stage", function(  ) {
+    App.on( App.HOME, function() 
+    {     
+      Home.container.swipe("middle").on("stage", function() { Home.update(); });
+    });
+    
+    App.on( App.READY, function() 
+    {       
         Home.update();
-      })
     });
   }
   ,
@@ -250,7 +274,9 @@ var Home = {
     this.test();
     this.bind();  
     
-    this.content.show();
+    this.container.show();
+    this.content.hide();
+    
     this.chart.init();
     this.form.init();
   }
@@ -447,13 +473,13 @@ var Favorites = {
   bind:function() 
   {       
     this.gotoHome.on("touch", function() {      
+      Favorites.content.hide();
       App.dispatch( App.HOME );
       Favorites.container.swipe("right");
     });     
     
     this.gotoSymptome.on("touch", function() {      
-      App.dispatch( App.SYMPTOME);
-      Favorites.container.swipe("left");
+      // DELETE ROWS
     });     
     
     App.on( App.FAVORITES, function( data ) {
@@ -477,27 +503,13 @@ var Favorites = {
     this.test();
     this.bind();  
     
-    // DEV
-    App.model.setData("favorites",
-    [
-       {id : "10025482"},
-       {id : "10047700", "edit":true},
-       {id : "10013963", "edit":true},
-       {id : "privat"}  
-    ]);
-    
-    // DEV
-    App.model.setData("acts",
-    [
-      { id:"10025482", x:"1380725392804", y:"80" },
-      { id:"10013963", x:"1380725392804", y:"20" },
-      { id:"privat", x:"1380725392804", y:"Ein schlechter Tag" }
-    ], ["id","x"]);
-
+    this.container.show();
+    this.content.hide();
   }
   ,
   update:function()
   {
+    console.log("updating favorites");
     var lexiFav = App.model.getData("lexikon").has("id", App.model.getData("favorites") ); 
 
     // EACH FAVORIT GETS FIELDSET
@@ -530,6 +542,8 @@ var Favorites = {
         
           rows.addRow( params ).on("touch", function(data) 
           { 
+            Favorites.content.hide();
+            
             var item = JSON.parse( data.element.getAttribute("data") );
             item.back = App.FAVORITES;
             
@@ -581,7 +595,8 @@ var Symptome = {
   {
     this.test();
     this.bind();  
-    //this.container.show();
+    this.container.show();
+    this.content.hide();
   }
   ,
   update:function() {
@@ -659,6 +674,7 @@ var Favorite = {
      this.test();
      this.bind();  
      this.container.show();
+     this.content.hide();
    }
  };
 
@@ -763,11 +779,11 @@ var Optionen = {
       }
       this.verbundenContainer.show();
       this.syncContainer.show();
-      this.verbindenContainer.hide();
+      //this.verbindenContainer.hide();
     } else {
       this.verbundenContainer.hide();
       this.syncContainer.hide();
-      this.verbindenContainer.show();
+      //this.verbindenContainer.show();
     }
   },
   
