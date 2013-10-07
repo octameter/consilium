@@ -170,7 +170,11 @@ var Konto = {
         else if( window.device )
         {
           //IPHONE 7 FIX STATUSBAR
-          if( window.device.phonegap == "3.0.0" && window.device.platform == "iPhone" && parseFloat(window.device.version) === 7.0 )
+          if( 
+              window.device.phonegap == "3.0.0" && 
+              window.device.platform == "iPhone" && 
+              parseFloat(window.device.version) === 7.0 
+            )
           {
             Konto.body.style("margin-top", "20px");
             Konto.container.hide();               
@@ -664,22 +668,29 @@ var Favorite = {
    // BINDING
    bind:function() 
    {       
-    this.goBack.on("touch", function() {      
+      this.goBack.on("touch", function() {      
        App.dispatch( Favorite.BACK );
        Favorite.container.swipe("right");
-     });    
+     });  
+     
      this.gotoSymptome.on("touch", function() {
        App.dispatch( App.SYMPTOME );
        Favorite.container.swipe("left");
      });
      
+     App.on( App.READY, function(data) 
+     {
+        DOM("sliderArea").addSlider( function( value ) { console.log( value )});
+        DOM("zeitArea").addDatetime( function( value ) { console.log( value )});
+     });
      
      App.on( App.FAVORITE, function(data) {
 
        Favorite.BACK = data.back || App.HOME;
-       
+
        Favorite.container.swipe("middle").on("stage", function() {
-         Favorite.content.show();
+         // TODO id, x und y
+         Favorite.update();
        })
      });
    },
@@ -690,11 +701,16 @@ var Favorite = {
      this.test();
      this.bind();
      
-     DOM("sliderArea").slider( function( value ) { console.log( value )});
-     DOM("zeitArea").datetime( new Date().getTime(), function( value ) { console.log( value )});
-     
      this.container.show();
-     this.content.hide();
+     this.content.invisible();
+   }
+   ,
+   update:function(data)
+   {
+     this.content.show();
+     
+     DOM("sliderArea").setSlider(100);
+     DOM("zeitArea").setDatetime(new Date().getTime() );
    }
  };
 
