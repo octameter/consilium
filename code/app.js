@@ -155,25 +155,28 @@ var Konto = {
         // WEB mit KONTO
         if( App.device == "desktop") 
         {
-          this.body.style("top", "42px");
+          Konto.body.style("margin-top", "42px");
           
           DOM(window).on("msg", function( data) {  Konto.response(data); });
           
           // FIRST QUERY
-          this.remote = this.container.konto( App.konto ).on( "load", function(data) 
+          Konto.remote = Konto.container.konto( App.konto ).on( "load", function(data) 
           {
-            this.container.show();        
+            Konto.container.show();        
             
           }).get("contentWindow");        
         }
         // PHONEGAP IPHONE 7 FIX STATUSBAR
-        else if( window.device.phonegap == "3.0.0" && window.device.platform == "iPhone" && parseFloat(window.device.version) === 7.0 ) 
+        else if( window.device )
         {
-          document.body.style.marginTop = "20px";
-          this.container.hide();   
+          if( window.device.phonegap == "3.0.0" && window.device.platform == "iPhone" && parseFloat(window.device.version) === 7.0 )
+          {
+            Konto.body.style("margin-top", "20px");
+            Konto.container.hide();               
+          }
         }
         else {
-          this.body.style("top", "0px");
+          Konto.body.style("top", "0px");
         }
       });
     }
