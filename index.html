@@ -136,20 +136,9 @@
 			   <fieldset id="favitZeitId">
 			     <legend>Neuer Zeitpunkt</legend>
 			     
-			     <div id="zeitArea">
-			     <span style="margin-right:5px;"><b>Datum</b></span>
-			     <select id="dd" class="optionen"></select>
-			     <select id="MM" class="optionen"></select>
-			     <select id="yyyy" class="optionen"></select>
-			     <span style="margin-left:10px;margin-right:5px"><b>Zeit</b></span>
-			     <select id="hh" class="optionen"></select>
-			     <select id="mm" class="optionen"></select>
-			     </div>
+			     <!-- DOModule datetime -->
+			     <div id="zeitArea"></div>
 			     
-			     <div id="zeitArea_mobile">
-			       <input type="date" class="optionen" value="2011-10-10" />
-			       <input type="time" class="optionen" value="08:16"/>
-			     </div>
 			   </fieldset>
 			   
 			   <fieldset id="favoriteFieldsetId">
@@ -161,13 +150,8 @@
 			       
 			       <span id="favOutputId" style="position:absolute; top:10px; right:2px; font-size:110%">100Pkte</span>
 			       
-			       <div id="sliderArea">
-			         <div id="favSliderId" class="slider">
-			           <a id="thumbId" class="grey" style="left: 1174px;"></a>
-			         </div>			       
-			       </div>
-
-             <input type="range" min="0" max="100"  />
+			       <!-- DOModule slider -->
+			       <div id="sliderArea"></div>
              
 			       <p id="favGradId" style="width:100%;padding-top:5px;"><b>Definition: </b>Normale uneingeschränkte Aktivität wie vor der Erkrankung.</p>
 			       <div id="favitActions">
@@ -183,11 +167,12 @@
 			       <span style="width:100%; padding-right:80px;"><b>Privates Memo</b></span>
 			       <p id="favitZeitLabel" style="width:100%;font-size:90%;margin:1px">&nbsp;</p>
 
-             <div style="position:relative; font-size:100%;width:100%; height:200px; ">
-				       <textarea id="favTextareaId" style="position:absolute; top:0px; right:0px; left:0px; bottom:5px; font-size:100%; -webkit-user-select: text;" name="notizEintrag" placeholder="Text eingeben"></textarea>
+             <div style="position:relative; font-size:100%;width:100%; height:200px;">
+              <div style="position:absolute; top:0px; right:7px; left:0px; bottom:10px;">
+				       <textarea id="favTextareaId" style="position:relative;width:100%;height:100%;font-size:100%; -webkit-user-select: text;" name="notizEintrag" placeholder="Text eingeben"></textarea>              
+              </div>
              </div>
-             
-			       
+                  
 			       <div id="favitActions" style="">
 			         <a class="button-action grey" style="float:left;">Neuer Text</a>
 			         <a id="favitSaveId" class="button-action blue" style="float:left;">Erstellen</a>
@@ -226,7 +211,7 @@
 		<script src="barcodescanner.js"></script>	
 	
 		<!-- MINIFIED REQUIRED LIBRARIES -->
-		<script src="code/library.0.1.5.js"></script>
+		<script src="code/library.0.1.6.js"></script>
 		
 		<!-- PROJECT SPECIFIC-->
 		<script src="code/entities.js"></script>

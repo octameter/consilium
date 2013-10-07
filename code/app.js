@@ -153,7 +153,7 @@ var Konto = {
       App.on( App.READY, function() 
       {
         // WEB mit KONTO
-        if( App.device == "desktop") 
+        if( App.device == "desktop" && false) 
         {
           Konto.body.style("margin-top", "42px");
           
@@ -166,9 +166,10 @@ var Konto = {
             
           }).get("contentWindow");        
         }
-        // PHONEGAP IPHONE 7 FIX STATUSBAR
+        // PHONEGAP 
         else if( window.device )
         {
+          //IPHONE 7 FIX STATUSBAR
           if( window.device.phonegap == "3.0.0" && window.device.platform == "iPhone" && parseFloat(window.device.version) === 7.0 )
           {
             Konto.body.style("margin-top", "20px");
@@ -671,6 +672,8 @@ var Favorite = {
        App.dispatch( App.SYMPTOME );
        Favorite.container.swipe("left");
      });
+     
+     
      App.on( App.FAVORITE, function(data) {
 
        Favorite.BACK = data.back || App.HOME;
@@ -685,12 +688,15 @@ var Favorite = {
    init:function() 
    {
      this.test();
-     this.bind();  
+     this.bind();
+     
+     DOM("sliderArea").slider( function( value ) { console.log( value )});
+     DOM("zeitArea").datetime( new Date().getTime(), function( value ) { console.log( value )});
+     
      this.container.show();
      this.content.hide();
    }
  };
-
 
 
 var Tipps = {
@@ -732,81 +738,4 @@ var Tipps = {
    }
  };
 
-var Optionen = {
-// VIEW
-    
-  //DOMELEMENTS
-  container: DOM("optionenId"),
-  gotoHome: DOM("optionenBackButton"),
-  content: DOM("optionenContentId"),
-
-  verbundenContainer: DOM("optionenVerbundenId"),
-  verbindenContainer: DOM("optionenVerbindenId"),
-  syncContainer: DOM("optionenSyncId"),
-  
-  verbundenStatus: DOM("optionenVerbundenStatus"),
-  verbindenStatus: DOM("optionenVerbindenStatus"),
-  syncStatus: DOM("optionenSyncStatus"),
-  
-  optionenSyncInfo: DOM("optionenSyncInfo"),
-
-  verbindenBtn: DOM("optionenVerbindenBtn"),
-  
-  test: function(){
-  // TEST
-    if (!App.live) console.log( "- VIEW Optionen");
-    if (!App.live && !App.HOME) console.log( "Missing: App.HOME");
-  },
-  
-  bind: function(){
-  // BINDING
-    this.gotoHome.on("touch", function(){
-      App.dispatch(App.HOME);
-      Optionen.container.swipe("left");
-    });
-    App.on(App.OPTIONEN, function(){
-      Optionen.container.swipe("middle").on("stage", function(){
-      Optionen.content.show();
-    });
-/*      console.log(this.verbindenButton); 
-    this.verbindenButton.on("touch", function(){
-      App.dispatch(Optionen.SCAN);
-    });*/
-  });
-  },
-  
-  checkState: function(data){
-  //
-    //if (App.model.getProtagonist().id > 0){
-    if (true){
-      var uptodate = localStorage.getItem("device_upToDate");
-      
-      //if (data.status) this.verbundenStatus.text(data.status);
-      
-      //if (uptodate){
-      if (false){
-        this.syncStatus.text("Zuletzt");
-        this.optionenSyncInfo.text(util.zeit("dd.MM.yyyy hh:mm", parseInt(uptodate)));
-      } else {
-        this.syncStatus.text("Initialisierung");
-      }
-      this.verbundenContainer.show();
-      this.syncContainer.show();
-      //this.verbindenContainer.hide();
-    } else {
-      this.verbundenContainer.hide();
-      this.syncContainer.hide();
-      //this.verbindenContainer.show();
-    }
-  },
-  
-  init: function(){
-  //INIT
-    this.test();
-    this.bind();
-    this.checkState();
-    this.container.show();
-  }
-  
-};
 
