@@ -93,6 +93,11 @@ Array.prototype.has = function( property, array )
    });
 };
 
+Array.prototype.clone = function()
+{
+  return this.slice(0);
+};
+
 Array.prototype.sortABC = function( property )
 {
   return this.sort( function( a,b) 
@@ -108,10 +113,18 @@ Array.prototype.sortABC = function( property )
 
 Array.prototype.sort123 = function( key )
 {
-    return this.sort( function( a,b)
-    {
-        return ( b[key] - a[key] );
-    });
+  return this.sort( function( a,b)
+  {
+    return ( Math.floor( a[key] ) - Math.floor( b[key] ) );
+  });
+};
+
+Array.prototype.sort321 = function( key )
+{
+  return this.sort( function( a,b)
+  {
+    return ( Math.floor( b[key] ) - Math.floor( a[key] ) );
+  });
 };
 
 Array.prototype.notIn = function( key, array )

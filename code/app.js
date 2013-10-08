@@ -48,6 +48,7 @@ var App = {
   FAVORITES: "FAVORITES",
   FAVORITE: "FAVORITE",
   SYMPTOME: "SYMPTOME",
+  TIPPS: "TIPPS",
   
   // MODEL
   model:new Model()
@@ -61,6 +62,7 @@ var App = {
     Favorites.init();    
     Symptome.init();
     Favorite.init();
+    Tipps.init();
 
   },
   // BINDING 
@@ -121,8 +123,10 @@ var App = {
     App.model.setData("acts",
     [
       { id:"10025482", x:"1380725392804", y:"80" },
-      { id:"10013963", x:"1380725392804", y:"20" },
-      { id:"privat", x:"1380725392804", y:"Ein schlechter Tag" }
+      { id:"10013963", x:"1380735392804", y:"20" },
+      { id:"10013963", x:"1380835392804", y:"50" },
+      { id:"10013963", x:"1380935392804", y:"70" },
+      { id:"privat", x:"1380745392804", y:"Ein guter Tag<br>morgen" }
     ], ["id","x"]);
   }
 };
@@ -282,6 +286,9 @@ var Home = {
     
     App.on( App.READY, function() 
     {       
+        Home.chart.init();
+        Home.form.init();
+      
         Home.update();
     });
   }
@@ -294,9 +301,6 @@ var Home = {
     
     this.container.show();
     this.content.hide();
-    
-    this.chart.init();
-    this.form.init();
   }
   ,
   // FUNCTIONS
@@ -326,30 +330,94 @@ var Home = {
   	left:0,
   	bottom:30
     ,
-    x: function( ms ) { return this.left + ( ms - this.minInMs ) / this.xInMs; }
+    x: function( ms ) { return Math.floor( this.left + ( ms - this.minInMs ) / this.xInMs); }
     ,
-    y: function( value ) {	return this.top + ( value - this.minInValue ) / this.yInValue; }
+    y: function( value ) {	return Math.floor( this.top + ( value - this.minInValue ) / this.yInValue); }
     ,
     init:function() {
+            
+      var range = App.model.getData("acts").sort123("x").clone();
       
-      this.minInMs = util.zeit("midnight") - 5 * this.stepInMs;
-      this.maxInMs = this.minInMs + ( 30 * this.stepInMs );
+      var first = Math.floor( range.shift().x );      
+      var firstMin = new Date();
+      if( first > firstMin.setDate(firstMin.getDate() - 30) ) first = firstMin;
+
+      var last  = Math.floor( range.pop().x );
+      var lastMax = new Date();
+      if( last < lastMax.setDate(lastMax.getDate() + 3) ) last = lastMax;
+
+      this.minInMs = util.zeit("midnight", first);
+      this.maxInMs = util.zeit("midnight", last);
       this.realInMs = util.zeit();
       
       this.board.attrib( "width", this.x( this.maxInMs ) + this.right );
       this.board.attrib( "height", this.y( this.maxInValue ) + this.bottom ); 
       
+ 
       // xMin, xMax, xStep, yMin, yMax, yStep, minInMs, xInMs
-      this.board.timeGrid( 
+      this.board.timeGrid
+      ( 
           this.x( this.minInMs ), this.x( this.maxInMs ), this.stepInMs / this.xInMs,
           this.y( this.minInValue ), this.y( this.maxInValue ), this.stepInValue / this.yInValue,
           this.minInMs, this.xInMs 
-          );
+      );
+      
       //xMin, xMax, xStep, y
-      this.board.timeLegend( 
+      this.board.timeLegend
+      ( 
           this.x( this.minInMs ), this.x( this.maxInMs ), 
           this.stepInMs / this.xInMs, this.y( 100 ),
-          this.minInMs, this.xInMs );
+          this.minInMs, this.xInMs 
+      );
+      
+      for( var id in  App.model.getData("acts").unique("id") )
+      {
+        var howto = App.model.searchData("lexikon", id )[0];
+        
+        var acts = App.model.getData("acts").has("id", [ {id:id} ] ).sort123(); 
+        
+        var todo = acts.length;
+        
+        if( howto.kategorie == "Symptom" || howto.kategorie == "Bewertung" )
+        {  
+          var prev = null;
+          
+          while( todo-- )
+          {
+            var act = acts.pop();
+
+            this.board.drawSymptom( this.x( act.x ), this.y( 100 - act.y ), 17, howto.farbwert);
+                      
+            // Less than 3 days apart
+            if( prev && Number(prev.x) < Number(act.x) + 3 * 86400000 )
+            this.board.drawConnect( this.x( act.x ), this.y( 100 - act.y ), this.x( prev.x), this.y(100- prev.y), 19, howto.farbwert );
+
+            prev = Object.create( act );
+          }          
+        }        
+        else if( howto.kategorie == "Notizen" )
+        {
+           while( todo-- )
+           {
+             var notiz = acts.pop();
+             
+             var y = ( howto.id == "privat" ) ? -16 : 102;
+             
+             this.board.drawNotizen( this.x( act.x), this.y( y ), 24, 24, howto.farbwert); 
+           }
+        }
+        
+      }
+      
+      
+//      for( var i = 0; i < acts.length; i++)
+//      {
+//          this.board.drawAct
+//          (
+//              function() { console.log( acts[i] ); }
+//          );
+//        
+//      }
 
       // Ganz nach Links
       this.board.on("load", function( data ) {      
@@ -479,6 +547,7 @@ var Favorites = {
   gotoSymptome:DOM("favoritesEditButton"),
   content:DOM("favoritesContentId"),
   form:DOM("favFormId"),
+  BACK:App.HOME,
   
   // TEST
   test:function() 
@@ -501,17 +570,21 @@ var Favorites = {
     });     
     
     App.on( App.FAVORITES, function( data ) {
+
+      data = data || {};
       
-      // Symptom selected
-      //if( data ) App.model.addFavorite("Symptome", data.id );
+      Favorites.BACK = data.back || App.HOME;
       
-      Favorites.container.swipe("middle").on("stage", function() {
+      Favorites.update();
+      
+      Favorites.container.swipe("middle").on("stage", function() 
+      {
         Favorites.content.show();
       })
     });
     
     App.on( App.READY, function () {
-      Favorites.update(); 
+      //Favorites.update(); 
     });
   },
   
@@ -527,7 +600,8 @@ var Favorites = {
   ,
   update:function()
   {
-    console.log("updating favorites");
+    Favorites.form.removeChilds();
+    
     var lexiFav = App.model.getData("lexikon").has("id", App.model.getData("favorites") ); 
 
     // EACH FAVORIT GETS FIELDSET
@@ -550,12 +624,15 @@ var Favorites = {
           
           if( acts.length > 0 ) 
           {
-            var last = acts.pop();
-            
+            var last = acts.sort321("x").clone().pop();
+
             if( /^\d+$/.test(last.y))
             params.value = last.y + " " + entities[i].unit;
                
             params.zeit = "Zuletzt: "+util.zeit("dd.mm.yyyy hh:mm", Math.floor( last.x ) ); 
+            
+            params.data.x = last.x;
+            params.data.y = last.y;
           }
         
           rows.addRow( params ).on("touch", function(data) 
@@ -582,6 +659,7 @@ var Symptome = {
   gotoHome:DOM("symptomeBackButton"),
   content:DOM("symptomeContentId"),
   fieldset:DOM("symFieldsetId"),
+  BACK:App.Home,
   
   // TEST
   test:function() 
@@ -602,6 +680,9 @@ var Symptome = {
     });     
     
     App.on( App.SYMPTOME, function() {   
+      
+      SYMPTOME.BACK = data.back || App.HOME;
+      
       Symptome.container.swipe("middle").on("stage", function() {
         Symptome.update();
       })
@@ -654,8 +735,14 @@ var Favorite = {
    goBack:DOM("favoriteBackId"),
    gotoSymptome:DOM("favoriteEditId"),
    content:DOM("favoriteContentId"),
-   
+   eingabe:DOM("strukturierteEingabe"),
+   freitext:DOM("freiText")
+   ,
+   //VARIABLES
    BACK:App.HOME,
+   item:null,
+   itemModified:null
+   ,
    // TEST
    test:function() 
    {
@@ -669,6 +756,7 @@ var Favorite = {
    bind:function() 
    {       
       this.goBack.on("touch", function() {      
+       Favorite.content.hide();
        App.dispatch( Favorite.BACK );
        Favorite.container.swipe("right");
      });  
@@ -680,17 +768,104 @@ var Favorite = {
      
      App.on( App.READY, function(data) 
      {
-        DOM("sliderArea").addSlider( function( value ) { console.log( value )});
-        DOM("zeitArea").addDatetime( function( value ) { console.log( value )});
+       DOM("zeitArea").addDatetime( function( value ) 
+       { 
+         Favorite.itemModified = Favorite.itemModified || Object.create( Favorite.item );   
+         Favorite.itemModified.x = value;
+         
+         Favorite.update( Favorite.itemModified ); 
+       });
+       
+       // Strukurierte Eingabe
+       DOM("eingabeSaveId").on("touch", function( data )
+       {
+         App.model.setData("acts", 
+         [ 
+           { id:Favorite.itemModified.id, x:Favorite.itemModified.x+"", y:Favorite.itemModified.y+""} 
+         ]
+         , ["id","x"] );
+         
+         Favorite.content.hide();
+         Favorite.container.swipe("right");
+         App.dispatch(App.FAVORITES);
+       });
+       
+       DOM("eingabeDeleteId").on("touch", function( data )
+       {
+         console.log("TODO DELETE item");
+       });
+       
+       DOM("eingabeCancelId").on("touch", function( data )
+       {
+         Favorite.itemModified = null;
+         Favorite.update(Favorite.item);
+       });
+
+       DOM("sliderArea").addSlider( function( value ) 
+        { 
+          Favorite.itemModified = Favorite.itemModified || Object.create( Favorite.item );       
+          Favorite.itemModified.y = value;
+          
+          Favorite.update( Favorite.itemModified );      
+        });
+
+       // Freitext
+       DOM("favTextareaId").on("input", function( data )
+       {
+         Favorite.itemModified = Favorite.itemModified || Object.create( Favorite.item );      
+         Favorite.itemModified.y = data.value;
+         Favorite.itemModified.x = new Date().getTime();
+         
+         Favorite.update( Favorite.itemModified );
+       });
+       
+       DOM("freiTextNeuId").on("touch", function( data )
+       {
+         Favorite.itemModified = Object.create( Favorite.item );         
+         Favorite.itemModified.y = "";
+         Favorite.itemModified.x = new Date().getTime();
+         
+         Favorite.update( Favorite.itemModified );
+       });
+       
+       DOM("freiTextSaveId").on("touch", function( data )
+       {
+         var html = Favorite.itemModified.y.replace(/\n/g,"<br>");
+         App.model.setData("acts", [ { id:Favorite.itemModified.id, x:Favorite.itemModified.x+"", y:html} ], ["id","x"] );
+         
+         Favorite.content.hide();
+         Favorite.container.swipe("right");
+         App.dispatch(App.FAVORITES);
+       });
+       
+       DOM("freiTextCancelId").on("touch", function( data )
+       {
+         Favorite.itemModified = null;
+         Favorite.update(Favorite.item);
+       });
+       
+       DOM("freiTextDeleteId").on("touch", function( data )
+       {
+         console.log("TODO DELETE freitext");
+       });
      });
      
-     App.on( App.FAVORITE, function(data) {
+     App.on( App.FAVORITE, function(data) 
+     {
 
-       Favorite.BACK = data.back || App.HOME;
-
-       Favorite.container.swipe("middle").on("stage", function() {
-         // TODO id, x und y
-         Favorite.update();
+       if( data )
+       {
+         // Coming from Favorites or Symptom
+         Favorite.BACK = data.back || App.HOME;
+         
+         Favorite.item = data;
+         Favorite.itemModified = null;         
+       }
+       // no data from Tipps
+       
+       Favorite.container.swipe("middle").on("stage", function() 
+       {
+         Favorite.update( Favorite.itemModified || Favorite.item );
        })
      });
    },
@@ -705,12 +880,104 @@ var Favorite = {
      this.content.invisible();
    }
    ,
+/**
+ * _term: "10013963 SYMPTOM "
+    back: "FAVORITES"
+    farbwert: "rgba(40,210,230,0.9)"
+    grad: Array[5]
+    id: "10013963"
+    kategorie: "Symptom"
+    sub: "Atemwege"
+    title: "Atemnot"
+    unit: "Pkte"
+    x: "1380725392804"
+    y: "20"
+    zero: 0
+ */
    update:function(data)
    {
+     if( data )
+     {
+       DOM("fieldsetTipp").hide();
+       
+       if(data.kategorie == "Notizen") 
+       {
+         this.eingabe.hide();
+
+         DOM("zeitArea").setDatetime( data.x );
+         DOM("favTextareaId").set("value", data.y.replace(/<br>/g, "\n") );
+         ( data.y ) ? DOM("freiTextNeuId").show() : DOM("freiTextNeuId").hide();
+         ( Favorite.itemModified ) ? DOM("freiTextSaveId").show() : DOM("freiTextSaveId").hide();
+         ( Favorite.itemModified ) ? DOM("freiTextDeleteId").hide() : DOM("freiTextDeleteId").show();
+         ( Favorite.itemModified ) ? DOM("freiTextCancelId").show() : DOM("freiTextCancelId").hide();
+         this.freitext.show();
+       }
+       else
+       {
+         this.freitext.hide();
+
+         DOM("zeitArea").setDatetime( data.x );
+         DOM("favOutputId").text( ( data.y || data.zero ) + " " + data.unit);
+         DOM("sliderArea").setSlider(data.y || data.zero );
+         ( Favorite.itemModified || !data.y) ? DOM("eingabeDeleteId").hide() : DOM("eingabeDeleteId").show();
+         ( Favorite.itemModified ) ? DOM("eingabeSaveId").show() : DOM("eingabeSaveId").hide();
+         ( Favorite.itemModified ) ? DOM("eingabeCancelId").show() : DOM("eingabeCancelId").hide();         
+
+         for( var i = 0; i < data.grad.length; i++) 
+         {
+           var grad = data.grad[i];
+           var y = Math.floor( data.y );
+  
+           if( y >= grad.min && y <= grad.max )
+           {
+             DOM("favGradId").html("<b>Definition:</b> "+grad.info);
+             
+             if( grad.tipps )
+             {
+               var search = grad.tipps.split(",").map( function(element) 
+               {  
+                 return { id:element };
+               });
+               
+               var tipps = App.model.getData("lexikon").has("id", search).clone();
+               
+               var rows = DOM("fieldsetTipp").find(".listeNext").removeChilds();
+
+               for( var j = 0; j < tipps.length; j++)
+               {
+                 var tipp = tipps[j];
+//                 
+//                 rows.addRow( 
+//                 {
+//                   title:tipps[i].title,
+//                   zeit:tipps[i].kategorie,
+//                   caretLeft:false,
+//                   caretRight:true,
+//                   value:"",
+//                   farbe:"",
+//                   data:tipps[i]
+//                   //detail:"Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen." 
+//                 })
+//                 .on("touch", function( data ) 
+//                 {    
+//                   Favorite.content.hide();
+//                   Favorite.container.swipe("left");
+//
+//                   App.dispatch(App.TIPPS,  JSON.parse( data.element.getAttribute("data") ) );
+//                 }, { watch:"LI"});
+//                 
+               }
+             }
+           }
+         }
+         
+         this.eingabe.show();
+       }
+
+     }
+     
      this.content.show();
      
-     DOM("sliderArea").setSlider(100);
-     DOM("zeitArea").setDatetime(new Date().getTime() );
    }
  };
 
@@ -735,10 +1002,17 @@ var Tipps = {
    bind:function() 
    {       
      this.gotoFavorite.on("touch", function() {      
+       
+       Tipps.content.hide();
+       
        App.dispatch( App.FAVORITE );
        Tipps.container.swipe("right");
      });     
-     App.on( App.TIPPS, function() {   
+     
+     App.on( App.TIPPS, function(data) {
+       
+       Tipps.update( data );
+       
        Tipps.container.swipe("middle").on("stage", function() {
          Tipps.content.show();
        })
@@ -751,6 +1025,45 @@ var Tipps = {
      this.test();
      this.bind();  
      this.container.show();
+   }
+   ,
+   /**
+    * _term: "IMELD2 BRUSTZENTRUM "
+      bausteine: Array[3]
+      dislikes: 0
+      id: "iMeld2"
+      kategorie: "Brustzentrum"
+      likes: 0
+      title: "Kontakt aufnehmen"
+    */
+   update:function(data)
+   {
+     this.content.removeChilds();
+     
+     var display = this.content.add("form").add("fieldset").style("text-align","left").add("legend").text( data.kategorie ).parent();
+     
+     display.add("p").html("<b>"+data.title+"</b>");
+     
+     for( var i = 0; i < data.bausteine.length; i++)
+     {       
+       var baustein = data.bausteine[i];
+       
+       for( var info in baustein )
+       {
+         display.add("p").add("div").html("<i>"+info+"</i>").addNext("div").html( baustein[info]);    
+         display.add("hr");
+       }
+     }
+     
+     var actions = display.add("p");
+     actions.add("a").addClass("button-action green floatLeft").text("Hilfreich").on("touch", function( data )
+     {
+       console.log("TODO TIPP HLFREICH");
+     });
+     actions.add("a").addClass("button-action grey floatRight").text("Nicht Hilfreich").on("touch", function( data )
+     {
+       console.log("TODO TIPP NICHT HLFREICH");   
+     });
    }
  };
 

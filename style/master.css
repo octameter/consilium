@@ -5,6 +5,7 @@
 @import "button.css";
 @import "form.css";
 @import "slider.css";
+@import "datetime.css";
 
 * {
     -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
@@ -54,6 +55,12 @@ and (max-device-width : 568px) {
 	}
 }
 
+.floatLeft {
+	float:left;	
+}
+.floatRight {
+	float:right;
+}
 
 
 /* CHART */     
