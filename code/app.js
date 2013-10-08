@@ -624,7 +624,7 @@ var Favorites = {
           
           if( acts.length > 0 ) 
           {
-            var last = acts.sort321("x").clone().pop();
+            var last = acts.sort123("x").clone().pop();
 
             if( /^\d+$/.test(last.y))
             params.value = last.y + " " + entities[i].unit;
