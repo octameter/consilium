@@ -265,6 +265,16 @@ var Home = {
   gotoFavorites:DOM("addEingabe"),
   content:DOM("homeContentId")
   ,
+  //INIT
+  init:function() 
+  {
+    this.test();
+    this.bind();  
+    
+    this.container.show();
+    this.content.hide();
+  }
+  ,
   // TEST
   test:function() 
   {
@@ -301,16 +311,6 @@ var Home = {
     });
   }
   ,
-  //INIT
-  init:function() 
-  {
-    this.test();
-    this.bind();  
-    
-    this.container.show();
-    this.content.hide();
-  }
-  ,
   // FUNCTIONS
   update:function()
   {
@@ -339,12 +339,14 @@ var Home = {
   	left:5,
   	bottom:30
     ,
-    x: function( ms ) { return Math.floor( this.left + ( ms - this.minInMs ) / this.xInMs); }
+    x: function( ms ) 
+    { return Math.floor( this.left + ( ms - this.minInMs ) / this.xInMs); }
     ,
-    y: function( value ) {	return Math.floor( this.top + ( value - this.minInValue ) / this.yInValue); }
+    y: function( value ) 
+    { return Math.floor( this.top + ( value - this.minInValue ) / this.yInValue); }
     ,
-    init:function() {
-            
+    init:function() 
+    {        
       this.board.removeChilds();
       
       var range = App.model.getData("acts").sort123("x").clone();
@@ -437,12 +439,11 @@ var Home = {
     scroll:function( to )
     {
       var status = Home.chart.scroller.get("scrollLeft");
-      // 10 is padding
+      // 100 is padding
       var strecke = to - Home.container.width() - status + 100; 
       
       Home.chart.scroller.scrollTo("scrollLeft", strecke, 2000);
-    }
-      
+    }    
   }
   ,
   form: {
@@ -909,8 +910,7 @@ var Favorite = {
          this.freitext.find("legend").html( data.kategorie );
          this.freitext.find(".favTitle").html( data.title );
          DOM("zeitArea").setDatetime( data.x );
-         DOM("favTextareaId").set("value", (data.y) ? data.y.replace(/<br>/g, "\n") : "" );
-                 
+         DOM("favTextareaId").set("value", (data.y) ? data.y.replace(/<br>/g, "\n") : "" );       
        }
        else
        {
