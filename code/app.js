@@ -160,7 +160,7 @@ var Konto = {
       App.on( App.READY, function() 
       {
         // WEB mit KONTO
-        if( App.device == "desktop" && false) 
+        if( App.device == "desktop") 
         {
           Konto.body.style("margin-top", "42px");
           
