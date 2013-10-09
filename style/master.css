@@ -8,10 +8,14 @@
 @import "datetime.css";
 
 * {
-    -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
-    -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
-    -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
-    -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
+    -webkit-touch-callout: none;                
+  /* prevent callout to copy image, etc when tap to hold */
+    -webkit-text-size-adjust: none;             
+  /* prevent webkit from resizing text to fit */
+    -webkit-tap-highlight-color: rgba(0,0,0,0); 
+  /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+    -webkit-user-select: none;                  
+  /* prevent copy paste, to allow, change 'none' to 'text' */
 
     text-shadow: none;
     box-shadow: none;
@@ -30,9 +34,15 @@ html, body {
 	padding: 0px;
 	margin: 0px;
 	border:none;
-/*   font-family: ARIAL; */
-	background-color: #FAFAFA;
 	font-family:'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
+}
+
+html {
+  background: #4c6173;
+}
+
+body {
+  background-color: #FAFAFA;
 }
 
 
@@ -64,7 +74,7 @@ and (max-device-width : 568px) {
 
 /* VIEW FAVORITEN */
 .favActions, .borderTop {
-	border-top:1px solid rgba(200,200,200,1);
+  border-top:1px solid rgba(200,200,200,1);
   padding-top:5px; 
   margin-top:5px;
 }

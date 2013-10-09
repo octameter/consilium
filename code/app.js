@@ -84,14 +84,16 @@ var App = {
     
     this.device = DOM().device();
     
-    if( document.domain == this.domain || window.device) 
+    if( document.domain == domain || window.device) 
     {
+      console.log("Live");
       this.domain = domain;
       document.domain = "epha.ch";
       this.live = true;
     }
     else 
     {
+      console.log("Testing");
       this.domain = document.domain = document.domain;
       this.live = false;  
     }
@@ -615,23 +617,17 @@ var Favorites = {
      
       rows.on("touch", function(data) 
       { 
-        Favorites.content.hide();
-        
+        // TODO Bubbling
         var item = JSON.parse( data.element.getAttribute("data") );
         
-        if( item.id == "Symptom" ) 
+        if( item ) 
         {
+          Favorites.content.hide();
           item.back = App.FAVORITES;
+          Favorites.container.swipe("left");
           
-          App.dispatch( App.SYMPTOME, item );
-          Favorites.container.swipe("left");                         
-        }
-        else
-        {
-          item.back = App.FAVORITES;
-          
-          App.dispatch( App.FAVORITE, item );
-          Favorites.container.swipe("left");               
+          (item.id == "Symptom") ? 
+          App.dispatch( App.SYMPTOME, item ) : App.dispatch( App.FAVORITE, item );              
         }
       }
       , { watch:"LI" } );
@@ -721,16 +717,16 @@ var Symptome = {
     
     var liste = this.fieldset.find("ul").on("touch", function( data )
     {    
-      Symptome.content.hide();
-      Symptome.container.swipe("left");
-      
       var item = JSON.parse( data.element.getAttribute("data") );
       
-      App.model.setData("favorites", [ { id:item.id, edit:true } ]);
-      
-      item.back = App.SYMPTOME;
-      
-      App.dispatch( App.FAVORITE,  item );
+      if( item )
+      {
+        Symptome.content.hide();
+        Symptome.container.swipe("left");
+        App.model.setData("favorites", [ { id:item.id, edit:true } ]);
+        item.back = App.SYMPTOME;
+        App.dispatch( App.FAVORITE,  item );
+      }
     }
     , {watch:"LI"});
     
@@ -998,10 +994,14 @@ var Favorite = {
              
        rows.on("touch", function( data ) 
        {    
-         Favorite.content.hide();
-         Favorite.container.swipe("left");
+         var tipp = JSON.parse( data.element.getAttribute("data") );
          
-         App.dispatch(App.TIPPS,  JSON.parse( data.element.getAttribute("data") ) );
+         if( tipp )
+         {
+            Favorite.content.hide();
+            Favorite.container.swipe("left");
+            App.dispatch(App.TIPPS, tipp );
+         }
        }, 
        { watch:"LI"} );
              
