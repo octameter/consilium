@@ -30,7 +30,7 @@
             <strong>Mit Brustzentrum</strong>
             <div>
               <span id="optionenVerbundenStatus">optionenStatus</span>
-              <button class="button-action blue">Verbinden</button>
+              <a class="button-action blue floatRight">Verbinden</a>
             </div>
           </div>
          </fieldset>
@@ -40,7 +40,7 @@
            <div>
              <strong id="optionenSyncStatus">Initialisierung</strong>
              <span id="optionenSyncInfo"></span>
-             <a class="button-action" style="position:absolute;top:6px;right:2px;">Sync</a>
+             <a class="button-action floatLeft" style="position:absolute;top:6px;right:2px;">Sync</a>
            </div>
          </fieldset>
          
@@ -110,7 +110,7 @@
        <form id="symFormId">
          <fieldset style="text-align:left">
           <legend>Information</legend>
-           <span>Die Symptome werden automatisch der Auswahl hinzugefügt. Die Auswahl erscheint rechts oben im Home-View.</span>
+           <span>Die Symptome werden automatisch der Auswahl hinzugefügt. Die Auswahl kann im Home-View rechts oben über Start erreicht werden.</span>
          </fieldset>
          <fieldset id="symFieldsetId">
            <legend>Erfassung</legend>
@@ -124,13 +124,13 @@
 		<article id="favoriteId" class="view right">
 		
 			<header>
-              <button id="favoriteBackId" class="button-text colorless">
-                Zurück
-              </button>
-              <span>Eingabe</span>
-              <button id="favoriteEditId" class="button-text colorless" style="display:none">
-                Löschen
-              </button>
+				<button id="favoriteBackId" class="button-text colorless">
+				  Zurück
+				</button>
+				<span>Eingabe</span>
+				<button id="favoriteEditId" class="button-text colorless" style="display:none">
+				  Löschen
+				</button>
 			</header>
 			
 			<section id="favoriteContentId">
@@ -146,12 +146,10 @@
 			   </fieldset>
 			   
 			   <fieldset id="strukturierteEingabe">
-			     <legend>Bewertung</legend>
+			     <legend>ENTITY_KATEGORIE</legend>
 			     
 			     <div id="favArea">
-			       <span style="width:100%; padding-right:80px;">
-                     <b>Wohlbefinden</b>
-                   </span>
+			       <span class="favTitle">ENTITY_TITLE</span>
 			       <p id="favitZeitLabel" style="width:100%;font-size:90%;margin:1px">&nbsp;</p>
 			       
 			       <span id="favOutputId" style="position:absolute; top:10px; right:2px; font-size:110%">100Pkte</span>
@@ -161,18 +159,18 @@
              
 			       <p id="favGradId" style="width:100%;padding-top:5px;"></p>
 			       
-			       <div>
-			         <a id="eingabeSaveId" class="button-action blue" style="float:left;">Erstellen</a>
-			         <a id="eingabeCancelId" class="button-action grey" style="float:right;">Abbrechen</a>
-			         <a id="eingabeDeleteId" class="button-action red" style="float:right;">Löschen</a>
+			       <div class="favActions">
+			         <a class="button-action blue floatLeft">Erstellen</a>
+			         <a class="button-action grey floatRight">Abbrechen</a>
+			         <a class="button-action red floatRight">Löschen</a>
 			       </div>
 			     </div>
 			   </fieldset>
 			   
 			   <fieldset id="freiText">
-			     <legend>Notizen</legend>
+			     <legend>ENTITY_KATEGORIE</legend>
 			     <div id="favArea">
-			       <span style="width:100%; padding-right:80px;"><b>Privates Memo</b></span>
+			       <span class="favTitle">ENTITY_TITLE</span>
 			       <p id="favitZeitLabel" style="width:100%;font-size:90%;margin:1px">&nbsp;</p>
 
              <div style="position:relative; font-size:100%;width:100%; height:200px;">
@@ -181,11 +179,11 @@
               </div>
              </div>
                   
-			       <div>
-			         <a id="freiTextSaveId" class="button-action blue" style="float:left;">Erstellen</a>
-			         <a id="freiTextNeuId"  class="button-action grey" style="float:left;">Neuer Text</a>
-			         <a id="freiTextCancelId" class="button-action grey" style="float:right;">Abbrechen</a>
-			         <a id="freiTextDeleteId" class="button-action red" style="float:right;">Löschen</a>
+			       <div class="favActions">
+			         <a class="button-action blue floatLeft">Erstellen</a>
+			         <a class="button-action lightgrey floatLeft">Neuer Text</a>
+			         <a class="button-action grey floatRight">Abbrechen</a>
+			         <a class="button-action red floatRight">Löschen</a>
 			       </div>
 			     </div>
 			   </fieldset>

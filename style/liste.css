@@ -54,13 +54,13 @@
 }
 
 .row_value {
-	display: table;
   font-size:110%;
   position:absolute;
   text-align:right;
   top:0px; bottom:0px; right:30px;
   margin:auto;
   min-width:20px;
+  height:22px;
   padding:6px;
   border-radius:4px;
   color:white;
@@ -70,6 +70,8 @@
   margin:0px;
   padding:0px;
 }
+
+/*  .row_detail:not(:empty) */
 
 .row_detail:not(:empty) {
   border-top:1px solid rgba(200,200,200,1);

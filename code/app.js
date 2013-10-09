@@ -114,6 +114,7 @@ var App = {
     App.model.setData("favorites",
     [
        {id : "10025482"},
+       {id : "Symptom" },
        {id : "10047700", "edit":true},
        {id : "10013963", "edit":true},
        {id : "privat"}  
@@ -131,8 +132,10 @@ var App = {
   }
 };
 
+/**
+ * VIEW KONTO
+ */
 var Konto = {
-//VIEW
     
     // DOMELEMENTS
     body:DOM("app"),
@@ -202,7 +205,9 @@ var Konto = {
     }
 };
 
-
+/**
+ * VIEW OPTIONEN
+ */
 var Optionen = {
 // VIEW
     
@@ -248,6 +253,9 @@ var Optionen = {
   }
 };
 
+/**
+ * VIEW HOME
+ */
 var Home = {
 // VIEW
     
@@ -286,10 +294,10 @@ var Home = {
     
     App.on( App.READY, function() 
     {       
-        Home.chart.init();
-        Home.form.init();
-      
-        Home.update();
+      Home.chart.init();
+      Home.form.init();
+    
+      Home.update();    
     });
   }
   ,
@@ -307,6 +315,7 @@ var Home = {
   update:function()
   {
     this.content.show();
+    
     this.chart.update();
     this.form.update();
   }
@@ -326,8 +335,8 @@ var Home = {
   	maxInValue:100
     ,
   	top:40,
-  	right:0,
-  	left:0,
+  	right:5,
+  	left:5,
   	bottom:30
     ,
     x: function( ms ) { return Math.floor( this.left + ( ms - this.minInMs ) / this.xInMs); }
@@ -336,6 +345,8 @@ var Home = {
     ,
     init:function() {
             
+      this.board.removeChilds();
+      
       var range = App.model.getData("acts").sort123("x").clone();
       
       var first = Math.floor( range.shift().x );      
@@ -351,8 +362,7 @@ var Home = {
       this.realInMs = util.zeit();
       
       this.board.attrib( "width", this.x( this.maxInMs ) + this.right );
-      this.board.attrib( "height", this.y( this.maxInValue ) + this.bottom ); 
-      
+      this.board.attrib( "height", this.y( this.maxInValue ) + this.bottom );       
  
       // xMin, xMax, xStep, yMin, yMax, yStep, minInMs, xInMs
       this.board.timeGrid
@@ -370,6 +380,20 @@ var Home = {
           this.minInMs, this.xInMs 
       );
       
+      this.board.on("touch", function(data) {
+        Home.form.update( data.dataTransfer );
+      });
+      
+      // Fast ganz nach Rechts     
+      var rechts = this.x( this.maxInMs - 86400000 );
+      Home.chart.scroll( rechts );         
+    }
+    ,
+    update:function() {
+      
+      this.board.findAll(".movePoint").remove();
+      
+      // Symbole
       for( var id in  App.model.getData("acts").unique("id") )
       {
         var howto = App.model.searchData("lexikon", id )[0];
@@ -386,7 +410,7 @@ var Home = {
           {
             var act = acts.pop();
 
-            this.board.drawSymptom( this.x( act.x ), this.y( 100 - act.y ), 17, howto.farbwert);
+            this.board.drawSymptom( this.x( act.x ), this.y( 100 - act.y ), 17, howto.farbwert, act);
                       
             // Less than 3 days apart
             if( prev && Number(prev.x) < Number(act.x) + 3 * 86400000 )
@@ -400,34 +424,110 @@ var Home = {
            while( todo-- )
            {
              var notiz = acts.pop();
-             
+             // Above or below timegrid
              var y = ( howto.id == "privat" ) ? -16 : 102;
              
-             this.board.drawNotizen( this.x( act.x), this.y( y ), 24, 24, howto.farbwert); 
+             this.board.drawNotizen( this.x( notiz.x) , this.y( y ), 24, 24, howto.farbwert, notiz); 
            }
-        }
-        
+        }  
       }
-      
-      
-//      for( var i = 0; i < acts.length; i++)
-//      {
-//          this.board.drawAct
-//          (
-//              function() { console.log( acts[i] ); }
-//          );
-//        
-//      }
-
-      // Ganz nach Links
-      this.board.on("load", function( data ) {      
-        Home.chart.scroller.scrollTo("scrollLeft", Home.chart.board.attrib("width") - Home.chart.scroller.width(), 2000);
-      });
     }
     ,
-    update:function( data ) {
+    // TIME
+    scroll:function( to )
+    {
+      var status = Home.chart.scroller.get("scrollLeft");
+      // 10 is padding
+      var strecke = to - Home.container.width() - status + 100; 
       
-      // SMALL SCREEN HAS OVERLAY IN TIMELINE
+      Home.chart.scroller.scrollTo("scrollLeft", strecke, 2000);
+    }
+      
+  }
+  ,
+  form: {
+
+    fieldset:DOM("homeFieldsetAuswahl")
+    ,
+    init:function()
+    {  
+
+    }
+    ,
+    update:function( event ) 
+    {
+
+      this.fieldset.find("ul").off("touch");
+      this.fieldset.find("ul").removeChilds();
+
+      if( event )
+      {
+        var howto = App.model.getData("lexikon").has("id", [{ id: event.id }] )[0];
+        
+        // Augment event
+        event.zero = howto.zero;
+        event.unit = howto.unit;
+        event.title = howto.title;
+        event.kategorie = howto.kategorie;
+        event.grad = howto.grad;
+        
+        var detail = "";
+        var value = "&nbsp";
+        if( /^\d+$/.test(event.y))
+        {
+           value = event.y + " " + event.unit;
+        }
+        else detail = event.y;
+        
+        this.fieldset.find("ul").addRow( 
+        {
+          title:howto.title,
+          zeit:"Am "+util.zeit("dd.mm.yyyy hh:mm", Math.floor( event.x )), 
+          caretLeft:false,
+          caretRight:true,
+          value: value,
+          farbe:howto.farbwert,
+          detail:detail
+        });
+        
+        this.fieldset.find("ul").on("touch", function(data) 
+        {    
+          Home.content.hide();
+          Home.container.swipe("left");
+          
+          var item = event;
+          item.back = App.HOME;
+          
+          App.dispatch( App.FAVORITE, item );
+         }
+         ,{ watch:"LI" } );
+      } 
+      else
+      {
+        var howto = App.model.getData("lexikon").has("id", [{ id: "Symptom" }] )[0];
+        
+        this.fieldset.find("ul").addRow( 
+        {
+          title:howto.title,
+          caretLeft:false,
+          caretRight:true,
+          value:"",
+          farbe:"",
+          //detail:"Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen." 
+        });
+       
+        this.fieldset.find("ul").on("touch", function(data) 
+        {    
+          Home.content.hide();
+          Home.container.swipe("left");
+          App.dispatch(App.SYMPTOME);
+        });
+      }
+      
+      this.fieldset.legend( howto.kategorie );
+      
+    }
+    // SMALL SCREEN HAS OVERLAY IN TIMELINE
 //      if (window.matchMedia("(orientation:landscape) and (max-device-width:768px)").matches) 
 //      {   
 //        dispatchCommand(Commands.CHART_OVERLAY, {
@@ -435,106 +535,6 @@ var Home = {
 //          farbwert: type.farbwert, value: value
 //        });
 //      }
-    }
-    ,
-  }
-  ,
-  form: {
-
-    fieldset:DOM("homeFieldsetAuswahl")
-    ,
-    start:function()
-    {
-      /* DEFAULT */
-      this.fieldset.find("ul").off("touch");
-      this.fieldset.legend( "Start" );
-      this.fieldset.find("ul").addRow( 
-      {
-        title:"Symptom erfassen",
-        caretLeft:false,
-        caretRight:true,
-        value:"",
-        farbe:"",
-        //detail:"Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen." 
-       }).on("touch", function(data) 
-      {    
-        Home.content.hide();
-        Home.container.swipe("left");
-        App.dispatch(App.SYMPTOME);
-      });
-    }
-    ,
-    init:function()
-    {  
-      this.start();
-    }
-    ,
-    update:function( event ) 
-    {
-      return;
-      event = event || {};
-      
-      /* FIGUR SELECTED */
-      var id = event.id || "";
-      var zeit = "am " + util.zeit("dd.mm.yyyy hh:mm", event.x);
-      // string or json
-      var value = (typeof event.y == "string") ? JSON.parse(event.y) : event.y;
-      // kategorie, unit, farbwert
-      var type = app.model.getType(event.id);
-      // einteilung
-      var definition = "<b>Definition</b>"+ app.model.getGrad(event.id, event.y).info;
-        
-  		if (type.kategorie == "Notizen")
-  		{
-  		  var params = {
-            zeit:zeit,
-            value:"&nbsp", 
-            color:type.farbwert, 
-            detail:value.replace(/\n\r?/g, "<br/>")
-  		  }; 		  
-  		  if( id == "privat") { params.event = event; }
-  		  
-  		  this.fieldset.legend( type.kategorie);
-  		  this.fieldset.fillRow( params ); 
-  		}
-  		else if( type.kategorie == "Bewertung" || type.kategorie == "Symptom")
-    	{
-  		  this.fieldset.legend( type.kategorie);
-  		  this.fieldset.fillRow( 
-  		  { 
-  		    legend:type.kategorie, zeit:zeit, event:event, value:value + " " + type.unit, detail:definition 
-  		  });
-    	}
-  		else if(type.kategorie == "Device")
-  		{    			
-  		  this.fieldset.legend( type.kategorie);
-  			if(id == "stepcounter")
-  			{
-  			  this.fieldset.fillRow( { zeit:zeit, value:value["step"] + " " +type.unit, detail:
-  			    "<b>Definition</b> Messung mittels Device" +
-            "<br>Entfernung: " + value["km"] + "km" +
-            "<br>Kalorien: " + value["kcal"] + "kcal" +
-            "<br>Ex: " + value["ex"] +
-            "<br>Zeitraum: " + value["sportTime"] + "min"
-  			  });
-  			}
-  			else if (id == "bp")
-  			{	
-  			  this.fieldset.fillRow( { zeit:zeit, value:value["systolic"] + " " +type.unit, detail:
-            "<b>Definition</b> Messung mittels Device" +
-            "<br>Sys: " + value["systolic"] + "mmHg" +
-            "<br>Dia: " + value["diastolic"] + "mmHg" +
-            "<br>Pulse " + value["pulse"] + " Pulse"
-          });
-  			}
-  			else
-  			{
-  			  this.fieldset.fillRow( { zeit:zeit, value:value[id] + " " +type.unit, detail:
-            "<b>Definition</b> Messung mittels Device"
-          });
-  			}
-  		}
-    }
   }
 };
 
@@ -565,7 +565,8 @@ var Favorites = {
       Favorites.container.swipe("right");
     });     
     
-    this.gotoSymptome.on("touch", function() {      
+    this.gotoSymptome.on("touch", function() {    
+      console.log("TODO Delete Symptome view")
       // DELETE ROWS
     });     
     
@@ -611,6 +612,29 @@ var Favorites = {
       var rows = legend.addNext("ul").addClass("listeNext");
       var entities = lexiFav.has( "kategorie", [ { "kategorie":kategorie} ] );
      
+      rows.on("touch", function(data) 
+      { 
+        Favorites.content.hide();
+        
+        var item = JSON.parse( data.element.getAttribute("data") );
+        
+        if( item.id == "Symptom" ) 
+        {
+          item.back = App.FAVORITES;
+          
+          App.dispatch( App.SYMPTOME, item );
+          Favorites.container.swipe("left");                         
+        }
+        else
+        {
+          item.back = App.FAVORITES;
+          
+          App.dispatch( App.FAVORITE, item );
+          Favorites.container.swipe("left");               
+        }
+      }
+      , { watch:"LI" } );
+      
       for (var i = 0; i < entities.length; i++)
       {        
           var params = {};
@@ -635,17 +659,7 @@ var Favorites = {
             params.data.y = last.y;
           }
         
-          rows.addRow( params ).on("touch", function(data) 
-          { 
-            Favorites.content.hide();
-            
-            var item = JSON.parse( data.element.getAttribute("data") );
-            item.back = App.FAVORITES;
-            
-            App.dispatch( App.FAVORITE, item );
-            Favorites.container.swipe("left");     
-          }
-          , { watch:"LI" } );
+          rows.addRow( params );
       }
     }
   }
@@ -676,12 +690,14 @@ var Symptome = {
 
       Symptome.content.hide();
       Symptome.container.swipe("right");
-      App.dispatch( App.HOME );     
+      App.dispatch( Symptome.BACK );     
     });     
     
-    App.on( App.SYMPTOME, function() {   
+    App.on( App.SYMPTOME, function(data) {   
       
-      SYMPTOME.BACK = data.back || App.HOME;
+      data = data || {};
+      
+      Symptome.BACK = data.back || App.HOME;
       
       Symptome.container.swipe("middle").on("stage", function() {
         Symptome.update();
@@ -708,13 +724,16 @@ var Symptome = {
       Symptome.container.swipe("left");
       
       var item = JSON.parse( data.element.getAttribute("data") );
+      
+      App.model.setData("favorites", [ { id:item.id, edit:true } ]);
+      
       item.back = App.SYMPTOME;
       
       App.dispatch( App.FAVORITE,  item );
     }
     , {watch:"LI"});
     
-    var symptome = App.model.searchData( "lexikon", "Symptom" );
+    var symptome = App.model.searchData( "lexikon", "Symptom" ).notIn( "id", App.model.getData("favorites") );
     
     symptome.sortABC("title");
     
@@ -732,16 +751,27 @@ var Favorite = {
     
    //DOMELEMENTS
    container:DOM("favoriteId"),
-   goBack:DOM("favoriteBackId"),
+   goBackButton:DOM("favoriteBackId"),
    gotoSymptome:DOM("favoriteEditId"),
    content:DOM("favoriteContentId"),
    eingabe:DOM("strukturierteEingabe"),
-   freitext:DOM("freiText")
+   freitext:DOM("freiText"),
+   tipp:DOM("fieldsetTipp")
    ,
    //VARIABLES
    BACK:App.HOME,
    item:null,
    itemModified:null
+   ,
+   //INIT
+   init:function() 
+   {
+     this.test();
+     this.bind();
+     
+     this.container.show();
+     this.content.invisible();
+   }
    ,
    // TEST
    test:function() 
@@ -755,10 +785,8 @@ var Favorite = {
    // BINDING
    bind:function() 
    {       
-      this.goBack.on("touch", function() {      
-       Favorite.content.hide();
-       App.dispatch( Favorite.BACK );
-       Favorite.container.swipe("right");
+      this.goBackButton.on("touch", function() {      
+       Favorite.goBack();
      });  
      
      this.gotoSymptome.on("touch", function() {
@@ -768,6 +796,8 @@ var Favorite = {
      
      App.on( App.READY, function(data) 
      {
+       
+       // Zeit
        DOM("zeitArea").addDatetime( function( value ) 
        { 
          Favorite.itemModified = Favorite.itemModified || Object.create( Favorite.item );   
@@ -777,37 +807,17 @@ var Favorite = {
        });
        
        // Strukurierte Eingabe
-       DOM("eingabeSaveId").on("touch", function( data )
-       {
-         App.model.setData("acts", 
-         [ 
-           { id:Favorite.itemModified.id, x:Favorite.itemModified.x+"", y:Favorite.itemModified.y+""} 
-         ]
-         , ["id","x"] );
-         
-         Favorite.content.hide();
-         Favorite.container.swipe("right");
-         App.dispatch(App.FAVORITES);
-       });
-       
-       DOM("eingabeDeleteId").on("touch", function( data )
-       {
-         console.log("TODO DELETE item");
-       });
-       
-       DOM("eingabeCancelId").on("touch", function( data )
-       {
-         Favorite.itemModified = null;
-         Favorite.update(Favorite.item);
-       });
-
        DOM("sliderArea").addSlider( function( value ) 
-        { 
-          Favorite.itemModified = Favorite.itemModified || Object.create( Favorite.item );       
-          Favorite.itemModified.y = value;
-          
-          Favorite.update( Favorite.itemModified );      
-        });
+       { 
+         if( !Favorite.itemModified )
+         {
+           Favorite.itemModified = Object.create( Favorite.item );
+           Favorite.itemModified.x = new Date().getTime();
+         }
+         
+         Favorite.itemModified.y = value;
+         Favorite.update( Favorite.itemModified );      
+       });
 
        // Freitext
        DOM("favTextareaId").on("input", function( data )
@@ -819,40 +829,26 @@ var Favorite = {
          Favorite.update( Favorite.itemModified );
        });
        
-       DOM("freiTextNeuId").on("touch", function( data )
+       // Actions
+       Favorite.eingabe.find(".blue").on("touch", function() { Favorite.saveItemModified(); });
+       Favorite.eingabe.find(".red").on("touch", function() { Favorite.deleteItem(); });
+       Favorite.eingabe.find(".grey").on("touch", function() { Favorite.cancelItemModified();});
+
+       Favorite.freitext.find(".lightgrey").on("touch", function( data )
        {
          Favorite.itemModified = Object.create( Favorite.item );         
          Favorite.itemModified.y = "";
          Favorite.itemModified.x = new Date().getTime();
          
          Favorite.update( Favorite.itemModified );
-       });
-       
-       DOM("freiTextSaveId").on("touch", function( data )
-       {
-         var html = Favorite.itemModified.y.replace(/\n/g,"<br>");
-         App.model.setData("acts", [ { id:Favorite.itemModified.id, x:Favorite.itemModified.x+"", y:html} ], ["id","x"] );
-         
-         Favorite.content.hide();
-         Favorite.container.swipe("right");
-         App.dispatch(App.FAVORITES);
-       });
-       
-       DOM("freiTextCancelId").on("touch", function( data )
-       {
-         Favorite.itemModified = null;
-         Favorite.update(Favorite.item);
-       });
-       
-       DOM("freiTextDeleteId").on("touch", function( data )
-       {
-         console.log("TODO DELETE freitext");
-       });
+       });      
+       Favorite.freitext.find(".blue").on("touch", function() { Favorite.saveItemModified(); });
+       Favorite.freitext.find(".red").on("touch", function() { Favorite.deleteItem(); });
+       Favorite.freitext.find(".grey").on("touch", function() { Favorite.cancelItemModified(); });
      });
      
      App.on( App.FAVORITE, function(data) 
      {
-
        if( data )
        {
          // Coming from Favorites or Symptom
@@ -869,17 +865,6 @@ var Favorite = {
        })
      });
    },
-   
-   //INIT
-   init:function() 
-   {
-     this.test();
-     this.bind();
-     
-     this.container.show();
-     this.content.invisible();
-   }
-   ,
 /**
  * _term: "10013963 SYMPTOM "
     back: "FAVORITES"
@@ -898,86 +883,150 @@ var Favorite = {
    {
      if( data )
      {
-       DOM("fieldsetTipp").hide();
+       this.content.find(".favActions").hide();
+       this.freitext.hide();
+       this.eingabe.hide();
+       this.tipp.hide();
        
+       if( Favorite.itemModified ) {
+         this.content.findAll(".blue").show();
+         this.content.findAll(".grey").show();
+         this.content.findAll(".red").hide();    
+         this.content.findAll(".favActions").show();
+       } 
+       else if( data.y != "" )
+       {  
+         this.content.findAll(".blue").hide();
+         this.content.findAll(".grey").hide();
+         this.content.findAll(".red").show();
+         this.content.findAll(".favActions").show();
+       }
+
        if(data.kategorie == "Notizen") 
        {
-         this.eingabe.hide();
-
-         DOM("zeitArea").setDatetime( data.x );
-         DOM("favTextareaId").set("value", data.y.replace(/<br>/g, "\n") );
-         ( data.y ) ? DOM("freiTextNeuId").show() : DOM("freiTextNeuId").hide();
-         ( Favorite.itemModified ) ? DOM("freiTextSaveId").show() : DOM("freiTextSaveId").hide();
-         ( Favorite.itemModified ) ? DOM("freiTextDeleteId").hide() : DOM("freiTextDeleteId").show();
-         ( Favorite.itemModified ) ? DOM("freiTextCancelId").show() : DOM("freiTextCancelId").hide();
          this.freitext.show();
+
+         this.freitext.find("legend").html( data.kategorie );
+         this.freitext.find(".favTitle").html( data.title );
+         DOM("zeitArea").setDatetime( data.x );
+         DOM("favTextareaId").set("value", (data.y) ? data.y.replace(/<br>/g, "\n") : "" );
+                 
        }
        else
        {
-         this.freitext.hide();
+         // FOR WIDTH
+         this.eingabe.show();   
 
+         this.eingabe.find("legend").html( data.kategorie );
+         DOM("favGradId").html("");
+         this.eingabe.find(".favTitle").html( data.title );
          DOM("zeitArea").setDatetime( data.x );
          DOM("favOutputId").text( ( data.y || data.zero ) + " " + data.unit);
          DOM("sliderArea").setSlider(data.y || data.zero );
-         ( Favorite.itemModified || !data.y) ? DOM("eingabeDeleteId").hide() : DOM("eingabeDeleteId").show();
-         ( Favorite.itemModified ) ? DOM("eingabeSaveId").show() : DOM("eingabeSaveId").hide();
-         ( Favorite.itemModified ) ? DOM("eingabeCancelId").show() : DOM("eingabeCancelId").hide();         
 
-         for( var i = 0; i < data.grad.length; i++) 
-         {
-           var grad = data.grad[i];
-           var y = Math.floor( data.y );
-  
-           if( y >= grad.min && y <= grad.max )
-           {
-             DOM("favGradId").html("<b>Definition:</b> "+grad.info);
-             
-             if( grad.tipps )
-             {
-               var search = grad.tipps.split(",").map( function(element) 
-               {  
-                 return { id:element };
-               });
-               
-               var tipps = App.model.getData("lexikon").has("id", search).clone();
-               
-               var rows = DOM("fieldsetTipp").find(".listeNext").removeChilds();
-
-               for( var j = 0; j < tipps.length; j++)
-               {
-                 var tipp = tipps[j];
-//                 
-//                 rows.addRow( 
-//                 {
-//                   title:tipps[i].title,
-//                   zeit:tipps[i].kategorie,
-//                   caretLeft:false,
-//                   caretRight:true,
-//                   value:"",
-//                   farbe:"",
-//                   data:tipps[i]
-//                   //detail:"Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen." 
-//                 })
-//                 .on("touch", function( data ) 
-//                 {    
-//                   Favorite.content.hide();
-//                   Favorite.container.swipe("left");
-//
-//                   App.dispatch(App.TIPPS,  JSON.parse( data.element.getAttribute("data") ) );
-//                 }, { watch:"LI"});
-//                 
-               }
-             }
-           }
-         }
-         
-         this.eingabe.show();
+         this.showDefinition( data );
        }
-
+     }    
+     this.content.show();
+   }
+   ,
+   deleteItem:function()
+   {
+     var acts = App.model.getData("acts");
+     var item = Favorite.item;
+     
+     for( var i = 0; i < acts.length; i++)
+     {
+       if( acts[i].id == item.id && acts[i].x == item.x)
+       {
+         App.model.setData("deleted", [ acts[i] ]);
+         acts.splice(i,1);
+       }
      }
      
-     this.content.show();
+     this.goBack();
+   }
+   ,
+   cancelItemModified:function()
+   {
+     Favorite.itemModified = null;
+     Favorite.update(Favorite.item);
+   }
+   ,
+   saveItemModified:function()
+   {
+     var item = Favorite.itemModified;
      
+     var act = {
+        id:item.id+"",
+        x:item.x+"",    
+        y:(item.kategorie == "Notizen") ? item.y.replace(/\n/g,"<br>") : item.y
+     };
+     
+     App.model.setData("acts", [ act ], ["id","x"] );
+
+     Favorite.goBack();
+   }
+   ,
+   showDefinition:function(data)
+   {
+     if( !data.grad ) return;
+     
+     for( var i = 0; i < data.grad.length; i++) 
+     {
+       var grad = data.grad[i];
+       var y = Math.floor( data.y );
+       
+       if( y >= grad.min && y <= grad.max )
+       {
+         DOM("favGradId").html("<b>Definition:</b> "+grad.info);
+         
+         this.showTipps(grad);
+       }
+     }
+   }
+   ,
+   showTipps:function(grad)
+   {    
+       if( !grad.tipps ) return;
+       
+       var search = grad.tipps.split(",").map( function(ele) { return { id:ele }; });
+       
+       var tipps = App.model.getData("lexikon").has("id", search).clone();
+       
+       var rows = DOM("fieldsetTipp").find(".listeNext").removeChilds();
+             
+       rows.on("touch", function( data ) 
+       {    
+         Favorite.content.hide();
+         Favorite.container.swipe("left");
+         
+         App.dispatch(App.TIPPS,  JSON.parse( data.element.getAttribute("data") ) );
+       }, 
+       { watch:"LI"} );
+             
+       for( var j = 0; j < tipps.length; j++)
+       {
+         var tipp = tipps[j];
+         
+         rows.addRow( 
+         {
+           title:tipps[j].title,
+           zeit:tipps[j].kategorie,
+           caretLeft:false,
+           caretRight:true,
+           data:tipps[j]
+         });               
+       }
+       
+       DOM("fieldsetTipp").show();
+   }
+   ,
+   goBack:function()
+   {
+     Favorite.content.hide();
+     App.dispatch( Favorite.BACK );
+     Favorite.container.swipe("right");     
    }
  };
 
@@ -1050,8 +1099,7 @@ var Tipps = {
        
        for( var info in baustein )
        {
-         display.add("p").add("div").html("<i>"+info+"</i>").addNext("div").html( baustein[info]);    
-         display.add("hr");
+         display.add("p").add("div").html("<i>"+info+"</i>").addNext("div").html( baustein[info]).addClass("borderTop");    
        }
      }
      
