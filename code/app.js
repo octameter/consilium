@@ -37,50 +37,47 @@ var App = {
     for (var i = 0; i < this.events[type].length; i++){
       this.events[type][i]( data );
     } 
-  }
-  ,
+  },
+  
   events: {},
   
   // Events
-  READY: "READY",
-  HOME: "HOME",
-  OPTIONEN: "OPTIONEN",
-  FAVORITES: "FAVORITES",
-  FAVORITE: "FAVORITE",
-  SYMPTOME: "SYMPTOME",
-  TIPPS: "TIPPS",
+  READY:      "READY",
+  HOME:       "HOME",
+  OPTIONEN:   "OPTIONEN",
+  FAVORITES:  "FAVORITES",
+  EINGABE:    "EINGABE",
+  SYMPTOME:   "SYMPTOME",
+  TIPPS:      "TIPPS",
   
   // MODEL
-  model:new Model()
-  ,
+  model: new Model(),
+  
   // VIEWS
-  views:function() 
-  {
+  views: function(){
     Konto.init();
     Optionen.init();
     Home.init();
     Favorites.init();    
     Symptome.init();
-    Favorite.init();
+    Eingabe.init();
     Tipps.init();
-
   },
+  
   // BINDING 
-  bind:function() 
-  {
-    DOM(window).on("ready", function(data) {
-
+  bind: function(){
+    DOM(window).on("ready", function(data){
       DOM("app").show();
-      
-      App.dispatch( App.READY );
+      App.dispatch(App.READY);
     });
   },
+  
   // ENVIROMENT
-  initialize: function( domain ) 
-  {
+  initialize: function(domain){
+  //
     
-    if(!App.live) console.log( "- DOMAIN "+domain);
-    if(!App.live && !DOM) console.log( "- MODULE DOM required");
+    if (!App.live) console.log( "- DOMAIN "+domain);
+    if (!App.live && !DOM) console.log( "- MODULE DOM required");
     
     this.device = DOM().device();
     
@@ -262,10 +259,10 @@ var Home = {
 // VIEW
     
   //DOMELEMENTS
-  container:DOM("homeId"),
-  gotoOptionen:DOM("addOptionen"),
-  gotoFavorites:DOM("addEingabe"),
-  content:DOM("homeContentId")
+  container:      DOM("homeId"),
+  gotoOptionen:   DOM("addOptionen"),
+  gotoFavorites:  DOM("addEingabe"),
+  content:        DOM("homeContentId")
   ,
   //INIT
   init:function() 
@@ -501,7 +498,7 @@ var Home = {
           var item = event;
           item.back = App.HOME;
           
-          App.dispatch( App.FAVORITE, item );
+          App.dispatch( App.EINGABE, item );
          }
          ,{ watch:"LI" } );
       } 
@@ -545,118 +542,124 @@ var Favorites = {
 // VIEW
     
   //DOMELEMENTS
-  container:DOM("favoritesId"),
-  gotoHome:DOM("favoritesBackButton"),
-  gotoSymptome:DOM("favoritesEditButton"),
-  content:DOM("favoritesContentId"),
-  form:DOM("favFormId"),
-  BACK:App.HOME,
+  container:    DOM("favoritesId"),
+  gotoHome:     DOM("favoritesBackButton"),
+  gotoSymptome: DOM("favoritesEditButton"),
+  content:      DOM("favoritesContentId"),
+  form:         DOM("favFormId"),
+  BACK:         App.HOME,
   
   // TEST
-  test:function() 
-  {
-    if(!App.live) console.log( "- VIEW Favorites");
-    if(!App.live && !App.FAVORITES) console.log( "Missing: App.FAVORITES");
+  test: function(){
+    if (!App.live) console.log( "- VIEW Favorites");
+    if (!App.live && !App.FAVORITES) console.log( "Missing: App.FAVORITES");
   },
   
   // BINDING
-  bind:function() 
-  {       
-    this.gotoHome.on("touch", function() {      
+  bind: function(){       
+    this.gotoHome.on("touch", function(){      
       Favorites.content.hide();
-      App.dispatch( App.HOME );
+      App.dispatch( App.HOME ); // Favorites.BACK ???
       Favorites.container.swipe("right");
     });     
     
-    this.gotoSymptome.on("touch", function() {    
-      console.log("TODO Delete Symptome view")
-      // DELETE ROWS
+    this.gotoSymptome.on("touch", function(){    
+      Favorites.update(true);
+      Favorites.gotoSymptome.text("back");
     });     
     
-    App.on( App.FAVORITES, function( data ) {
+    App.on( App.FAVORITES, function( data ){
 
       data = data || {};
-      
       Favorites.BACK = data.back || App.HOME;
-      
       Favorites.update();
       
-      Favorites.container.swipe("middle").on("stage", function() 
-      {
+      Favorites.container.swipe("middle").on("stage", function(){
         Favorites.content.show();
-      })
+      });
     });
     
-    App.on( App.READY, function () {
+    App.on( App.READY, function(){
       //Favorites.update(); 
     });
   },
   
   //INIT
-  init:function() 
-  {
+  init: function(){
     this.test();
     this.bind();  
     
     this.container.show();
     this.content.hide();
-  }
-  ,
-  update:function()
-  {
+  },
+  
+  update: function(edit){
+    
     Favorites.form.removeChilds();
     
-    var lexiFav = App.model.getData("lexikon").has("id", App.model.getData("favorites") ); 
+    // TODO review
+    // var lexiFav = App.model.getData("lexikon").has("id", App.model.getData("favorites") );
 
+    var data = App.model.getData("lexikon").merge("id", App.model.getData("favorites") );
+    var lexiFav = data.has("id", App.model.getData("favorites") );
+    
     // EACH FAVORIT GETS FIELDSET
-    for (var kategorie in lexiFav.unique("kategorie") )
-    {           
-      var legend = Favorites.form.add("fieldset").add("legend").text( kategorie );    
+    for (var kategorie in lexiFav.unique("kategorie")){
+      var legend = Favorites.form.add("fieldset").add("legend").text(kategorie);
       var rows = legend.addNext("ul").addClass("listeNext");
-      var entities = lexiFav.has( "kategorie", [ { "kategorie":kategorie} ] );
-     
-      rows.on("touch", function(data) 
-      { 
+      var entities = lexiFav.has("kategorie", [{ "kategorie": kategorie}] );
+      var editables = entities.has("edit", [{ edit: true }] );
+
+      if (!edit) rows.on("touch", function(data){
         // TODO Bubbling
-        var item = JSON.parse( data.element.getAttribute("data") );
+        var item = JSON.parse(data.element.getAttribute("data"));
         
-        if( item ) 
-        {
+        if (item){
           Favorites.content.hide();
           item.back = App.FAVORITES;
           Favorites.container.swipe("left");
-          
-          (item.id == "Symptom") ? 
-          App.dispatch( App.SYMPTOME, item ) : App.dispatch( App.FAVORITE, item );              
+         
+          App.dispatch((item.id == "Symptom" ? App.SYMPTOME : App.EINGABE), item);
         }
-      }
-      , { watch:"LI" } );
+      }, { watch: "LI" });
       
-      for (var i = 0; i < entities.length; i++)
-      {        
+      for (var i = 0; i < entities.length; i++){
           var params = {};
           params.title = entities[i].title;
-          params.farbe = entities[i].farbwert;
-          params.value = "&nbsp;";
-          params.caretRight = true;
-          params.data = entities[i];
-                
-          var acts = App.model.getData("acts").has("id", [{ id: entities[i].id }] );
           
-          if( acts.length > 0 ) 
-          {
-            var last = acts.sort123("x").clone().pop();
+          if (edit){
+            var editableItem = editables.has("id", [{ id: entities[i].id }] );
 
-            if( /^\d+$/.test(last.y))
-            params.value = last.y + " " + entities[i].unit;
-               
-            params.zeit = "Zuletzt: "+util.zeit("dd.mm.yyyy hh:mm", Math.floor( last.x ) ); 
+            if (editableItem.length > 0){
+              params.callback = function(){
+                console.log("TODO: DELETE", this.id);
+              }.bind({
+                id: entities[i].id
+              });
+            }
             
-            params.data.x = last.x;
-            params.data.y = last.y;
+            rows.addRemovableRow(params);
+            
+          } else {
+            
+            params.farbe = entities[i].farbwert;
+            params.caretRight = true;
+            params.data = entities[i];
+            params.value = "&nbsp;";
+            
+            var acts = App.model.getData("acts").has("id", [{ id: entities[i].id }] );
+            
+            if (acts.length > 0){
+              var last = acts.sort123("x").clone().pop();
+              if (/^\d+$/.test(last.y)) params.value = last.y + " " + entities[i].unit;
+              
+              params.zeit = "Zuletzt: " + util.zeit("dd.mm.yyyy hh:mm", Math.floor(last.x)); 
+              params.data.x = last.x;
+              params.data.y = last.y;
+            }
+            rows.addRow(params);
+            
           }
-        
-          rows.addRow( params );
       }
     }
   }
@@ -676,7 +679,7 @@ var Symptome = {
   test:function() 
   {
     if(!App.live) console.log( "- VIEW Symptome");
-    if(!App.live && !App.FAVORITE) console.log( "Missing: App.FAVORITE");
+    if(!App.live && !App.EINGABE) console.log( "Missing: App.EINGABE");
     if(!App.live && !App.SYMPTOME) console.log( "Missing: App.SYMPTOME");
   },
   
@@ -725,7 +728,7 @@ var Symptome = {
         Symptome.container.swipe("left");
         App.model.setData("favorites", [ { id:item.id, edit:true } ]);
         item.back = App.SYMPTOME;
-        App.dispatch( App.FAVORITE,  item );
+        App.dispatch( App.EINGABE,  item );
       }
     }
     , {watch:"LI"});
@@ -743,25 +746,25 @@ var Symptome = {
   }
 };
 
-var Favorite = {
+var Eingabe = {
  // VIEW
     
    //DOMELEMENTS
-   container:DOM("favoriteId"),
-   goBackButton:DOM("favoriteBackId"),
-   gotoSymptome:DOM("favoriteEditId"),
-   content:DOM("favoriteContentId"),
-   eingabe:DOM("strukturierteEingabe"),
-   freitext:DOM("freiText"),
-   tipp:DOM("fieldsetTipp")
+   container:     DOM("favoriteId"),
+   goBackButton:  DOM("favoriteBackId"),
+   // gotoSymptome:DOM("favoriteEditId"),
+   content:       DOM("favoriteContentId"),
+   eingabe:       DOM("strukturierteEingabe"),
+   freitext:      DOM("freiText"),
+   tipp:          DOM("fieldsetTipp")
    ,
    //VARIABLES
-   BACK:App.HOME,
-   item:null,
-   itemModified:null
+   BACK: App.HOME,
+   item: null,
+   itemModified: null
    ,
    //INIT
-   init:function() 
+   init: function() 
    {
      this.test();
      this.bind();
@@ -771,94 +774,87 @@ var Favorite = {
    }
    ,
    // TEST
-   test:function() 
+   test: function() 
    {
-     if(!App.live) console.log( "- VIEW Favorite");
-     if(!App.live && !App.FAVORITES) console.log( "Missing: App.FAVORITES");
-     if(!App.live && !App.FAVORITE) console.log( "Missing: App.FAVORITE");
-     if(!App.live && !App.SYMPTOME) console.log( "Missing: App.SYMPTOME");
+     if (!App.live) console.log( "- VIEW EINGABE");
+     if (!App.live && !App.FAVORITES) console.log( "Missing: App.FAVORITES");
+     if (!App.live && !App.EINGABE) console.log( "Missing: App.EINGABE");
+     if (!App.live && !App.SYMPTOME) console.log( "Missing: App.SYMPTOME");
    },
    
    // BINDING
-   bind:function() 
+   bind: function() 
    {       
       this.goBackButton.on("touch", function() {      
-       Favorite.goBack();
+        Eingabe.goBack();
      });  
      
-     this.gotoSymptome.on("touch", function() {
+/*     this.gotoSymptome.on("touch", function() {
        App.dispatch( App.SYMPTOME );
-       Favorite.container.swipe("left");
-     });
+       Eingabe.container.swipe("left");
+     });*/
      
-     App.on( App.READY, function(data) 
-     {
-       
-       // Zeit
-       DOM("zeitArea").addDatetime( function( value ) 
-       { 
-         Favorite.itemModified = Favorite.itemModified || Object.create( Favorite.item );   
-         Favorite.itemModified.x = value;
+     App.on( App.READY, function(data){
+     
+       DOM("zeitArea").addDatetime( function( value ){
+         // Zeit
+         Eingabe.itemModified = Eingabe.itemModified || Object.create( Eingabe.item );   
+         Eingabe.itemModified.x = value;
          
-         Favorite.update( Favorite.itemModified ); 
+         Eingabe.update( Eingabe.itemModified ); 
        });
        
        // Strukurierte Eingabe
        DOM("sliderArea").addSlider( function( value ) 
        { 
-         if( !Favorite.itemModified )
-         {
-           Favorite.itemModified = Object.create( Favorite.item );
-           Favorite.itemModified.x = new Date().getTime();
+         if (!Eingabe.itemModified){
+           Eingabe.itemModified = Object.create( Eingabe.item );
+           Eingabe.itemModified.x = new Date().getTime();
          }
          
-         Favorite.itemModified.y = value;
-         Favorite.update( Favorite.itemModified );      
+         Eingabe.itemModified.y = value;
+         Eingabe.update( Eingabe.itemModified );      
        });
 
        // Freitext
-       DOM("favTextareaId").on("input", function( data )
-       {
-         Favorite.itemModified = Favorite.itemModified || Object.create( Favorite.item );      
-         Favorite.itemModified.y = data.value;
-         Favorite.itemModified.x = new Date().getTime();
+       DOM("favTextareaId").on("input", function(data){
+         Eingabe.itemModified = Eingabe.itemModified || Object.create( Eingabe.item );      
+         Eingabe.itemModified.y = data.value;
+         Eingabe.itemModified.x = new Date().getTime();
          
-         Favorite.update( Favorite.itemModified );
+         Eingabe.update( Eingabe.itemModified );
        });
        
        // Actions
-       Favorite.eingabe.find(".blue").on("touch", function() { Favorite.saveItemModified(); });
-       Favorite.eingabe.find(".red").on("touch", function() { Favorite.deleteItem(); });
-       Favorite.eingabe.find(".grey").on("touch", function() { Favorite.cancelItemModified();});
+       Eingabe.eingabe.find(".blue").on("touch", function() { Eingabe.saveItemModified(); }); // TODO directly assign Eingabe.method
+       Eingabe.eingabe.find(".red").on("touch", function() { Eingabe.deleteItem(); });
+       Eingabe.eingabe.find(".grey").on("touch", function() { Eingabe.cancelItemModified();});
 
-       Favorite.freitext.find(".lightgrey").on("touch", function( data )
-       {
-         Favorite.itemModified = Object.create( Favorite.item );         
-         Favorite.itemModified.y = "";
-         Favorite.itemModified.x = new Date().getTime();
+       Eingabe.freitext.find(".lightgrey").on("touch", function( data ){
+         Eingabe.itemModified = Object.create( Eingabe.item );         
+         Eingabe.itemModified.y = "";
+         Eingabe.itemModified.x = new Date().getTime();
          
-         Favorite.update( Favorite.itemModified );
+         Eingabe.update( Eingabe.itemModified );
        });      
-       Favorite.freitext.find(".blue").on("touch", function() { Favorite.saveItemModified(); });
-       Favorite.freitext.find(".red").on("touch", function() { Favorite.deleteItem(); });
-       Favorite.freitext.find(".grey").on("touch", function() { Favorite.cancelItemModified(); });
+       Eingabe.freitext.find(".blue").on("touch", function() { Eingabe.saveItemModified(); });
+       Eingabe.freitext.find(".red").on("touch", function() { Eingabe.deleteItem(); });
+       Eingabe.freitext.find(".grey").on("touch", function() { Eingabe.cancelItemModified(); });
      });
      
-     App.on( App.FAVORITE, function(data) 
-     {
-       if( data )
-       {
-         // Coming from Favorites or Symptom
-         Favorite.BACK = data.back || App.HOME;
+     App.on( App.EINGABE, function(data){
+     //
+       if (data){
+       // Coming from Favorites or Symptom
          
-         Favorite.item = data;
-         Favorite.itemModified = null;         
+         Eingabe.BACK = data.back || App.HOME;
+         Eingabe.item = data;
+         Eingabe.itemModified = null;         
        }
        // no data from Tipps
        
-       Favorite.container.swipe("middle").on("stage", function() 
-       {
-         Favorite.update( Favorite.itemModified || Favorite.item );
+       Eingabe.container.swipe("middle").on("stage", function(){
+         Eingabe.update( Eingabe.itemModified || Eingabe.item );
        })
      });
    },
@@ -876,22 +872,21 @@ var Favorite = {
     y: "20"
     zero: 0
  */
-   update:function(data)
-   {
-     if( data )
-     {
+   update:function(data){
+   //
+     if (data){
        this.content.find(".favActions").hide();
        this.freitext.hide();
        this.eingabe.hide();
        this.tipp.hide();
        
-       if( Favorite.itemModified ) {
+       if (Eingabe.itemModified){
          this.content.findAll(".blue").show();
          this.content.findAll(".grey").show();
          this.content.findAll(".red").hide();    
          this.content.findAll(".favActions").show();
        } 
-       else if( data.y != "" )
+       else if ( data.y != "" )
        {  
          this.content.findAll(".blue").hide();
          this.content.findAll(".grey").hide();
@@ -899,8 +894,7 @@ var Favorite = {
          this.content.findAll(".favActions").show();
        }
 
-       if(data.kategorie == "Notizen") 
-       {
+       if(data.kategorie == "Notizen"){
          this.freitext.show();
 
          this.freitext.find("legend").html( data.kategorie );
@@ -929,7 +923,7 @@ var Favorite = {
    deleteItem:function()
    {
      var acts = App.model.getData("acts");
-     var item = Favorite.item;
+     var item = Eingabe.item;
      
      for( var i = 0; i < acts.length; i++)
      {
@@ -945,27 +939,27 @@ var Favorite = {
    ,
    cancelItemModified:function()
    {
-     Favorite.itemModified = null;
-     Favorite.update(Favorite.item);
+     Eingabe.itemModified = null;
+     Eingabe.update(Eingabe.item);
    }
    ,
    saveItemModified:function()
    {
-     var item = Favorite.itemModified;
+     var item = Eingabe.itemModified;
      
      var act = {
-        id:item.id+"",
-        x:item.x+"",    
-        y:(item.kategorie == "Notizen") ? item.y.replace(/\n/g,"<br>") : item.y
+        id: item.id+"",
+        x: item.x+"",    
+        y: (item.kategorie == "Notizen") ? item.y.replace(/\n/g,"<br>") : item.y
      };
      
      App.model.setData("acts", [ act ], ["id","x"] );
 
-     Favorite.goBack();
-   }
-   ,
-   showDefinition:function(data)
-   {
+     Eingabe.goBack();
+   },
+   
+   showDefinition: function(data){
+   //
      if( !data.grad ) return;
      
      for( var i = 0; i < data.grad.length; i++) 
@@ -975,86 +969,82 @@ var Favorite = {
        
        if( y >= grad.min && y <= grad.max )
        {
-         DOM("favGradId").html("<b>Definition:</b> "+grad.info);
+         DOM("favGradId").html("<b>Definition:</b> " + grad.info);
          
          this.showTipps(grad);
        }
      }
-   }
-   ,
-   showTipps:function(grad)
-   {    
-       if( !grad.tipps ) return;
+   },
+   
+   showTipps: function(grad){
+   //
+       if (!grad.tipps) return;
        
-       var search = grad.tipps.split(",").map( function(ele) { return { id:ele }; });
+       var search = grad.tipps.split(",").map( function(ele) { return { id: ele }; });
        
        var tipps = App.model.getData("lexikon").has("id", search).clone();
        
        var rows = DOM("fieldsetTipp").find(".listeNext").removeChilds();
              
-       rows.on("touch", function( data ) 
-       {    
+       rows.on("touch", function(data){    
          var tipp = JSON.parse( data.element.getAttribute("data") );
          
-         if( tipp )
-         {
-            Favorite.content.hide();
-            Favorite.container.swipe("left");
-            App.dispatch(App.TIPPS, tipp );
+         if (tipp){
+            Eingabe.content.hide();
+            Eingabe.container.swipe("left");
+            App.dispatch(App.TIPPS, tipp);
          }
        }, 
-       { watch:"LI"} );
+       { watch: "LI"} );
              
-       for( var j = 0; j < tipps.length; j++)
-       {
+       for (var j = 0; j < tipps.length; j++){
          var tipp = tipps[j];
          
-         rows.addRow( 
-         {
-           title:tipps[j].title,
-           zeit:tipps[j].kategorie,
-           caretLeft:false,
-           caretRight:true,
-           data:tipps[j]
+         rows.addRow({
+           title: tipps[j].title,
+           zeit: tipps[j].kategorie,
+           caretLeft: false,
+           caretRight: true,
+           data: tipps[j]
          });               
        }
        
        DOM("fieldsetTipp").show();
+   },
+   
+   goBack: function(){
+     Eingabe.content.hide();
+     App.dispatch(Eingabe.BACK);
+     Eingabe.container.swipe("right");     
    }
-   ,
-   goBack:function()
-   {
-     Favorite.content.hide();
-     App.dispatch( Favorite.BACK );
-     Favorite.container.swipe("right");     
-   }
- };
+   
+};
 
 
 var Tipps = {
  // VIEW
     
    //DOMELEMENTS
-   container:DOM("tippId"),
-   gotoFavorite:DOM("tippBackButton"),
-   content:DOM("tippContentId"),
+   container:   DOM("tippId"),
+   gotoEingabe: DOM("tippBackButton"),
+   content:     DOM("tippContentId"),
    
    // TEST
    test:function() 
    {
-     if(!App.live) console.log( "- VIEW Tipps");
-     if(!App.live && !App.FAVORITE) console.log( "Missing: App.FAVORITE");
-     if(!App.live && !App.TIPPS) console.log( "Missing: App.TIPPS");
+     if (!App.live) console.log( "- VIEW Tipps");
+     if (!App.live && !App.EINGABE) console.log( "Missing: App.EINGABE");
+     if (!App.live && !App.TIPPS) console.log( "Missing: App.TIPPS");
    },
    
    // BINDING
    bind:function() 
    {       
-     this.gotoFavorite.on("touch", function() {      
+     this.gotoEingabe.on("touch", function() {      
        
        Tipps.content.hide();
        
-       App.dispatch( App.FAVORITE );
+       App.dispatch(App.EINGABE);
        Tipps.container.swipe("right");
      });     
      

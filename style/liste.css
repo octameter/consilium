@@ -1,88 +1,112 @@
   /* LISTE Next */
 .listeNext {
-	position:relative;
-	margin:0;
-	padding:0;
+	position: relative;
+	margin: 0;
+	padding: 0;
 }
 
-.listeNext > li{
- 	position:relative;
-  padding:2px;
-	list-style:none;
-	text-align:left;
-	cursor:pointer;
-  overflow-y:hidden;
-  overflow-x:hidden;
-	border-bottom:1px solid #DCDCDC; 
-	border-top:1px solid #FFF; 
+.listeNext > li {
+ 	position: relative;
+  padding: 2px;
+	list-style: none;
+	text-align: left;
+	cursor: pointer;
+  overflow-y: hidden;
+  overflow-x: hidden;
+	border-bottom: 1px solid #DCDCDC; 
+	border-top: 1px solid #FFF; 
 }
 .listeNext > li:first-child {
-    border-top:none;   
+    border-top: none;   
 }
 
-.listeNext > li:last-child{
-	border-bottom:none; 
+.listeNext > li:last-child {
+	border-bottom: none; 
 }
 
 .listeNext > li.selected {
-	background:rgba(100,150,200,0.6);
+	background: rgba(100,150,200,0.6);
 }
  
 /**
  * ROW
 **/
 .row {
-  position:relative;
-  width:100%;
-  min-height:20px;
-  cursor:pointer;
-  padding:8px;
+  position: relative;
+  width: 100%;
+  min-height: 20px;
+  cursor: pointer;
+  padding: 8px;
 }
 
 .row_caretLeft {
-  position:absolute;
-  top:0px; bottom:0px; left:-5px;
-  margin:auto;
-  width:18px; 
-  height:18px;
+  position: absolute;
+  top: 0px; bottom: 0px; left: -5px;
+  margin: auto;
+  width: 18px; 
+  height: 18px;
 }
 
 .row_title { 
-  position:relative;
-  padding-right:80px; 
-  padding-left:5px;
+  position: relative;
+  padding-right: 80px; 
+  padding-left: 5px;
 }
 
 .row_value {
-  font-size:110%;
-  position:absolute;
-  text-align:right;
-  top:0px; bottom:0px; right:30px;
-  margin:auto;
-  min-width:20px;
-  height:22px;
-  padding:6px;
-  border-radius:4px;
-  color:white;
+  font-size: 110%;
+  position: absolute;
+  text-align: right;
+  top: 0px; bottom: 0px; right: 30px;
+  margin: auto;
+  min-width: 20px;
+  height: 22px;
+  padding: 6px;
+  border-radius: 4px;
+  color: white;
 }
 
 .row_detail {
-  margin:0px;
-  padding:0px;
+  margin: 0px;
+  padding: 0px;
 }
 
-/*  .row_detail:not(:empty) */
+.row_delete {
+	background: red;
+  position: absolute;
+  text-align: right;
+  top: 0px; bottom: 0px; right: 30px;
+  margin: auto;
+  min-width: 20px;
+  height: 18px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  color: white;
+  
+  border: 1px solid #df0909;
+  text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
+  background-color: #f62b2b;
+  background-image: linear-gradient(to bottom, #f62b2b, #d20202);
+}
+
+.row_delete:hover {
+	border: 1px solid #b30808;
+	background-color: #e40a0a;
+	background-image: linear-gradient(to bottom, #e40a0a, #9f0202);
+}
+
+/*  .row_detail: not(: empty) */
 
 .row_detail:not(:empty) {
-  border-top:1px solid rgba(200,200,200,1);
-  padding:5px; 
-  margin:5px;
+  border-top: 1px solid rgba(200,200,200,1);
+  padding: 5px; 
+  margin: 5px;
 }
 
 .row_caretRight {
-  position:absolute;
-  top:0px; bottom:0px; right:12px;
-  margin:auto;
-  width:18px; 
-  height:18px;
+  position: absolute;
+  top: 0px; bottom: 0px; right: 12px;
+  margin: auto;
+  width: 18px; 
+  height: 18px;
 }
