@@ -43,16 +43,34 @@
              <a class="button-action floatLeft" style="position:absolute;top:6px;right:2px;">Sync</a>
            </div>
          </fieldset>
-         
-         <fieldset id="optionenAnmeldung">
-          <legend>Anmeldung</legend>
-          <div>
-            <h3 id="optionenVerbindenStatus"></h3>
-            <a id="optionenVerbindenBtn" class="button-action">Verbinden</a>
-          </div>
-         </fieldset>
-         
-       </form>
+
+				<fieldset id="optionenAnmeldung" class="login">
+					<legend>Anmeldung</legend>
+
+					<div class=grid>
+
+						<div class=col6>
+							<label>
+							 Benutzername
+							 <input type="text" name="username" placeholder="Name">
+							</label>
+							<label>
+							 Passwort
+							 <input type="password" name="userpwd">
+							</label>
+							<input type="reset" value="Zurücksetzen" class="button-action grey">
+							<input type="submit" value="Anmelden" class="button-action blue">
+						</div>
+
+						<div class=col6>
+							<p>Infos</p>
+						</div>
+
+					</div>
+
+				</fieldset>
+
+			</form>
       </section>
     </article>
 	
