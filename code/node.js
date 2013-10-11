@@ -61,6 +61,7 @@ var Node = {
       });
     });
   }
+  ,
   getActor:function( params, callback )
   {
     if( window.device )
@@ -70,7 +71,10 @@ var Node = {
     }
     else
     {
-      Node.sso.postMessage({request: "ACTOR_GET"}, "*")
+      Node.sso.postMessage({request: "ACTOR_GET"}, "*");
+      DOM(window).on("msg", function( data ) {  
+        if( data.request == "ACTOR_GET") callback( data ); 
+      });
     }   
   }
   ,
