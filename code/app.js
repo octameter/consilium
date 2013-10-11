@@ -39,8 +39,10 @@ var App = {
     } 
   }
   ,
-  events: {},
-  
+  events: {}
+  ,
+  container:DOM("app")
+  ,
   // Events
   READY: "READY",
   HOME: "HOME",
@@ -56,7 +58,6 @@ var App = {
   // VIEWS
   views:function() 
   {
-    Konto.init();
     Optionen.init();
     Home.init();
     Favorites.init();    
@@ -77,30 +78,14 @@ var App = {
   },
   // ENVIROMENT
   initialize: function( domain ) 
-  {
-    
-    if(!App.live) console.log( "- DOMAIN "+domain);
-    if(!App.live && !DOM) console.log( "- MODULE DOM required");
+  {  
+    if(!DOM) console.log( "- MODULE DOM required");
     
     this.device = DOM().device();
     
-    if( document.domain == domain || window.device) 
-    {
-      console.log("Live");
-      this.domain = domain;
-      document.domain = "epha.ch";
-      this.live = true;
-    }
-    else 
-    {
-      console.log("Testing");
-      this.domain = document.domain = document.domain;
-      this.live = false;  
-    }
+    App.live = Node.init( domain );
     
-    if(!App.live && !new Node) console.log( "- MODULE Node required");
-    this.node = ( this.live ) ? new Node( "https://node.epha.ch" ) : new Node( "http://"+this.domain+":8080" );
-    this.konto = ( this.live ) ? "http://konto.epha.ch" : "http://"+this.domain+":8888/konto"; 
+    (App.live) ? console.log("- Node Server Live") : console.log( "- Node Server Local");
     
     this.model.setData("lexikon", Entities.Symptome, ["id","kategorie"] );
     this.model.setData("lexikon", Entities.Bewertung, ["id","kategorie"] );
@@ -132,79 +117,6 @@ var App = {
       { id:"privat", x:"1380745392804", y:"Ein guter Tag<br>morgen" }
     ], ["id","x"]);
   }
-};
-
-/**
- * VIEW KONTO
- */
-var Konto = {
-    
-    // DOMELEMENTS
-    body:DOM("app"),
-    container: DOM( "xauth" )
-    ,
-    remote:null
-    ,
-    // TEST
-    test:function() 
-    {
-      if(!App.live) console.log( "- VIEW Konto");
-      if(!App.live && !App.konto) console.log( "Missing App.konto");           
-    }
-    ,
-    // INIT
-    init: function() 
-    {    
-      this.test();
-      
-      this.container.hide();
-      
-      App.on( App.READY, function() 
-      {
-        // WEB mit KONTO
-        if( App.device == "desktop") 
-        {
-          Konto.body.style("margin-top", "42px");
-          
-          DOM(window).on("msg", function( data) {  Konto.response(data); });
-          
-          // FIRST QUERY
-          Konto.remote = Konto.container.konto( App.konto ).on( "load", function(data) 
-          {
-            Konto.container.show();        
-            
-          }).get("contentWindow");        
-        }
-        // PHONEGAP 
-        else if( window.device )
-        {
-          //IPHONE 7 FIX STATUSBAR
-          if( 
-              window.device.phonegap == "3.0.0" && 
-              window.device.platform == "iPhone" && 
-              parseFloat(window.device.version) === 7.0 
-            )
-          {
-            Konto.body.style("margin-top", "20px");
-            Konto.container.hide();               
-          }
-        }
-        else {
-          Konto.body.style("top", "0px");
-        }
-      });
-    }
-    ,
-    // FUNCTION
-    request: function( data ) 
-    {
-      if( data.request == "REDIRECT") Konto.remote.postMessage( { request:"REDIRECT", target:data.target }, "*"); 
-    }
-    ,
-    response: function(data) 
-    {
-      if( data.request == "REDIRECT") location.replace(data.target);    
-    }
 };
 
 /**
