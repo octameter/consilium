@@ -57,7 +57,7 @@
   font-size: 110%;
   position: absolute;
   text-align: right;
-  top: 0px; bottom: 0px; right: 30px;
+  top: 0; bottom: 0; right: 30px;
   margin: auto;
   min-width: 20px;
   height: 22px;
@@ -72,30 +72,18 @@
 }
 
 .row_delete {
-	background: red;
   position: absolute;
   text-align: right;
-  top: 0px; bottom: 0px; right: 30px;
+  top: 0; bottom: 0; right: 30px;
   margin: auto;
   min-width: 20px;
   height: 18px;
   padding: 6px 10px;
   border-radius: 4px;
-  color: white;
-  
-  border: 1px solid #df0909;
-  text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
-  background-color: #f62b2b;
-  background-image: linear-gradient(to bottom, #f62b2b, #d20202);
 }
 
-.row_delete:hover {
-	border: 1px solid #b30808;
-	background-color: #e40a0a;
-	background-image: linear-gradient(to bottom, #e40a0a, #9f0202);
-}
 
-/*  .row_detail: not(: empty) */
+/*  .row_detail:not(:empty) */
 
 .row_detail:not(:empty) {
   border-top: 1px solid rgba(200,200,200,1);

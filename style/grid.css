@@ -1,0 +1,33 @@
+.grid {
+  margin-right: -15px;
+  margin-left: -15px;
+}
+
+.grid > .col4,
+.grid > .col6,
+.grid > .col8,
+.grid > .col12 {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  float: left;
+  padding: 0 15px;
+}
+
+.grid > .col4 { width: 33.3333%; }
+.grid > .col6 { width: 50%; }
+.grid > .col8 { width: 66.6666%; }
+.grid > .col12 { width: 100%; }
+
+.grid:after,
+.grid:before {
+  display: table;
+  content: "";
+}
+
+.grid:after {
+  clear: both;
+}
+
+.grid {
+  zoom: 1;
+}
