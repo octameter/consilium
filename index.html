@@ -41,16 +41,34 @@
              <a class="button-action floatLeft" style="position:absolute;top:6px;right:2px;">Sync</a>
            </div>
          </fieldset>
-         
-         <fieldset id="optionenAnmeldung">
-          <legend>Anmeldung</legend>
-          <div>
-            <h3 id="optionenVerbindenStatus"></h3>
-            <a id="optionenVerbindenBtn" class="button-action">Verbinden</a>
-          </div>
-         </fieldset>
-         
-       </form>
+
+				<fieldset id="optionenAnmeldung" class="login">
+					<legend>Anmeldung</legend>
+
+					<div class=grid>
+
+						<div class=col6>
+							<label>
+							 Benutzername
+							 <input type="text" name="username" placeholder="Name">
+							</label>
+							<label>
+							 Passwort
+							 <input type="password" name="userpwd">
+							</label>
+							<input type="reset" value="Zurücksetzen" class="button-action grey">
+							<input type="submit" value="Anmelden" class="button-action blue">
+						</div>
+
+						<div class=col6>
+							<p>Infos</p>
+						</div>
+
+					</div>
+
+				</fieldset>
+
+			</form>
       </section>
     </article>
 	
@@ -118,24 +136,24 @@
       </section>
     </article>
 	   
-		<!-- FAVORITE --> 
-		<article id="favoriteId" class="view right">
+		<!-- EINGABE --> 
+		<article id="eingabeId" class="view right">
 		
 			<header>
-				<button id="favoriteBackId" class="button-text colorless">
+				<button id="eingabeBackId" class="button-text colorless">
 				  Zurück
 				</button>
 				<span>Eingabe</span>
-				<button id="favoriteEditId" class="button-text colorless" style="display:none">
+				<button id="eingabeEditId" class="button-text colorless" style="display:none">
 				  Löschen
 				</button>
 			</header>
 			
-			<section id="favoriteContentId">
+			<section id="eingabeContentId">
 			
-			 <form id="favitFormId">
+			 <form>
 			 
-			   <fieldset id="favitZeitId">
+			   <fieldset>
 			     <legend>Zeitpunkt</legend>
 			     
 			     <!-- DOModule datetime -->
@@ -146,9 +164,9 @@
 			   <fieldset id="strukturierteEingabe">
 			     <legend>ENTITY_KATEGORIE</legend>
 			     
-			     <div id="favArea">
+			     <div>
 			       <span class="favTitle">ENTITY_TITLE</span>
-			       <p id="favitZeitLabel" style="width:100%;font-size:90%;margin:1px">&nbsp;</p>
+			       <p style="width:100%;font-size:90%;margin:1px">&nbsp;</p>
 			       
 			       <span id="favOutputId" style="position:absolute; top:10px; right:2px; font-size:110%">100Pkte</span>
 			       
@@ -167,30 +185,30 @@
 			   
 			   <fieldset id="freiText">
 			     <legend>ENTITY_KATEGORIE</legend>
-			     <div id="favArea">
+			     <div>
 			       <span class="favTitle">ENTITY_TITLE</span>
-			       <p id="favitZeitLabel" style="width:100%;font-size:90%;margin:1px">&nbsp;</p>
+			       <p style="width:100%;font-size:90%;margin:1px">&nbsp;</p>
 
              <div style="position:relative; font-size:100%;width:100%; height:200px;">
               <div style="position:absolute; top:0px; right:7px; left:0px; bottom:10px;">
 				       <textarea id="favTextareaId" style="position:relative;width:100%;height:100%;font-size:100%; outline:none; -webkit-user-select: text;" name="notizEintrag" placeholder="Text eingeben"></textarea>              
               </div>
-           </div>
+             </div>
                 
-                 <div class="favActions">
-                   <a class="button-action blue floatLeft">Erstellen</a>
-                   <a class="button-action lightgrey floatLeft">Neuer Text</a>
-                   <a class="button-action grey floatRight">Abbrechen</a>
-                   <a class="button-action red floatRight">Löschen</a>
-                 </div>
-               </div>
-             </fieldset>
+             <div class="favActions">
+               <a class="button-action blue floatLeft">Erstellen</a>
+               <a class="button-action lightgrey floatLeft">Neuer Text</a>
+               <a class="button-action grey floatRight">Abbrechen</a>
+               <a class="button-action red floatRight">Löschen</a>
+             </div>
+           </div>
+         </fieldset>
              
-            <fieldset id="fieldsetTipp">
-              <legend>Empfehlungen</legend>
-              <ul class="listeNext"></ul>
-            </fieldset>
-           
+         <fieldset id="fieldsetTipp">
+           <legend>Empfehlungen</legend>
+           <ul class="listeNext"></ul>
+         </fieldset>
+
           </form>
         </section>
       </article>
@@ -233,5 +251,6 @@
           window.location = "error.html#oldbrowser";		
         }
       </script>
+
 	</body>
 </html>

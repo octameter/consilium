@@ -82,15 +82,37 @@ Array.prototype.has = function( property, array )
 {
   return this.filter( function(element) 
   {
-      var flag = false;
+      var flag = false; // delete
       
       for(var i = 0; i < array.length; i++)
       {
-        if( element[property] == array[i][property]) flag = true;
+        // should be === ?
+        if( element[property] == array[i][property]) flag = true; // return true;
       }
       
-      return flag;
+      return flag; // return false;
    });
+};
+
+Array.prototype.merge = function( key, array ){
+  
+  for( var i = 0; i < this.length; i++)
+  {
+    for(var j = 0; j < array.length; j++)
+    {
+      if( this[i][key] == array[j][key]) {
+        
+        for( var property in array[j] )
+        {
+          if( array[j].hasOwnProperty( property) && property != key)
+          {
+            this[i][property] = array[j][property];
+          }
+        }
+      }
+    }
+  }
+  return this;
 };
 
 Array.prototype.clone = function()

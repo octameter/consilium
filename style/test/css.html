@@ -8,9 +8,14 @@ html, textarea, input, select, button {
   font: 500 16px/22px "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+body {
+  background: #f0f0f0;
+  margin: 0;
+}
+
 /* Grid */
 
-.row {
+.grid {
   margin-right: -15px;
   margin-left: -15px;
 }
@@ -21,31 +26,33 @@ html, textarea, input, select, button {
   float: left;
   padding: 0 15px;
 }
+
 .col4 { width: 33.3333%; }
 .col6 { width: 50%; }
 .col8 { width: 66.6666%; }
 .col12 { width: 100%; }
 
-.row:after,
-.row:before,
+.grid:after,
+.grid:before,
 .clearfix:after,
 .clearfix:before {
   display: table;
   content: "";
 }
 
-.row:after,
+.grid:after,
 .clearfix:after {
   clear: both;
 }
 
-.row, .clearfix {
+.grid, .clearfix {
   zoom: 1;
 }
 
 /* Forms */
 
 form {
+  background: #fff;
   margin: 30px auto;
   width: 700px;
 }
@@ -80,7 +87,9 @@ legend {
 label {
   cursor: pointer;
   display: block;
-  margin-bottom: 15px;
+  font-size: 13px;
+  line-height: 17px;
+  margin-bottom: 10px;
 }
 
 label.inline {
@@ -148,12 +157,12 @@ input[disabled] {
 input:invalid,
 select:invalid,
 textarea:invalid { 
-  border: 1px solid #d33;
-  -webkit-box-shadow: 0 0 5px #d00;
-  -moz-box-shadow: 0 0 5px #d00;
-  -ms-box-shadow: 0 0 5px #d00;
-  -o-box-shadow: 0 0 5px #d00;
-  box-shadow: 0 0 5px #d33;
+  border: 1px solid #c55;
+  -webkit-box-shadow: 0 0 5px #c55;
+  -moz-box-shadow: 0 0 5px #c55;
+  -ms-box-shadow: 0 0 5px #c55;
+  -o-box-shadow: 0 0 5px #c55;
+  box-shadow: 0 0 5px #c55;
 }
 
 input:required:valid,
@@ -238,35 +247,49 @@ input[type=reset] {
   background: #d9d9d9;
 }
 
+[class^=col] > input[type=submit],
+[class^=col] > input[type=reset] {
+  width: 100%;
+}
+
 </style>
 
-<div class=row>
-  <div class=col12>
-    <div style="background: #eee">
-      full
-    </div>
-  </div>
-</div>
-<div class=row>
-  <div class=col6>
-    <div style="background: #eee">
-  50%
-    </div>
-  </div>
-  <div class=col6>
-    <div style="background: #eee">
-  50%
-    </div>
-  </div>
-</div>
+<h1>Forms</h1>
 
-<form id=patientenfilm action="/batch" method="POST" >
+<form>
+  <fieldset>
+    <legend>Login</legend>
+    
+    <label>
+      Username
+      <input type=text name=username>
+    </label>
+    
+    <label>
+      Password
+      <input type=password name=userpwd>
+    </label>
+    
+    <div class=grid>
+      <div class=col6>
+        <input type=reset value="Zurücksetzen">
+      </div>
+      <div class=col6>
+        <input type=submit value="Anmelden">
+      </div>
+    </div>
+    
+  </fieldset>
+</form>
+
+
+<form action="/batch" method="POST" >
 
   <input type=hidden name=domain value="batch:msd">
   <input type=hidden name=likes value="msd/janumet">
 
    
-  <div class=row>
+  <div class=grid>
     <div class=col8>
       <fieldset>
        <legend>Patientenfilm</legend>
@@ -334,3 +357,28 @@ input[type=reset] {
  
   </fieldset>
 </form>
+
+<h1>Grid</h1>
+
+
+<div class=grid>
+  <div class=col12>
+    <div style="background: #fff">
+      full
+    </div>
+  </div>
+</div>
+<div class=grid>
+  <div class=col6>
+    <div style="background: #fff">
+  50%
+    </div>
+  </div>
+  <div class=col6>
+    <div style="background: #fff">
+  50%
+    </div>
+  </div>
+</div>
+
+
