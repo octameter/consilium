@@ -15,12 +15,10 @@ var Node = {
       this.live = false;  
     }
     
-    this.navi();
-    
     return this.live;
   }
   ,
-  navi:function() {
+  navigation:function() {
   
     if( window.device ) {
       //IPHONE 7 FIX STATUSBAR
@@ -31,14 +29,17 @@ var Node = {
         )
         {
           DOM(document).find("body").style("margin-top", "20px");  
-        }    
+        }
+      
+      this.getActor();
+      
     }else 
     { 
-      this.createNavi(); 
+      this.createNavigation(); 
     }
   }
   ,
-  createNavi:function() {
+  createNavigation:function() {
          
     var first = DOM(document).find("body").find("article");
     
@@ -59,23 +60,48 @@ var Node = {
       DOM(window).on("msg", function( data) {  
         if( data.request == "REDIRECT") location.replace(data.target); 
       });
+      
+      Node.getActor();
     });
   }
   ,
-  getActor:function( params, callback )
+  getActor:function()
   {
     if( window.device )
     {
       var result = JSON.parse( localStorage.getItem("device_actor") );
-      callback( result );
+      
+      console.log( result );
+      //this.getActs( data.id );
     }
     else
     {
       Node.sso.postMessage({request: "ACTOR_GET"}, "*");
       DOM(window).on("msg", function( data ) {  
-        if( data.request == "ACTOR_GET") callback( data ); 
+        if( data.request == "ACTOR_GET") {
+          
+          ( data.actor ) ? ; 
+        };
+        // TODO 
       });
     }   
+  }
+  ,
+  getActs:function( callback )
+  {
+    if( window.device )
+    {
+        var acts = localStorage.getItem("device_acts");
+        callback( acts );
+    }
+    else
+    {
+      this.listActsForAntagonistId( antagonistId, since, function( data ) 
+      {
+        if( data.status == 200 ) callback( data.message );
+        else callback();
+      }); 
+    }  
   }
   ,
   setActor:function( params, callback )
@@ -108,10 +134,10 @@ var Node = {
 	this.query("PUT", uri, success, error, data );		
   }
   ,
-  listActsForAntagonistId: function( antagonistId, since, success, error){
+  listActsForAntagonistId: function( antagonistId, since, callback ){
 	var uri = "/acts/antagonistId/" + antagonistId;
 	uri += ( since ) ? "?since="+since : "";
-	this.query( "GET", uri, success, error);
+	this.query( "GET", uri, callback);
   }
   ,
   createAct: function( act, success, error ){

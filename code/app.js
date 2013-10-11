@@ -81,6 +81,8 @@ var App = {
     
     App.live = Node.init( domain );
     
+    Node.navigation();
+    
     (App.live) ? console.log("- Node Server Live") : console.log( "- Node Server Local");
     
     this.model.setData("lexikon", Entities.Symptome, ["id","kategorie"] );
@@ -93,6 +95,22 @@ var App = {
     this.bind();
     
     console.log("setting data");
+    // TODO
+    Node.getActor(function(data) {
+      
+      // Favorites
+      console.log( data );
+      
+      if( data.status == 200 )
+      {
+        App.model.setData("favorites", data.message );
+        
+        Node.getActs( data.id, function( data ) {
+          App.model.setData("acts", data );
+        });
+      }
+    });
+    
     // DEV
     App.model.setData("favorites",
     [
