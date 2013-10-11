@@ -750,44 +750,45 @@ var Eingabe = {
  // VIEW
     
    //DOMELEMENTS
-   container:     DOM("favoriteId"),
-   goBackButton:  DOM("favoriteBackId"),
+   container:     DOM("eingabeId"),
+   goBackButton:  DOM("eingabeBackId"),
    // gotoSymptome:DOM("favoriteEditId"),
-   content:       DOM("favoriteContentId"),
+   content:       DOM("eingabeContentId"),
    eingabe:       DOM("strukturierteEingabe"),
    freitext:      DOM("freiText"),
-   tipp:          DOM("fieldsetTipp")
-   ,
+   tipp:          DOM("fieldsetTipp"),
+
    //VARIABLES
    BACK: App.HOME,
    item: null,
-   itemModified: null
-   ,
+   itemModified: null,
+   
    //INIT
-   init: function() 
-   {
+   init: function(){
+
      this.test();
      this.bind();
      
      this.container.show();
      this.content.invisible();
-   }
-   ,
+   },
+   
    // TEST
-   test: function() 
-   {
+   test: function(){
+     
      if (!App.live) console.log( "- VIEW EINGABE");
      if (!App.live && !App.FAVORITES) console.log( "Missing: App.FAVORITES");
      if (!App.live && !App.EINGABE) console.log( "Missing: App.EINGABE");
      if (!App.live && !App.SYMPTOME) console.log( "Missing: App.SYMPTOME");
+     
    },
    
    // BINDING
-   bind: function() 
-   {       
-      this.goBackButton.on("touch", function() {      
+   bind: function(){
+     
+      this.goBackButton.on("touch", function(){
         Eingabe.goBack();
-     });  
+      });
      
 /*     this.gotoSymptome.on("touch", function() {
        App.dispatch( App.SYMPTOME );
@@ -805,8 +806,8 @@ var Eingabe = {
        });
        
        // Strukurierte Eingabe
-       DOM("sliderArea").addSlider( function( value ) 
-       { 
+       DOM("sliderArea").addSlider( function(value){
+         
          if (!Eingabe.itemModified){
            Eingabe.itemModified = Object.create( Eingabe.item );
            Eingabe.itemModified.x = new Date().getTime();
@@ -858,6 +859,7 @@ var Eingabe = {
        })
      });
    },
+   
 /**
  * _term: "10013963 SYMPTOM "
     back: "FAVORITES"
@@ -872,6 +874,7 @@ var Eingabe = {
     y: "20"
     zero: 0
  */
+   
    update:function(data){
    //
      if (data){
@@ -918,10 +921,11 @@ var Eingabe = {
        }
      }    
      this.content.show();
-   }
-   ,
-   deleteItem:function()
-   {
+   },
+   
+   deleteItem: function(){
+   //
+     
      var acts = App.model.getData("acts");
      var item = Eingabe.item;
      
@@ -935,16 +939,16 @@ var Eingabe = {
      }
      
      this.goBack();
-   }
-   ,
-   cancelItemModified:function()
-   {
+   },
+   
+   cancelItemModified: function(){
+   //
      Eingabe.itemModified = null;
      Eingabe.update(Eingabe.item);
-   }
-   ,
-   saveItemModified:function()
-   {
+   },
+   
+   saveItemModified: function(){
+   //
      var item = Eingabe.itemModified;
      
      var act = {
