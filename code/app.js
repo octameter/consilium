@@ -93,12 +93,9 @@ var App = {
     
     this.views();
     this.bind();
-    
-    console.log("setting data");
-    // TODO
 
-    
     // DEV
+    console.log("Setting DUMMY data");
     App.model.setData("favorites",
     [
        {id : "10025482"},
@@ -107,8 +104,6 @@ var App = {
        {id : "10013963", "edit":true},
        {id : "privat"}  
     ]);
-    
-    // DEV
     App.model.setData("acts",
     [
       { id:"10025482", x:"1380725392804", y:"80" },
@@ -219,9 +214,12 @@ var Home = {
     
     App.on( App.READY, function() 
     {       
+      if( !window.device ) DOM("titleId").hide();
+      
       Home.chart.init();
       Home.form.init();
     
+      // KEIN TITLE
       Home.update();    
     });
   }
@@ -298,7 +296,7 @@ var Home = {
       );
       
       this.board.on("touch", function(data) {
-        Home.form.update( data.dataTransfer );
+        Home.form.update( data.transfer );
       });
       
       // Fast ganz nach Rechts     
