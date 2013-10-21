@@ -243,12 +243,12 @@
       <script src="code/dom3.js"></script>		
       <script>     
         if ("addEventListener" in window) {
-        // INIT
+          // INIT
           App.initialize("consilium.epha.ch");
         }
         else {
-        // ABORT
-          window.location = "error.html#oldbrowser";		
+          // ABORT
+          DOM( document.body ).error("oldbrowser");	
         }
       </script>
 

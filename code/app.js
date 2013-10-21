@@ -28,12 +28,17 @@
 var App = {  
     
   // CONTROLLER
-  on: function(type, call) {
+  on: function(type, call) 
+  {
     if (!(type in this.events)) this.events[type] = [call];
     else (this.events[type].indexOf( call ) != -1 ) ?  console.log( "Function exists") : this.events[type].push( call);
   },
-  off: function( type, call ) {  this.events[type].splice( this.events[type].indexOf( call), 1); },
-  dispatch: function(type, data) {
+  off: function( type, call ) 
+  {  
+    this.events[type].splice( this.events[type].indexOf( call), 1); 
+  },
+  dispatch: function(type, data) 
+  {
     for (var i = 0; i < this.events[type].length; i++){
       this.events[type][i]( data );
     } 
@@ -54,8 +59,8 @@ var App = {
   model: new Model(),
   
   // VIEWS
-  views:function() { 
-
+  views:function() 
+  { 
     Optionen.init();
     Home.init();
     Favorites.init();    
