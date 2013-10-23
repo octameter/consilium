@@ -26,26 +26,7 @@
  */
 
 var App = {  
-    
-  // CONTROLLER
-  on: function(type, call) 
-  {
-    if (!(type in this.events)) this.events[type] = [call];
-    else (this.events[type].indexOf( call ) != -1 ) ?  console.log( "Function exists") : this.events[type].push( call);
-  },
-  off: function( type, call ) 
-  {  
-    this.events[type].splice( this.events[type].indexOf( call), 1); 
-  },
-  dispatch: function(type, data) 
-  {
-    for (var i = 0; i < this.events[type].length; i++){
-      this.events[type][i]( data );
-    } 
-  }
-  ,
-  events: {}
-  ,
+  
   // Events
   READY:      "READY",
   HOME:       "HOME",
@@ -81,6 +62,8 @@ var App = {
   initialize: function( domain ) 
   {  
     if(!DOM) console.log( "- MODULE DOM required");
+    
+    control(this);
     
     this.device = DOM().device();
     
@@ -529,9 +512,11 @@ var Favorites = {
       var entities = lexiFav.has("kategorie", [{ "kategorie": kategorie}] );
       var editables = entities.has("edit", [{ edit: true }] );
 
-      if (!edit) rows.on("touch", function(data){
+      if (!edit) rows.on("touch", function(event){
+        
+        console.log(event);
         // TODO Bubbling
-        var item = JSON.parse(data.element.getAttribute("data"));
+        var item = JSON.parse(event.target.getAttribute("data"));
         
         if (item){
           Favorites.content.hide();

@@ -189,6 +189,16 @@ Array.prototype.changeItem = function( key, property, value )
     return done;
 };
 
+Array.prototype.firstById = function( id ) 
+{
+  for( var i = 0; i < this.length; i++ )
+  {
+    if( this[i].id == id ) { this.unshift( this.splice( i, 1 )[0] ); break; }
+  }
+
+  return this;
+} 
+
 /**
  * PERSISTENT STORAGE
  */
