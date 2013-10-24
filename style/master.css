@@ -24,7 +24,7 @@
    -webkit-box-shadow: none;
 }
 
-
+/*
 html, body {
 	position: absolute;
 	top: 0;
@@ -37,7 +37,7 @@ html, body {
 	border: none;
 	font-family: 'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
 }
-
+*/
 html {
   background: #4c6173;
 }
