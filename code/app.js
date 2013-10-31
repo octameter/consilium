@@ -40,7 +40,7 @@ var App = {
   model: new Model(),
   
   // VIEWS
-  views:function() 
+  views: function() 
   { 
     Optionen.init();
     Home.init();
@@ -63,7 +63,7 @@ var App = {
   {  
     if(!DOM) console.log( "- MODULE DOM required");
     
-    control(this);
+    eventify(this);
     
     this.device = DOM().device();
     
