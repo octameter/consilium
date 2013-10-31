@@ -1,0 +1,210 @@
+@import "view.css";
+@import "toggle.css";
+@import "spinner.css";
+@import "liste.css";
+@import "button.css";
+@import "form.css";
+@import "slider.css";
+@import "datetime.css";
+@import "grid.css";
+
+* {
+   -webkit-touch-callout: none;                
+ /* prevent callout to copy image, etc when tap to hold */
+   -webkit-text-size-adjust: none;             
+ /* prevent webkit from resizing text to fit */
+   -webkit-tap-highlight-color: rgba(0,0,0,0); 
+ /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+   -webkit-user-select: none;                  
+ /* prevent copy paste, to allow, change 'none' to 'text' */
+
+   text-shadow: none;
+   box-shadow: none;
+   -moz-box-shadow: none;
+   -webkit-box-shadow: none;
+}
+
+/*
+html, body {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 100%;
+	overflow: hidden;
+	padding: 0;
+	margin: 0;
+	border: none;
+	font-family: 'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
+}
+*/
+html {
+  background: #4c6173;
+}
+
+body {
+  background-color: #FAFAFA;
+}
+
+
+/* portrait */
+@media screen and (orientation:portrait) {
+	/* portrait-specific styles */
+	
+}
+/* landscape iPhone */
+/* http://www.stephentgilbert.com/mediaqueries/#iPhone */
+@media screen and (orientation:landscape)
+and (min-device-width : 320px) 
+and (max-device-width : 568px) {
+	/* landscape-specific styles */
+	.disappear {
+		display:none;
+	}
+	.disappear + article {
+		top: 0 !important;
+	}
+}
+
+.floatLeft {
+	float:left;	
+}
+.floatRight {
+	float:right;
+}
+
+/* VIEW FAVORITEN */
+.favActions, .borderTop {
+  border-top: 1px solid rgba(200,200,200,1);
+  padding-top: 5px; 
+  margin-top: 5px;
+}
+
+.favTitle {
+	width: 100%; 
+	padding-right: 80px;
+	font-weight: bold;
+}
+
+/* CHART */     
+.chart {
+	position: relative;
+	height: 300px;
+	min-height: 320px;
+	max-height: 320px;
+	/* background:rgba(115,165,215,1); */
+	/* background:rgba( 147,171,191,1); */
+	background: rgba( 155,180,200,1);
+	width: 100%;
+}
+
+/* SCROLLER */
+.scrollableX {
+	margin-left: 4%;
+	margin-right: 3%;
+ 	overflow-x: scroll; 
+	overflow-y: hidden;
+ }
+ 
+.overlay {
+	position: absolute;
+	top: 0; left: 0;
+	width: 100%;
+ }
+ 
+.block {
+  position: relative;
+  text-align: center;
+  margin: 20px;
+  height: 260px;
+}
+ 
+.block:before {
+  content: '';
+  display: inline-block;
+  height: 100%; 
+  vertical-align: middle;
+  margin-right: -0.25em; /* Adjusts for spacing */
+ }
+ 
+.centered {
+	display: inline-block;
+	vertical-align: middle;
+	width: 80%;
+	padding: 10px 15px;
+
+ 	font-size: 120%;
+ 	color: white;
+ 	border: 2px solid white;
+ 	background: rgba(100,100,100,0.5);
+
+	transform: scale(0);
+	-webkit-transform: scale(0);
+
+	-webkit-transition: all 0.3s linear;
+	-moz-transition: all 0.3s linear;
+	-ms-transition: all 0.3s linear;
+	-o-transition: all 0.3s linear;
+	transition: all 0.3s linear;
+}
+ 
+.zoomIn {
+	transform: scale(1);
+	-webkit-transform: scale(1);
+}
+
+
+.scrollableY {
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;	
+}
+
+/* Position the div wrapper as relative with overflow hidden and a specific width and height. */
+/* Use position absolute on the inner div (the div you want to move */
+
+/* TEXTBAUSTEINE */
+.intro {
+	margin: 4% 6%;
+	border-radius: 12px;
+	border: 1px solid #CCCCCC;  
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 30px;
+
+	background-color: #F5F5F5;
+	background-image: -webkit-linear-gradient(#FAFAFA, #F5F5F5); 
+	background-image:    -moz-linear-gradient( #FAFAFA, #F5F5F5);
+	background-image:     -ms-linear-gradient( #FAFAFA, #F5F5F5);
+	background-image:      -o-linear-gradient( #FAFAFA, #F5F5F5);
+	background-image:         linear-gradient( #FAFAFA, #F5F5F5);
+}
+
+.movePoint {
+    cursor: pointer;
+}
+
+.popupPoint {
+    cursor: pointer;
+}
+
+/* Assets */
+.big {
+	position: absolute;
+	top: 100px;
+	left: 40%;
+	width: 100px;
+	height: 100px;
+	z-Index: 10;	
+	cursor: pointer;
+}
+
+.blur {
+  display: block;
+  -webkit-filter: blur(1px);
+  -moz-filter: blur(1px);
+  -o-filter: blur(1px);
+  -ms-filter: blur(1px);
+  filter: blur(1px);
+  opacity: 0.95;
+}
+
