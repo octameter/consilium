@@ -25,10 +25,81 @@
   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.          
  */
 
-var App = {  
+var App = {
   
-  // Events
-  READY:      "READY",
+  // ENVIROMENT
+  initialize: function(domain){  
+    if (!DOM) console.log( "- MODULE DOM required");
+    
+    kontify(this);
+    
+    Model.init();
+    
+    Controller.init();
+    
+    Optionen.init();
+    Home.init();
+    Favorites.init();
+    Symptome.init();
+    Eingabe.init();
+    Tipps.init();
+    
+    console.log("- Node Server " + (App.live ? "Live" : "Local"));
+    
+    Model.memory.set("lexikon", Entities.Symptome, ["id", "kategorie"])
+    Model.memory.set("lexikon", Entities.Symptome, ["id", "kategorie"]);
+    Model.memory.set("lexikon", Entities.Bewertung, ["id", "kategorie"]);
+    Model.memory.set("lexikon", Entities.Tagebuch, ["id", "kategorie"]);
+    Model.memory.set("lexikon", Entities.Device, ["id", "kategorie"]);
+    Model.memory.set("lexikon", Entities.Tipps, ["id", "kategorie"]);
+    
+    // DEV
+    console.log("Setting DUMMY data");
+    
+    Model.memory.set("favorites", [
+       { id: "10025482" },
+       { id: "Symptom" },
+       { id: "10047700", "edit": true },
+       { id: "10013963", "edit": true },
+       { id: "privat"}
+    ]);
+    
+    Model.memory.set("acts", [
+      { id: "10025482", x: "1380725392804", y: "80" },
+      { id: "10013963", x: "1380735392804", y: "20" },
+      { id: "10013963", x: "1380835392804", y: "50" },
+      { id: "10013963", x: "1380935392804", y: "70" },
+      { id: "privat", x: "1380745392804", y: "Ein guter Tag<br>morgen" }
+    ], ["id", "x"]);
+    
+    this.bind();
+  },
+  
+  bind: function(){
+    
+    Controller.on(Controller.SETUP, function(){
+      
+      // domain, node, origin, live
+      App.enviroment();
+      
+      // tv || tablet || mobile || desktop
+      App.device = DOM().device();
+
+      // UNTIL KONTO IS ONLINE
+      Controller.dispatch(Controller.START);
+      
+      App.signOn(function(data){
+        //Controller.dispatch(Controller.START);
+      });
+    });
+  }
+  
+};
+
+var Controller = {
+  
+  SETUP:      "SETUP",
+  START:      "START",
   HOME:       "HOME",
   OPTIONEN:   "OPTIONEN",
   FAVORITES:  "FAVORITES",
@@ -36,71 +107,28 @@ var App = {
   SYMPTOME:   "SYMPTOME",
   TIPPS:      "TIPPS",
   
-  // MODEL
-  model: new Model(),
-  
-  // VIEWS
-  views: function() 
-  { 
-    Optionen.init();
-    Home.init();
-    Favorites.init();    
-    Symptome.init();
-    Eingabe.init();
-    Tipps.init();
-  }
-  ,
-  // BINDING 
-  bind: function(){
-    DOM(window).on("ready", function(data){
-      DOM("app").show();
-      App.dispatch(App.READY);
-    });
-  }
-  ,
   // ENVIROMENT
-  initialize: function( domain ) 
-  {  
-    if(!DOM) console.log( "- MODULE DOM required");
-    
+  init: function(domain){
+    // AUGMENT
     eventify(this);
     
-    this.device = DOM().device();
-    
-    App.live = Node.init( domain );
-    
-    Node.navigation();
-    
-    (App.live) ? console.log("- Node Server Live") : console.log( "- Node Server Local");
-    
-    this.model.setData("lexikon", Entities.Symptome, ["id", "kategorie"] );
-    this.model.setData("lexikon", Entities.Bewertung, ["id", "kategorie"] );
-    this.model.setData("lexikon", Entities.Tagebuch, ["id", "kategorie"]);
-    this.model.setData("lexikon", Entities.Device, ["id", "kategorie"]);
-    this.model.setData("lexikon", Entities.Tipps, ["id", "kategorie"]);
-    
-    this.views();
     this.bind();
-
-    // DEV
-    console.log("Setting DUMMY data");
-    App.model.setData("favorites",
-    [
-       { id: "10025482" },
-       { id: "Symptom" },
-       { id: "10047700", "edit": true },
-       { id: "10013963", "edit": true },
-       { id: "privat"}  
-    ]);
-    App.model.setData("acts",
-    [
-      { id: "10025482", x: "1380725392804", y: "80" },
-      { id: "10013963", x: "1380735392804", y: "20" },
-      { id: "10013963", x: "1380835392804", y: "50" },
-      { id: "10013963", x: "1380935392804", y: "70" },
-      { id: "privat", x: "1380745392804", y: "Ein guter Tag<br>morgen" }
-    ], ["id", "x"]);
+  },
+  
+  bind: function(){
+    DOM(window).on("ready", function(){
+      Controller.dispatch(Controller.SETUP);
+    });
   }
+  
+};
+
+var Model = {
+
+  init: function(){
+    storify(this);
+  }
+  
 };
 
 /**
@@ -110,45 +138,40 @@ var Optionen = {
 // VIEW
     
   //DOMELEMENTS
-  container: DOM("optionenId"),
-  gotoHome: DOM("optionenBackButton"),
-  content: DOM("optionenContentId"),
+  container:  DOM("optionenId"),
+  gotoHome:   DOM("optionenBackButton"),
+  content:    DOM("optionenContentId"),
   
-  // TEST
-  test: function() 
-  {
+  test: function(){
     if (!App.live) console.log( "- VIEW Optionen");
-    if (!App.live && !App.HOME) console.log( "Missing: App.HOME");
+    if (!App.live && !Controller.HOME) console.log( "Missing: Controller.HOME");
   },
   
-  // BINDING
-  bind: function() 
-  {
-    this.gotoHome.on("touch", function() {      
-      App.dispatch( App.HOME );
+  bind: function(){
+    this.gotoHome.on("touch", function(){
+      Controller.dispatch(Controller.HOME);
       Optionen.content.hide();
-      Optionen.container.swipe( "left" );
+      Optionen.container.swipe("left");
     });
-    App.on( App.OPTIONEN, function() {  
-      Optionen.container.swipe("middle").on("stage", function() {
-      Optionen.content.show();
-    })
-  });
+    Controller.on(Controller.OPTIONEN, function(){  
+      Optionen.container.swipe("middle").on("stage", function(){
+        Optionen.content.show();
+      });
+    });
   },
   
-  //INIT
-  init: function() 
-  {
+  init: function(){
     this.test();
     this.bind();
     
     this.container.show();
     this.content.hide();
-  }
-  ,update:function()
-  {
+  },
+  
+  update: function(){
     
   }
+  
 };
 
 /**
@@ -161,47 +184,41 @@ var Home = {
   container:      DOM("homeId"),
   gotoOptionen:   DOM("addOptionen"),
   gotoFavorites:  DOM("addEingabe"),
-  content:        DOM("homeContentId")
-  ,
-  //INIT
-  init: function() 
-  {
+  content:        DOM("homeContentId"),
+  
+  init: function(){
     this.test();
     this.bind();  
     
     this.container.show();
     this.content.hide();
-  }
-  ,
-  // TEST
-  test: function() 
-  {
-    if(!App.live) console.log( "- VIEW Home");
-    if(!App.live && !App.OPTIONEN) console.log( "Missing: App.OPTIONEN");
-    if(!App.live && !App.FAVORITES) console.log( "Missing: App.FAVORITES");  
-  }
-  ,
-  // BINDING
-  bind: function() 
-  {    
-    this.gotoOptionen.on("touch", function() {
-      App.dispatch( App.OPTIONEN );
+  },
+  
+  test: function(){
+    if (!App.live) console.log( "- VIEW Home");
+    if (!App.live && !Controller.OPTIONEN) console.log( "Missing: Controller.OPTIONEN");
+    if (!App.live && !Controller.FAVORITES) console.log( "Missing: Controller.FAVORITES");  
+  },
+  
+  bind: function(){    
+    this.gotoOptionen.on("touch", function(){
+      Controller.dispatch(Controller.OPTIONEN );
       Home.content.hide();
       Home.container.swipe("right");
     });
-    this.gotoFavorites.on("touch", function() {      
-      App.dispatch( App.FAVORITES ); 
+    this.gotoFavorites.on("touch", function(){      
+      Controller.dispatch(Controller.FAVORITES); 
       Home.content.hide();
       Home.container.swipe("left"); 
     });
     
-    App.on( App.HOME, function() 
-    {     
-      Home.container.swipe("middle").on("stage", function() { Home.update(); });
+    Controller.on(Controller.HOME, function(){     
+      Home.container.swipe("middle").on("stage", function(){
+        Home.update();
+      });
     });
     
-    App.on( App.READY, function() 
-    {       
+    Controller.on(Controller.START, function(){
       if (!window.device) DOM("titleId").hide();
       
       Home.chart.init();
@@ -210,49 +227,49 @@ var Home = {
       // KEIN TITLE
       Home.update();    
     });
-  }
-  ,
+  },
+  
   // FUNCTIONS
-  update: function()
-  {
+  update: function(){
     this.content.show();
     
     this.chart.update();
     this.form.update();
-  }
-  ,
+  },
+  
   chart: {
     scroller: DOM("homeScrollerId"),
-    board: DOM("svgZeit")
-    ,
+    board:    DOM("svgZeit"),
+    
     xInMs: 1000000,
   	stepInMs: 86400000,
   	minInMs: 0,
-  	maxInMs: 0
-    ,
+  	maxInMs: 0,
+    
   	yInValue: 0.5,
   	stepInValue: 20,
   	minInValue: 0,
-  	maxInValue: 100
-    ,
-  	top: 40,
+  	maxInValue: 100,
+
+    top: 40,
   	right: 5,
   	left: 5,
-  	bottom: 30
-    ,
-    x: function( ms ) 
-    { return Math.floor( this.left + ( ms - this.minInMs ) / this.xInMs); }
-    ,
-    y: function( value ) 
-    { return Math.floor( this.top + ( value - this.minInValue ) / this.yInValue); }
-    ,
-    init: function() 
-    {        
+  	bottom: 30,
+    
+    x: function(ms){
+      return Math.floor( this.left + ( ms - this.minInMs ) / this.xInMs);
+    },
+    
+    y: function(value){
+      return Math.floor( this.top + ( value - this.minInValue ) / this.yInValue);
+    },
+    
+    init: function(){        
       this.board.removeChilds();
       
-      var range = App.model.getData("acts").sort123("x").clone();
+      var range = Model.memory.get("acts").sort123("x").clone();
       
-      var first = Math.floor( range.shift().x );      
+      var first = Math.floor( range.shift().x );
       var firstMin = new Date();
       if (first > firstMin.setDate(firstMin.getDate() - 30)) first = firstMin;
 
@@ -268,49 +285,44 @@ var Home = {
       this.board.attrib( "height", this.y( this.maxInValue ) + this.bottom );       
  
       // xMin, xMax, xStep, yMin, yMax, yStep, minInMs, xInMs
-      this.board.timeGrid
-      ( 
+      this.board.timeGrid( 
           this.x( this.minInMs ), this.x( this.maxInMs ), this.stepInMs / this.xInMs,
           this.y( this.minInValue ), this.y( this.maxInValue ), this.stepInValue / this.yInValue,
           this.minInMs, this.xInMs 
       );
       
       //xMin, xMax, xStep, y
-      this.board.timeLegend
-      ( 
+      this.board.timeLegend( 
           this.x( this.minInMs ), this.x( this.maxInMs ), 
           this.stepInMs / this.xInMs, this.y( 100 ),
           this.minInMs, this.xInMs 
       );
       
-      this.board.on("touch", function(data) {
+      this.board.on("touch", function(data){
         Home.form.update( data.transfer );
       });
       
       // Fast ganz nach Rechts     
-      var rechts = this.x( this.maxInMs - 86400000 );
+      var rechts = this.x(this.maxInMs - 86400000);
       Home.chart.scroll( rechts );         
-    }
-    ,
-    update: function() {
+    },
+    
+    update: function(){
       
       this.board.findAll(".movePoint").remove();
       
       // Symbole
-      for (var id in  App.model.getData("acts").unique("id"))
-      {
-        var howto = App.model.searchData("lexikon", id )[0];
+      for (var id in  Model.memory.get("acts").unique("id")){
+        var howto = Model.memory.search("lexikon", id)[0];
         
-        var acts = App.model.getData("acts").has("id", [ {id:id} ] ).sort123(); 
+        var acts = Model.memory.get("acts").has("id", [ {id: id} ] ).sort123(); 
         
         var todo = acts.length;
         
-        if (howto.kategorie == "Symptom" || howto.kategorie == "Bewertung")
-        {  
+        if (howto.kategorie == "Symptom" || howto.kategorie == "Bewertung"){  
           var prev = null;
           
-          while (todo--)
-          {
+          while (todo--){
             var act = acts.pop();
 
             this.board.drawSymptom( this.x( act.x ), this.y( 100 - act.y ), 17, howto.farbwert, act);
@@ -320,8 +332,8 @@ var Home = {
             this.board.drawConnect( this.x( act.x ), this.y( 100 - act.y ), this.x( prev.x), this.y(100- prev.y), 19, howto.farbwert );
 
             prev = Object.create( act );
-          }          
-        }        
+          }
+        }
         else if (howto.kategorie == "Notizen")
         {
            while( todo-- )
@@ -334,8 +346,8 @@ var Home = {
            }
         }  
       }
-    }
-    ,
+    },
+    
     // TIME
     scroll: function(to)
     {
@@ -345,26 +357,24 @@ var Home = {
       
       Home.chart.scroller.scrollTo("scrollLeft", strecke, 2000);
     }    
-  }
-  ,
+  },
+  
   form: {
 
-    fieldset: DOM("homeFieldsetAuswahl")
-    ,
-    init: function()
-    {  
+    fieldset: DOM("homeFieldsetAuswahl"),
 
-    }
-    ,
-    update: function( event ) 
-    {
+    init: function(){  
+
+    },
+    
+    update: function(event){
 
       this.fieldset.find("ul").off("touch");
       this.fieldset.find("ul").removeChilds();
 
       if (event)
       {
-        var howto = App.model.getData("lexikon").has("id", [{ id: event.id }] )[0];
+        var howto = Model.memory.get("lexikon").has("id", [{ id: event.id }] )[0];
         
         // Augment event
         event.zero = howto.zero;
@@ -381,8 +391,7 @@ var Home = {
         }
         else detail = event.y;
         
-        this.fieldset.find("ul").addRow( 
-        {
+        this.fieldset.find("ul").addRow({
           title: howto.title,
           zeit: "Am " + util.zeit("dd.mm.yyyy hh:mm", Math.floor( event.x )), 
           caretLeft: false,
@@ -392,41 +401,37 @@ var Home = {
           detail: detail
         });
         
-        this.fieldset.find("ul").on("touch", function(data) 
-        {    
+        this.fieldset.find("ul").on("touch", function(data){    
           Home.content.hide();
           Home.container.swipe("left");
           
           var item = event;
           item.back = App.HOME;
           
-          App.dispatch( App.EINGABE, item );
-         }
-         , { watch: "LI" } );
+          Controller.dispatch(Controller.EINGABE, item);
+         }, { watch: "LI" } );
       } 
       else
       {
-        var howto = App.model.getData("lexikon").has("id", [{ id: "Symptom" }] )[0];
+        var howto = Model.memory.get("lexikon").has("id", [{ id: "Symptom" }] )[0];
         
-        this.fieldset.find("ul").addRow( 
-        {
+        this.fieldset.find("ul").addRow({
           title: howto.title,
           caretLeft: false,
           caretRight: true,
           value: "",
-          farbe: "",
+          farbe: ""
           //detail:"Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen." 
         });
        
-        this.fieldset.find("ul").on("touch", function(data) 
-        {    
+        this.fieldset.find("ul").on("touch", function(data){    
           Home.content.hide();
           Home.container.swipe("left");
-          App.dispatch(App.SYMPTOME);
+          Controller.dispatch(Controller.SYMPTOME);
         });
       }
       
-      this.fieldset.legend( howto.kategorie );
+      this.fieldset.legend(howto.kategorie);
       
     }
     // SMALL SCREEN HAS OVERLAY IN TIMELINE
@@ -449,31 +454,31 @@ var Favorites = {
   gotoSymptome: DOM("favoritesEditButton"),
   content:      DOM("favoritesContentId"),
   form:         DOM("favFormId"),
-  BACK:         App.HOME,
+  BACK:         Controller.HOME,
   
   // TEST
   test: function(){
     if (!App.live) console.log( "- VIEW Favorites");
-    if (!App.live && !App.FAVORITES) console.log( "Missing: App.FAVORITES");
+    if (!App.live && !Controller.FAVORITES) console.log( "Missing: Controller.FAVORITES");
   },
   
   // BINDING
-  bind: function(){       
-    this.gotoHome.on("touch", function(){      
+  bind: function(){
+    this.gotoHome.on("touch", function(){
       Favorites.content.hide();
-      App.dispatch( App.HOME ); // Favorites.BACK ???
+      Controller.dispatch(Controller.HOME); // Favorites.BACK ???
       Favorites.container.swipe("right");
-    });     
+    });
     
-    this.gotoSymptome.on("touch", function(){    
+    this.gotoSymptome.on("touch", function(){
       Favorites.update(true);
       Favorites.gotoSymptome.text("back");
-    });     
+    });
     
-    App.on(App.FAVORITES, function( data ){
+    Controller.on(Controller.FAVORITES, function(data){
 
       data = data || {};
-      Favorites.BACK = data.back || App.HOME;
+      Favorites.BACK = data.back || Controller.HOME;
       Favorites.update();
       
       Favorites.container.swipe("middle").on("stage", function(){
@@ -481,15 +486,15 @@ var Favorites = {
       });
     });
     
-    App.on(App.READY, function(){
-      //Favorites.update(); 
+    Controller.on(Controller.START, function(){
+      //Favorites.update();
     });
   },
   
   //INIT
   init: function(){
     this.test();
-    this.bind();  
+    this.bind();
     
     this.container.show();
     this.content.hide();
@@ -500,10 +505,10 @@ var Favorites = {
     Favorites.form.removeChilds();
     
     // TODO review
-    // var lexiFav = App.model.getData("lexikon").has("id", App.model.getData("favorites") );
+    // var lexiFav = Model.memory.get("lexikon").has("id", Model.memory.get("favorites") );
 
-    var data = App.model.getData("lexikon").merge("id", App.model.getData("favorites") );
-    var lexiFav = data.has("id", App.model.getData("favorites") );
+    var data = Model.memory.get("lexikon").merge("id", Model.memory.get("favorites") );
+    var lexiFav = data.has("id", Model.memory.get("favorites") );
     
     // EACH FAVORIT GETS FIELDSET
     for (var kategorie in lexiFav.unique("kategorie")){
@@ -514,16 +519,15 @@ var Favorites = {
 
       if (!edit) rows.on("touch", function(event){
         
-        console.log(event);
         // TODO Bubbling
         var item = JSON.parse(event.target.getAttribute("data"));
         
         if (item){
           Favorites.content.hide();
-          item.back = App.FAVORITES;
+          item.back = Controller.FAVORITES;
           Favorites.container.swipe("left");
          
-          App.dispatch((item.id == "Symptom" ? App.SYMPTOME : App.EINGABE), item);
+          Controller.dispatch((item.id == "Symptom" ? Controller.SYMPTOME : Controller.EINGABE), item);
         }
       }, { watch: "LI" });
       
@@ -551,7 +555,7 @@ var Favorites = {
             params.data = entities[i];
             params.value = "&nbsp;";
             
-            var acts = App.model.getData("acts").has("id", [{ id: entities[i].id }] );
+            var acts = Model.memory.get("acts").has("id", [{ id: entities[i].id }] );
             
             if (acts.length > 0){
               var last = acts.sort123("x").clone().pop();
@@ -573,35 +577,32 @@ var Symptome = {
 // VIEW
     
   //DOMELEMENTS
-  container: DOM("symptomeId"),
-  gotoHome: DOM("symptomeBackButton"),
-  content: DOM("symptomeContentId"),
-  fieldset: DOM("symFieldsetId"),
-  BACK: App.Home,
+  container:  DOM("symptomeId"),
+  gotoHome:   DOM("symptomeBackButton"),
+  content:    DOM("symptomeContentId"),
+  fieldset:   DOM("symFieldsetId"),
+  BACK:       Controller.Home,
   
-  // TEST
-  test: function() 
-  {
+  test: function(){
     if (!App.live) console.log( "- VIEW Symptome");
-    if (!App.live && !App.EINGABE) console.log( "Missing: App.EINGABE");
-    if (!App.live && !App.SYMPTOME) console.log( "Missing: App.SYMPTOME");
+    if (!App.live && !Controller.EINGABE) console.log( "Missing: Controller.EINGABE");
+    if (!App.live && !Controller.SYMPTOME) console.log( "Missing: Controller.SYMPTOME");
   },
   
   // BINDING
-  bind: function() 
-  {       
+  bind: function(){       
     this.gotoHome.on("touch", function(){      
 
       Symptome.content.hide();
       Symptome.container.swipe("right");
-      App.dispatch( Symptome.BACK );     
+      Controller.dispatch(Symptome.BACK);     
     });     
     
-    App.on(App.SYMPTOME, function(data){   
+    Controller.on(Controller.SYMPTOME, function(data){   
       
       data = data || {};
       
-      Symptome.BACK = data.back || App.HOME;
+      Symptome.BACK = data.back || Controller.HOME;
       
       Symptome.container.swipe("middle").on("stage", function(){
         Symptome.update();
@@ -609,43 +610,37 @@ var Symptome = {
     });
   },
   
-  //INIT
-  init: function() 
-  {
+  init: function(){
     this.test();
     this.bind();  
     this.container.show();
     this.content.hide();
-  }
-  ,
-  update: function() {
+  },
+  
+  update: function(){
     
     Symptome.content.show();
     
-    var liste = this.fieldset.find("ul").on("touch", function( data )
-    {    
+    var liste = this.fieldset.find("ul").on("touch", function(data){    
       var item = JSON.parse( data.element.getAttribute("data") );
       
-      if ( item )
-      {
+      if (item){
         Symptome.content.hide();
         Symptome.container.swipe("left");
-        App.model.setData("favorites", [ { id: item.id, edit: true } ]);
-        item.back = App.SYMPTOME;
-        App.dispatch( App.EINGABE, item );
+        Model.memory.set("favorites", [ { id: item.id, edit: true } ]);
+        item.back = Controller.SYMPTOME;
+        Controller.dispatch(Controller.EINGABE, item);
       }
-    }
-    , {watch: "LI"});
+    }, { watch: "LI" });
     
-    var symptome = App.model.searchData("lexikon", "Symptom" ).notIn("id", App.model.getData("favorites") );
+    var symptome = Model.memory.search("lexikon", "Symptom" ).notIn("id", Model.memory.get("favorites"));
     
     symptome.sortABC("title");
     
     liste.removeChilds();
     
-    for (var i = 0; i < symptome.length; i++)
-    {
-      liste.addRow({ title: symptome[i].title, value: "&nbsp;", farbe: symptome[i].farbwert, caretRight: true, data: symptome[i]})
+    for (var i = 0; i < symptome.length; i++){
+      liste.addRow({ title: symptome[i].title, value: "&nbsp;", farbe: symptome[i].farbwert, caretRight: true, data: symptome[i]});
     }
   }
 };
@@ -667,9 +662,7 @@ var Eingabe = {
    item: null,
    itemModified: null,
    
-   //INIT
    init: function(){
-
      this.test();
      this.bind();
      
@@ -677,14 +670,11 @@ var Eingabe = {
      this.content.invisible();
    },
    
-   // TEST
    test: function(){
-     
      if (!App.live) console.log( "- VIEW EINGABE");
-     if (!App.live && !App.FAVORITES) console.log( "Missing: App.FAVORITES");
-     if (!App.live && !App.EINGABE) console.log( "Missing: App.EINGABE");
-     if (!App.live && !App.SYMPTOME) console.log( "Missing: App.SYMPTOME");
-     
+     if (!App.live && !Controller.FAVORITES) console.log( "Missing: Controller.FAVORITES");
+     if (!App.live && !Controller.EINGABE) console.log( "Missing: Controller.EINGABE");
+     if (!App.live && !Controller.SYMPTOME) console.log( "Missing: Controller.SYMPTOME");
    },
    
    // BINDING
@@ -694,12 +684,7 @@ var Eingabe = {
         Eingabe.goBack();
       });
      
-/*     this.gotoSymptome.on("touch", function() {
-       App.dispatch( App.SYMPTOME );
-       Eingabe.container.swipe("left");
-     });*/
-     
-     App.on(App.READY, function(data){
+     Controller.on(Controller.START, function(data){
      
        DOM("zeitArea").addDatetime(function(value){
          // Zeit
@@ -713,7 +698,7 @@ var Eingabe = {
        DOM("sliderArea").addSlider(function(value){
          
          if (!Eingabe.itemModified){
-           Eingabe.itemModified = Object.create( Eingabe.item );
+           Eingabe.itemModified = Object.create(Eingabe.item);
            Eingabe.itemModified.x = new Date().getTime();
          }
          
@@ -747,12 +732,12 @@ var Eingabe = {
        Eingabe.freitext.find(".grey").on("touch", function() { Eingabe.cancelItemModified(); });
      });
      
-     App.on(App.EINGABE, function(data){
-     //
+     Controller.on(Controller.EINGABE, function(data){
+
        if (data){
        // Coming from Favorites or Symptom
          
-         Eingabe.BACK = data.back || App.HOME;
+         Eingabe.BACK = data.back || Controller.HOME;
          Eingabe.item = data;
          Eingabe.itemModified = null;         
        }
@@ -760,7 +745,7 @@ var Eingabe = {
        
        Eingabe.container.swipe("middle").on("stage", function(){
          Eingabe.update(Eingabe.itemModified || Eingabe.item);
-       })
+       });
      });
    },
    
@@ -807,7 +792,7 @@ var Eingabe = {
          this.freitext.find("legend").html( data.kategorie );
          this.freitext.find(".favTitle").html( data.title );
          DOM("zeitArea").setDatetime( data.x );
-         DOM("favTextareaId").set("value", (data.y) ? data.y.replace(/<br>/g, "\n") : "" );       
+         DOM("favTextareaId").set("value", (data.y) ? data.y.replace(/<br>/g, "\n") : "");       
        }
        else
        {
@@ -830,14 +815,12 @@ var Eingabe = {
    deleteItem: function(){
    //
      
-     var acts = App.model.getData("acts");
+     var acts = Model.memory.get("acts");
      var item = Eingabe.item;
      
-     for (var i = 0; i < acts.length; i++)
-     {
-       if (acts[i].id == item.id && acts[i].x == item.x)
-       {
-         App.model.setData("deleted", [ acts[i] ]);
+     for (var i = 0; i < acts.length; i++){
+       if (acts[i].id == item.id && acts[i].x == item.x){
+         Model.memory.set("deleted", [ acts[i] ]);
          acts.splice(i, 1);
        }
      }
@@ -846,39 +829,33 @@ var Eingabe = {
    },
    
    cancelItemModified: function(){
-   //
      Eingabe.itemModified = null;
      Eingabe.update(Eingabe.item);
    },
    
    saveItemModified: function(){
-   //
      var item = Eingabe.itemModified;
      
      var act = {
-        id: item.id+"",
-        x: item.x+"",    
+        id: item.id + "",
+        x: item.x + "",    
         y: (item.kategorie == "Notizen") ? item.y.replace(/\n/g,"<br>") : item.y
      };
      
-     App.model.setData("acts", [ act ], ["id", "x"] );
+     Model.memory.set("acts", [act], ["id", "x"] );
 
      Eingabe.goBack();
    },
    
    showDefinition: function(data){
-   //
      if (!data.grad) return;
      
-     for (var i = 0; i < data.grad.length; i++) 
-     {
+     for (var i = 0; i < data.grad.length; i++){
        var grad = data.grad[i];
        var y = Math.floor( data.y );
        
-       if (y >= grad.min && y <= grad.max)
-       {
+       if (y >= grad.min && y <= grad.max){
          DOM("favGradId").html("<b>Definition:</b> " + grad.info);
-         
          this.showTipps(grad);
        }
      }
@@ -888,9 +865,11 @@ var Eingabe = {
    //
        if (!grad.tipps) return;
        
-       var search = grad.tipps.split(",").map( function(ele) { return { id: ele }; });
+       var search = grad.tipps.split(",").map(function(ele){
+         return { id: ele };
+       });
        
-       var tipps = App.model.getData("lexikon").has("id", search).clone();
+       var tipps = Model.memory.get("lexikon").has("id", search).clone();
        
        var rows = DOM("fieldsetTipp").find(".listeNext").removeChilds();
              
@@ -900,10 +879,9 @@ var Eingabe = {
          if (tipp){
             Eingabe.content.hide();
             Eingabe.container.swipe("left");
-            App.dispatch(App.TIPPS, tipp);
+            Controller.dispatch(Controller.TIPPS, tipp);
          }
-       }, 
-       { watch: "LI"} );
+       }, { watch: "LI"} );
              
        for (var j = 0; j < tipps.length; j++){
          var tipp = tipps[j];
@@ -922,7 +900,7 @@ var Eingabe = {
    
    goBack: function(){
      Eingabe.content.hide();
-     App.dispatch(Eingabe.BACK);
+     Controller.dispatch(Eingabe.BACK);
      Eingabe.container.swipe("right");     
    }
    
@@ -938,42 +916,38 @@ var Tipps = {
    content:     DOM("tippContentId"),
    
    // TEST
-   test: function() 
-   {
+   test: function(){
      if (!App.live) console.log( "- VIEW Tipps");
-     if (!App.live && !App.EINGABE) console.log( "Missing: App.EINGABE");
-     if (!App.live && !App.TIPPS) console.log( "Missing: App.TIPPS");
+     if (!App.live && !Controller.EINGABE) console.log( "Missing: Controller.EINGABE");
+     if (!App.live && !Controller.TIPPS) console.log( "Missing: Controller.TIPPS");
    },
    
    // BINDING
-   bind: function() 
-   {       
-     this.gotoEingabe.on("touch", function() {      
+   bind: function(){       
+     this.gotoEingabe.on("touch", function(){      
        
        Tipps.content.hide();
        
-       App.dispatch(App.EINGABE);
+       Controller.dispatch(Controller.EINGABE);
        Tipps.container.swipe("right");
      });     
      
-     App.on( App.TIPPS, function(data) {
+     Controller.on(Controller.TIPPS, function(data){
        
        Tipps.update( data );
        
-       Tipps.container.swipe("middle").on("stage", function() {
+       Tipps.container.swipe("middle").on("stage", function(){
          Tipps.content.show();
-       })
+       });
      });
    },
    
-   //INIT
-   init: function() 
-   {
+   init: function(){
      this.test();
      this.bind();  
      this.container.show();
-   }
-   ,
+   },
+  
    /**
     * _term: "IMELD2 BRUSTZENTRUM "
       bausteine: Array[3]
@@ -983,31 +957,26 @@ var Tipps = {
       likes: 0
       title: "Kontakt aufnehmen"
     */
-   update: function(data)
-   {
+   update: function(data){
      this.content.removeChilds();
      
-     var display = this.content.add("form").add("fieldset").style("text-align","left").add("legend").text( data.kategorie ).parent();
+     var display = this.content.add("form").add("fieldset").style("text-align","left").add("legend").text(data.kategorie).parent();
      
-     display.add("p").html("<b>"+data.title+"</b>");
+     display.add("p").html("<b>" + data.title + "</b>");
      
-     for (var i = 0; i < data.bausteine.length; i++)
-     {       
+     for (var i = 0; i < data.bausteine.length; i++){       
        var baustein = data.bausteine[i];
        
-       for( var info in baustein )
-       {
-         display.add("p").add("div").html("<i>"+info+"</i>").addNext("div").html( baustein[info]).addClass("borderTop");    
+       for (var info in baustein){
+         display.add("p").add("div").html("<i>" + info + "</i>").addNext("div").html(baustein[info]).addClass("borderTop");    
        }
      }
      
      var actions = display.add("p");
-     actions.add("a").addClass("button-action green floatLeft").text("Hilfreich").on("touch", function( data )
-     {
+     actions.add("a").addClass("button-action green floatLeft").text("Hilfreich").on("touch", function(data){
        console.log("TODO TIPP HLFREICH");
      });
-     actions.add("a").addClass("button-action grey floatRight").text("Nicht Hilfreich").on("touch", function( data )
-     {
+     actions.add("a").addClass("button-action grey floatRight").text("Nicht Hilfreich").on("touch", function(data){
        console.log("TODO TIPP NICHT HLFREICH");   
      });
    }
