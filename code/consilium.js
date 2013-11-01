@@ -621,8 +621,8 @@ var Symptome = {
     
     Symptome.content.show();
     
-    var liste = this.fieldset.find("ul").on("touch", function(data){    
-      var item = JSON.parse( data.element.getAttribute("data") );
+    var liste = this.fieldset.find("ul").on("touch", function(data){
+      var item = JSON.parse( data.target.getAttribute("data") );
       
       if (item){
         Symptome.content.hide();
