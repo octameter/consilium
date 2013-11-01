@@ -355,20 +355,53 @@ Array.prototype.unique = function( property )
 {
   var uniques = {};
   
-  this.forEach( function( element, index ) {
+  this.forEach( function( element, index ) 
+  {      
+    var unique = (property != null) ? element[ property ] : element;
     
-    var unique = element[ property ];
-    
-    if( uniques[ unique ] == null ) uniques[ unique ] = property; 
-    
+    if( uniques[ unique ] == null ) uniques[ unique ] = 1;  
   });
-               
-  return uniques;
+
+  return Object.keys(uniques);
 };
 
-Array.prototype.has = function( property, array )
+
+Array.prototype.single = function( property ) 
+{
+  var uniques = {};
+  
+  return this.filter( function(element) 
+  {
+    var unique = element[ property ];
+    
+    if( uniques[ unique ] == 1) return false;
+    
+    uniques[ unique ] = 1; return true;  
+  });
+
+};
+/*
+Array.prototype.has = function( key, array )
 {
   return this.filter( function(element) 
+  {
+      var flag = false; // delete
+      
+      for(var i = 0; i < array.length; i++)
+      {
+        var source = ( typeof element == "object" ) ? element[key] : element;
+        var target = ( typeof array[i] == "object" ) ? array[i][key] : array[i];
+        
+        if( source == target ) flag = true;
+      }
+      
+      return flag; // return false;
+   });
+};
+*/
+Array.prototype.has = function( property, array )
+{
+  return this.filter( function(element)
   {
       var flag = false; // delete
       
@@ -381,6 +414,8 @@ Array.prototype.has = function( property, array )
       return flag; // return false;
    });
 };
+
+
 
 Array.prototype.merge = function( key, array ){
   
@@ -1033,7 +1068,7 @@ function eventify( that ) {
               offsetY : event.offsetY || event.layerY
             };
           }
-          data.event = event;
+          
           callback(data);
         };
 
@@ -1572,9 +1607,10 @@ function eventify( that ) {
       ,
       carousel: function(selector, args){
         
-        var slides = DOM(this.element).findAll(selector);
-        console.log(this.element);
-        if (!slides || slides.length < 2) return this;
+        var slides = DOM(this.element).findAll(selector),
+            l = slides.length;
+
+        if (!slides || l < 2) return this;
         
         var args = args || {},
             idx = 0,
@@ -1582,13 +1618,15 @@ function eventify( that ) {
               duration: args.duration || 2500
             };
         
-        slides.hide();
-        DOM(slides.element[idx]).show();
+        var i = l;
+        while (i--) slides.element[i].style.opacity = 0;
+            
+        slides.element[idx].style.opacity = 1;
         
         setInterval(function(){
-          DOM(slides.element[idx]).hide();
+          slides.element[idx].style.opacity = 0;
           idx = ++idx % slides.element.length;
-          DOM(slides.element[idx]).show();
+          slides.element[idx].style.opacity = 1;
         }, options.duration);
         
         return this;
@@ -1632,7 +1670,6 @@ function eventify( that ) {
 })(this, document, undefined);
 DOModule.setSlider = function( value )
 {
-  console.log("setSlider");
   value = parseInt( value );
   
   if( window.device )
@@ -1670,24 +1707,23 @@ DOModule.addSlider = function( callback )
       var hundert = slider.width() - (thumbWidth * 0.5);
    
       function onDrag(data){
-          var value = Math.min(parseInt((data.event.clientX - (thumbWidth))/ hundert * 100), 100);
-          thumb.style("left", ( parseInt(hundert * value / 100) + "px" ));
+          var value = Math.min(parseInt((data.koord.clientX - thumbWidth)/ hundert * 100), 100);
+          thumb.style("left", parseInt(hundert * value / 100) + "px");
           callback(value);
       }
     
       function onDragEnd(){
-        slider.off("mousemove");
-        slider.off("mouseup");
+        slider.off("move");
+        slider.off("touched");
       }
     
-      slider.on("mousedown", function(){
-        slider.on("mousemove", onDrag);
-        slider.on("mouseup", onDragEnd);
+      slider.on("touch", function(event){
+        onDrag(event);
+        slider.on("move", onDrag);
+        slider.on("touched", onDragEnd);
       });
     
-      slider.on("click", onDrag);
     
-      DOM(document.body).on("mouseup", onDragEnd);
 
 
   }
