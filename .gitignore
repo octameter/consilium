@@ -29,5 +29,5 @@ Thumbs.db
 .tmproj
 *.esproj
 nbproject
-
-
+code/library.*.js
+style/theme.css
