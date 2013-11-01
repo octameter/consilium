@@ -46,7 +46,6 @@ var App = {
     
     console.log("- Node Server " + (App.live ? "Live" : "Local"));
     
-    Model.memory.set("lexikon", Entities.Symptome, ["id", "kategorie"])
     Model.memory.set("lexikon", Entities.Symptome, ["id", "kategorie"]);
     Model.memory.set("lexikon", Entities.Bewertung, ["id", "kategorie"]);
     Model.memory.set("lexikon", Entities.Tagebuch, ["id", "kategorie"]);
@@ -312,11 +311,13 @@ var Home = {
       this.board.findAll(".movePoint").remove();
       
       // Symbole
-      for (var id in  Model.memory.get("acts").unique("id")){
+      Model.memory.get("acts").unique("id").forEach(function(id){
+      //for (var id in  Model.memory.get("acts").unique("id")){
+        
         var howto = Model.memory.search("lexikon", id)[0];
         
         var acts = Model.memory.get("acts").has("id", [ {id: id} ] ).sort123(); 
-        
+
         var todo = acts.length;
         
         if (howto.kategorie == "Symptom" || howto.kategorie == "Bewertung"){  
@@ -344,8 +345,12 @@ var Home = {
              
              this.board.drawNotizen( this.x( notiz.x) , this.y( y ), 24, 24, howto.farbwert, notiz); 
            }
-        }  
-      }
+        }
+        
+        // }
+      }.bind(this));
+        
+        
     },
     
     // TIME
@@ -509,9 +514,9 @@ var Favorites = {
 
     var data = Model.memory.get("lexikon").merge("id", Model.memory.get("favorites") );
     var lexiFav = data.has("id", Model.memory.get("favorites") );
-    
+    lexiFav.unique("kategorie").forEach(function(kategorie){
+
     // EACH FAVORIT GETS FIELDSET
-    for (var kategorie in lexiFav.unique("kategorie")){
       var legend = Favorites.form.add("fieldset").add("legend").text(kategorie);
       var rows = legend.addNext("ul").addClass("listeNext");
       var entities = lexiFav.has("kategorie", [{ "kategorie": kategorie}] );
@@ -569,7 +574,12 @@ var Favorites = {
             
           }
       }
-    }
+    });
+    
+    
+    
+    
+    
   }
 };
 
@@ -703,7 +713,8 @@ var Eingabe = {
          }
          
          Eingabe.itemModified.y = value;
-         Eingabe.update(Eingabe.itemModified);      
+         // TODO: specifically update containers
+         Eingabe.update(Eingabe.itemModified);
        });
 
        // Freitext
