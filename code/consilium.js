@@ -621,8 +621,8 @@ var Symptome = {
     
     Symptome.content.show();
     
-    var liste = this.fieldset.find("ul").on("touch", function(data){    
-      var item = JSON.parse( data.element.getAttribute("data") );
+    var liste = this.fieldset.find("ul").on("touch", function(data){
+      var item = JSON.parse( data.target.getAttribute("data") );
       
       if (item){
         Symptome.content.hide();
@@ -804,6 +804,8 @@ var Eingabe = {
          this.eingabe.find(".favTitle").html( data.title );
          DOM("zeitArea").setDatetime( data.x );
          DOM("favOutputId").text( ( data.y || data.zero ) + " " + data.unit);
+         
+         // TODO only set the slider on view change but not on slider change
          DOM("sliderArea").setSlider(data.y || data.zero );
 
          this.showDefinition( data );
