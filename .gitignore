@@ -29,14 +29,8 @@ Thumbs.db
 .tmproj
 *.esproj
 nbproject
-<<<<<<< HEAD
-
 
 
 code/library.0.1.7.js
 
 style/theme.css
-=======
-code/library.*.js
-style/theme.css
->>>>>>> 37c93e5f8bd8950125a4704cf512b02a2dbeef39
