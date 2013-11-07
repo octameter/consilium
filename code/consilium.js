@@ -470,13 +470,15 @@ var Favorites = {
     Favorites.update(true);
     Favorites.gotoSymptome.text("fertig");
     Favorites.gotoHome.hide();
-    Favorites.gotoSymptome.off("touch")
+    Favorites.gotoSymptome.off("touch");
+    Favorites.gotoSymptome.off("press").on("press", Favorites.unedit);
   },
   
   unedit: function(){
     Favorites.update();
     Favorites.gotoSymptome.text("ändern");
     Favorites.gotoHome.show();
+    Favorites.gotoSymptome.off("press").on("press", Favorites.edit);
   },
   
   bind: function(){
@@ -486,7 +488,7 @@ var Favorites = {
       Favorites.container.swipe("right");
     });
     
-    this.gotoSymptome.on("press", this.edit);
+    this.gotoSymptome.on("press", Favorites.edit);
     
     Controller.on(Controller.FAVORITES, function(data){
 
