@@ -74,12 +74,16 @@
 .row_delete {
   position: absolute;
   text-align: right;
-  top: 0; bottom: 0; right: 30px;
+  top: 0; bottom: 0; right: 0;
   margin: auto;
-  min-width: 20px;
+  min-height: 30px;
   height: 18px;
-  padding: 6px 10px;
   border-radius: 4px;
+}
+
+.row_delete.button {
+  line-height: 30px;
+  padding: 0 10px;
 }
 
 

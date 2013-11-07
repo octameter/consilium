@@ -205,7 +205,7 @@ var Home = {
       Home.content.hide();
       Home.container.swipe("right");
     });
-    this.gotoFavorites.on("touch", function(){      
+    this.gotoFavorites.on("press", function(){      
       Controller.dispatch(Controller.FAVORITES); 
       Home.content.hide();
       Home.container.swipe("left"); 
@@ -461,24 +461,32 @@ var Favorites = {
   form:         DOM("favFormId"),
   BACK:         Controller.HOME,
   
-  // TEST
   test: function(){
     if (!App.live) console.log( "- VIEW Favorites");
     if (!App.live && !Controller.FAVORITES) console.log( "Missing: Controller.FAVORITES");
   },
   
-  // BINDING
+  edit: function(){
+    Favorites.update(true);
+    Favorites.gotoSymptome.text("fertig");
+    Favorites.gotoHome.hide();
+    Favorites.gotoSymptome.off("touch")
+  },
+  
+  unedit: function(){
+    Favorites.update();
+    Favorites.gotoSymptome.text("ändern");
+    Favorites.gotoHome.show();
+  },
+  
   bind: function(){
-    this.gotoHome.on("touch", function(){
+    this.gotoHome.on("press", function(){
       Favorites.content.hide();
       Controller.dispatch(Controller.HOME); // Favorites.BACK ???
       Favorites.container.swipe("right");
     });
     
-    this.gotoSymptome.on("touch", function(){
-      Favorites.update(true);
-      Favorites.gotoSymptome.text("back");
-    });
+    this.gotoSymptome.on("press", this.edit);
     
     Controller.on(Controller.FAVORITES, function(data){
 
