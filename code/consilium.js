@@ -37,6 +37,7 @@ var App = {
     
     Controller.init();
     
+    Intro.init();
     Optionen.init();
     Home.init();
     Favorites.init();
@@ -130,6 +131,60 @@ var Model = {
   
 };
 
+var Intro = {
+
+  container: DOM("introId"),
+  
+  init: function(){
+    if (!App.live) console.log("- VIEW Intro");
+    
+    introfy(this);
+    
+    this.setContent();
+    
+    this.bind();
+  },
+  
+  bind: function(){
+    Controller.on(Controller.START, Intro.update);
+    
+    DOM("introStartApp").on("press", function(){
+      Controller.dispatch(Controller.HOME);
+      Intro.container.swipe("left");
+
+    });
+  },
+  
+  setContent: function(){
+   
+    this.setTitle("Consilium");
+
+    this.addFeatures([
+     {title: "1. Funktion", description: "Consilium ist ein Applikation zur Erfassung von Symptomen und Notizen durch die Patienten. Sie unterstützt die Kommunikation zwischen Arzt und Patient über den gemeinsamen Datenzugriff."},
+     {title: "2. Entwicklung", description: "Consilium wurde entwickelt zur Überprüfung des Mehrwerts von Applikationen in der medizinischen Versorgung. Die Studie wird aktuell durchgeführt."},
+     {title: "3. Nutzung", description: "Die App kann von allen Interessierten ausprobiert werden. Über „Start“ können die Symptome erfasst werden. "},
+     {title: "4. Datenspeicherung", description: "Nur über die Verbindung mit dem Datenspeicher und regelmässigen Synchronisation über „Sync“ können die Eingaben gespeichert werden. Ohne diese Verbindung gehen alle Eingaben nach  Schliessen der App verloren."},
+     {
+       title: "5. Anonymisierung",
+       description: "<p>Nutzer der App erhalten eine Individuelle Patienten-ID, mit der Sie berechtigt sind den Service zu nutzen.</p>"
+                    + '<button id="introStartApp" class="button blue">Start</button>'
+     }
+    ]);
+    
+    this.setDisclaimer({
+        credits: "<em>Bereitgestellt durch</em><br>\
+          <b class=fontAlert>Klinik für Klinische Pharmakologie</b><br>\
+          <b class=fontAlert>und Toxikologie</b><br>\
+          <span>UniversitätsSpital Zürich</span>",
+        copyright: "<p>Copyright © 2013 EPha.ch AG. All rights reserved</p>"
+    });
+  },
+  
+  update: function(){
+  }
+  
+};
+
 /**
  * VIEW OPTIONEN
  */
@@ -211,7 +266,8 @@ var Home = {
       Home.container.swipe("left"); 
     });
     
-    Controller.on(Controller.HOME, function(){     
+    Controller.on(Controller.HOME, function(){    
+      Home.container.show(); 
       Home.container.swipe("middle").on("stage", function(){
         Home.update();
       });
@@ -224,7 +280,7 @@ var Home = {
       Home.form.init();
     
       // KEIN TITLE
-      Home.update();    
+      Home.update();
     });
   },
   

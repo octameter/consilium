@@ -183,9 +183,32 @@ and (max-device-width : 568px) {
   display: block;
   -webkit-filter: blur(1px);
   -moz-filter: blur(1px);
-  -o-filter: blur(1px);
   -ms-filter: blur(1px);
+  -o-filter: blur(1px);
   filter: blur(1px);
   opacity: 0.95;
 }
 
+/* Intro */
+
+.intro-main section.cell,
+.intro-main div.cell {
+  width: 50%;
+}
+.intro-main div.cell {
+  max-width: 300px;
+}
+
+.intro-main div.cell img {
+  display: block;
+  max-width: 100%;
+}
+
+#introStartApp {
+  display: block;
+  width: 100%;
+}
+
+.intro-content .cell {
+  min-height: 0;
+}
