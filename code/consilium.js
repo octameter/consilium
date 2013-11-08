@@ -91,6 +91,7 @@ var App = {
       App.signOn(function(data){
         //Controller.dispatch(Controller.START);
       });
+      
     });
   }
   
@@ -151,7 +152,6 @@ var Intro = {
     DOM("introStartApp").on("press", function(){
       Controller.dispatch(Controller.HOME);
       Intro.container.swipe("left");
-
     });
   },
   
@@ -263,7 +263,7 @@ var Home = {
     this.gotoFavorites.on("press", function(){      
       Controller.dispatch(Controller.FAVORITES); 
       Home.content.hide();
-      Home.container.swipe("left"); 
+      Home.container.swipe("left");
     });
     
     Controller.on(Controller.HOME, function(){    
@@ -528,6 +528,7 @@ var Favorites = {
     Favorites.gotoHome.hide();
     Favorites.gotoSymptome.off("touch");
     Favorites.gotoSymptome.off("press").on("press", Favorites.unedit);
+    Favorites.gotoSymptome.blur();
   },
   
   unedit: function(){
@@ -535,6 +536,7 @@ var Favorites = {
     Favorites.gotoSymptome.text("ändern");
     Favorites.gotoHome.show();
     Favorites.gotoSymptome.off("press").on("press", Favorites.edit);
+    Favorites.gotoSymptome.blur();
   },
   
   bind: function(){
@@ -952,8 +954,8 @@ var Eingabe = {
        
        var rows = DOM("fieldsetTipp").find(".listeNext").removeChilds();
              
-       rows.on("touch", function(data){    
-         var tipp = JSON.parse( data.element.getAttribute("data") );
+       rows.on("touch", function(data){
+         var tipp = JSON.parse( data.target.getAttribute("data") );
          
          if (tipp){
             Eingabe.content.hide();
