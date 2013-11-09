@@ -41,7 +41,7 @@ h1.intro-title{margin:0;font-size:40px;}
 .intro-main section.cell{width:66%;}
 .intro-main div.cell{width:33%;}
 .intro-main .button{display:block;text-align:center;}
-.intro-content{margin:2em 0;}
+.intro-content{margin:2em 0;cursor:default;}
 .intro-content .cell{width:33%;}
 .intro-content .cell:nth-child(4){clear:left;}
 .intro-features{min-height:250px;}
