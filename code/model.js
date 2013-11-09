@@ -15,7 +15,7 @@ Model.prototype.setData = function( type, value, sterms )
     {
       for( var i = 0; i < value.length; i++)
       {
-        value[i]["_term"] = '';
+        value[i]["_term"] = "";
         
         for( var t = 0; t < sterms.length; t++)
         {
