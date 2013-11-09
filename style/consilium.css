@@ -85,6 +85,7 @@ and (max-device-width : 568px) {
 	margin-right: 3%;
  	overflow-x: scroll; 
 	overflow-y: hidden;
+     -webkit-overflow: scroll;
  }
  
 .overlay {
@@ -211,4 +212,8 @@ and (max-device-width : 568px) {
 
 .intro-content .cell {
   min-height: 0;
+}
+
+.button {
+  line-height: 30px;
 }

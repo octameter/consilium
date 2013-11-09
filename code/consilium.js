@@ -202,7 +202,7 @@ var Optionen = {
   },
   
   bind: function(){
-    this.gotoHome.on("touch", function(){
+    this.gotoHome.on("press", function(){
       Controller.dispatch(Controller.HOME);
       Optionen.content.hide();
       Optionen.container.swipe("left");
@@ -255,7 +255,7 @@ var Home = {
   },
   
   bind: function(){    
-    this.gotoOptionen.on("touch", function(){
+    this.gotoOptionen.on("press", function(){
       Controller.dispatch(Controller.OPTIONEN );
       Home.content.hide();
       Home.container.swipe("right");
@@ -430,7 +430,7 @@ var Home = {
     
     update: function(event){
 
-      this.fieldset.find("ul").off("touch");
+      this.fieldset.find("ul").off("press");
       this.fieldset.find("ul").removeChilds();
 
       if (event)
@@ -462,7 +462,7 @@ var Home = {
           detail: detail
         });
         
-        this.fieldset.find("ul").on("touch", function(data){    
+        this.fieldset.find("ul").on("press", function(data){
           Home.content.hide();
           Home.container.swipe("left");
           
@@ -485,7 +485,7 @@ var Home = {
           //detail:"Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen." 
         });
        
-        this.fieldset.find("ul").on("touch", function(data){    
+        this.fieldset.find("ul").on("press", function(data){    
           Home.content.hide();
           Home.container.swipe("left");
           Controller.dispatch(Controller.SYMPTOME);
@@ -526,7 +526,6 @@ var Favorites = {
     Favorites.update(true);
     Favorites.gotoSymptome.text("fertig");
     Favorites.gotoHome.hide();
-    Favorites.gotoSymptome.off("touch");
     Favorites.gotoSymptome.off("press").on("press", Favorites.unedit);
     Favorites.gotoSymptome.blur();
   },
@@ -590,7 +589,7 @@ var Favorites = {
       var entities = lexiFav.has("kategorie", [{ "kategorie": kategorie}] );
       var editables = entities.has("edit", [{ edit: true }] );
 
-      if (!edit) rows.on("touch", function(event){
+      if (!edit) rows.on("press", function(event){
         
         // TODO Bubbling
         var item = JSON.parse(event.target.getAttribute("data"));
@@ -600,7 +599,7 @@ var Favorites = {
           item.back = Controller.FAVORITES;
           Favorites.container.swipe("left");
          
-          Controller.dispatch((item.id == "Symptom" ? Controller.SYMPTOME : Controller.EINGABE), item);
+          Controller.dispatch(Controller[item.id == "Symptom" ? "SYMPTOME" : "EINGABE"], item);
         }
       }, { watch: "LI" });
       
@@ -669,7 +668,7 @@ var Symptome = {
   
   // BINDING
   bind: function(){       
-    this.gotoHome.on("touch", function(){      
+    this.gotoHome.on("press", function(){      
 
       Symptome.content.hide();
       Symptome.container.swipe("right");
@@ -758,7 +757,7 @@ var Eingabe = {
    // BINDING
    bind: function(){
      
-      this.goBackButton.on("touch", function(){
+      this.goBackButton.on("press", function(){
         Eingabe.goBack();
       });
      
@@ -795,20 +794,20 @@ var Eingabe = {
        });
        
        // Actions
-       Eingabe.eingabe.find(".blue").on("touch", function() { Eingabe.saveItemModified(); }); // TODO directly assign Eingabe.method
-       Eingabe.eingabe.find(".red").on("touch", function() { Eingabe.deleteItem(); });
-       Eingabe.eingabe.find(".grey").on("touch", function() { Eingabe.cancelItemModified();});
+       Eingabe.eingabe.find(".blue").on("press", function() { Eingabe.saveItemModified(); }); // TODO directly assign Eingabe.method
+       Eingabe.eingabe.find(".red").on("press", function() { Eingabe.deleteItem(); });
+       Eingabe.eingabe.find(".grey").on("press", function() { Eingabe.cancelItemModified();});
 
-       Eingabe.freitext.find(".lightgrey").on("touch", function( data ){
+       Eingabe.freitext.find(".lightgrey").on("press", function( data ){
          Eingabe.itemModified = Object.create( Eingabe.item );         
          Eingabe.itemModified.y = "";
          Eingabe.itemModified.x = new Date().getTime();
          
          Eingabe.update( Eingabe.itemModified );
        });      
-       Eingabe.freitext.find(".blue").on("touch", function() { Eingabe.saveItemModified(); });
-       Eingabe.freitext.find(".red").on("touch", function() { Eingabe.deleteItem(); });
-       Eingabe.freitext.find(".grey").on("touch", function() { Eingabe.cancelItemModified(); });
+       Eingabe.freitext.find(".blue").on("press", function() { Eingabe.saveItemModified(); });
+       Eingabe.freitext.find(".red").on("press", function() { Eingabe.deleteItem(); });
+       Eingabe.freitext.find(".grey").on("press", function() { Eingabe.cancelItemModified(); });
      });
      
      Controller.on(Controller.EINGABE, function(data){
@@ -1005,7 +1004,7 @@ var Tipps = {
    
    // BINDING
    bind: function(){       
-     this.gotoEingabe.on("touch", function(){      
+     this.gotoEingabe.on("press", function(){      
        
        Tipps.content.hide();
        
@@ -1041,7 +1040,7 @@ var Tipps = {
    update: function(data){
      this.content.removeChilds();
      
-     var display = this.content.add("form").add("fieldset").style("text-align","left").add("legend").text(data.kategorie).parent();
+     var display = this.content.add("form").add("fieldset").style("text-align", "left").add("legend").text(data.kategorie).parent();
      
      display.add("p").html("<b>" + data.title + "</b>");
      
@@ -1054,10 +1053,10 @@ var Tipps = {
      }
      
      var actions = display.add("p");
-     actions.add("a").addClass("button-action green floatLeft").text("Hilfreich").on("touch", function(data){
+     actions.add("a").addClass("button green floatLeft").text("Hilfreich").on("press", function(data){
        console.log("TODO TIPP HLFREICH");
      });
-     actions.add("a").addClass("button-action grey floatRight").text("Nicht Hilfreich").on("touch", function(data){
+     actions.add("a").addClass("button grey floatRight").text("Nicht Hilfreich").on("press", function(data){
        console.log("TODO TIPP NICHT HLFREICH");   
      });
    }
