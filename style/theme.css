@@ -9,7 +9,7 @@ body{position:absolute;top:0;left:0;right:0;bottom:0;margin-top:42px;}
 .row{zoom:1;}
 .cell{-moz-box-sizing:border-box;box-sizing:border-box;float:left;margin:0;padding:0 15px;width:50%;}
 @media (max-width:480px){.page{width:95%;} .cell{width:100%;}}hr{background:transparent;border-color:rgba(0, 0, 0, 0.1) transparent rgba(255, 255, 255, 0.3) transparent;border-style:solid;border-width:1px 0;}
-.button{-webkit-user-select:none;color:white;cursor:pointer;display:inline-block;opacity:0.9;border-radius:3px;text-decoration:none;white-space:nowrap;vertical-align:middle;min-height:30px;margin-bottom:2px;font-size:100%;line-height:38px;border:1px solid #FAFAFA;transition:background 0.5s;background:none;}
+.button{-webkit-user-select:none;color:white;cursor:pointer;display:inline-block;opacity:0.9;border-radius:3px;text-decoration:none;white-space:nowrap;vertical-align:middle;min-height:30px;margin-bottom:2px;font-size:100%;line-height:38px;border:1px solid #FAFAFA;transition:background 0.4s;background:none;}
 @media screen and (min-device-width:768px){.button{padding-left:20px;padding-right:20px;border-radius:4px;}}@media screen and (max-device-width:768px){.button{padding-left:10px;padding-right:10px;border-radius:4px;}}.button:hover{opacity:1;}
 .navi{background:#4c6173;}
 .navi:active,.navi:focus{color:#4c6173;}
