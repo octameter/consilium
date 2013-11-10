@@ -125,7 +125,8 @@ var Intro = {
 
   container: DOM("introId")
   ,
-  init: function(){
+  init: function()
+  {
     if (!App.live) console.log("- VIEW Intro");
     
     introfy(this);
@@ -135,8 +136,9 @@ var Intro = {
     this.bind();
   }
   ,
-  bind: function(){
-    Controller.on(Controller.START, Intro.update);
+  bind: function()
+  {
+    Controller.on( Controller.START, Intro.update );
     
     DOM("introStartApp").on("tangent", function( data )
     {
@@ -144,12 +146,13 @@ var Intro = {
       {
         Controller.dispatch(Controller.HOME);
         Intro.container.swipe("left");
+        Intro.container.hide();
       }
     });
   }
   ,
-  setContent: function(){
-   
+  setContent: function()
+  { 
     this.setTitle("Consilium");
 
     this.addFeatures([
@@ -162,66 +165,58 @@ var Intro = {
        description: "<p>Nutzer der App erhalten eine Individuelle Patienten-ID, mit der Sie berechtigt sind den Service zu nutzen.</p>"
      }
     ]);
-    
-    this.setDisclaimer({
-        credits: "<em>Bereitgestellt durch</em><br>\
-          <b class=fontAlert>Klinik für Klinische Pharmakologie</b><br>\
-          <b class=fontAlert>und Toxikologie</b><br>\
-          <span>UniversitätsSpital Zürich</span>",
-        copyright: "<p>Copyright © 2013 EPha.ch AG. All rights reserved</p>"
-    });
-  },
-  
-  update: function(){
   }
-  
+  ,
+  update: function()
+  {
+    
+  }
 };
 
 /**
  * VIEW OPTIONEN
  */
 var Optionen = {
-// VIEW
-    
+
   //DOMELEMENTS
   container:  DOM("optionenId"),
   gotoHome:   DOM("optionenBackButton"),
   content:    DOM("optionenContentId"),
   
-  test: function(){
+  init: function()
+  {
     if (!App.live) console.log( "- VIEW Optionen");
-    if (!App.live && !Controller.HOME) console.log( "Missing: Controller.HOME");
-  },
-  
-  bind: function(){
-    this.gotoHome.on("tangent", function(data)
-    {
-      if( data.type == "touchend" )
-      {
-        Controller.dispatch(Controller.HOME);
-        Optionen.content.hide();
-        Optionen.container.swipe("left");
-      }
-    });
-    Controller.on(Controller.OPTIONEN, function(){  
-      Optionen.container.swipe("middle").on("stage", function(){
-        Optionen.content.show();
-      });
-    });
-  },
-  
-  init: function(){
-    this.test();
     this.bind();
     
     this.container.show();
     this.content.hide();
-  },
-  
+  }
+  ,
+  bind: function()
+  {
+    this.gotoHome.on("tangent", function(data)
+    {
+      if( data.type == "touchend" )
+      {
+        Controller.dispatch( Controller.HOME );
+        Optionen.content.hide();
+        Optionen.container.swipe("left");
+      }
+    });
+    
+    Controller.on( Controller.OPTIONEN, function()
+    {  
+      Optionen.container.swipe("middle").on("stage", function()
+      {
+        Optionen.container.off("stage"); 
+        Optionen.content.show();
+      });
+    });
+  }
+  ,
   update: function(){
     
-  }
-  
+  } 
 };
 
 /**
@@ -234,50 +229,49 @@ var Home = {
   container:      DOM("homeId"),
   gotoOptionen:   DOM("addOptionen"),
   gotoFavorites:  DOM("addEingabe"),
-  content:        DOM("homeContentId"),
-  
-  init: function(){
-    this.test();
-    this.bind();  
-    
-    this.container.show();
-    this.content.hide();
-  },
-  
-  test: function(){
+  content:        DOM("homeContentId")
+  ,
+  init: function()
+  {
     if (!App.live) console.log( "- VIEW Home");
-    if (!App.live && !Controller.OPTIONEN) console.log( "Missing: Controller.OPTIONEN");
-    if (!App.live && !Controller.FAVORITES) console.log( "Missing: Controller.FAVORITES");  
-  },
-  
-  bind: function(){    
+    
+    this.bind();  
+    this.content.hide();
+  }
+  ,
+  bind: function()
+  {    
     this.gotoOptionen.on("tangent", function( data )
     {
       if( data.type == "touchend" )
       {
-        Controller.dispatch(Controller.OPTIONEN );
+        Controller.dispatch( Controller.OPTIONEN );
         Home.content.hide();
         Home.container.swipe("right");
       }
     });
+    
     this.gotoFavorites.on("tangent", function( data )
     { 
       if( data.type == "touchend" )
       {
-        Controller.dispatch(Controller.FAVORITES); 
+        Controller.dispatch( Controller.FAVORITES ); 
         Home.content.hide();
         Home.container.swipe("left");
       }
     });
     
-    Controller.on(Controller.HOME, function(){    
-      Home.container.show(); 
-      Home.container.swipe("middle").on("stage", function(){
+    Controller.on( Controller.HOME, function()
+    {    
+      Home.container.swipe("middle").on("stage", function()
+      {
+        Home.container.off("stage");
         Home.update();
       });
     });
     
-    Controller.on(Controller.START, function(){
+    Controller.on(Controller.START, function()
+    {
       if (!window.device) DOM("titleId").hide();
       
       Home.chart.init();
@@ -289,9 +283,10 @@ var Home = {
   },
   
   // FUNCTIONS
-  update: function(){
-    this.content.show();
-    
+  update: function()
+  {
+    console.log( "update home now");
+    this.content.show();  
     this.chart.update();
     this.form.update();
   },
@@ -528,23 +523,20 @@ var Favorites = {
   gotoSymptome: DOM("favoritesEditButton"),
   content:      DOM("favoritesContentId"),
   form:         DOM("favFormId"),
-  BACK:         Controller.HOME,
-  
-  test: function(){
-    if (!App.live) console.log( "- VIEW Favorites");
-    if (!App.live && !Controller.FAVORITES) console.log( "Missing: Controller.FAVORITES");
-  }
+  BACK:         Controller.HOME
   ,
   //INIT
-  init: function(){
-    this.test();
+  init: function()
+  {
+    if (!App.live) console.log( "- VIEW Favorites");
     this.bind();
     
     this.container.show();
     this.content.hide();
   }
   ,
-  bind: function(){
+  bind: function()
+  {
     this.gotoHome.on("tangent", function(data)
     {
       if( data.type == "touchend" )
@@ -563,7 +555,9 @@ var Favorites = {
       Favorites.BACK = data.back || Controller.HOME;
       Favorites.update();
       
-      Favorites.container.swipe("middle").on("stage", function(){
+      Favorites.container.swipe("middle").on("stage", function()
+      {
+        Favorites.container.off("stage");
         Favorites.content.show();
       });
     });
@@ -581,7 +575,6 @@ var Favorites = {
       Favorites.gotoSymptome.text("fertig");
       Favorites.gotoHome.hide();
       Favorites.gotoSymptome.off("tangent").on("tangent", Favorites.unedit);
-      Favorites.gotoSymptome.blur();
     }
 
   }
@@ -594,7 +587,6 @@ var Favorites = {
       Favorites.gotoSymptome.text("ändern");
       Favorites.gotoHome.show();
       Favorites.gotoSymptome.off("tangent").on("tangent", Favorites.edit);
-      Favorites.gotoSymptome.blur();
     }
   }
   ,
@@ -617,10 +609,12 @@ var Favorites = {
 
       if (!edit) rows.on("tangent", function( data )
       {  
-        if( data.type )
+        if( data.type == "touchstart" ) DOM( data.target ).addClass("selected");
+        
+        if( data.type == "touchend")
         {
           // TODO Bubbling
-          var item = JSON.parse(event.target.getAttribute("data"));
+          var item = data.transfer;
           
           if (item){
             Favorites.content.hide();
@@ -630,6 +624,7 @@ var Favorites = {
             Controller.dispatch(Controller[item.id == "Symptom" ? "SYMPTOME" : "EINGABE"], item);
           }
         }
+
       }
       , { watch: "LI" });
       
@@ -650,9 +645,9 @@ var Favorites = {
               });
             }
             
-            rows.addRemovableRow(params);
-            
-          } else 
+            rows.addRemovableRow(params);            
+          } 
+          else 
           {          
             params.farbe = entities[i].farbwert;
             params.caretRight = true;
@@ -688,17 +683,12 @@ var Symptome = {
   ,
   init: function()
   {
-    this.test();
-    this.bind();  
+    if (!App.live) console.log( "- VIEW Symptome");
+    
+    //this.bind();  
+    
     this.container.show();
     this.content.hide();
-  }
-  ,
-  test: function()
-  {
-    if (!App.live) console.log( "- VIEW Symptome");
-    if (!App.live && !Controller.EINGABE) console.log( "Missing: Controller.EINGABE");
-    if (!App.live && !Controller.SYMPTOME) console.log( "Missing: Controller.SYMPTOME");
   }
   ,
   // BINDING
@@ -718,7 +708,11 @@ var Symptome = {
     {     
       data = data || {};
       Symptome.BACK = data.back || Controller.HOME;      
-      Symptome.container.swipe("middle").on("stage", function() { Symptome.update(); }); 
+      Symptome.container.swipe("middle").on("stage", function() 
+      {
+        Symptome.container.off("stage");
+        Symptome.update(); 
+      }); 
     });
   }
   ,  
@@ -726,16 +720,19 @@ var Symptome = {
   {  
     Symptome.content.show();
     
-    var liste = this.fieldset.find("ul").on("touch", function(data)
+    var liste = this.fieldset.find("ul").on("tangent", function(data)
     {
-      var item = JSON.parse( data.target.getAttribute("data") );
-      
-      if (item){
-        Symptome.content.hide();
-        Symptome.container.swipe("left");
-        Model.memory.set("favorites", [ { id: item.id, edit: true } ]);
-        item.back = Controller.SYMPTOME;
-        Controller.dispatch(Controller.EINGABE, item);
+      if( data.type == "touchend")
+      {
+        var item = data.transfer;
+        
+        if (item){
+          Symptome.content.hide();
+          Symptome.container.swipe("left");
+          Model.memory.set("favorites", [ { id: item.id, edit: true } ]);
+          item.back = Controller.SYMPTOME;
+          Controller.dispatch(Controller.EINGABE, item);
+        }
       }
     }
     , { watch: "LI" });
@@ -767,33 +764,27 @@ var Eingabe = {
    //VARIABLES
    BACK: App.HOME,
    item: null,
-   itemModified: null,
-   
-   init: function(){
-     this.test();
+   itemModified: null
+   ,
+   init: function()
+   {
+     if (!App.live) console.log( "- VIEW EINGABE");
      this.bind();
      
      this.container.show();
      this.content.invisible();
-   },
-   
-   test: function(){
-     if (!App.live) console.log( "- VIEW EINGABE");
-     if (!App.live && !Controller.FAVORITES) console.log( "Missing: Controller.FAVORITES");
-     if (!App.live && !Controller.EINGABE) console.log( "Missing: Controller.EINGABE");
-     if (!App.live && !Controller.SYMPTOME) console.log( "Missing: Controller.SYMPTOME");
-   },
-   
+   }
+   ,
    // BINDING
-   bind: function(){
-     
+   bind: function()
+   {     
       this.goBackButton.on("tangent", function(data)
       {
         if( data.type == "touchend" ) Eingabe.goBack();
       });
      
-     Controller.on(Controller.START, function(data){
-     
+     Controller.on(Controller.START, function(data)
+     {     
        DOM("zeitArea").addDatetime(function(value){
          // Zeit
          Eingabe.itemModified = Eingabe.itemModified || Object.create( Eingabe.item );   
@@ -874,7 +865,9 @@ var Eingabe = {
        }
        // no data from Tipps
        
-       Eingabe.container.swipe("middle").on("stage", function(){
+       Eingabe.container.swipe("middle").on("stage", function()
+       {
+         Eingabe.container.off("stage");
          Eingabe.update(Eingabe.itemModified || Eingabe.item);
        });
      });
@@ -1049,17 +1042,12 @@ var Tipps = {
    ,
    content:     DOM("tippContentId")
    ,
-   init: function(){
-     this.test();
+   init: function()
+   {
+     if (!App.live) console.log( "- VIEW Tipps");
+     
      this.bind();  
      this.container.show();
-   }
-   ,
-   // TEST
-   test: function(){
-     if (!App.live) console.log( "- VIEW Tipps");
-     if (!App.live && !Controller.EINGABE) console.log( "Missing: Controller.EINGABE");
-     if (!App.live && !Controller.TIPPS) console.log( "Missing: Controller.TIPPS");
    }
    ,
    // BINDING
@@ -1080,6 +1068,7 @@ var Tipps = {
        Tipps.update( data );
        Tipps.container.swipe("middle").on("stage", function()
        {
+         Tipps.container.off("stage");
          Tipps.content.show();
        });
      });

@@ -27,7 +27,7 @@
   text-align: center;
   background: rgba( 128,148,166,1);
   color: #FAFAFA;
-  border-bottom: solid 1px #eee; 
+  /* border-bottom: solid 1px #eee; */
   text-transform: uppercase;
   padding: 6px;
   box-sizing: border-box;
@@ -35,8 +35,8 @@
 
 .view > header > button:first-child {
   position: absolute;
-  top: 6px;
-  left: 6px;
+  top: 4px;
+  left: 4px;
   font-size: 11pt;
   text-transform: uppercase;
 }
@@ -48,8 +48,8 @@
 
 .view > header > button:last-child {
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: 4px;
+  right: 4px;
   font-size: 11pt;
   text-transform: uppercase;
 }
