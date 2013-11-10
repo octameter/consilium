@@ -807,7 +807,8 @@ var Eingabe = {
        });
 
        // Freitext
-       DOM("favTextareaId").on("input", function(data){
+       DOM("favTextareaId").on("input", function(data)
+       {
          Eingabe.itemModified = Eingabe.itemModified || Object.create( Eingabe.item );      
          Eingabe.itemModified.y = data.value;
          Eingabe.itemModified.x = new Date().getTime();
