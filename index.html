@@ -25,7 +25,7 @@
 <article id="optionenId" class="view left">
   <header>
     <span>Einstellung</span>
-    <button id="optionenBackButton" class="button colorless">Zurück
+    <button id="optionenBackButton" class="button">Zurück
       <!-- <img src="img/icon/right.png" width="32"> -->
     </button>
   </header>
@@ -93,10 +93,14 @@
           <div class="intro-main row">    
             <section class="cell">
               <h1 class="intro-title"></h1>
-              <img src="img/icon/android/icon-96-xhdpi.png" alt="">
+              <p style="width:60px;">
+                <a id="introStartApp" class="button blue">Start</a>
+              </p>  
             </section>       
             <div class="cell">
-              <img src="img/screen/android/screen-hdpi-landscape.png" alt="">
+              <fieldset class="color2">
+                <img src="assets/intro_icon.png" alt=""> 
+              </fieldset>
             </div>
           </div>   
         </div>             
@@ -128,11 +132,11 @@
 <article id="homeId" class="view right">
 
   <header class="disappear">
-    <button id="addOptionen" class="button colorless" >Sync
+    <button id="addOptionen" class="button navi" >Sync
       <!-- <img src="img/icon/optionen.png" width="28"> -->
     </button>
     <span id="titleId">Consilium</span>
-    <button id="addEingabe" class="button colorless">Start
+    <button id="addEingabe" class="button navi">Start
       <!-- <img src="img/icon/plus.png" width="28"> -->
     </button>
   </header>
@@ -156,11 +160,11 @@
 <!-- FAVORITES --> 
 <article id="favoritesId" class="view right"> 
   <header>
-      <button id="favoritesBackButton" class="button colorless">Zurück
+      <button id="favoritesBackButton" class="button">Zurück
       <!-- <img src="img/icon/left.png" width="28"> -->
       </button>
       <span>Favoriten</span>
-  <button id="favoritesEditButton" class="button colorless">Ändern</button>
+  <button id="favoritesEditButton" class="button">Ändern</button>
   </header>
   <section id="favoritesContentId">
    <form id="favFormId"></form>
@@ -170,7 +174,7 @@
 <!-- SYMPTOME --> 
 <article id="symptomeId" class="view right">
   <header>
-    <button id="symptomeBackButton" class="button colorless">Zurück</button>
+    <button id="symptomeBackButton" class="button">Zurück</button>
      <!-- <img src="img/icon/left.png" width="32"> -->
     <span>Symptome</span>
   </header>
@@ -192,11 +196,11 @@
 <article id="eingabeId" class="view right">
 
   <header>
-      <button id="eingabeBackId" class="button colorless">
+      <button id="eingabeBackId" class="button">
         Zurück
       </button>
       <span>Eingabe</span>
-      <button id="eingabeEditId" class="button colorless" style="display:none">
+      <button id="eingabeEditId" class="button" style="display:none">
         Löschen
       </button>
   </header>
@@ -268,7 +272,7 @@
 <!-- TiPPS --> 
 <article id="tippId" class="view right">   
     <header>
-        <button id="tippBackButton" class="button colorless">Zurück</button>
+        <button id="tippBackButton" class="button">Zurück</button>
         <span>Empfehlung</span>
     <!-- <img src="img/icon/right.png" width="32"> -->
     </header>
