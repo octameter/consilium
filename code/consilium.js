@@ -39,11 +39,10 @@ var App = {
     
     console.log("- Node Server " + (App.live ? "Live" : "Local"));
     
-    Model.memory.set("lexikon", Entities.Symptome, ["id", "kategorie"]);
-    Model.memory.set("lexikon", Entities.Bewertung, ["id", "kategorie"]);
-    Model.memory.set("lexikon", Entities.Tagebuch, ["id", "kategorie"]);
-    Model.memory.set("lexikon", Entities.Device, ["id", "kategorie"]);
-    Model.memory.set("lexikon", Entities.Tipps, ["id", "kategorie"]);
+    Model.memory.set("lexikon", Symptom.data, Symptom._searchterms );
+    Model.memory.set("lexikon", Bewertung.data, Bewertung._searchterms );
+    Model.memory.set("lexikon", Tagebuch.data, Tagebuch._searchterms );
+    Model.memory.set("lexikon", Tipp.data, Tipp._searchterms );
     
     // DEV
     console.log("Setting DUMMY data");
@@ -155,16 +154,67 @@ var Intro = {
   { 
     this.setTitle("Consilium");
 
-    this.addFeatures([
-     {title: "1. Funktion", description: "Consilium ist ein Applikation zur Erfassung von Symptomen und Notizen durch die Patienten. Sie unterstützt die Kommunikation zwischen Arzt und Patient über den gemeinsamen Datenzugriff."},
-     {title: "2. Entwicklung", description: "Consilium wurde entwickelt zur Überprüfung des Mehrwerts von Applikationen in der medizinischen Versorgung. Die Studie wird aktuell durchgeführt."},
-     {title: "3. Nutzung", description: "Die App kann von allen Interessierten ausprobiert werden. Über „Start“ können die Symptome erfasst werden. "},
-     {title: "4. Datenspeicherung", description: "Nur über die Verbindung mit dem Datenspeicher und regelmässigen Synchronisation über „Sync“ können die Eingaben gespeichert werden. Ohne diese Verbindung gehen alle Eingaben nach  Schliessen der App verloren."},
-     {
-       title: "5. Anonymisierung",
-       description: "<p>Nutzer der App erhalten eine Individuelle Patienten-ID, mit der Sie berechtigt sind den Service zu nutzen.</p>"
-     }
-    ]);
+    // DESKTOP NOLOGIN
+    if( true )
+    {
+      this.addFeatures(
+      [
+        { title: "1. Funktion", description: "Consilium ist ein Applikation zur Erfassung von Symptomen und Notizen durch die Patienten. Sie unterstützt die Kommunikation zwischen Arzt und Patient über den gemeinsamen Datenzugriff."}
+        ,
+        { title: "2. Entwicklung", description: "Consilium wurde entwickelt zur Überprüfung des Mehrwerts von Applikationen in der medizinischen Versorgung. Die Studie wird aktuell durchgeführt."}
+        ,
+        { title: "3. Nutzung", description: "Die App kann von allen Interessierten ausprobiert werden. Über „Start“ können die Symptome erfasst werden. "}
+        ,
+        { title: "4. Datenspeicherung", description: "Nur über die Verbindung mit dem Datenspeicher und regelmässigen Synchronisation über „Sync“ können die Eingaben gespeichert werden. Ohne diese Verbindung gehen alle Eingaben nach  Schliessen der App verloren."}
+        ,
+        { title: "5. Anonymisierung", description: "<p>Nutzer der App erhalten eine Individuelle Patienten-ID, mit der Sie berechtigt sind den Service zu nutzen.</p>"}
+        ,
+        { title: "6. Abschluss", description: "Wir danken für Ihr Interesse." }
+      ]);
+    }
+    
+    // APP
+    if( false )
+    {
+      this.addFeatures(
+      [
+        { title: "1. Funktion", description: "Liebe NutzerIn, die App dient Ihnen als persönliches Logbuch für das Befinden während Ihrer Therapie. Wir empfehlen die App täglich zu nutzen." }
+        ,
+        { title: "2. Einführung", description: "Über Start finden Sie Ihre Favoritenliste, um das Wohlbefinden, die Symptomen und Tagebucheintragungen einzugeben." }
+        ,
+        { title: "3. Abschluss", description: "Wir wünschen Ihnen viel Erfolg!" }
+      ]);
+    }
+    
+    // GRUPPE B    
+    if( false )
+    {
+      this.addFeatures(
+      [
+        { title: "1. Einteilung", description: "Sie wurden in die Gruppe B eingeteilt. Teilnehmerinnen der Gruppe B nutzen die App, ohne den Arzt darüber zu informieren und ohne die App in der Arztvisite zu verwenden. Verhalten Sie sich ansonsten in Ihren Arztvisiten wie gewohnt, und informieren Sie den Arzt über Ihre Beschwerden und Wünsche."}
+        ,
+        { title: "4. Fragebogen", description: "Bei der Beantwortung des Fragebogens können Sie gerne die App verwenden. Bitte verwenden Sie auf dem Fragbogen nur Ihre persönliche Patientenidentifikationsnummer und nicht ihren persönlichen Namen. Falls Sie diese Nummer vergessen haben sollten, so können Sie die Information durch Berühren der „Sync“-Taste abrufen."}
+        ,
+        { title: "5. Abschluss", description: "Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie."}
+      ]);
+    }
+    
+    // GRUPPE C    
+    if( false )
+    {
+      this.addFeatures(
+      [
+        { title: "1. Einteilung", description: "Liebe Teilnehmerin, Sie wurden in die Gruppe C eingeteilt."}
+        ,
+        { title: "2. Nutzung", description: "Wir empfehlen die App täglich zu nutzen. Ist der Abstand zwischen zwei Eintragungen grösser als drei Tage wird die Verbindungslinie zwischen zwei DatenPunkten unterbrochen und beginnt von neuem. In Ihrer Favoritenliste finden Sie die Eingaben für Wohlbefinden, Symptomen und Tagebucheintragungen."}
+        ,
+        { title: "3. Arztvisite", description: "Teilnehmerinnen der Gruppe C nutzen die App und betrachten zusammen mit dem Arzt den Verlauf der Eingaben. Die App dient hier als Ergänzung und soll Ihnen als Gedächtnisstütze helfen. Verhalten Sie sich ansonsten in Ihren Arztvisiten wie gewohnt, und informieren Sie den Arzt über Ihre Beschwerden und Wünsche." }
+        ,
+        { title: "4. Fragebogen", description: "Bei der Beantwortung des Fragebogens können Sie gerne die App verwenden. Bitte verwenden Sie auf dem Fragbogen nur Ihre persönliche Patientenidentifikationsnummer und nicht ihren persönlichen Namen. Falls Sie diese Nummer vergessen haben sollten, so können Sie die Information durch Berühren der „Sync“-Taste abrufen."}
+        ,
+        { title: "6. Abschluss", description: "Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie." }
+      ]);
+    }
   }
   ,
   update: function()
