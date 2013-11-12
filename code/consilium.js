@@ -102,8 +102,8 @@ var Controller = {
     eventify(this);
     
     this.bind();
-  },
-  
+  }
+  ,
   bind: function(){
     DOM(window).on("ready", function(){
       Controller.dispatch(Controller.SETUP);
@@ -411,8 +411,8 @@ var Home = {
       Home.chart.scroll( rechts );         
     },
     
-    update: function(){
-      
+    update: function()
+    {  
       this.board.findAll(".movePoint").remove();
       
       // Symbole
@@ -539,7 +539,7 @@ var Home = {
           //detail:"Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen." 
         });
        
-        this.fieldset.find("ul").on("tangent", function(data)
+        this.fieldset.find("ul").on("tangent", function( data )
         {    
           if( data.type == "touchend" )
           {
@@ -735,7 +735,7 @@ var Symptome = {
   {
     if (!App.live) console.log( "- VIEW Symptome");
     
-    //this.bind();  
+    this.bind();  
     
     this.container.show();
     this.content.hide();
@@ -1050,14 +1050,19 @@ var Eingabe = {
        
        var rows = DOM("fieldsetTipp").find(".listeNext").removeChilds();
              
-       rows.on("touch", function(data){
-         var tipp = JSON.parse( data.target.getAttribute("data") );
+       rows.on("tangent", function(data){
          
-         if (tipp){
-            Eingabe.content.hide();
-            Eingabe.container.swipe("left");
-            Controller.dispatch(Controller.TIPPS, tipp);
+         if( data.type == "touchend")
+         {
+            var tipp = JSON.parse( data.target.getAttribute("data") );
+         
+             if (tipp){
+                Eingabe.content.hide();
+                Eingabe.container.swipe("left");
+                Controller.dispatch(Controller.TIPPS, tipp);
+             }
          }
+
        }, { watch: "LI"} );
              
        for (var j = 0; j < tipps.length; j++){

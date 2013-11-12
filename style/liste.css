@@ -1,31 +1,31 @@
   /* LISTE Next */
 .listeNext {
-	position: relative;
-	margin: 0;
-	padding: 0;
+  position: relative;
+  margin: 0;
+  padding: 0;
 }
 
 .listeNext > li {
- 	position: relative;
+  position: relative;
   padding: 2px;
-	list-style: none;
-	text-align: left;
-	cursor: pointer;
+  list-style: none;
+  text-align: left;
+  cursor: pointer;
   overflow-y: hidden;
   overflow-x: hidden;
-	border-bottom: 1px solid #DCDCDC; 
-	border-top: 1px solid #FFF; 
+  border-bottom: 1px solid #DCDCDC; 
+  border-top: 1px solid #FFF; 
 }
 .listeNext > li:first-child {
-    border-top: none;   
+  border-top: none;   
 }
 
 .listeNext > li:last-child {
-	border-bottom: none; 
+border-bottom: none; 
 }
 
 .listeNext > li.selected {
-	background: rgba(100,150,200,0.6);
+background: rgba(100,150,200,0.6);
 }
  
 /**
@@ -85,7 +85,6 @@
   line-height: 30px;
   padding: 0 10px;
 }
-
 
 /*  .row_detail:not(:empty) */
 
