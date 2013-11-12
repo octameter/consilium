@@ -1,3 +1,7 @@
+# TEST
+www/test.html
+www/test
+
 #OS specific and not allowed for build.phonegap.com
 www/cordova-*.js
 www/phonegap.js
@@ -7,31 +11,7 @@ www/cordova.js
 #GOODSYNC
 _gsdata_/
 
-# TEST
-www/test.html
-www/test
-
-# always-ignore extensions
-*.diff
-*.log
-*.err
-*.jar
-*.zip
-*.DS_Store
-
-# OS or Editor folders
-.DS_Store
-._*
-Thumbs.db
-.cache
-.project
-.settings
-.tmproj
-*.esproj
-nbproject
-
 
 style/theme.css
 code/library.*.js
 
-style/theme.css
