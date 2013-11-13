@@ -163,17 +163,17 @@ var Intro = {
     {
       this.addFeatures(
       [
-        { title: "1. Funktion", description: "Consilium ist ein Applikation zur Erfassung von Symptomen und Notizen durch die Patienten. Sie unterstützt die Kommunikation zwischen Arzt und Patient über den gemeinsamen Datenzugriff."}
+        { title: "1. Funktion", description: "Consilium ist eine Applikation zur Erfassung von Symptomen und Notizen durch die NutzerInnen. Sie unterstützt die Kommunikation mit dem Arzt über einen gemeinsamen Datenzugriff."}
         ,
-        { title: "2. Entwicklung", description: "Consilium wurde entwickelt zur Überprüfung des Mehrwerts von Applikationen in der medizinischen Versorgung. Die Studie wird aktuell durchgeführt."}
+        { title: "2. Entwicklung", description: "Consilium wurde für eine Studie entwickelt, die aktuell den Mehrwert von Applikationen in der medizinischen Versorgung untersucht."}
         ,
-        { title: "3. Nutzung", description: "Die App kann von allen Interessierten ausprobiert werden. Über „Start“ können die Symptome erfasst werden. "}
+        { title: "3. Nutzung", description: "Alle Interssierte dürfen die App testen. Über „Start“ wird die Favoritenliste aufgerufen, in der Wohlbefinden, Symptome und Tagebuchnotizen eingeben werden können."}
         ,
-        { title: "4. Datenspeicherung", description: "Nur über die Verbindung mit dem Datenspeicher und regelmässigen Synchronisation über „Sync“ können die Eingaben gespeichert werden. Ohne diese Verbindung gehen alle Eingaben nach  Schliessen der App verloren."}
+        { title: "4. Datenspeicherung", description: "Die Daten werden nur nach Verbindung mit dem Server und regelmässiger Synchronisation über „Sync“ gespeichert. Eingegebene Daten in der Testversion werden nicht erfasst."}
         ,
-        { title: "5. Anonymisierung", description: "<p>Nutzer der App erhalten eine Individuelle Patienten-ID, mit der Sie berechtigt sind den Service zu nutzen.</p>"}
+        { title: "5. Anonymisierung", description: "NutzerInnen der App erhalten eine individuelle Patienten-ID, mit der Sie berechtigt sind den Service zu nutzen."}
         ,
-        { title: "6. Abschluss", description: "Wir danken für Ihr Interesse." }
+        { title: "6. Epilog", description: "Wir danken für Ihr Interesse und wünschen Ihnen viel Erfolg." }
       ]);
     }
     
@@ -182,11 +182,11 @@ var Intro = {
     {
       this.addFeatures(
       [
-        { title: "1. Funktion", description: "Liebe NutzerIn, die App dient Ihnen als persönliches Logbuch für das Befinden während Ihrer Therapie. Wir empfehlen die App täglich zu nutzen." }
+        { title: "1. Funktion", description: "Die App ist Ihr persönliches Logbuch während einer medizinischen Therapie. Wir empfehlen die App täglich zu nutzen." }
         ,
-        { title: "2. Einführung", description: "Über Start finden Sie Ihre Favoritenliste, um das Wohlbefinden, die Symptomen und Tagebucheintragungen einzugeben." }
+        { title: "2. Einführung", description: "Über „Start“ können Sie in der Favoritenliste Wohlbefinden, Symptome und Notizen erfassen." }
         ,
-        { title: "3. Abschluss", description: "Wir wünschen Ihnen viel Erfolg!" }
+        { title: "3. Epilog", description: "Die erfassten Daten erscheinen in Ihrer Timeline und in Ihrer Web-Applikation. Wir wünschen Ihnen viel Erfolg!" }
       ]);
     }
     
@@ -195,11 +195,13 @@ var Intro = {
     {
       this.addFeatures(
       [
-        { title: "1. Einteilung", description: "Sie wurden in die Gruppe B eingeteilt. Teilnehmerinnen der Gruppe B nutzen die App, ohne den Arzt darüber zu informieren und ohne die App in der Arztvisite zu verwenden. Verhalten Sie sich ansonsten in Ihren Arztvisiten wie gewohnt, und informieren Sie den Arzt über Ihre Beschwerden und Wünsche."}
+        { title: "1. Einteilung", description: "Sie gehören der Gruppe B an. Verwenden Sie die App während der Beobachtungszeit, ohne den Arzt darüber zu informieren. Verhalten Sie sich ansonsten in den Arztvisiten wie gewohnt, und informieren Sie den Arzt über alle Ihre Beschwerden und Wünsche."}
         ,
-        { title: "4. Fragebogen", description: "Bei der Beantwortung des Fragebogens können Sie gerne die App verwenden. Bitte verwenden Sie auf dem Fragbogen nur Ihre persönliche Patientenidentifikationsnummer und nicht ihren persönlichen Namen. Falls Sie diese Nummer vergessen haben sollten, so können Sie die Information durch Berühren der „Sync“-Taste abrufen."}
+        { title: "2. Nutzung", description: "Wir empfehlen die App täglich zu nutzen. Über „Start“ können Sie in der Favoritenliste Wohlbefinden, Symptome und Notizen erfassen. Die erfassten Daten erscheinen in Ihrer Timeline und Web-Applikation. Zwei Datenpunkten erhalten eine Verbindungslinie, wenn der Zeitabstand weniger als drei Tage beträgt."}
         ,
-        { title: "5. Abschluss", description: "Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie."}
+        { title: "3. Fragebogen", description: "Bitte beantworten Sie unsere Fragebögen. Sie können die App dabei verwenden. Notieren Sie bitte auf dem Fragebogen nur Ihre persönliche Patienten-ID (Pat-ID) und nie Ihren Namen. Ihre Pat-ID erscheint in der App durch Berühren der „Sync“-Taste."}
+        ,
+        { title: "4. Epilog", description: "Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie."}
       ]);
     }
     
@@ -208,15 +210,13 @@ var Intro = {
     {
       this.addFeatures(
       [
-        { title: "1. Einteilung", description: "Liebe Teilnehmerin, Sie wurden in die Gruppe C eingeteilt."}
+        { title: "1. Einteilung", description: "Sie gehören der Gruppe C an. Verwenden Sie die App während der Beobachtungszeit und diskutieren Sie die Daten zusammen mit dem Arzt in der Visite. Verhalten Sie sich ansonsten in den Arztvisiten wie gewohnt, und informieren Sie den Arzt über alle Ihre Beschwerden und Wünsche."}
         ,
-        { title: "2. Nutzung", description: "Wir empfehlen die App täglich zu nutzen. Ist der Abstand zwischen zwei Eintragungen grösser als drei Tage wird die Verbindungslinie zwischen zwei DatenPunkten unterbrochen und beginnt von neuem. In Ihrer Favoritenliste finden Sie die Eingaben für Wohlbefinden, Symptomen und Tagebucheintragungen."}
+        { title: "2. Nutzung", description: "Wir empfehlen die App täglich zu nutzen. Über „Start“ können Sie in der Favoritenliste Wohlbefinden, Symptome und Notizen erfassen. Die erfassten Daten erscheinen in Ihrer Timeline und in Ihrer Web-Applikation. Zwei Datenpunkten erhalten eine Verbindungslinie, wenn der Zeitabstand weniger als drei Tage beträgt."}
         ,
-        { title: "3. Arztvisite", description: "Teilnehmerinnen der Gruppe C nutzen die App und betrachten zusammen mit dem Arzt den Verlauf der Eingaben. Die App dient hier als Ergänzung und soll Ihnen als Gedächtnisstütze helfen. Verhalten Sie sich ansonsten in Ihren Arztvisiten wie gewohnt, und informieren Sie den Arzt über Ihre Beschwerden und Wünsche." }
+        { title: "3. Fragebogen", description: "Bitte beantworten Sie unsere Fragebögen. Sie können die App dabei verwenden. Notieren Sie bitte auf dem Fragebogen nur Ihre persönliche Patienten-ID (Pat-ID) und nie Ihren Namen. Ihre Pat-ID erscheint in der App durch Berühren der „Sync“-Taste."}
         ,
-        { title: "4. Fragebogen", description: "Bei der Beantwortung des Fragebogens können Sie gerne die App verwenden. Bitte verwenden Sie auf dem Fragbogen nur Ihre persönliche Patientenidentifikationsnummer und nicht ihren persönlichen Namen. Falls Sie diese Nummer vergessen haben sollten, so können Sie die Information durch Berühren der „Sync“-Taste abrufen."}
-        ,
-        { title: "6. Abschluss", description: "Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie." }
+        { title: "4. Epilog", description: "Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie." }
       ]);
     }
     
