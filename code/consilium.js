@@ -139,13 +139,17 @@ var Intro = {
   {
     Controller.on( Controller.START, Intro.update );
     
+    Controller.on( Controller.INTRO, function(){
+        Intro.container.style("top", "0%");
+    });
+    
     DOM("introStartApp").on("tangent", function( data )
     {
       if( data.type == "touchend" )
       {
         Controller.dispatch(Controller.HOME);
-        Intro.container.swipe("left");
-        Intro.container.hide();
+        Intro.container.style("top", "100%");
+        // Intro.container.hide();
       }
     });
   }
@@ -215,6 +219,8 @@ var Intro = {
         { title: "6. Abschluss", description: "Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie." }
       ]);
     }
+    
+    this.setDisclaimer();
   }
   ,
   update: function()
@@ -308,6 +314,14 @@ var Home = {
         Controller.dispatch( Controller.FAVORITES ); 
         Home.content.hide();
         Home.container.swipe("left");
+      }
+    });
+    
+    DOM("homeHilfe").on("tangent", function( data )
+    { 
+      if( data.type == "touchend" )
+      {
+        Controller.dispatch( Controller.INTRO );
       }
     });
     

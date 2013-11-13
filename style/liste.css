@@ -35,8 +35,11 @@ background: rgba(100,150,200,0.6);
   position: relative;
   width: 100%;
   min-height: 20px;
-  cursor: pointer;
   padding: 8px;
+}
+
+.listeNext .row {
+  cursor: pointer;
 }
 
 .row_caretLeft {
