@@ -494,15 +494,15 @@ var Home = {
     },
     
     update: function(event){
-
-      this.fieldset.find("ul").off("tangent");
-      this.fieldset.find("ul").removeChilds();
+      
+      var liste = this.fieldset.find("ul");
+      
+      liste.off("tangent");
+      liste.removeChilds();
 
       if (event)
       {
         var howto = Model.memory.get("lexikon").has("id", [{ id: event.id }] )[0];
-        
-        var liste = this.fieldset.find("ul");
         
         // Augment event
         event.zero = howto.zero;
@@ -513,10 +513,8 @@ var Home = {
         
         var detail = "";
         var value = "&nbsp";
-        if (/^\d+$/.test(event.y))
-        {
-           value = event.y + " " + event.unit;
-        }
+        
+        if (/^\d+$/.test(event.y)) value = event.y + " " + event.unit;
         else detail = event.y;
         
         liste.addRow({
@@ -529,27 +527,25 @@ var Home = {
           detail: detail
         });
         
-        liste.on("tangent", function(data){
-          
+        liste.on("tangent", function(data)
+        {
+          if( data.type == "touchstart" ) DOM( data.target ).addClass("selected");
           if( data.type == "touchend" )
           {
-            console.log(data);
             Home.content.hide();
             Home.container.swipe("left");
             
             var item = event;
             item.back = App.HOME;
-            
             Controller.dispatch(Controller.EINGABE, item);
           }
-
-         }, { watch: "LI" } );
+         }, { watch: "LI" });
       } 
       else
       {
         var howto = Model.memory.get("lexikon").has("id", [{ id: "Symptom" }] )[0];
         
-        this.fieldset.find("ul").addRow({
+        liste.addRow({
           title: howto.title,
           caretLeft: false,
           caretRight: true,
@@ -558,15 +554,16 @@ var Home = {
           //detail:"Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen." 
         });
        
-        this.fieldset.find("ul").on("tangent", function( data )
-        {    
+        liste.on("tangent", function(data)
+        {
+          if( data.type == "touchstart" ) DOM( data.target ).addClass("selected");
           if( data.type == "touchend" )
           {
             Home.content.hide();
             Home.container.swipe("left");
             Controller.dispatch(Controller.SYMPTOME);
           }
-        });
+        }, { watch: "LI" });
       }
       
       this.fieldset.legend(howto.kategorie);
@@ -749,7 +746,7 @@ var Symptome = {
   container:  DOM("symptomeId"),
   gotoHome:   DOM("symptomeBackButton"),
   content:    DOM("symptomeContentId"),
-  fieldset:   DOM("symFieldsetId"),
+  liste:      DOM("symptomListe"),
   BACK:       Controller.Home
   ,
   init: function()
@@ -791,8 +788,9 @@ var Symptome = {
   {  
     Symptome.content.show();
     
-    var liste = this.fieldset.find("ul").on("tangent", function(data)
+    this.liste.on("tangent", function(data)
     {
+      if (data.type == "touchstart") DOM(data.target).addClass("selected");
       if( data.type == "touchend")
       {
         var item = data.transfer;
@@ -812,10 +810,10 @@ var Symptome = {
     
     symptome.sortABC("title");
     
-    liste.removeChilds();
+    this.liste.removeChilds();
     
     for (var i = 0; i < symptome.length; i++){
-      liste.addRow({ title: symptome[i].title, value: "&nbsp;", farbe: symptome[i].farbwert, caretRight: true, data: symptome[i]});
+      this.liste.addRow({ title: symptome[i].title, value: "&nbsp;", farbe: symptome[i].farbwert, caretRight: true, data: symptome[i]});
     }
   }
 };
@@ -1073,6 +1071,7 @@ var Eingabe = {
              
        rows.on("tangent", function(data){
          
+         if (data.type == "touchstart") DOM(data.target).addClass("selected");
          if( data.type == "touchend")
          {
             var tipp = JSON.parse( data.target.getAttribute("data") );
