@@ -488,6 +488,8 @@ var Home = {
   form: {
 
     fieldset: DOM("homeFieldsetAuswahl"),
+    
+    liste: DOM("homeAuswahlListe"),
 
     init: function(){  
 
@@ -495,10 +497,8 @@ var Home = {
     
     update: function(event){
       
-      var liste = this.fieldset.find("ul");
-      
-      liste.off("tangent");
-      liste.removeChilds();
+      this.liste.off("tangent");
+      this.liste.removeChilds();
 
       if (event)
       {
@@ -517,7 +517,7 @@ var Home = {
         if (/^\d+$/.test(event.y)) value = event.y + " " + event.unit;
         else detail = event.y;
         
-        liste.addRow({
+        this.liste.addRow({
           title: howto.title,
           zeit: "Am " + util.zeit("dd.mm.yyyy hh:mm", Math.floor( event.x )), 
           caretLeft: false,
@@ -527,7 +527,7 @@ var Home = {
           detail: detail
         });
         
-        liste.on("tangent", function(data)
+        this.liste.on("tangent", function(data)
         {
           if( data.type == "touchstart" ) DOM( data.target ).addClass("selected");
           if( data.type == "touchend" )
@@ -545,7 +545,7 @@ var Home = {
       {
         var howto = Model.memory.get("lexikon").has("id", [{ id: "Symptom" }] )[0];
         
-        liste.addRow({
+        this.liste.addRow({
           title: howto.title,
           caretLeft: false,
           caretRight: true,
@@ -554,7 +554,7 @@ var Home = {
           //detail:"Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen." 
         });
        
-        liste.on("tangent", function(data)
+        this.liste.on("tangent", function(data)
         {
           if( data.type == "touchstart" ) DOM( data.target ).addClass("selected");
           if( data.type == "touchend" )
@@ -761,9 +761,9 @@ var Symptome = {
   ,
   // BINDING
   bind: function()
-  {       
+  {
     this.gotoHome.on("tangent", function( data )
-    {      
+    {
       if( data.type == "touchend" )
       {
         Symptome.content.hide();
