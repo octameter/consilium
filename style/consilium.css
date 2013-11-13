@@ -67,6 +67,12 @@ and (max-device-width : 568px) {
 	font-weight: bold;
 }
 
+/* VIEW Eingabe */
+#favGradId {
+  padding-top: 5px;
+  min-height: 39px;
+}
+
 /* CHART */     
 .chart {
 	position: relative;
