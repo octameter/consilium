@@ -157,6 +157,8 @@ var Intro = {
   setContent: function()
   { 
     this.setTitle("Consilium");
+    this.setClaim("Arzt und Patient verbinden");
+    this.setDetail("Informationen");
 
     // DESKTOP NOLOGIN
     if( true )
