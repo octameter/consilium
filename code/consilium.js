@@ -925,10 +925,11 @@ var Eingabe = {
      });
      
      Controller.on(Controller.EINGABE, function(data){
-
+       
+       Eingabe.content.hide();
+       
        if (data){
        // Coming from Favorites or Symptom
-         
          Eingabe.BACK = data.back || Controller.HOME;
          Eingabe.item = data;
          Eingabe.itemModified = null;         
@@ -1000,7 +1001,7 @@ var Eingabe = {
          DOM("favOutputId").text( ( data.y || data.zero ) + " " + data.unit);
          
          // TODO only set the slider on view change but not on slider change
-         DOM("sliderArea").setSlider(data.y || data.zero );
+         DOM("sliderArea").setSlider(parseInt(data.y) || data.zero );
 
          this.showDefinition( data );
        }
