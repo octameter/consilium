@@ -500,6 +500,8 @@ var Home = {
       {
         var howto = Model.memory.get("lexikon").has("id", [{ id: event.id }] )[0];
         
+        var liste = this.fieldset.find("ul");
+        
         // Augment event
         event.zero = howto.zero;
         event.unit = howto.unit;
@@ -515,7 +517,7 @@ var Home = {
         }
         else detail = event.y;
         
-        this.fieldset.find("ul").addRow({
+        liste.addRow({
           title: howto.title,
           zeit: "Am " + util.zeit("dd.mm.yyyy hh:mm", Math.floor( event.x )), 
           caretLeft: false,
@@ -525,10 +527,11 @@ var Home = {
           detail: detail
         });
         
-        this.fieldset.find("ul").on("tangent", function(data){
+        liste.on("tangent", function(data){
           
           if( data.type == "touchend" )
           {
+            console.log(data);
             Home.content.hide();
             Home.container.swipe("left");
             
@@ -635,6 +638,7 @@ var Favorites = {
   {
     if( data.type == "touchend" )
     {
+      console.log("edit");
       Favorites.update(true);
       Favorites.gotoSymptome.text("fertig");
       Favorites.gotoHome.hide();
@@ -647,6 +651,7 @@ var Favorites = {
   {
     if( data.type == "touchend" )
     {
+      console.log("unedit");
       Favorites.update();
       Favorites.gotoSymptome.text("ändern");
       Favorites.gotoHome.show();
@@ -666,7 +671,7 @@ var Favorites = {
     lexiFav.unique("kategorie").forEach(function(kategorie){
 
     // EACH FAVORIT GETS FIELDSET
-      var legend = Favorites.form.add("fieldset").add("legend").text(kategorie);
+      var legend = Favorites.form.add("fieldset").addClass("liste").add("legend").text(kategorie);
       var rows = legend.addNext("ul").addClass("listeNext");
       var entities = lexiFav.has("kategorie", [{ "kategorie": kategorie}] );
       var editables = entities.has("edit", [{ edit: true }] );

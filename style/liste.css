@@ -1,4 +1,9 @@
   /* LISTE Next */
+
+fieldset.liste {
+  padding: 0;
+}
+
 .listeNext {
   position: relative;
   margin: 0;
@@ -17,29 +22,32 @@
   border-top: 1px solid #FFF; 
 }
 .listeNext > li:first-child {
-  border-top: none;   
+  border-top: none;
+  margin-top: 10px;
 }
 
 .listeNext > li:last-child {
-border-bottom: none; 
+  border-bottom: none;
+  margin-bottom: 10px;
 }
 
 .listeNext > li.selected {
-background: rgba(100,150,200,0.6);
+  border-top-color: rgba(100, 150, 200, 0.6);
+  background: rgba(100, 150, 200, 0.6);
 }
  
 /**
  * ROW
 **/
-.row {
-  position: relative;
-  width: 100%;
-  min-height: 20px;
-  padding: 8px;
-}
 
 .listeNext .row {
+  box-sizing: border-box;
   cursor: pointer;
+  position: relative;
+  width: 100%;
+  margin: 0;
+  min-height: 20px;
+  padding: 8px;
 }
 
 .row_caretLeft {
@@ -77,7 +85,7 @@ background: rgba(100,150,200,0.6);
 .row_delete {
   position: absolute;
   text-align: right;
-  top: 0; bottom: 0; right: 0;
+  top: 0; bottom: 0; right: 10px;
   margin: auto;
   min-height: 30px;
   height: 18px;
