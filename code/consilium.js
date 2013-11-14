@@ -1000,7 +1000,7 @@ var Eingabe = {
          DOM("zeitArea").setDatetime( data.x );
          DOM("favOutputId").text( ( data.y || data.zero ) + " " + data.unit);
          
-        this.content.show();
+         this.content.show();
          // TODO only set the slider on view change but not on slider change
          DOM("sliderArea").setSlider(parseInt(data.y) || data.zero );
 
