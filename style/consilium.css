@@ -53,6 +53,12 @@ and (max-device-width : 568px) {
 	float:right;
 }
 
+/* VIEW HOME */
+#homeHilfe {
+  cursor: pointer;
+  margin: 1em;
+}
+
 /* VIEW FAVORITEN */
 .favActions, .borderTop {
   border-top: 1px solid rgba(200,200,200,1);
