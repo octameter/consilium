@@ -49,11 +49,6 @@ and (max-device-width : 568px) {
 	float:right;
 }
 
-/* VIEW HOME */
-#homeHilfe {
-  cursor: pointer;
-  margin: 1em;
-}
 
 /* VIEW FAVORITEN */
 .favActions, .borderTop {

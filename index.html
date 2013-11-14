@@ -22,7 +22,7 @@
 
 
 <!-- EINSTELLUNG -->
-<article id="einstellungId" class="view left">
+<article id="einstellungId" class="view left" style="display: none;">
   <header>
     <span>Einstellung</span>
     <button id="einstellungBackButton" class="button">Zurück</button>
@@ -76,7 +76,8 @@
     <div class="page">
         <div class="intro-content">
           <h3 class="intro-detail"></h3>
-          <ul class="row intro-features"></ul>
+          <ul class="row highlight intro-features"></ul>
+          
           <hr>
           
           <div class=row>
@@ -123,14 +124,14 @@
        <ul id="homeAuswahlListe" class="listeNext"></ul>
      </fieldset>
     </form>
-  <div id="homeHilfe">Hilfe</div>
+    
   </section>
 
   
 </article>
         
 <!-- FAVORITES --> 
-<article id="favoritesId" class="view right"> 
+<article id="favoritesId" class="view right" style="display: none;"> 
   <header>
       <button id="favoritesBackButton" class="button">Zurück</button>
       <span>Favoriten</span>
@@ -142,7 +143,7 @@
 </article>
    
 <!-- SYMPTOME --> 
-<article id="symptomeId" class="view right">
+<article id="symptomeId" class="view right" style="display: none;">
   <header>
     <button id="symptomeBackButton" class="button">Zurück</button>
     <span>Symptome</span>
@@ -162,14 +163,14 @@
 </article>
    
 <!-- EINGABE --> 
-<article id="eingabeId" class="view right">
+<article id="eingabeId" class="view right" style="display: none;">
 
   <header>
       <button id="eingabeBackButton" class="button">
         Zurück
       </button>
       <span>Eingabe</span>
-      <button id="eingabeEditId" class="button" style="display:none">
+      <button id="eingabeEditId" class="button" style="display: none;">
         Löschen
       </button>
   </header>
@@ -177,13 +178,11 @@
   <section id="eingabeContentId">
   
    <form>
-   
+     
      <fieldset>
        <legend>Zeitpunkt</legend>
-       
        <!-- DOModule datetime -->
        <div id="zeitArea"></div>
-       
      </fieldset>
      
      <fieldset id="strukturierteEingabe">
@@ -239,13 +238,17 @@
 </article>
   
 <!-- TiPPS --> 
-<article id="tippId" class="view right">   
+<article id="tippId" class="view right" style="display: none;">
     <header>
         <button id="tippBackButton" class="button">Zurück</button>
         <span>Empfehlung</span>
     </header>
     <section id="tippContentId"></section>
 </article>
+  
+<footer>
+  <button id="homeHilfe" class="button grey">Info</button>
+</footer>
  
 <!-- BUILD PHONEGAP -->
 <script src="cordova.js"></script>			
