@@ -4,6 +4,10 @@ fieldset.liste {
   padding: 0;
 }
 
+fieldset.liste legend{
+  margin-left: 0.75em;
+}
+
 .listeNext {
   position: relative;
   margin: 0;
@@ -41,6 +45,7 @@ fieldset.liste {
 **/
 
 .listeNext .row {
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   cursor: pointer;
   position: relative;
@@ -93,7 +98,7 @@ fieldset.liste {
 }
 
 .row_delete.button {
-  line-height: 30px;
+  line-height: 28px;
   padding: 0 10px;
 }
 

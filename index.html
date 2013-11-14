@@ -20,34 +20,34 @@
 </head>
 <body id="app">
 
-   
-<!-- OPTIONEN -->
-<article id="optionenId" class="view left">
+
+<!-- EINSTELLUNG -->
+<article id="einstellungId" class="view left">
   <header>
     <span>Einstellung</span>
-    <button id="optionenBackButton" class="button">Zurück
+    <button id="einstellungBackButton" class="button">Zurück
       <!-- <img src="img/icon/right.png" width="32"> -->
     </button>
   </header>
-  <section id="optionenContentId" style="display:none">
+  <section id="einstellungContentId" style="display:none">
    <form>
    
-     <fieldset id="optionenVerbundenId">
+     <fieldset id="einstellungVerbundenId">
       <legend>Verbindung</legend>
       <div>
         <strong>Mit Brustzentrum</strong>
         <div>
-          <span id="optionenVerbundenStatus">optionenStatus</span>
+          <span id="einstellungVerbundenStatus">einstellungStatus</span>
           <a class="button blue floatRight">Verbinden</a>
         </div>
       </div>
      </fieldset>
      
-     <fieldset id="optionenSyncId">
+     <fieldset id="einstellungSyncId">
        <legend>Synchronisation</legend>
        <div>
-         <strong id="optionenSyncStatus">Initialisierung</strong>
-         <span id="optionenSyncInfo"></span>
+         <strong id="einstellungSyncStatus">Initialisierung</strong>
+         <span id="einstellungSyncInfo"></span>
          <a class="button red floatRight">Sync</a>
        </div>
      </fieldset>
@@ -57,58 +57,51 @@
 </article>
   
   
-  <!-- INTRO -->
-  <article id="introId" class="view middle" style="z-index: 100;">  
+<!-- INTRO -->
+<article id="introId" class="view middle" style="z-index: 100;">  
+
+  <div class="intro-wrapper color4">
   
-    <div class="intro-wrapper color4">
-    
-      <div class="color2">    
-        <div class="page">
-          <div class="intro-main row">    
-            <section class="cell">
-              <h1 class="intro-title"></h1>  
-            </section>       
-            <div class="cell color2">
-              <img src="assets/intro_icon.png" alt="Consilium Logo">
-            </div>
-          </div>   
-        </div>             
-      </div>
-
+    <div class="color2">    
       <div class="page">
-	      <div class="intro-content">
-            
-            <h3 class="intro-detail"></h3>
-            
-	        <ul class="row intro-features"></ul>
-
-            <hr>
-            
-            <div class=row>
-              <div class="cell">
-                &nbsp;
-              </div>
-              <div class="cell">
-              
-            
-              <a id="introStartApp" class="cell button blue floatRight">Beginnen</a>
-              </div>
-            </div>
-            
-            
-            
-	      </div>
-      </div>
-
+        <div class="intro-main row">    
+          <section class="cell">
+            <h1 class="intro-title"></h1>  
+          </section>       
+          <div class="cell">
+            <img src="assets/intro_icon.png" alt="Consilium Logo">
+          </div>
+        </div>   
+      </div>             
     </div>
-      
-     <div class="intro-footer color5">
-       <div class="page intro-credits"></div>        
-       <hr>
-       <div class="page intro-copyright"></div>
-     </div>
-      
-  </article>
+
+    <div class="page">
+        <div class="intro-content">
+          <h3 class="intro-detail"></h3>
+          <ul class="row intro-features"></ul>
+          <hr>
+          
+          <div class=row>
+            <div class="cell">
+              &nbsp;
+            </div>
+            <div class="cell">
+              <a id="introStartApp" class="cell button blue floatRight">Beginnen</a>
+            </div>
+          </div>
+          
+        </div>
+    </div>
+
+  </div>
+    
+   <div class="intro-footer color5">
+     <div class="page intro-credits"></div>        
+     <hr>
+     <div class="page intro-copyright"></div>
+   </div>
+    
+</article>
   
 
 <!-- HOME -->     
@@ -119,7 +112,7 @@
       <!-- <img src="img/icon/optionen.png" width="28"> -->
     </button>
     <span id="titleId">Consilium</span>
-    <button id="addEingabe" class="button navi">Start
+    <button id="homeFavoritenButton" class="button navi">Start
       <!-- <img src="img/icon/plus.png" width="28"> -->
     </button>
   </header>
@@ -181,7 +174,7 @@
 <article id="eingabeId" class="view right">
 
   <header>
-      <button id="eingabeBackId" class="button">
+      <button id="eingabeBackButton" class="button">
         Zurück
       </button>
       <span>Eingabe</span>

@@ -30,7 +30,7 @@ var App = {
     Controller.init();
     
     Intro.init();
-    Optionen.init();
+    Einstellung.init();
     Home.init();
     Favorites.init();
     Symptome.init();
@@ -90,7 +90,7 @@ var Controller = {
   SETUP:      "SETUP",
   START:      "START",
   HOME:       "HOME",
-  OPTIONEN:   "OPTIONEN",
+  EINSTELLUNG:"EINSTELLUNG",
   FAVORITES:  "FAVORITES",
   EINGABE:    "EINGABE",
   SYMPTOME:   "SYMPTOME",
@@ -232,18 +232,18 @@ var Intro = {
 };
 
 /**
- * VIEW OPTIONEN
+ * VIEW EINSTELLUNG
  */
-var Optionen = {
+var Einstellung = {
 
   //DOMELEMENTS
-  container:  DOM("optionenId"),
-  gotoHome:   DOM("optionenBackButton"),
-  content:    DOM("optionenContentId"),
+  container:  DOM("einstellungId"),
+  gotoHome:   DOM("einstellungBackButton"),
+  content:    DOM("einstellungContentId"),
   
   init: function()
   {
-    if (!App.live) console.log( "- VIEW Optionen");
+    if (!App.live) console.log( "- VIEW Einstellung");
     this.bind();
     
     this.container.show();
@@ -257,17 +257,17 @@ var Optionen = {
       if( data.type == "touchend" )
       {
         Controller.dispatch( Controller.HOME );
-        Optionen.content.hide();
-        Optionen.container.swipe("left");
+        Einstellung.content.hide();
+        Einstellung.container.swipe("left");
       }
     });
     
-    Controller.on( Controller.OPTIONEN, function()
+    Controller.on( Controller.EINSTELLUNG, function()
     {  
-      Optionen.container.swipe("middle").on("stage", function()
+      Einstellung.container.swipe("middle").on("stage", function()
       {
-        Optionen.container.off("stage"); 
-        Optionen.content.show();
+        Einstellung.container.off("stage"); 
+        Einstellung.content.show();
       });
     });
   }
@@ -286,7 +286,7 @@ var Home = {
   //DOMELEMENTS
   container:      DOM("homeId"),
   gotoOptionen:   DOM("addOptionen"),
-  gotoFavorites:  DOM("addEingabe"),
+  gotoFavorites:  DOM("homeFavoritenButton"),
   content:        DOM("homeContentId")
   ,
   init: function()
@@ -303,7 +303,7 @@ var Home = {
     {
       if( data.type == "touchend" )
       {
-        Controller.dispatch( Controller.OPTIONEN );
+        Controller.dispatch( Controller.EINSTELLUNG );
         Home.content.hide();
         Home.container.swipe("right");
       }
@@ -823,7 +823,7 @@ var Eingabe = {
     
    //DOMELEMENTS
    container:     DOM("eingabeId"),
-   goBackButton:  DOM("eingabeBackId"),
+   goBackButton:  DOM("eingabeBackButton"),
    // gotoSymptome:DOM("favoriteEditId"),
    content:       DOM("eingabeContentId"),
    eingabe:       DOM("strukturierteEingabe"),
@@ -1000,12 +1000,13 @@ var Eingabe = {
          DOM("zeitArea").setDatetime( data.x );
          DOM("favOutputId").text( ( data.y || data.zero ) + " " + data.unit);
          
+        this.content.show();
          // TODO only set the slider on view change but not on slider change
          DOM("sliderArea").setSlider(parseInt(data.y) || data.zero );
 
          this.showDefinition( data );
        }
-     }    
+     }
      this.content.show();
    },
    
