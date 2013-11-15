@@ -89,7 +89,8 @@ function kontify( that ){
   
     if( window.device) 
     {
-      //IPHONE 7 FIX STATUSBAR
+      DOM(document.body).addClass("phonegap");
+      // IOS 7 FIX STATUSBAR
       if( 
           window.device &&
           window.device.phonegap == "3.0.0" && 
@@ -97,11 +98,7 @@ function kontify( that ){
           parseFloat(window.device.version) === 7.0 
         )
         {
-          DOM(document.body).addClass("mobile-app").addClass("ios7");
-          DOM(document.body).style("margin-top", "20px");
-        } else {
-          DOM(document.body).addClass("mobile-app");
-          DOM(document.body).style("margin-top", "0");
+          DOM(document.body).addClass("ios7");
         }
       
       var device_actor = localStorage.getItem("device_actor");

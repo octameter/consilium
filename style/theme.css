@@ -1,6 +1,8 @@
 *{-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}
 html,body{background:#1c2f40;color:#BBBBBB;width:100%;margin:0;padding:0;overflow:hidden;font-family:Arial,sans-serif;}
 body{position:absolute;top:0;left:0;right:0;bottom:0;margin-top:42px;}
+body.phonegap{margin-top:0;}
+body.phonegap.io7{margin-top:20px;}
 ::selection{background:transparent;color:inherit;}
 .view{height:auto;width:100%;-moz-box-sizing:border-box;box-sizing:border-box;overflow-x:hidden;overflow-y:auto;position:absolute;top:0;left:0;right:0;bottom:40px;}
 .page{margin:0 auto;width:940px;}
@@ -32,6 +34,17 @@ hr{background:transparent;border-color:rgba(0, 0, 0, 0.1) transparent rgba(255, 
 .select{background:white;padding:9px;width:100%;font-size:16px;border:1px solid #CCC;border-radius:5px;font-family:courier;}
 .error{position:absolute;top:70px;min-height:120px;left:60px;right:60px;border:4px solid lightgrey;color:lightgrey;border-radius:4px;padding:40px;font-size:120%;background-color:#AA7878;}
 .error a{text-decoration:none;color:white;}
+.view.swipable{-webkit-transition:left 0.3s ease-in-out;-moz-transition:left 0.3s ease-in-out;-ms-transition:left 0.3s ease-in-out;-o-transition:left 0.3s ease-in-out;transition:left 0.3s ease-in-out;}
+#introId.view.swipable{-webkit-transition:top 0.3s ease-in-out;-moz-transition:top 0.3s ease-in-out;-ms-transition:top 0.3s ease-in-out;-o-transition:top 0.3s ease-in-out;transition:top 0.3s ease-in-out;}
+.middle{left:0;}
+.right{left:100%;}
+.left{left:-100%;}
+.view>header{font-size:14px;position:absolute;width:100%;height:50px;line-height:40px;text-align:center;color:#FAFAFA;text-transform:uppercase;padding:6px;-moz-box-sizing:border-box;box-sizing:border-box;}
+.view>header>button:first-child{position:absolute;top:4px;left:4px;font-size:11pt;text-transform:uppercase;}
+.view>header>span{font-size:16pt;margin:0px;}
+.view>header>button:last-child{position:absolute;top:4px;right:4px;font-size:11pt;text-transform:uppercase;}
+.view>section{position:absolute;left:0px;top:50px;right:0px;bottom:0px;border:none;text-align:center;padding-bottom:50px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+.view>footer{position:absolute;width:100%;height:40px;line-height:40px;bottom:0;background-color:#535454;color:#FAFAFA;text-shadow:0px 1px 0px #AAA;}
 .color1{background:#1c2f40;color:#BBBBBB;}
 .color2{background:#4C6173;color:#F0F0F0;}
 .color3{background:#8094A6;color:#FFF;}
