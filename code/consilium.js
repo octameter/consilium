@@ -20,13 +20,15 @@
 var App = {
   
   // ENVIROMENT
-  initialize: function(domain){  
+  initialize: function(domain)
+  {  
     if (!DOM) console.log( "- MODULE DOM required");
+    
+    App.start(); // start reporter
     
     kontify(this);
     
     Model.init();
-    
     Controller.init();
     
     Intro.init();
@@ -46,7 +48,7 @@ var App = {
     
     // DEV
     console.log("Setting DUMMY data");
-    
+
     Model.memory.set("favorites", [
        { id: "10025482" },
        { id: "Symptom" },
@@ -63,35 +65,43 @@ var App = {
       { id: "privat", x: "1380745392804", y: "Ein guter Tag<br>morgen" }
     ], ["id", "x"]);
     
-    this.bind();
-  },
-  
-  bind: function(){
+    App.report( "App.initialize" );
+
+  }
+  ,
+  setup: function()
+  {
+    App.enviroment(); // domain, node, origin, live
     
-    Controller.on(Controller.SETUP, function(){
-      
-      // domain, node, origin, live
-      App.enviroment();
-      
-      // tv || tablet || mobile || desktop
-      App.device = DOM().device();
-      
-      App.signOn(function(data){
-        
-        console.log("Consilium", data );
-        
-        Controller.dispatch(Controller.START);
-      });
-      
+    App.device = DOM().device(); // tv || tablet || mobile || desktop
+    
+    App.signOn(function(data)
+    { 
+      Intro.show();
+      Controller.dispatch(Controller.COMPLETE);
+      App.report( "App.signOn", data);
     });
+    
+    App.report( "App.setup" );
+  }
+  ,
+  start: function()
+  {
+    App.time = new Date();
+  }
+  ,
+  report: function( text )
+  {
+    console.log( text, new Date().getTime() - App.time );
   }
   
 };
 
 var Controller = {
   
-  SETUP:      "SETUP",
-  START:      "START",
+  COMPLETE:   "COMPLETE",
+  
+  INTRO:      "INTRO",
   HOME:       "HOME",
   EINSTELLUNG:"EINSTELLUNG",
   FAVORITES:  "FAVORITES",
@@ -99,17 +109,17 @@ var Controller = {
   SYMPTOME:   "SYMPTOME",
   TIPPS:      "TIPPS",
   
-  // ENVIROMENT
-  init: function(domain){
-    // AUGMENT
+  init: function(domain)
+  {
     eventify(this);
-    
     this.bind();
   }
   ,
-  bind: function(){
+  bind: function()
+  {
     DOM(window).on("ready", function(){
-      Controller.dispatch(Controller.SETUP);
+      App.setup();
+      App.report( "2) Controller after SETUP" );
     });
   }
   
@@ -117,7 +127,8 @@ var Controller = {
 
 var Model = {
 
-  init: function(){
+  init: function()
+  {
     storify(this);
   }
   
@@ -130,39 +141,58 @@ var Intro = {
   init: function()
   {
     if (!App.live) console.log("- VIEW Intro");
-    
     introfy(this);
-    
-    this.setContent();
-    
     this.bind();
   }
   ,
   bind: function()
   {
-    Controller.on( Controller.START, Intro.update );
     
-    Controller.on( Controller.INTRO, function(){
-        Intro.container.style("top", "0%");
+    Controller.on(Controller.COMPLETE, function(){
+      Intro.container.addClass("swipable");
+      Intro.container.find(".intro-main .cell:last-child").addConsilium();
+      App.report( "Intro on Controller.COMPLETE");
     });
     
-    DOM("introStartApp").on("tangent", function( data )
+    Controller.on(Controller.INTRO, function(){
+      Intro.show();
+      App.report( "Intro on Controller.INTRO");
+    });
+    
+    this.container.on("tangent", function( data )
     {
       if( data.type == "touchend" )
       {
+        if (data.target.tagName != "BUTTON") return; // TODO review event delegation
+        Intro.hide();
         Controller.dispatch(Controller.HOME);
-        Intro.container.style("top", "100%");
-        // Intro.container.hide();
+        Home.content.show();
       }
-    });
+    }, { watch: "BUTTON" });
+    
   }
   ,
-  setContent: function()
+  show: function()
+  {
+    Intro.update();
+    Intro.container.style("top", "0%");
+  }
+  ,
+  hide: function()
+  {
+    Intro.container.style("top", "100%");
+  }
+  ,
+  update: function()
   { 
-    this.setTitle("Consilium");
-    this.setClaim("Arzt und Patient verbinden");
-    this.setDetail("Informationen");
-
+    
+    Intro.setTitle("Consilium");
+    Intro.setClaim("Arzt und Patient verbinden");
+    Intro.setDetail("Informationen").add("button", { "class": "button blue floatRight" }).text("Start");
+    Intro.setDisclaimer();
+  
+    this.removeFeatures();
+    
     // DESKTOP NOLOGIN
     if( true )
     {
@@ -178,7 +208,9 @@ var Intro = {
         ,
         { title: "5. Anonymisierung", description: "<p>NutzerInnen der App erhalten eine individuelle Patienten-ID, mit der Sie berechtigt sind den Service zu nutzen.</p>"}
         ,
-        { title: "6. Epilog", description: "<p>Wir danken für Ihr Interesse und wünschen Ihnen viel Erfolg.</p>" }
+        { title: "6. Epilog", description: "<p>Wir danken für Ihr Interesse und wünschen Ihnen viel Erfolg.</p>"
+          + '<button class="button transparent">App starten 1</button>'
+        }
       ]);
     }
     
@@ -191,7 +223,9 @@ var Intro = {
         ,
         { title: "2. Einführung", description: "<p>Über „Start“ können Sie in der Favoritenliste Wohlbefinden, Symptome und Notizen erfassen.</p>" }
         ,
-        { title: "3. Epilog", description: "<p>Die erfassten Daten erscheinen in Ihrer Timeline und in Ihrer Web-Applikation. Wir wünschen Ihnen viel Erfolg!</p>" }
+        { title: "3. Epilog", description: "<p>Die erfassten Daten erscheinen in Ihrer Timeline und in Ihrer Web-Applikation. Wir wünschen Ihnen viel Erfolg!</p>"
+          + '<button class="button blue">App starten</button>'
+        }
       ]);
     }
     
@@ -206,7 +240,9 @@ var Intro = {
         ,
         { title: "3. Fragebogen", description: "<p>Bitte beantworten Sie unsere Fragebögen. Sie können die App dabei verwenden. Notieren Sie bitte auf dem Fragebogen nur Ihre persönliche Patienten-ID (Pat-ID) und nie Ihren Namen. Ihre Pat-ID erscheint in der App durch Berühren der „Sync“-Taste.</p>"}
         ,
-        { title: "4. Epilog", description: "<p>Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie.</p>"}
+        { title: "4. Epilog", description: "<p>Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie.</p>"
+          + '<button class="button blue">App starten</button>'
+        }
       ]);
     }
     
@@ -221,15 +257,12 @@ var Intro = {
         ,
         { title: "3. Fragebogen", description: "<p>Bitte beantworten Sie unsere Fragebögen. Sie können die App dabei verwenden. Notieren Sie bitte auf dem Fragebogen nur Ihre persönliche Patienten-ID (Pat-ID) und nie Ihren Namen. Ihre Pat-ID erscheint in der App durch Berühren der „Sync“-Taste.</p>"}
         ,
-        { title: "4. Epilog", description: "<p>Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie.</p>" }
+        { title: "4. Epilog", description: "<p>Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie.</p>" 
+          + '<button class="button blue">App starten</button>'
+        }
       ]);
     }
-    
-    this.setDisclaimer();
-  }
-  ,
-  update: function()
-  {
+    App.report( "INTRO update");
     
   }
 };
@@ -265,7 +298,7 @@ var Einstellung = {
       }
     });
     
-    Controller.on( Controller.EINSTELLUNG, function()
+    Controller.on(Controller.EINSTELLUNG, function()
     {  
       Einstellung.container.swipe("middle").on("stage", function()
       {
@@ -301,13 +334,43 @@ var Home = {
   }
   ,
   bind: function()
-  {    
+  {
+    
+    Controller.on(Controller.COMPLETE, function()
+    {
+      if (!window.device) DOM("titleId").hide();
+      
+      Home.container.addClass("swipable");
+      Home.chart.init();
+      Home.form.init();
+      Home.container.show();
+      Home.content.show();
+      App.report("Home on Controller.COMPLETE");
+    });
+    
+    Controller.on(Controller.HOME, function()
+    {
+      Home.update();
+      Home.content.hide();
+
+      Home.container.on("stage", function()
+      {
+        Home.container.off("stage");
+        Home.content.show();
+        App.report("Home on.stage");
+      });
+      
+      Home.container.swipe("middle");
+      
+      App.report("Home on Controller.HOME");
+    });
+    
     this.gotoOptionen.on("tangent", function( data )
     {
       if( data.type == "touchend" )
       {
-        Controller.dispatch( Controller.EINSTELLUNG );
         Home.content.hide();
+        Controller.dispatch( Controller.EINSTELLUNG );
         Home.container.swipe("right");
       }
     });
@@ -316,46 +379,19 @@ var Home = {
     { 
       if( data.type == "touchend" )
       {
-        Controller.dispatch( Controller.FAVORITES ); 
         Home.content.hide();
+        Controller.dispatch( Controller.FAVORITES ); 
         Home.container.swipe("left");
       }
     });
     
-    DOM("homeHilfe").on("tangent", function( data )
-    { 
-      if( data.type == "touchend" )
-      {
-        Controller.dispatch( Controller.INTRO );
-      }
-    });
-    
-    Controller.on( Controller.HOME, function()
-    {    
-      Home.container.swipe("middle").on("stage", function()
-      {
-        Home.container.off("stage");
-        Home.update();
-      });
-    });
-    
-    Controller.on(Controller.START, function()
-    {
-      if (!window.device) DOM("titleId").hide();
-      
-      Home.chart.init();
-      Home.form.init();
-    
-      // KEIN TITLE
-      Home.update();
-    });
   },
   
   // FUNCTIONS
   update: function()
   {
     console.log( "update home now");
-    this.content.show();  
+    this.content.show();
     this.chart.update();
     this.form.update();
   },
@@ -543,10 +579,14 @@ var Home = {
             Controller.dispatch(Controller.EINGABE, item);
           }
          }, { watch: "LI" });
+      
+        this.fieldset.legend(howto.kategorie);
       } 
       else
       {
         var howto = Model.memory.get("lexikon").has("id", [{ id: "Symptom" }] )[0];
+        
+        this.fieldset.legend("Auswahl");
         
         this.liste.addRow({
           title: howto.title,
@@ -555,10 +595,9 @@ var Home = {
           value: "",
           farbe: ""
           //detail:"Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen." 
-        });
-       
-        this.liste.on("tangent", function(data)
+        }).on("tangent", function(data)
         {
+          console.log(data.target);
           if( data.type == "touchstart" ) DOM( data.target ).addClass("selected");
           if( data.type == "touchend" )
           {
@@ -567,9 +606,23 @@ var Home = {
             Controller.dispatch(Controller.SYMPTOME);
           }
         }, { watch: "LI" });
+        
+        
+        this.liste.addRow({
+          title: "Informationen aufrufen",
+          caretLeft: false,
+          caretRight: true
+        })
+        .on("tangent", function( data )
+        { 
+          if( data.type == "touchend" )
+          {
+            Controller.dispatch( Controller.INTRO );
+          }
+        }, { watch: "LI" });
+          
       }
       
-      this.fieldset.legend(howto.kategorie);
       
     }
     // SMALL SCREEN HAS OVERLAY IN TIMELINE
@@ -594,7 +647,6 @@ var Favorites = {
   form:         DOM("favFormId"),
   BACK:         Controller.HOME
   ,
-  //INIT
   init: function()
   {
     if (!App.live) console.log( "- VIEW Favorites");
@@ -631,9 +683,6 @@ var Favorites = {
       });
     });
     
-    Controller.on(Controller.START, function(){
-      //Favorites.update();
-    });
   }
   ,
   edit: function( data )
@@ -853,7 +902,7 @@ var Eingabe = {
         if( data.type == "touchend" ) Eingabe.goBack();
       });
      
-     Controller.on(Controller.START, function(data)
+     Controller.on(Controller.COMPLETE, function(data)
      {     
        DOM("zeitArea").addDatetime(function(value){
          // Zeit
@@ -962,6 +1011,8 @@ var Eingabe = {
    
    update: function(data){
    //
+     console.log(data);
+     
      if (data){
        this.content.find(".favActions").hide();
        this.freitext.hide();

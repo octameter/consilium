@@ -2,7 +2,7 @@ var Symptom =
 {  
   "data":
   [                 
-    { id: "Symptom", title: "Auswählen und eingeben", kategorie:"Symptom" }
+    { id: "Symptom", title: "Symptom eingeben", kategorie: "Symptom" }
     ,
     { id: "10016256", title: "Müdigkeit", kategorie:"Symptom", sub: "Allgemeinsymptome", zero:0, unit:"Pkte", farbwert :"rgba(0,139,139,0.9)",
         grad:[    

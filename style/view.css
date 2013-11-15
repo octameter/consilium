@@ -1,4 +1,6 @@
-.view {
+/*TODO move to bibli  */
+
+.view.swipable {
 	-webkit-transition: left .3s ease-in-out;
 	-moz-transition: left .3s ease-in-out;
 	-ms-transition: left .3s ease-in-out;
@@ -6,7 +8,7 @@
 	transition: left .3s ease-in-out;	
 }
 
-#introId.view {
+#introId.view.swipable {
 	-webkit-transition: top .3s ease-in-out;
 	-moz-transition: top .3s ease-in-out;
 	-ms-transition: top .3s ease-in-out;
