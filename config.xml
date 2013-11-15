@@ -20,6 +20,7 @@
     <gap:platform name="android" />
     
     <!-- <gap:plugin> -->
+    <gap:plugin name="org.apache.cordova.device" />
     <gap:plugin name="com.phonegap.plugins.barcodescanner" />
 	
 	<!-- FEATURE -->
