@@ -797,7 +797,7 @@ var Symptome = {
   gotoHome:   DOM("symptomeBackButton"),
   content:    DOM("symptomeContentId"),
   liste:      DOM("symptomListe"),
-  BACK:       Controller.Home
+  BACK:       Controller.HOME
   ,
   init: function()
   {

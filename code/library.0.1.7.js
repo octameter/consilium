@@ -97,8 +97,10 @@ function kontify( that ){
           parseFloat(window.device.version) === 7.0 
         )
         {
+          DOM(document.body).addClass("mobile-app").addClass("ios7");
           DOM(document.body).style("margin-top", "20px");
         } else {
+          DOM(document.body).addClass("mobile-app");
           DOM(document.body).style("margin-top", "0");
         }
       
@@ -1563,11 +1565,7 @@ DOModule.addDatetime = function( callback )
       callback( getDateTime() );
     });
   }
-};var Liste = {
-    
-};
-
-DOModule.legend = function( text )
+};DOModule.legend = function( text )
 {  
   this.find("legend").html( text );
 };

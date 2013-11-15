@@ -48,7 +48,7 @@
 
 
     <!-- PREFERENCES GENERIC -->
-    <preference name="phonegap-version" value="3.0.0" />
+    <preference name="phonegap-version" value="3.1.0" />
     <preference name="orientation"      value="default" />    
     <preference name="target-device"    value="universal" />
     <preference name="fullscreen"       value="true" />
@@ -103,7 +103,7 @@
    
     <!-- SPLASH DEFAULT -->
     <!-- The default splash must be named splash.png and must reside in the root of your -->
-    <!-- <gap:splash src="splash.png" /> -->
+    <gap:splash src="img/screen/ios/screen-iphone-portrait-2x.png" />
     
     <!-- SPLASH Android  -->
     <gap:splash src="img/screen/android/screen-ldpi-portrait.png"  gap:platform="android" gap:density="ldpi" />
