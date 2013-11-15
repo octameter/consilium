@@ -90,16 +90,6 @@ function kontify( that ){
     if( window.device) 
     {
       DOM(document.body).addClass("phonegap");
-      // IOS 7 FIX STATUSBAR
-      if( 
-          window.device &&
-          window.device.phonegap == "3.0.0" && 
-          window.device.platform == "iPhone" && 
-          parseFloat(window.device.version) === 7.0 
-        )
-        {
-          DOM(document.body).addClass("ios7");
-        }
       
       var device_actor = localStorage.getItem("device_actor");
       
