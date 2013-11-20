@@ -15,8 +15,8 @@ footer{background:#ddd;bottom:0;-moz-box-sizing:border-box;box-sizing:border-box
 .row:after{clear:both;}
 .row{zoom:1;}
 .cell{-moz-box-sizing:border-box;box-sizing:border-box;float:left;margin:0;padding:0 15px;width:50%;}
-@media (max-width:480px){.page{width:95%;} .cell{width:100%;}}.highlight .cell{background:transparent;border:2px solid transparent;border-radius:3px;transition:background 1s;transition:border 1s;}
-.highlight .cell:hover{background:#fee;border:2px solid red;transition:background .3s;transition:border .3s;}
+@media (max-width:480px){.page{width:95%;} .cell{width:100%;}}.highlight .cell{background:transparent;border:2px solid transparent;border-radius:3px;transition:background 1s, border 1s;}
+.highlight .cell:hover{background:#fee;border:2px solid red;transition:background .3s, border .3s;}
 .page-title{font-size:40px;}
 hr{background:transparent;border-color:rgba(0, 0, 0, 0.1) transparent rgba(255, 255, 255, 0.3) transparent;border-style:solid;border-width:1px 0;}
 .button{-webkit-user-select:none;color:white;cursor:pointer;display:inline-block;opacity:0.9;border-radius:3px;text-decoration:none;white-space:nowrap;vertical-align:middle;min-height:30px;margin-bottom:2px;font-size:100%;line-height:38px;border:1px solid #FAFAFA;transition:background 0.4s;background:none;outline:none;-moz-box-sizing:border-box;box-sizing:border-box;}
