@@ -615,6 +615,7 @@ var Home = {
         })
         .on("tangent", function( data )
         { 
+          if( data.type == "touchstart" ) DOM( data.target ).addClass("selected");
           if( data.type == "touchend" )
           {
             Controller.dispatch( Controller.INTRO );

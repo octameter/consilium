@@ -90,6 +90,16 @@ function kontify( that ){
     if( window.device) 
     {
       DOM(document.body).addClass("phonegap");
+      // IOS 7 FIX STATUSBAR
+      if( 
+          window.device &&
+          window.device.phonegap == "3.0.0" && 
+          window.device.platform == "iPhone" && 
+          parseFloat(window.device.version) === 7.0 
+        )
+        {
+          DOM(document.body).addClass("ios7");
+        }
       
       var device_actor = localStorage.getItem("device_actor");
       
@@ -121,76 +131,6 @@ function kontify( that ){
     }
 
   };
-  
-
-  /**
-  navigation:function() {
-  
-    if( window.device ) {
-      //IPHONE 7 FIX STATUSBAR
-      if( 
-          window.device.phonegap == "3.0.0" && 
-          window.device.platform == "iPhone" && 
-          parseFloat(window.device.version) === 7.0 
-        )
-        {
-          DOM(document.body).style("margin-top", "20px");
-        } else {
-          DOM(document.body).style("margin-top", "0");
-        }
-      
-      var result = JSON.parse( localStorage.getItem("device_actor") );
-      callback( result );
-      
-    }else 
-    { 
-      this.createNavigation(); 
-    }
-  }
-  ,
-  createNavigation:function() {
-         
-    var first = DOM(document.body).find("article");
-    
-    var iframe = first.addPrevious("header").addClass("konto").add("iframe", 
-    {
-      src: this.node,
-      style: "position:fixed; top:0px; width:100%; height:42px; border:none;"
-    });
-    
-    iframe.on("load", function() 
-    { 
-      // CALL
-      // sso.postMessage( { request:"REDIRECT", target:data.target }, "*"); 
-      App.sso = iframe.element.contentWindow;
-      
-      DOM(window).on("msg", function( data) {  
-        
-        if( data.transfer.request == "REDIRECT") location.replace(data.transfer.target); 
-      });
-      
-      App.getActor();
-    });
-  }
-  ,
-  getActor:function( callback )
-  {
-    if( window.device )
-    {
-      var result = JSON.parse( localStorage.getItem("device_actor") );
-      callback( result );
-    }
-    else
-    {
-      App.sso.postMessage({request: "ACTOR_GET"}, "*");
-      
-      DOM(window).on("msg", function( data ) 
-      {  
-        callback( data ); 
-      });
-    }   
-  }
-  */
 }function storify( that ) {  
   
   var data = {};
@@ -282,7 +222,8 @@ function kontify( that ){
       ,
       "read":function(uri, callback, data, accessToken)
       {
-        if(typeof data == "object"){
+        if(data != null && typeof data == "object")
+        {
           uri += "?" + this.toUrlVariables(data);
         }
         this.rest("GET", uri, callback, null, accessToken);
