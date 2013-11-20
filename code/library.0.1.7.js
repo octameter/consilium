@@ -1660,7 +1660,7 @@ var Svg = {
     kreis.setAttribute("fill", params.fill);
     kreis.setAttribute("stroke", params.stroke || "#FFFFFF" );
     kreis.setAttribute("stroke-width", params.strokeWidth || "0");
-    kreis.setAttribute("data", params.data || {});
+    // kreis.setAttribute("data", params.data || {});
     kreis.setAttribute("cx", params.x);
     kreis.setAttribute("cy", params.y);
     kreis.setAttribute("r", params.r);
@@ -1668,8 +1668,7 @@ var Svg = {
     if( params.className )
     kreis.setAttribute("class", params.className);
     
-    if( params.data )
-    kreis.setAttribute("data", JSON.stringify( params.data ) ); 
+    if( params.data ) kreis.setAttribute("data", JSON.stringify( params.data ) ); 
     
     return kreis;
   },
@@ -2028,7 +2027,6 @@ DOModule.addConsilium = function()
   svg.appendChild( Svg.line( { x1:100, y1:30, x2:140,y2:45,strokeWidth:5, color:'white' } ) );
   svg.appendChild( Svg.line( { x1:100, y1:30, x2:140,y2:45,strokeWidth:5, color:'white' } ) );
   svg.appendChild( Svg.circle( { x:140, y:45, r:10, fill:'white' } ) );
-  
   
   
   this.add( svg );

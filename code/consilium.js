@@ -161,14 +161,14 @@ var Intro = {
     
     this.container.on("tangent", function( data )
     {
+      if (data.target.tagName != "BUTTON") return; // TODO review event delegation
       if( data.type == "touchend" )
       {
-        if (data.target.tagName != "BUTTON") return; // TODO review event delegation
         Intro.hide();
         Controller.dispatch(Controller.HOME);
         Home.content.show();
       }
-    }, { watch: "BUTTON" });
+    }); // TODO this should do the trick , { watch: "BUTTON" }
     
   }
   ,
