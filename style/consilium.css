@@ -73,9 +73,7 @@ and (max-device-width : 568px) {
 	height: 300px;
 	min-height: 320px;
 	max-height: 320px;
-	/* background:rgba(115,165,215,1); */
-	/* background:rgba( 147,171,191,1); */
-	background: rgba( 155,180,200,1);
+	background: #888;
 	width: 100%;
 }
 

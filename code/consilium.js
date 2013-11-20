@@ -209,7 +209,7 @@ var Intro = {
         { title: "5. Anonymisierung", description: "<p>NutzerInnen der App erhalten eine individuelle Patienten-ID, mit der Sie berechtigt sind den Service zu nutzen.</p>"}
         ,
         { title: "6. Epilog", description: "<p>Wir danken für Ihr Interesse und wünschen Ihnen viel Erfolg.</p>"
-          + '<button class="button transparent">App starten 1</button>'
+          + '<button class="button blue">App starten</button>'
         }
       ]);
     }
@@ -529,9 +529,18 @@ var Home = {
     fieldset: DOM("homeFieldsetAuswahl"),
     
     liste: DOM("homeAuswahlListe"),
+    
+    gotoIntro: DOM("homeBackToIntro"),
 
     init: function(){  
-
+        this.gotoIntro.on("tangent", function( data )
+        { 
+          if( data.type == "touchstart" ) DOM( data.target ).addClass("selected");
+          if( data.type == "touchend" )
+          {
+            Controller.dispatch( Controller.INTRO );
+          }
+        }, { watch: "LI" });
     },
     
     update: function(event){
@@ -604,21 +613,6 @@ var Home = {
             Home.content.hide();
             Home.container.swipe("left");
             Controller.dispatch(Controller.SYMPTOME);
-          }
-        }, { watch: "LI" });
-        
-        
-        this.liste.addRow({
-          title: "Informationen aufrufen",
-          caretLeft: false,
-          caretRight: true
-        })
-        .on("tangent", function( data )
-        { 
-          if( data.type == "touchstart" ) DOM( data.target ).addClass("selected");
-          if( data.type == "touchend" )
-          {
-            Controller.dispatch( Controller.INTRO );
           }
         }, { watch: "LI" });
           
@@ -798,7 +792,7 @@ var Symptome = {
   gotoHome:   DOM("symptomeBackButton"),
   content:    DOM("symptomeContentId"),
   liste:      DOM("symptomListe"),
-  BACK:       Controller.HOME
+  BACK:       null
   ,
   init: function()
   {
@@ -819,24 +813,25 @@ var Symptome = {
       {
         Symptome.content.hide();
         Symptome.container.swipe("right");
-        Controller.dispatch(Symptome.BACK);             
+        Controller.dispatch(Symptome.BACK);
+        Symptome.BACK = null;
       }
-    });     
+    });
     
     Controller.on(Controller.SYMPTOME, function(data)
-    {     
+    {
       data = data || {};
-      Symptome.BACK = data.back || Controller.HOME;      
-      Symptome.container.swipe("middle").on("stage", function() 
+      Symptome.BACK = data.back || Symptome.BACK || Controller.HOME;
+      Symptome.container.swipe("middle").on("stage", function()
       {
         Symptome.container.off("stage");
-        Symptome.update(); 
-      }); 
+        Symptome.update();
+      });
     });
   }
-  ,  
+  ,
   update: function()
-  {  
+  {
     Symptome.content.show();
     
     this.liste.on("tangent", function(data)
@@ -978,7 +973,6 @@ var Eingabe = {
      Controller.on(Controller.EINGABE, function(data){
        
        Eingabe.content.hide();
-       
        if (data){
        // Coming from Favorites or Symptom
          Eingabe.BACK = data.back || Controller.HOME;
