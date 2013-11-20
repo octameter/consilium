@@ -6,7 +6,10 @@ body.phonegap.io7{margin-top:20px;}
 ::selection{background:transparent;color:inherit;}
 .view{height:auto;width:100%;-moz-box-sizing:border-box;box-sizing:border-box;overflow-x:hidden;overflow-y:auto;position:absolute;top:0;left:0;right:0;bottom:0;}
 .page{margin:0 auto;width:940px;}
-@media (min-width:1200px){.page{width:1100px;}}@media (min-width:768px) and (max-width:979px){.page{width:740px;}}@media (max-width:767px){.page{width:95%;}}@media (max-width:480px){.page{width:95%;}}footer{background:#ddd;bottom:0;-moz-box-sizing:border-box;box-sizing:border-box;height:40px;line-height:40px;padding:0 6px;position:absolute;width:100%;}
+@media (min-width:1200px){.page{width:1100px;}}@media (min-width:768px) and (max-width:979px){.page{width:740px;}}@media (max-width:767px){.page{width:95%;}}@media (max-width:480px){.page{width:95%;}}.header{min-height:120px;padding-top:1px;}
+footer{background:#ddd;bottom:0;-moz-box-sizing:border-box;box-sizing:border-box;height:40px;line-height:40px;padding:0 6px;position:absolute;width:100%;}
+.floatLeft{float:left;}
+.floatRight{float:right;}
 .row{list-style:none;margin:0 -15px;padding:0;}
 .row:after,.row:before{display:table;content:"";}
 .row:after{clear:both;}

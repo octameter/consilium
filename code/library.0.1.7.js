@@ -218,7 +218,10 @@ function kontify( that ){
    */
   that.remote = {
 
-      "create":function(uri, callback, data, accessToken){}
+      "create":function(uri, callback, data, accessToken)
+      {
+        this.rest("POST", uri, callback, data, accessToken);
+      }
       ,
       "read":function(uri, callback, data, accessToken)
       {
