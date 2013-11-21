@@ -1007,7 +1007,7 @@ var Eingabe = {
    
    update: function(data){
    //
-     console.log(data);
+     console.log("EINGABE.update", data);
      
      if (data){
        this.content.find(".favActions").hide();
