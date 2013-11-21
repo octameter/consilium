@@ -1183,9 +1183,7 @@ var Tipps = {
      {      
        if( data.type == "touchend" )
        {
-         Tipps.content.hide();       
-         Controller.dispatch(Controller.EINGABE);
-         Tipps.container.swipe("right");
+         Tipps.goBack();
        }
      });     
      
@@ -1198,6 +1196,12 @@ var Tipps = {
          Tipps.content.show();
        });
      });
+   }
+   ,
+   goBack: function(){
+     Tipps.content.hide();       
+     Controller.dispatch(Controller.EINGABE);
+     Tipps.container.swipe("right");
    }
    ,
    /**
@@ -1228,13 +1232,17 @@ var Tipps = {
      var actions = display.add("p");
      actions.add("a").addClass("button green floatLeft").text("Hilfreich").on("tangent", function(data)
      {
-       if( data.type == "touchend" )
-       console.log("TODO TIPP HLFREICH");
+       if( data.type == "touchend" ){
+        console.log("TODO TIPP HLFREICH");
+        Tipps.goBack();
+       }
      });
      actions.add("a").addClass("button grey floatRight").text("Nicht Hilfreich").on("tangent", function(data)
      {
-       if( data.type == "touchend" )
-       console.log("TODO TIPP NICHT HLFREICH");   
+       if( data.type == "touchend" ){
+        console.log("TODO TIPP NICHT HLFREICH");
+        Tipps.goBack();
+       }
      });
    }
  };

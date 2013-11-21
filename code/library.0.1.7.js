@@ -63,8 +63,8 @@ function kontify( that ){
     if (!window.location.origin) 
     {
       var origin = window.location.protocol + "//";
-          origin += window.location.hostname;
-          origin += (window.location.port ? ':' + window.location.port: '');
+      origin += window.location.hostname;
+      origin += (window.location.port ? ":" + window.location.port: "");
         
       window.location.origin = origin;
     }  
@@ -72,16 +72,16 @@ function kontify( that ){
     if( document.domain == "localhost" || document.domain == "10.129.144.18")
     {
       document.domain = document.domain;
-      that.node = "http://"+document.domain+":8080";
+      that.node = "http://" + document.domain + ":8080";
       that.origin = location.origin + location.pathname;
-      that.live = false;          
+      that.live = false;
     }
     else
     {
-      // document.domain = "epha.ch";
+      if (window.device) document.domain = "epha.ch";
       that.node = "http://node.epha.ch";
       that.origin = location.origin;
-      that.live = true;    
+      that.live = true;
     }
   };
     
