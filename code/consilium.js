@@ -1039,30 +1039,22 @@ var Eingabe = {
        }
        else
        {
-         console.log(1);
          // FOR WIDTH
          this.eingabe.show();
-         console.log(2);
 
          this.eingabe.find("legend").html( data.kategorie );
-         console.log(3);
          DOM("favGradId").html("");
-         console.log(4);
          this.eingabe.find(".favTitle").html( data.title );
-         console.log(5);
          DOM("zeitArea").setDatetime( data.x );
-         console.log(6);
          DOM("favOutputId").text( ( data.y || data.zero ) + " " + data.unit);
-         console.log(7);
          this.content.show();
-         console.log(8);
+         
          // TODO only set the slider on view change but not on slider change
          DOM("sliderArea").setSlider(parseInt(data.y) || data.zero );
-         console.log(9);
+         
          this.showDefinition( data );
        }
      }
-     console.log("ye");
      this.content.show();
    },
    

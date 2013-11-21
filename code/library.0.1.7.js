@@ -1369,9 +1369,11 @@ DOModule.addSlider = function( callback )
 {
   if( window.device )
   {
-    var slider = this.add("input", { type: "range", min: 0, max: 100});
+    var slider = this.add("input", { type: "range", min: 0, max: 100 });
     
-    slider.on("change", function(data) { console.log("slider changed", data.value); });
+    slider.on("change", function(data) {
+      callback(data.value);
+    });
   }
   else 
   {
