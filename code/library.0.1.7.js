@@ -78,7 +78,7 @@ function kontify( that ){
     }
     else
     {
-      document.domain = "epha.ch";
+      // document.domain = "epha.ch";
       that.node = "http://node.epha.ch";
       that.origin = location.origin;
       that.live = true;    

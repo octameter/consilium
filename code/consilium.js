@@ -121,6 +121,10 @@ var Controller = {
       App.setup();
       App.report( "2) Controller after SETUP" );
     });
+    DOM(window).on("deviceready", function(){
+      App.setup();
+      App.report( "2) Controller after SETUP (deviceready)" );
+    });
   }
   
 };
