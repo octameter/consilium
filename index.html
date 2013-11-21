@@ -261,18 +261,12 @@
 <script type="text/javascript" charset="utf-8">
   if ("addEventListener" in window) {
     // INIT
-    // App.initialize("consilium.epha.ch");
+    App.initialize("consilium.epha.ch");
   }
   else {
     // ABORT
     DOM( document.body ).error("oldbrowser");	
   }
-  DOM(window).on("ready", function(){
-    DOM("test").add("div").text("window ready");
-  });
-  DOM(document.body).on("ready", function(){
-    DOM("test").add("div").text("document.body ready");
-  });
 </script>
 
 </body>

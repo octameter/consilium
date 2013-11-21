@@ -118,9 +118,7 @@ var Controller = {
   ,
   bind: function()
   {
-    console.log("Controller.bind");
     DOM(window).on("ready", function(){
-      console.log("DOM(window).on('ready')");
       App.setup();
       App.report( "2) Controller after SETUP" );
     });
