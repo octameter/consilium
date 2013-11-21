@@ -1429,8 +1429,8 @@ DOModule.setDatetime = function( ms )
   
   if( window.device )
   {
-    this.find("input[type=date]").set("value", util.zeit("yyyy-MM-dd",zeitInMs));
-    this.find("input[type=time]").set("value", util.zeit("hh:mm",zeitInMs));
+    this.find("input[type=date]").set("value", util.zeit("yyyy-MM-dd", ms));
+    this.find("input[type=time]").set("value", util.zeit("hh:mm", ms));
   }
   else {
     //DATE
