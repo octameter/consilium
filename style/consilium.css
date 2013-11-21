@@ -206,3 +206,16 @@ and (max-device-width : 568px) {
 .button {
   line-height: 30px;
 }
+
+.phonegap .intro-main .page {
+  width: auto;
+}
+
+.phonegap .intro-main section.cell {
+  display: none;
+}
+
+.phonegap .intro-main div.cell {
+  min-height: 100px;
+}
+
