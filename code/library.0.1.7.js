@@ -86,7 +86,7 @@ function kontify( that ){
   };
     
   that.signOn = function( callback ) {
-  
+    console.log("window.device", window.device);
     if( window.device) 
     {
       DOM(document.body).addClass("phonegap");
@@ -102,11 +102,12 @@ function kontify( that ){
         }
       
       var device_actor = localStorage.getItem("device_actor");
-      
+      console.log("device_actor", device_actor);
       callback( device_actor ? JSON.parse( device_actor ) : null );
     }
     else 
     { 
+      console.log("iframe");
       var first = DOM(document.body).find("article");
     
       var iframe = first.addPrevious("header").addClass("kontify color1").add("iframe", 

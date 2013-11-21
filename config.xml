@@ -87,9 +87,9 @@
 	<!-- auto or preferExternal allow the app to be installed on an SD card - this can lead to unexpected behavior -->
 	<preference name="android-installLocation" value="auto" />
 	
-	<!-- ICON APPLICATIONS DEFAULT
+	<!-- ICON APPLICATIONS DEFAULT -->
     <icon src="img/icon/ios/icon-72-2x.png" />
-     -->
+    
     <!-- ICON Android -->
     <icon src="img/icon/android/icon-36-ldpi.png"   gap:platform="android"    gap:density="ldpi" />
     <icon src="img/icon/android/icon-48-mdpi.png"   gap:platform="android"    gap:density="mdpi" />
@@ -97,17 +97,16 @@
     <icon src="img/icon/android/icon-96-xhdpi.png"  gap:platform="android"    gap:density="xhdpi" />
     <!-- <icon src="img/icon/android/icon-72-hdpi.png"  gap:platform="android"    gap:density="213" /> -->
 
-    <!-- ICON IPHONE
+    <!-- ICON IPHONE-->
     <icon src="img/icon/ios/icon-57.png"            gap:platform="ios"        width="57" height="57" />
     <icon src="img/icon/ios/icon-72.png"            gap:platform="ios"        width="72" height="72" />
     <icon src="img/icon/ios/icon-57-2x.png"         gap:platform="ios"        width="114" height="114" />
     <icon src="img/icon/ios/icon-72-2x.png"         gap:platform="ios"        width="144" height="144" />
-   -->
+   
     <!-- SPLASH DEFAULT -->
-    <!-- The default splash must be named splash.png and must reside in the root of your
+    <!-- The default splash must be named splash.png and must reside in the root of your -->
     <gap:splash src="img/screen/ios/screen-iphone-portrait-2x.png" />
-     -->
-  
+    
     <!-- SPLASH Android  -->
     <gap:splash src="img/screen/android/screen-ldpi-portrait.png"  gap:platform="android" gap:density="ldpi" />
     <gap:splash src="img/screen/android/screen-mdpi-portrait.png"  gap:platform="android" gap:density="mdpi" />
@@ -116,19 +115,18 @@
     <!-- <gap:splash src="img/screen/android/screen-xhdpi-portrait.png" gap:platform="android" gap:density="213" /> -->
 
 
-    <!-- SPLASH iPhone
+    <!-- SPLASH iPhone  -->
     <gap:splash src="img/screen/ios/screen-iphone-portrait.png"    	gap:platform="ios"     	width="320" height="480" />
     <gap:splash src="img/screen/ios/screen-iphone-portrait-2x.png" 	gap:platform="ios"     	width="640" height="960" />
     <gap:splash src="img/screen/ios/screen-iphone-landscape.png" 	gap:platform="ios"     	width="480" height="320" />
     <gap:splash src="img/screen/ios/screen-iphone-landscape-2x.png"	gap:platform="ios"     	width="960" height="640" />
     <gap:splash src="img/screen/ios/screen-ipad-portrait.png"      	gap:platform="ios"     	width="768" height="1004" />
     <gap:splash src="img/screen/ios/screen-ipad-landscape.png"     	gap:platform="ios"     	width="1024" height="783" /> 
-  -->
     <!-- CLEMENS
 	<gap:splash src="img/screen/ios/screen-ipad-landscape-2x.png" 	gap:platform="ios" 		width="2048" height="1496" />
-   
+    -->
 	<gap:splash src="img/screen/ios/screen-ipad-portrait-2x.png" 	gap:platform="ios" 		width="1536" height="2008" />
- -->
+
 
 	<!-- ACCESS -->
 	<!-- the access element provides your app with access to resources on other domains -->
