@@ -267,6 +267,12 @@
     // ABORT
     DOM( document.body ).error("oldbrowser");	
   }
+  DOM(window).on("ready", function(){
+    console.log("window ready");
+  });
+  DOM(document.body).on("ready", function(){
+    console.log("document.body ready");
+  });
 </script>
 
 </body>
