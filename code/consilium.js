@@ -23,7 +23,7 @@ var App = {
   initialize: function(domain)
   {  
     if (!DOM) console.log( "- MODULE DOM required");
-    
+    console.log("APP initialize");
     App.start(); // start reporter
     
     kontify(this);
@@ -64,6 +64,8 @@ var App = {
       { id: "10013963", x: "1380935392804", y: "70" },
       { id: "privat", x: "1380745392804", y: "Ein guter Tag<br>morgen" }
     ], ["id", "x"]);
+    
+    Controller.bind();
     
     App.report( "App.initialize" );
 
@@ -112,7 +114,6 @@ var Controller = {
   init: function(domain)
   {
     eventify(this);
-    this.bind();
   }
   ,
   bind: function()
@@ -123,7 +124,6 @@ var Controller = {
       App.report( "2) Controller after SETUP" );
     });
     document.addEventListener("deviceready", function(){
-    // DOM(window).on("deviceready", function(){
       App.setup();
       App.report( "2) Controller after SETUP (deviceready)" );
     });
