@@ -67,7 +67,7 @@
             <h1 class="intro-title"></h1>
             <h2 class="intro-claim"></h2>
           </section>       
-          <div class="cell">
+          <div class="cell" id="test">
             
           </div>
         </div>   
@@ -268,10 +268,10 @@
     DOM( document.body ).error("oldbrowser");	
   }
   DOM(window).on("ready", function(){
-    console.log("window ready");
+    DOM("test").add("div").text("window ready");
   });
   DOM(document.body).on("ready", function(){
-    console.log("document.body ready");
+    DOM("test").add("div").text("document.body ready");
   });
 </script>
 
