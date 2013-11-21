@@ -207,7 +207,7 @@ and (max-device-width : 568px) {
   line-height: 30px;
 }
 
-.phonegap .intro-wrapper > div:first-child .page {
+.phonegap .intro-wrapper div .page {
   width: auto;
 }
 
