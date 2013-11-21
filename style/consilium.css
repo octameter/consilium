@@ -207,7 +207,7 @@ and (max-device-width : 568px) {
   line-height: 30px;
 }
 
-.phonegap .intro-main .page {
+.phonegap .intro-wrapper > div:first-child .page {
   width: auto;
 }
 
@@ -219,3 +219,10 @@ and (max-device-width : 568px) {
   min-height: 100px;
 }
 
+.phonegap .intro-wrapper {
+  padding-bottom: 1em;
+}
+
+.phonegap .intro-footer {
+  display: none;
+}
