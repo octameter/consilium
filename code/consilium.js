@@ -76,7 +76,7 @@ var App = {
     App.device = DOM().device(); // tv || tablet || mobile || desktop
     
     App.signOn(function(data)
-    { 
+    {
       Intro.show();
       Controller.dispatch(Controller.COMPLETE);
       App.report( "App.signOn", data);
