@@ -118,10 +118,12 @@ var Controller = {
   bind: function()
   {
     DOM(window).on("ready", function(){
+      return;
       App.setup();
       App.report( "2) Controller after SETUP" );
     });
-    DOM(window).on("deviceready", function(){
+    document.addEventListener("deviceready", function(){
+    // DOM(window).on("deviceready", function(){
       App.setup();
       App.report( "2) Controller after SETUP (deviceready)" );
     });
