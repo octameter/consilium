@@ -162,14 +162,14 @@ var Intro = {
     
     this.container.on("tangent", function( data )
     {
-      if (data.target.tagName != "BUTTON") return; // TODO review event delegation
+      if (data.target.tagName != "A") return; // TODO review event delegation
       if( data.type == "touchend" )
       {
         Intro.hide();
         Controller.dispatch(Controller.HOME);
         Home.content.show();
       }
-    }); // TODO this should do the trick , { watch: "BUTTON" }
+    }); // TODO this should do the trick , { watch: "A" }
     
   }
   ,
@@ -189,7 +189,9 @@ var Intro = {
     
     Intro.setTitle("Consilium");
     Intro.setClaim("Arzt und Patient verbinden");
-    Intro.setDetail("Informationen").add("button", { "class": "button blue floatRight" }).text("Start");
+    Intro.setDetail("Informationen").add("a", {
+      "class": "button blue floatRight"
+    }).text("Start");
     Intro.setDisclaimer();
   
     this.removeFeatures();
@@ -210,7 +212,7 @@ var Intro = {
         { title: "5. Anonymisierung", description: "<p>NutzerInnen der App erhalten eine individuelle Patienten-ID, mit der Sie berechtigt sind den Service zu nutzen.</p>"}
         ,
         { title: "6. Epilog", description: "<p>Wir danken für Ihr Interesse und wünschen Ihnen viel Erfolg.</p>"
-          + '<button class="button blue">App starten</button>'
+          + '<a class="button blue">App starten</a>'
         }
       ]);
     }
