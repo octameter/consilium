@@ -274,9 +274,11 @@ var Intro = {
 var Einstellung = {
 
   //DOMELEMENTS
-  container:  DOM("einstellungId"),
-  gotoHome:   DOM("einstellungBackButton"),
-  content:    DOM("einstellungContentId"),
+  container:    DOM("einstellungId"),
+  gotoHome:     DOM("einstellungBackButton"),
+  content:      DOM("einstellungContentId"),
+  verbindenBtn: DOM("einstellungVerbinden"),
+  syncBtn:      DOM("einstellungSync"),
   
   init: function()
   {
@@ -296,6 +298,22 @@ var Einstellung = {
         Controller.dispatch( Controller.HOME );
         Einstellung.content.hide();
         Einstellung.container.swipe("left");
+      }
+    });
+    this.verbindenBtn.on("tangent", function(data)
+    {
+      if( data.type == "touchstart" ) Einstellung.verbindenBtn.addClass("selected");
+      if( data.type == "touchend" )
+      {
+        console.log("hier verbinden");
+      }
+    });
+    this.syncBtn.on("tangent", function(data)
+    {
+      if( data.type == "touchstart" ) Einstellung.syncBtn.addClass("selected");
+      if( data.type == "touchend" )
+      {
+        console.log("hier syncen");
       }
     });
     
@@ -607,7 +625,6 @@ var Home = {
           //detail:"Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen." 
         }).on("tangent", function(data)
         {
-          console.log(data.target);
           if( data.type == "touchstart" ) DOM( data.target ).addClass("selected");
           if( data.type == "touchend" )
           {
