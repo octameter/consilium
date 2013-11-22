@@ -760,9 +760,7 @@ var Intro = {
       ]);
     }
     var actor = Model.memory.get("actor");
-    
-    console.log( role_type, Model.memory.get("actor").scope_type, (actor.scope_type == "GRUPPE_B"), ( role_type == "PATIENT" )  );
-    
+
     if( role_type == "PATIENT" )
     { 
       // GRUPPE B   
