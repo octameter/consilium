@@ -41,34 +41,9 @@ var App = {
     
     console.log("- Node Server " + (App.live ? "Live" : "Local"));
     
-    Model.memory.set("lexikon", Symptom.data, Symptom._searchterms );
-    Model.memory.set("lexikon", Bewertung.data, Bewertung._searchterms );
-    Model.memory.set("lexikon", Tagebuch.data, Tagebuch._searchterms );
-    Model.memory.set("lexikon", Tipp.data, Tipp._searchterms );
-    
-    // DEV
-    console.log("Setting DUMMY data");
-
-    Model.memory.set("favorites", [
-       { id: "10025482" },
-       { id: "Symptom" },
-       { id: "10047700", "edit": true },
-       { id: "10013963", "edit": true },
-       { id: "privat"}
-    ]);
-    
-    Model.memory.set("acts", [
-      { id: "10025482", x: "1380725392804", y: "80" },
-      { id: "10013963", x: "1380735392804", y: "20" },
-      { id: "10013963", x: "1380835392804", y: "50" },
-      { id: "10013963", x: "1380935392804", y: "70" },
-      { id: "privat", x: "1380745392804", y: "Ein guter Tag<br>morgen" }
-    ], ["id", "x"]);
-    
     Controller.bind();
     
     App.report( "App.initialize" );
-
   }
   ,
   setup: function()
@@ -79,6 +54,8 @@ var App = {
     
     App.signOn(function(data)
     {
+      
+      
       Intro.show();
       Controller.dispatch(Controller.COMPLETE);
       App.report( "App.signOn", data);
@@ -131,8 +108,47 @@ var Model = {
   init: function()
   {
     storify(this);
+    
+    // DEFAULT START
+    this.memory.set("favorites", [{ id: "Symptom" }]);    
+    this.memory.set("acts", [], ["id", "x"]);
+    this.kataloge();
   }
-  
+  ,
+  kataloge:function()
+  {
+    Model.memory.set("lexikon", Symptom.data, Symptom._searchterms );
+    Model.memory.set("lexikon", Bewertung.data, Bewertung._searchterms );
+    Model.memory.set("lexikon", Tagebuch.data, Tagebuch._searchterms );
+    Model.memory.set("lexikon", Tipp.data, Tipp._searchterms );
+  }
+  ,
+  test:function()
+  {
+    // DEV
+    console.log("Setting DUMMY data");
+    Model.memory.set("acts", [
+      { id: "10025482", x: "1380725392804", y: "80" },
+      { id: "10013963", x: "1380735392804", y: "20" },
+      { id: "10013963", x: "1380835392804", y: "50" },
+      { id: "10013963", x: "1380935392804", y: "70" },
+      { id: "privat", x: "1380745392804", y: "Ein guter Tag<br>morgen" }
+    ], ["id", "x"]);
+    
+    /* PATIENT START */
+    if( false )
+    Model.memory.set("favorites", [
+       { id: "10025482" },
+       { id: "privat"}
+    ]);
+    
+    /* ARZT START */
+    if( false )
+    Model.memory.set("favorites", [
+       { id: "diagnose"},
+       { id:"zyklus" }
+    ]);
+  }
 };
 
 var Intro = {
@@ -445,15 +461,24 @@ var Home = {
     init: function(){        
       this.board.removeChilds();
       
+      // All Entries 
       var range = Model.memory.get("acts").sort123("x").clone();
+      // Minimum X for Grid
+      var first= new Date(); 
+      first.setDate(first.getDate() - 30);
+      // Maximum X for Grid
+      var last = new Date(); 
+      last.setDate(last.getDate() + 3);
       
-      var first = Math.floor( range.shift().x );
-      var firstMin = new Date();
-      if (first > firstMin.setDate(firstMin.getDate() - 30)) first = firstMin;
-
-      var last  = Math.floor( range.pop().x );
-      var lastMax = new Date();
-      if (last < lastMax.setDate(lastMax.getDate() + 3)) last = lastMax;
+      // Maybe larger Grid needed
+      if( range.length > 0 )  
+      {
+        var firstAct = Math.floor( range.shift().x );
+        if( firstAct < first ) first = firstAct;
+        
+        var lastAct  = Math.floor( range.pop().x );
+        if( lastAct > last ) last = lastAct;
+      }
 
       this.minInMs = util.zeit("midnight", first);
       this.maxInMs = util.zeit("midnight", last);
@@ -520,9 +545,11 @@ var Home = {
            {
              var notiz = acts.pop();
              // Above or below timegrid
-             var y = ( howto.id == "privat" ) ? -16 : 102;
+             var y = -16;
+             if( howto.id == "diagnose" ) y = 96;
+             if( howto.id == "zyklus" ) y = 106;
              
-             this.board.drawNotizen( this.x( notiz.x) , this.y( y ), 24, 24, howto.farbwert, notiz); 
+             this.board.drawNotizen( this.x( notiz.x) , this.y( y ), 32, 16, howto.farbwert, notiz); 
            }
         }
         
