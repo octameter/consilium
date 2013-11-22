@@ -272,7 +272,7 @@ var Einstellung = {
     scanner.scan(
       function(result) 
       { 
-        if( result.format == "QR_CODE" && result.text.split("&").length == 2)
+        if( result.format == "QR_CODE" && result.text.split(":").length == 2)
         {
           var params = {
             "usr": result.text[0]
