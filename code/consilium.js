@@ -60,14 +60,14 @@ var App = {
       
       if( data )
       {
-        if( Model.storage.get("visited") ) Home.show();
+        if( Model.storage.get("visited") ) Controller.dispatch( Controller.HOME );
 
         else {
           Model.storage.set("visited", true);
-          Intro.show();
+          Controller.dispatch( Controller.INTRO );
         }
       }
-      else Intro.show();
+      else Controller.dispatch( Controller.INTRO );
 
       Controller.dispatch(Controller.COMPLETE);
     });
@@ -302,14 +302,17 @@ var Intro = {
 var Einstellung = {
 
   //DOMELEMENTS
-  container:    DOM("einstellungId"),
-  gotoHome:     DOM("einstellungBackButton"),
-  content:      DOM("einstellungContentId"),
-  verbindenBtn: DOM("einstellungVerbinden"),
-  sync:         DOM("einstellungSyncId"),
-  syncStatus:   DOM("einstellungSyncId").find("strong"),
-  syncInfo:     DOM("einstellungSyncId").find("span"),
-  syncBtn:      DOM("einstellungSyncId").find("a"),
+  container:      DOM("einstellungId"),
+  gotoHome:       DOM("einstellungBackButton"),
+  content:        DOM("einstellungContentId"),
+  verbinden:      DOM("einstellungVerbundenId"),
+  verbindenStatus:DOM("einstellungVerbinden").find("strong"),
+  verbindenInfo:  DOM("einstellungVerbinden").find("span"),
+  verbindenBtn:   DOM("einstellungVerbinden").find("a"),
+  sync:           DOM("einstellungSyncId"),
+  syncStatus:     DOM("einstellungSyncId").find("strong"),
+  syncInfo:       DOM("einstellungSyncId").find("span"),
+  syncBtn:        DOM("einstellungSyncId").find("a"),
   
   init: function()
   {
@@ -362,7 +365,35 @@ var Einstellung = {
   {
     this.content.show();
     
+    var actor = Model.memory.get("actor");
     
+    
+    console.log( actor, App.phonegap );
+    
+    if( App.phonegap )
+    {
+      if( actor )
+      {
+        
+      }
+      else
+      {
+        
+      }
+    }
+    else
+    {
+      if( actor )
+      {
+        this.verbindenStatus.text( actor.scope_label );
+        this.verbindenInfo.text("hergestellt");
+      }
+      else
+      {
+        this.verbindenStatus.text( "" );
+        this.verbindenInfo.text("hergestellt");
+      }
+    }
   } 
 };
 
