@@ -1451,7 +1451,7 @@ DOModule.setDatetime = function( ms )
 
 DOModule.addDatetime = function( callback ) 
 {
-  console.log("-------- check window.device", window.device);
+
   if( window.device )
   {
     
