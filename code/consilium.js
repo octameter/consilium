@@ -223,7 +223,7 @@ var Intro = {
     this.removeFeatures();
     
     // DESKTOP NOLOGIN
-    if( true )
+    if( role_type == "NOT_REGISTER" && !App.phonegap )
     {
       this.addFeatures(
       [
@@ -243,8 +243,8 @@ var Intro = {
       ]);
     }
     
-    // APP
-    if( false )
+    // APP NOLOGIN
+    if( role_type == "NOT_REGISTER" && App.phonegap )
     {
       this.addFeatures(
       [
@@ -259,7 +259,7 @@ var Intro = {
     }
     
     // GRUPPE B    
-    if( false )
+    if( role_type == "GRUPPE_B" )
     {
       this.addFeatures(
       [
@@ -276,7 +276,7 @@ var Intro = {
     }
     
     // GRUPPE C    
-    if( false )
+    if( role_type == "GRUPPE_C" )
     {
       this.addFeatures(
       [
