@@ -1351,7 +1351,7 @@ function eventify( that ) {
 DOModule.setSlider = function( value )
 {
   value = parseInt( value );
-  
+
   if( window.device )
   {
     this.find("input").set("value", value);
@@ -1361,10 +1361,10 @@ DOModule.setSlider = function( value )
     var slider = this.find(".slider");
     
     var thumb = slider.find("a");
-      
+
     var hundert = slider.width() - thumb.width();
     // TODO slider.width() is 0 if container is display: none;
-  
+    
     thumb.style("left", parseInt(hundert * value / 100) + "px");
   }
 };
@@ -1385,7 +1385,7 @@ DOModule.addSlider = function( callback )
       var thumb = slider.add("a").addClass("knob");
       var thumbWidth = thumb.width();      
       var hundert = slider.width() - (thumbWidth * 0.5);
-   
+
       function onDrag(data)
       {
         var value = parseInt((data.koord.clientX - thumbWidth)/ hundert * 100);

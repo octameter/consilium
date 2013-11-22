@@ -84,7 +84,7 @@ h1.intro-title{margin:0;font-size:40px;}
 .slider.dragging .knob{-webkit-transition:none;-moz-transition:none;-ms-transition:none;-o-transition:none;transition:none;}
 input[type="range"]{margin-top:20px;-webkit-appearance:none;border-radius:5px;border:1px solid #333;background:#535454;opacity:0.7;height:10px;width:100%;outline:none;}
 input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;position:relative;width:36px;height:36px;border-radius:18px;background-color:#eaeaea;background-image:linear-gradient(#fafafa, #dadada);background-image:-webkit-linear-gradient(#fafafa, #dadada);background-image:-moz-linear-gradient(#fafafa, #dadada);background-image:-ms-linear-gradient(#fafafa, #dadada);background-image:-o-linear-gradient(#fafafa, #dadada);border:1px solid #000;}
-.optionen{display:block;float:left;padding:5px;font-size:16px;line-height:1;outline:none;}
+.optionen{display:block;float:left;padding:5px;font-size:16px;outline:none;}
 .optionenLabel{display:block;float:left;line-height:35px;margin-right:5px;}
 .optionen~.optionenLabel{margin-left:10px;}
 @media (max-width:767px){.optionenLabel{clear:left;width:55px;} .optionen~.optionenLabel{margin-left:0;}}

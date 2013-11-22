@@ -55,17 +55,12 @@ var App = {
     
     App.signOn(function(actor)
     {
-      App.report( "App.signOn", actor);
-      
       Model.memory.set("actor", actor);
       
-      if( actor && Intro.hasInformed( actor ) )
-      {
-        Controller.dispatch( Controller.HOME ); 
-      }
-      else Controller.dispatch( Controller.INTRO );      
+      if( actor && actor.favorites_object )
+      Model.memory.set("favorites", actor.favorites_object );
       
-      Controller.dispatch(Controller.COMPLETE);
+      Controller.dispatch( Controller.HOME );   
     });
     
     App.report( "App.setup" );
@@ -84,8 +79,6 @@ var App = {
 };
 
 var Controller = {
-  
-  COMPLETE:   "COMPLETE",
   
   INTRO:      "INTRO",
   HOME:       "HOME",
@@ -154,151 +147,6 @@ var Model = {
        { id: "diagnose"},
        { id:"zyklus" }
     ]);
-  }
-};
-
-var Intro = {
-
-  container: DOM("introId")
-  ,
-  init: function()
-  {
-    if (!App.live) console.log("- VIEW Intro");
-    introfy(this);
-    this.bind();
-    
-    this.container.hide();
-  }
-  ,
-  bind: function()
-  {   
-    Controller.on(Controller.COMPLETE, function(){
-      Intro.container.addClass("swipable");
-      Intro.container.find(".intro-main .cell:last-child").addConsilium();
-      App.report( "Intro on Controller.COMPLETE");
-    });
-    
-    Controller.on(Controller.INTRO, function( data ){
-      Intro.show( data );
-      App.report( "Intro on Controller.INTRO");
-    });
-    
-    this.container.on("tangent", function( data )
-    {
-      if (data.target.tagName != "A") return; // TODO review event delegation
-      if( data.type == "touchend" )
-      {
-        Intro.hide();
-        Controller.dispatch(Controller.HOME);
-        Home.content.show();
-      }
-    }); // TODO this should do the trick , { watch: "A" }
-    
-  }
-  ,
-  show: function( data )
-  { 
-    Intro.update( data );
-    Intro.container.style("top", "0%");
-  }
-  ,
-  hide: function()
-  {
-    Intro.container.style("top", "100%");
-  }
-  ,
-  hasInformed:function( data )
-  {          
-    return ( data.role_type == Model.storage.get("informed") );
-  }
-  ,
-  update: function( data )
-  { 
-    this.container.show();
-    
-    var role_type = ( Model.memory.get("actor") ) ? Model.memory.get("actor").role_type : "NOT_REGISTER";
-    
-    Intro.setTitle("Consilium");
-    Intro.setClaim("Arzt und Patient verbinden");
-    Intro.setDetail("Informationen").add("a", {
-      "class": "button blue floatRight"
-    }).text("Start");
-    Intro.setDisclaimer();
-  
-    this.removeFeatures();
-    
-    // DESKTOP NOLOGIN
-    if( ( role_type == "NOT_REGISTER" || role_type == "REGISTER" ) && !App.phonegap )
-    {
-      this.addFeatures(
-      [
-        { title: "1. Funktion", description: "<p>Consilium ist eine Applikation zur Erfassung von Symptomen und Notizen durch die NutzerInnen. Sie unterstützt die Kommunikation mit dem Arzt über einen gemeinsamen Datenzugriff.</p>"}
-        ,
-        { title: "2. Entwicklung", description: "<p>Consilium wurde für eine Studie entwickelt, die aktuell den Mehrwert von Applikationen in der medizinischen Versorgung untersucht.</p>"}
-        ,
-        { title: "3. Nutzung", description: "<p>Alle Interssierte dürfen die App testen. Über „Start“ wird die Favoritenliste aufgerufen, in der Wohlbefinden, Symptome und Tagebuchnotizen eingeben werden können.</p>"}
-        ,
-        { title: "4. Datenspeicherung", description: "<p>Die Daten werden nur nach Verbindung mit dem Server und regelmässiger Synchronisation über „Sync“ gespeichert. Eingegebene Daten in der Testversion werden nicht erfasst.</p>"}
-        ,
-        { title: "5. Anonymisierung", description: "<p>NutzerInnen der App erhalten eine individuelle Patienten-ID, mit der Sie berechtigt sind den Service zu nutzen.</p>"}
-        ,
-        { title: "6. Epilog", description: "<p>Wir danken für Ihr Interesse und wünschen Ihnen viel Erfolg.</p>"
-          + '<a class="button blue">App starten</a>'
-        }
-      ]);
-    }
-    
-    // APP NOLOGIN
-    if( role_type == "NOT_REGISTER" && App.phonegap )
-    {
-      this.addFeatures(
-      [
-        { title: "1. Funktion", description: "<p>Die App ist Ihr persönliches Logbuch während einer medizinischen Therapie. Wir empfehlen die App täglich zu nutzen.</p>" }
-        ,
-        { title: "2. Einführung", description: "<p>Über „Start“ können Sie in der Favoritenliste Wohlbefinden, Symptome und Notizen erfassen.</p>" }
-        ,
-        { title: "3. Epilog", description: "<p>Die erfassten Daten erscheinen in Ihrer Timeline und in Ihrer Web-Applikation. Wir wünschen Ihnen viel Erfolg!</p>"
-          + '<a class="button blue">App starten</a>'
-        }
-      ]);
-    }
-    
-    // GRUPPE B    
-    if( role_type == "GRUPPE_B" )
-    {
-      this.addFeatures(
-      [
-        { title: "1. Einteilung", description: "<p>Sie gehören der Gruppe B an. Verwenden Sie die App während der Beobachtungszeit, ohne den Arzt darüber zu informieren. Verhalten Sie sich ansonsten in den Arztvisiten wie gewohnt, und informieren Sie den Arzt über alle Ihre Beschwerden und Wünsche.</p>"}
-        ,
-        { title: "2. Nutzung", description: "<p>Wir empfehlen die App täglich zu nutzen. Über „Start“ können Sie in der Favoritenliste Wohlbefinden, Symptome und Notizen erfassen. Die erfassten Daten erscheinen in Ihrer Timeline und Web-Applikation. Zwei Datenpunkten erhalten eine Verbindungslinie, wenn der Zeitabstand weniger als drei Tage beträgt.</p>"}
-        ,
-        { title: "3. Fragebogen", description: "<p>Bitte beantworten Sie unsere Fragebögen. Sie können die App dabei verwenden. Notieren Sie bitte auf dem Fragebogen nur Ihre persönliche Patienten-ID (Pat-ID) und nie Ihren Namen. Ihre Pat-ID erscheint in der App durch Berühren der „Sync“-Taste.</p>"}
-        ,
-        { title: "4. Epilog", description: "<p>Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie.</p>"
-          + '<a class="button blue">App starten</a>'
-        }
-      ]);
-    }
-    
-    // GRUPPE C    
-    if( role_type == "GRUPPE_C" )
-    {
-      this.addFeatures(
-      [
-        { title: "1. Einteilung", description: "<p>Sie gehören der Gruppe C an. Verwenden Sie die App während der Beobachtungszeit und diskutieren Sie die Daten zusammen mit dem Arzt in der Visite. Verhalten Sie sich ansonsten in den Arztvisiten wie gewohnt, und informieren Sie den Arzt über alle Ihre Beschwerden und Wünsche.</p>"}
-        ,
-        { title: "2. Nutzung", description: "<p>Wir empfehlen die App täglich zu nutzen. Über „Start“ können Sie in der Favoritenliste Wohlbefinden, Symptome und Notizen erfassen. Die erfassten Daten erscheinen in Ihrer Timeline und in Ihrer Web-Applikation. Zwei Datenpunkten erhalten eine Verbindungslinie, wenn der Zeitabstand weniger als drei Tage beträgt.</p>"}
-        ,
-        { title: "3. Fragebogen", description: "<p>Bitte beantworten Sie unsere Fragebögen. Sie können die App dabei verwenden. Notieren Sie bitte auf dem Fragebogen nur Ihre persönliche Patienten-ID (Pat-ID) und nie Ihren Namen. Ihre Pat-ID erscheint in der App durch Berühren der „Sync“-Taste.</p>"}
-        ,
-        { title: "4. Epilog", description: "<p>Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie.</p>" 
-          + '<a class="button blue">App starten</a>'
-        }
-      ]);
-    }
-    App.report( "INTRO update");
-        
-    Model.storage.set("informed", role_type ); 
   }
 };
 
@@ -488,34 +336,18 @@ var Home = {
   ,
   bind: function()
   {
-    
-    Controller.on(Controller.COMPLETE, function()
-    {
-      if (!window.device) DOM("titleId").hide();
-      
-      Home.container.addClass("swipable");
-      Home.chart.init();
-      Home.form.init();
-      Home.container.show();
-      Home.content.show();
-      App.report("Home on Controller.COMPLETE");
-    });
-    
     Controller.on(Controller.HOME, function()
     {
-      Home.update();
-      Home.content.hide();
-
-      Home.container.on("stage", function()
+      
+      var actor = Model.memory.get("actor");
+      
+      console.log("Model.memory.get('actor')", actor);
+      if( Intro.hasInformed( actor ) )
       {
-        Home.container.off("stage");
-        Home.content.show();
-        App.report("Home on.stage");
-      });
+         Home.show();
+      }
+      else Controller.dispatch( Controller.INTRO, actor );
       
-      Home.container.swipe("middle");
-      
-      App.report("Home on Controller.HOME");
     });
     
     this.gotoOptionen.on("tangent", function( data )
@@ -538,11 +370,38 @@ var Home = {
       }
     });
     
-  },
-  
+  }
+  ,
+  show: function()
+  {
+      Home.container.show();
+      Home.content.invisible();
+      Home.update();
+      
+      Home.container.on("stage", function()
+      {
+        Home.container.off("stage");
+        Home.content.show();
+        App.report("Home on.stage");
+      });
+      
+      Home.container.swipe("middle");
+      
+      App.report("Home on Controller.HOME");
+  }
+  ,
   // FUNCTIONS
   update: function()
   {
+    if( !Home.container.hasClass("swipable") )
+    {
+      if (!window.device) DOM("titleId").hide();
+      
+      Home.container.addClass("swipable");
+      Home.chart.init();
+      Home.form.init();   
+    } 
+    
     console.log( "update home now");
     this.content.show();
     this.chart.update();
@@ -794,8 +653,154 @@ var Home = {
   }
 };
 
+var Intro = {
+
+  container: DOM("introId")
+  ,
+  init: function()
+  {
+    if (!App.live) console.log("- VIEW Intro");
+    introfy(this);
+    this.bind();
+    
+    Intro.container.addClass("swipable");
+    Intro.container.find(".intro-main .cell:last-child").addConsilium();
+    
+    this.container.hide();
+  }
+  ,
+  bind: function()
+  {
+    
+    Controller.on(Controller.INTRO, function( data ){
+      Intro.show( data );
+      App.report( "Intro on Controller.INTRO");
+    });
+    
+    this.container.on("tangent", function( data )
+    {
+      if (data.target.tagName != "A") return; // TODO review event delegation
+      if( data.type == "touchend" )
+      {
+        Intro.hide();
+        Controller.dispatch(Controller.HOME);
+        //Home.show();
+        //Home.content.show();
+      }
+    }); // TODO this should do the trick , { watch: "A" }
+    
+  }
+  ,
+  show: function( data )
+  { 
+    Intro.update( data );
+    Intro.container.style("top", "0%");
+  }
+  ,
+  hide: function()
+  {
+    Intro.container.style("top", "100%");
+  }
+  ,
+  hasInformed:function( data )
+  {
+    // check storage against actor.role_type or "NOT_REGISTER"
+    return ( Model.storage.get("informed") == ((data && data.role_type) || "NOT_REGISTER") );
+  }
+  ,
+  update: function( data )
+  { 
+    this.container.show();
+    
+    console.log("ipdate ___________ ", data);
+    
+    var role_type = ( Model.memory.get("actor") ) ? Model.memory.get("actor").role_type : "NOT_REGISTER";
+    
+    Intro.setTitle("Consilium");
+    Intro.setClaim("Arzt und Patient verbinden");
+    Intro.setDetail("Informationen").add("a", {
+      "class": "button blue floatRight"
+    }).text("Start");
+    Intro.setDisclaimer();
+  
+    this.removeFeatures();
+    
+    // DESKTOP NOLOGIN
+    if( ( role_type == "NOT_REGISTER" || role_type == "REGISTER" ) && !App.phonegap )
+    {
+      this.addFeatures(
+      [
+        { title: "1. Funktion", description: "<p>Consilium ist eine Applikation zur Erfassung von Symptomen und Notizen durch die NutzerInnen. Sie unterstützt die Kommunikation mit dem Arzt über einen gemeinsamen Datenzugriff.</p>"}
+        ,
+        { title: "2. Entwicklung", description: "<p>Consilium wurde für eine Studie entwickelt, die aktuell den Mehrwert von Applikationen in der medizinischen Versorgung untersucht.</p>"}
+        ,
+        { title: "3. Nutzung", description: "<p>Alle Interssierte dürfen die App testen. Über „Start“ wird die Favoritenliste aufgerufen, in der Wohlbefinden, Symptome und Tagebuchnotizen eingeben werden können.</p>"}
+        ,
+        { title: "4. Datenspeicherung", description: "<p>Die Daten werden nur nach Verbindung mit dem Server und regelmässiger Synchronisation über „Sync“ gespeichert. Eingegebene Daten in der Testversion werden nicht erfasst.</p>"}
+        ,
+        { title: "5. Anonymisierung", description: "<p>NutzerInnen der App erhalten eine individuelle Patienten-ID, mit der Sie berechtigt sind den Service zu nutzen.</p>"}
+        ,
+        { title: "6. Epilog", description: "<p>Wir danken für Ihr Interesse und wünschen Ihnen viel Erfolg.</p>"
+          + '<a class="button blue">App starten</a>'
+        }
+      ]);
+    }
+    
+    // APP NOLOGIN
+    if( role_type == "NOT_REGISTER" && App.phonegap )
+    {
+      this.addFeatures(
+      [
+        { title: "1. Funktion", description: "<p>Die App ist Ihr persönliches Logbuch während einer medizinischen Therapie. Wir empfehlen die App täglich zu nutzen.</p>" }
+        ,
+        { title: "2. Einführung", description: "<p>Über „Start“ können Sie in der Favoritenliste Wohlbefinden, Symptome und Notizen erfassen.</p>" }
+        ,
+        { title: "3. Epilog", description: "<p>Die erfassten Daten erscheinen in Ihrer Timeline und in Ihrer Web-Applikation. Wir wünschen Ihnen viel Erfolg!</p>"
+          + '<a class="button blue">App starten</a>'
+        }
+      ]);
+    }
+    
+    // GRUPPE B    
+    if( role_type == "GRUPPE_B" )
+    {
+      this.addFeatures(
+      [
+        { title: "1. Einteilung", description: "<p>Sie gehören der Gruppe B an. Verwenden Sie die App während der Beobachtungszeit, ohne den Arzt darüber zu informieren. Verhalten Sie sich ansonsten in den Arztvisiten wie gewohnt, und informieren Sie den Arzt über alle Ihre Beschwerden und Wünsche.</p>"}
+        ,
+        { title: "2. Nutzung", description: "<p>Wir empfehlen die App täglich zu nutzen. Über „Start“ können Sie in der Favoritenliste Wohlbefinden, Symptome und Notizen erfassen. Die erfassten Daten erscheinen in Ihrer Timeline und Web-Applikation. Zwei Datenpunkten erhalten eine Verbindungslinie, wenn der Zeitabstand weniger als drei Tage beträgt.</p>"}
+        ,
+        { title: "3. Fragebogen", description: "<p>Bitte beantworten Sie unsere Fragebögen. Sie können die App dabei verwenden. Notieren Sie bitte auf dem Fragebogen nur Ihre persönliche Patienten-ID (Pat-ID) und nie Ihren Namen. Ihre Pat-ID erscheint in der App durch Berühren der „Sync“-Taste.</p>"}
+        ,
+        { title: "4. Epilog", description: "<p>Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie.</p>"
+          + '<a class="button blue">App starten</a>'
+        }
+      ]);
+    }
+    
+    // GRUPPE C    
+    if( role_type == "GRUPPE_C" )
+    {
+      this.addFeatures(
+      [
+        { title: "1. Einteilung", description: "<p>Sie gehören der Gruppe C an. Verwenden Sie die App während der Beobachtungszeit und diskutieren Sie die Daten zusammen mit dem Arzt in der Visite. Verhalten Sie sich ansonsten in den Arztvisiten wie gewohnt, und informieren Sie den Arzt über alle Ihre Beschwerden und Wünsche.</p>"}
+        ,
+        { title: "2. Nutzung", description: "<p>Wir empfehlen die App täglich zu nutzen. Über „Start“ können Sie in der Favoritenliste Wohlbefinden, Symptome und Notizen erfassen. Die erfassten Daten erscheinen in Ihrer Timeline und in Ihrer Web-Applikation. Zwei Datenpunkten erhalten eine Verbindungslinie, wenn der Zeitabstand weniger als drei Tage beträgt.</p>"}
+        ,
+        { title: "3. Fragebogen", description: "<p>Bitte beantworten Sie unsere Fragebögen. Sie können die App dabei verwenden. Notieren Sie bitte auf dem Fragebogen nur Ihre persönliche Patienten-ID (Pat-ID) und nie Ihren Namen. Ihre Pat-ID erscheint in der App durch Berühren der „Sync“-Taste.</p>"}
+        ,
+        { title: "4. Epilog", description: "<p>Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie.</p>" 
+          + '<a class="button blue">App starten</a>'
+        }
+      ]);
+    }
+    App.report( "INTRO update");
+        
+    Model.storage.set("informed", role_type ); 
+  }
+};
+
 var Favorites = {
-// VIEW
     
   //DOMELEMENTS
   container:    DOM("favoritesId"),
@@ -1047,9 +1052,12 @@ var Eingabe = {
    init: function()
    {
      if (!App.live) console.log( "- VIEW EINGABE");
+     
+     // container has to be visible before bind or slider will not initialize correctly
+     this.container.show();
+     
      this.bind();
      
-     this.container.show();
      this.content.invisible();
    }
    ,
@@ -1060,78 +1068,84 @@ var Eingabe = {
       {
         if( data.type == "touchend" ) Eingabe.goBack();
       });
+      
+      
+      DOM("zeitArea").addDatetime(function(value){
+      // Zeit
+        Eingabe.itemModified = Eingabe.itemModified || Object.create( Eingabe.item );   
+        Eingabe.itemModified.x = value;
+        
+        Eingabe.update(Eingabe.itemModified); 
+      });
+      
+      // Strukurierte Eingabe
+      DOM("sliderArea").addSlider(function(value){
+      
+      if (!Eingabe.itemModified){
+        Eingabe.itemModified = Object.create(Eingabe.item);
+        Eingabe.itemModified.x = new Date().getTime();
+      }
+      
+      Eingabe.itemModified.y = value;
+      // TODO: specifically update containers
+        Eingabe.update(Eingabe.itemModified);
+      });
+      
+      // Freitext
+      DOM("favTextareaId").on("input", function(data)
+      {
+        Eingabe.itemModified = Eingabe.itemModified || Object.create( Eingabe.item );      
+        Eingabe.itemModified.y = data.value;
+        Eingabe.itemModified.x = new Date().getTime();
+        
+        Eingabe.update( Eingabe.itemModified );
+      });
+      
+      // Actions
+      Eingabe.eingabe.find(".blue").on("tangent", function( data ) 
+      { 
+        // TODO directly assign Eingabe.method
+        if( data.type == "touchend" ) Eingabe.saveItemModified(); 
+      }); 
+      
+      Eingabe.eingabe.find(".red").on("tangent", function( data ) 
+      { 
+        if( data.type == "touchend" ) Eingabe.deleteItem(); 
+      });
+      
+      Eingabe.eingabe.find(".grey").on("tangent", function( data ) 
+      { 
+        if( data.type == "touchend" ) Eingabe.cancelItemModified();
+      });
+      
+      Eingabe.freitext.find(".lightgrey").on("tangent", function( data )
+      {
+        if( data.type == "touchend" ) 
+        {           
+          Eingabe.itemModified = Object.create( Eingabe.item );         
+          Eingabe.itemModified.y = "";
+          Eingabe.itemModified.x = new Date().getTime();
+          
+          Eingabe.update( Eingabe.itemModified );
+        }
+      });
+      
+      Eingabe.freitext.find(".blue").on("tangent", function(data) 
+      { 
+        if( data.type == "touchend" ) Eingabe.saveItemModified(); 
+      });
+      
+      Eingabe.freitext.find(".red").on("tangent", function(data) 
+      { 
+        if( data.type == "touchend" ) Eingabe.deleteItem(); 
+      });
+      
+      Eingabe.freitext.find(".grey").on("tangent", function(data) 
+      { 
+        if( data.type == "touchend" ) Eingabe.cancelItemModified(); 
+      });
      
-     Controller.on(Controller.COMPLETE, function(data)
-     {     
-       DOM("zeitArea").addDatetime(function(value){
-         // Zeit
-         Eingabe.itemModified = Eingabe.itemModified || Object.create( Eingabe.item );   
-         Eingabe.itemModified.x = value;
-         
-         Eingabe.update(Eingabe.itemModified); 
-       });
-       
-       // Strukurierte Eingabe
-       DOM("sliderArea").addSlider(function(value){
-         
-         if (!Eingabe.itemModified){
-           Eingabe.itemModified = Object.create(Eingabe.item);
-           Eingabe.itemModified.x = new Date().getTime();
-         }
-         
-         Eingabe.itemModified.y = value;
-         // TODO: specifically update containers
-         Eingabe.update(Eingabe.itemModified);
-       });
-
-       // Freitext
-       DOM("favTextareaId").on("input", function(data)
-       {
-         Eingabe.itemModified = Eingabe.itemModified || Object.create( Eingabe.item );      
-         Eingabe.itemModified.y = data.value;
-         Eingabe.itemModified.x = new Date().getTime();
-         
-         Eingabe.update( Eingabe.itemModified );
-       });
-       
-       // Actions
-       Eingabe.eingabe.find(".blue").on("tangent", function( data ) 
-       { 
-         // TODO directly assign Eingabe.method
-         if( data.type == "touchend" ) Eingabe.saveItemModified(); 
-       }); 
-       Eingabe.eingabe.find(".red").on("tangent", function( data ) 
-       { 
-         if( data.type == "touchend" ) Eingabe.deleteItem(); 
-       });
-       Eingabe.eingabe.find(".grey").on("tangent", function( data ) 
-       { 
-         if( data.type == "touchend" ) Eingabe.cancelItemModified();
-       });
-       Eingabe.freitext.find(".lightgrey").on("tangent", function( data )
-       {
-         if( data.type == "touchend" ) 
-         {           
-           Eingabe.itemModified = Object.create( Eingabe.item );         
-           Eingabe.itemModified.y = "";
-           Eingabe.itemModified.x = new Date().getTime();
-           
-           Eingabe.update( Eingabe.itemModified );
-         }
-       });      
-       Eingabe.freitext.find(".blue").on("tangent", function(data) 
-       { 
-         if( data.type == "touchend" ) Eingabe.saveItemModified(); 
-       });
-       Eingabe.freitext.find(".red").on("tangent", function(data) 
-       { 
-         if( data.type == "touchend" ) Eingabe.deleteItem(); 
-       });
-       Eingabe.freitext.find(".grey").on("tangent", function(data) 
-       { 
-         if( data.type == "touchend" ) Eingabe.cancelItemModified(); 
-       });
-     });
+ 
      
      Controller.on(Controller.EINGABE, function(data){
        
