@@ -57,8 +57,8 @@ var App = {
     {
       Model.memory.set("actor", actor);
       
-      if( actor && actor.favorites_object )
-      Model.memory.set("favorites", actor.favorites_object );
+      if( actor && actor.favorites_array )
+      Model.memory.set("favorites", actor.favorites_array );
       
       Controller.dispatch( Controller.HOME );   
     });
@@ -296,6 +296,7 @@ var Einstellung = {
               {
                 Model.storage.set("device_actor", actor);   
                 Model.memory.set("actor", actor);  
+                Model.memory.set("favorites", actor.favorites_array );
                 Einstellung.update();
               }
               else Einstellung.update( { status:"Berechtigung", info:"nicht vorhanden" } );
