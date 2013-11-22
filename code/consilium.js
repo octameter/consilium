@@ -38,12 +38,12 @@ var App = {
     Symptome.init();
     Eingabe.init();
     Tipps.init();
+
+    DOM(window).on("ready", function(){
+      App.setup();
+    });
     
-    console.log("- Node Server " + (App.live ? "Live" : "Local"));
-    
-    Controller.bind();
-    
-    App.report( "App.initialize" );
+    App.report( "App.initialized" );
   }
   ,
   setup: function()
@@ -54,11 +54,11 @@ var App = {
     
     App.signOn(function(data)
     {
-      
+      App.report( "App.signOn", data);
+      Model.memory.set("actor", data);
       
       Intro.show();
       Controller.dispatch(Controller.COMPLETE);
-      App.report( "App.signOn", data);
     });
     
     App.report( "App.setup" );
@@ -91,14 +91,13 @@ var Controller = {
   init: function(domain)
   {
     eventify(this);
+    
+    this.bind();
   }
   ,
   bind: function()
   {
-    DOM(window).on("ready", function(){
-      App.setup();
-      App.report( "2) Controller after SETUP" );
-    });
+
   }
   
 };
@@ -296,7 +295,10 @@ var Einstellung = {
   gotoHome:     DOM("einstellungBackButton"),
   content:      DOM("einstellungContentId"),
   verbindenBtn: DOM("einstellungVerbinden"),
-  syncBtn:      DOM("einstellungSync"),
+  sync:         DOM("einstellungSyncId"),
+  syncStatus:   DOM("einstellungSyncId").find("strong"),
+  syncInfo:     DOM("einstellungSyncId").find("span"),
+  syncBtn:      DOM("einstellungSyncId").find("a"),
   
   init: function()
   {
@@ -340,12 +342,15 @@ var Einstellung = {
       Einstellung.container.swipe("middle").on("stage", function()
       {
         Einstellung.container.off("stage"); 
-        Einstellung.content.show();
+        Einstellung.update();
       });
     });
   }
   ,
-  update: function(){
+  update: function()
+  {
+    this.content.show();
+    
     
   } 
 };
