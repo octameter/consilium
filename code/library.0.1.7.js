@@ -69,7 +69,10 @@ function kontify( that ){
       window.location.origin = origin;
     }  
     
-    if( document.domain == "localhost" || document.domain == "10.129.240.36")
+    if( document.domain == "localhost" 
+       || document.domain == "10.129.240.36"
+       || document.domain == "10.129.144.18"
+    )
     {
       document.domain = document.domain;
       that.node = "http://" + document.domain + ":8080";
