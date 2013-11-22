@@ -51,13 +51,24 @@ var App = {
     App.enviroment(); // domain, node, origin, live
     
     App.device = DOM().device(); // tv || tablet || mobile || desktop
+    App.phonegap = ( !!window.device );
     
     App.signOn(function(data)
     {
       App.report( "App.signOn", data);
       Model.memory.set("actor", data);
       
-      Intro.show();
+      if( data )
+      {
+        if( Model.storage.get("visited") ) Home.show();
+
+        else {
+          Model.storage.set("visited", true);
+          Intro.show();
+        }
+      }
+      else Intro.show();
+
       Controller.dispatch(Controller.COMPLETE);
     });
     
@@ -162,8 +173,7 @@ var Intro = {
   }
   ,
   bind: function()
-  {
-    
+  {   
     Controller.on(Controller.COMPLETE, function(){
       Intro.container.addClass("swipable");
       Intro.container.find(".intro-main .cell:last-child").addConsilium();
@@ -201,6 +211,7 @@ var Intro = {
   ,
   update: function()
   { 
+    var role_type = ( Model.memory.get("actor") ) ? Model.memory.get("actor").role_type : "NOT_REGISTER";
     
     Intro.setTitle("Consilium");
     Intro.setClaim("Arzt und Patient verbinden");
