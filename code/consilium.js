@@ -243,7 +243,7 @@ var Intro = {
         { title: "2. Einführung", description: "<p>Über „Start“ können Sie in der Favoritenliste Wohlbefinden, Symptome und Notizen erfassen.</p>" }
         ,
         { title: "3. Epilog", description: "<p>Die erfassten Daten erscheinen in Ihrer Timeline und in Ihrer Web-Applikation. Wir wünschen Ihnen viel Erfolg!</p>"
-          + '<button class="button blue">App starten</button>'
+          + '<a class="button blue">App starten</a>'
         }
       ]);
     }
@@ -260,7 +260,7 @@ var Intro = {
         { title: "3. Fragebogen", description: "<p>Bitte beantworten Sie unsere Fragebögen. Sie können die App dabei verwenden. Notieren Sie bitte auf dem Fragebogen nur Ihre persönliche Patienten-ID (Pat-ID) und nie Ihren Namen. Ihre Pat-ID erscheint in der App durch Berühren der „Sync“-Taste.</p>"}
         ,
         { title: "4. Epilog", description: "<p>Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie.</p>"
-          + '<button class="button blue">App starten</button>'
+          + '<a class="button blue">App starten</a>'
         }
       ]);
     }
@@ -277,7 +277,7 @@ var Intro = {
         { title: "3. Fragebogen", description: "<p>Bitte beantworten Sie unsere Fragebögen. Sie können die App dabei verwenden. Notieren Sie bitte auf dem Fragebogen nur Ihre persönliche Patienten-ID (Pat-ID) und nie Ihren Namen. Ihre Pat-ID erscheint in der App durch Berühren der „Sync“-Taste.</p>"}
         ,
         { title: "4. Epilog", description: "<p>Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie.</p>" 
-          + '<button class="button blue">App starten</button>'
+          + '<a class="button blue">App starten</a>'
         }
       ]);
     }
