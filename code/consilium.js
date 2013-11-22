@@ -53,22 +53,18 @@ var App = {
     App.device = DOM().device(); // tv || tablet || mobile || desktop
     App.phonegap = ( !!window.device );
     
-    App.signOn(function(data)
+    App.signOn(function(actor)
     {
-      App.report( "App.signOn", data);
-      Model.memory.set("actor", data);
+      App.report( "App.signOn", actor);
       
-      if( data )
+      Model.memory.set("actor", actor);
+      
+      if( actor && Intro.hasInformed( actor ) )
       {
-        if( Model.storage.get("visited") ) Controller.dispatch( Controller.HOME );
-
-        else {
-          Model.storage.set("visited", true);
-          Controller.dispatch( Controller.INTRO );
-        }
+        Controller.dispatch( Controller.HOME ); 
       }
-      else Controller.dispatch( Controller.INTRO );
-
+      else Controller.dispatch( Controller.INTRO );      
+      
       Controller.dispatch(Controller.COMPLETE);
     });
     
@@ -170,6 +166,8 @@ var Intro = {
     if (!App.live) console.log("- VIEW Intro");
     introfy(this);
     this.bind();
+    
+    this.container.hide();
   }
   ,
   bind: function()
@@ -180,8 +178,8 @@ var Intro = {
       App.report( "Intro on Controller.COMPLETE");
     });
     
-    Controller.on(Controller.INTRO, function(){
-      Intro.show();
+    Controller.on(Controller.INTRO, function( data ){
+      Intro.show( data );
       App.report( "Intro on Controller.INTRO");
     });
     
@@ -198,9 +196,9 @@ var Intro = {
     
   }
   ,
-  show: function()
-  {
-    Intro.update();
+  show: function( data )
+  { 
+    Intro.update( data );
     Intro.container.style("top", "0%");
   }
   ,
@@ -209,8 +207,15 @@ var Intro = {
     Intro.container.style("top", "100%");
   }
   ,
-  update: function()
+  hasInformed:function( data )
+  {          
+    return ( data.role_type == Model.storage.get("informed") );
+  }
+  ,
+  update: function( data )
   { 
+    this.container.show();
+    
     var role_type = ( Model.memory.get("actor") ) ? Model.memory.get("actor").role_type : "NOT_REGISTER";
     
     Intro.setTitle("Consilium");
@@ -223,7 +228,7 @@ var Intro = {
     this.removeFeatures();
     
     // DESKTOP NOLOGIN
-    if( role_type == "NOT_REGISTER" && !App.phonegap )
+    if( ( role_type == "NOT_REGISTER" || role_type == "REGISTER" ) && !App.phonegap )
     {
       this.addFeatures(
       [
@@ -292,7 +297,8 @@ var Intro = {
       ]);
     }
     App.report( "INTRO update");
-    
+        
+    Model.storage.set("informed", role_type ); 
   }
 };
 
@@ -306,9 +312,9 @@ var Einstellung = {
   gotoHome:       DOM("einstellungBackButton"),
   content:        DOM("einstellungContentId"),
   verbinden:      DOM("einstellungVerbundenId"),
-  verbindenStatus:DOM("einstellungVerbinden").find("strong"),
-  verbindenInfo:  DOM("einstellungVerbinden").find("span"),
-  verbindenBtn:   DOM("einstellungVerbinden").find("a"),
+  verbindenStatus:DOM("einstellungVerbundenId").find("strong"),
+  verbindenInfo:  DOM("einstellungVerbundenId").find("span"),
+  verbindenBtn:   DOM("einstellungVerbundenId").find("a"),
   sync:           DOM("einstellungSyncId"),
   syncStatus:     DOM("einstellungSyncId").find("strong"),
   syncInfo:       DOM("einstellungSyncId").find("span"),
@@ -339,7 +345,7 @@ var Einstellung = {
       if( data.type == "touchstart" ) Einstellung.verbindenBtn.addClass("selected");
       if( data.type == "touchend" )
       {
-        console.log("hier verbinden");
+        Einstellung.verbinden();
       }
     });
     this.syncBtn.on("tangent", function(data)
@@ -361,40 +367,103 @@ var Einstellung = {
     });
   }
   ,
-  update: function()
+  update: function(error)
   {
     this.content.show();
     
-    var actor = Model.memory.get("actor");
-    
-    
-    console.log( actor, App.phonegap );
+    var actor = Model.memory.get("actor");  
     
     if( App.phonegap )
     {
       if( actor )
       {
-        
+        this.verbindenStatus.text( actor.scope_display );
+        this.verbindenInfo.text("hergestellt");
+        this.verbindenBtn.hide();
+        this.sync.show();
+      }
+      else if( error )
+      {
+        this.verbindenStatus.text( error.status );
+        this.verbindenInfo.text( error.info );
+        this.verbindenBtn.show();
+        this.sync.hide();
       }
       else
       {
-        
+        this.verbindenStatus.text( "Mit Studienzentrum" );
+        this.verbindenInfo.text("herstellen");
+        this.verbindenBtn.show();
+        this.sync.hide();
       }
     }
     else
     {
-      if( actor )
+      if( actor && actor.role_type == "PATIENT")
       {
-        this.verbindenStatus.text( actor.scope_label );
+        this.verbindenStatus.text( actor.scope_display );
         this.verbindenInfo.text("hergestellt");
+        this.verbindenBtn.hide();
+        this.sync.hide();
       }
       else
       {
-        this.verbindenStatus.text( "" );
-        this.verbindenInfo.text("hergestellt");
+        this.verbindenStatus.text( "Kein Studienzentrum" );
+        this.verbindenInfo.text( "zugeordnet" );
+        this.verbindenBtn.hide();
+        this.sync.hide();
       }
     }
   } 
+  ,
+  verbinden:function()
+  {
+    var scanner = cordova.require("cordova/plugin/BarcodeScanner");
+
+    // text, format, cancelled
+    scanner.scan(
+      function(result) 
+      { 
+        if( result.format == "QR_CODE" )
+        {
+          var params = JSON.parse( result.text );
+          
+          Model.remote.read( App.node + "/authenticate", function( data )
+          {
+            if( data.status == 200)
+            {
+              var actors = data.message;
+              var actor;
+              
+              for( var i = 0; i < actors.length ; i++)
+              {
+                if( actors[i].scope_display.indexOf( "Consilium" ) > -1 ) actor = actors[i];
+              }
+              
+              if( actor )
+              {
+                Model.storage.set("device_actor", actor);   
+                Model.memory.set("actor", actor);  
+                Einstellung.update();
+              }
+              else Einstellung.update( { status:"Berechtigung", info:"nicht vorhanden" } );
+            }
+            else 
+            {
+              Model.storage.remove("device_actor");
+              Einstellung.update( { status:"Authentifizierung", info:"fehlgeschlagen" } );
+            }
+          }, params );                  
+        }
+        else Einstellung.update( { status:"QR-Code", info:"konnte nicht gelesen werden" } );
+      }
+      , 
+      function(error) 
+      { 
+         Einstellung.update( { status:"Aufbau", info:"fehlgeschlagen" } );
+      }
+    ); 
+  }
 };
 
 /**
