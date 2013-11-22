@@ -75,7 +75,6 @@ var App = {
   {
     console.log( text, new Date().getTime() - App.time );
   }
-  
 };
 
 var Controller = {
@@ -342,11 +341,8 @@ var Home = {
   bind: function()
   {
     Controller.on(Controller.HOME, function()
-    {
-      
-      var actor = Model.memory.get("actor");
-
-      if( actor && actor.role_type && Intro.hasInformed( actor ) )
+    {   
+      if( Intro.hasInformed() )
       {
          Home.show();
       }
@@ -703,10 +699,12 @@ var Intro = {
     Intro.container.style("top", "100%");
   }
   ,
-  hasInformed:function( data )
+  hasInformed:function()
   {
-    // check storage against actor.role_type or "NOT_REGISTER"
-    return ( data.role_type == Model.storage.get("informed") );
+    var actor = Model.memory.get("actor");
+
+    if( !actor ) 
+    return ( actor && actor.role_type == Model.storage.get("informed") );
   }
   ,
   update: function()
