@@ -1451,11 +1451,20 @@ DOModule.setDatetime = function( ms )
 
 DOModule.addDatetime = function( callback ) 
 {
-  console.log("window.device", window.device);
+  console.log("-------- check window.device", window.device);
   if( window.device )
   {
-    this.add("input", { type:"date"}).addClass("optionen");
-    this.add("input", { type:"time"}).addClass("optionen");
+    
+    function getHTML5DateTime(data)
+    {
+      callback(new Date(yyyymmdd.element.value + " " + hhmm.element.value).getTime());
+    }
+    
+    var yyyymmdd = this.add("input", { type: "date"}).addClass("optionen");
+    var hhmm = this.add("input", { type: "time"}).addClass("optionen");
+    
+    yyyymmdd.on("change", getHTML5DateTime);
+    hhmm.on("change", getHTML5DateTime);
   }
   else 
   {

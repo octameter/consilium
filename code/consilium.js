@@ -1068,7 +1068,7 @@ var Eingabe = {
       {
         if( data.type == "touchend" ) Eingabe.goBack();
       });
-      
+      window.device = true;
       
       DOM("zeitArea").addDatetime(function(value){
       // Zeit
