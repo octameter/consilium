@@ -275,8 +275,9 @@ var Einstellung = {
         if( result.format == "QR_CODE" && result.text.split("&").length == 2)
         {
           var params = {
-            "usr": result.text[0];
-            "pwd": result.text[1];
+            "usr": result.text[0]
+            ,
+            "pwd": result.text[1]
           };
 
           Model.remote.read( App.node + "/authenticate", function( data )
