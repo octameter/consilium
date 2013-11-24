@@ -176,35 +176,16 @@ and (max-device-width : 568px) {
   opacity: 0.95;
 }
 
-/* Intro */
-
-.intro-main section.cell,
-.intro-main div.cell {
-  width: 50%;
-}
-.intro-main div.cell {
-  max-width: 300px;
+.logo {
+  
 }
 
-.intro-main div.cell img {
-  display: block;
-  max-width: 100%;
-}
-
-#introStartApp {
-  width: 100%;
-}
-
-.intro-content .cell {
-  min-height: 0;
-}
-
-.button {
-  line-height: 30px;
+.phonegap .logo {
+  width:100% !important;
 }
 
 .phonegap .intro-wrapper div .page {
-  width: auto;
+  width: 100%;
 }
 
 .phonegap .intro-main section.cell {
@@ -214,7 +195,7 @@ and (max-device-width : 568px) {
 .phonegap .intro-main div.cell {
   min-height: 100px;
 }
-
+*/
 .phonegap .intro-wrapper {
   padding-bottom: 1em;
 }

@@ -1,6 +1,6 @@
 *{-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}
 html,body{background:#1c2f40;color:#BBBBBB;width:100%;margin:0;padding:0;overflow:hidden;font-family:Arial,sans-serif;}
-body{position:absolute;top:0;left:0;right:0;bottom:0;margin-top:42px;}
+body{position:fixed;top:0;left:0;right:0;bottom:0;margin-top:42px;}
 body.phonegap{margin-top:0;}
 body.phonegap.io7{margin-top:20px;}
 ::selection{background:transparent;color:inherit;}
@@ -77,7 +77,7 @@ h1.intro-title{margin:0;font-size:40px;}
 .intro-contact{text-align:right;}
 .intro-footer p{margin:0;}
 @media (min-width:1200px){}@media (min-width:768px) and (max-width:979px){.intro-content .cell{width:50%;} .intro-content .cell:nth-child(4){clear:none;} .intro-content .cell:nth-child(3){clear:left;}}@media (max-width:767px){.intro-content .cell{width:50%;} .intro-content .cell:nth-child(4){clear:none;} .intro-content .cell:nth-child(3){clear:left;}}@media (max-width:480px){.intro-content .cell{width:100%;} h1.intro-title{font-size:28px;}}@media (max-width:480px){.intro-main{padding:1em 1em 2em 1em;} .intro-main section.cell{width:100%;text-align:center;} .intro-main div.cell{width:100%;} .intro-content{margin:0.5em 1em 2em 1em;} .intro-content .cell{min-height:0;} .intro-footer{font-size:15px;}}
-.kontify{position:fixed;top:0px;width:100%;border:none;}
+.kontify{position:fixed;top:0px;width:100%;border:none;z-index:1000;}
 .kontify>iframe{position:fixed;top:0px;width:100%;height:42px;border:none;}
 .slider{position:relative;width:100%;margin-top:20px;padding:0;height:9px;background:#535454;border-radius:5px;border:1px solid #333;opacity:0.7;margin-left:2px;margin-bottom:20px;cursor:pointer;}
 .slider .knob{position:absolute;left:0;top:-12px;margin-top:1px;width:32px;height:32px;overflow:hidden;border-radius:18px;border:1px solid #000;-webkit-box-shadow:0 0 6px #000;background-color:#eaeaea;background-image:linear-gradient(#fafafa, #dadada);background-image:-webkit-linear-gradient(#fafafa, #dadada);background-image:-moz-linear-gradient(#fafafa, #dadada);background-image:-ms-linear-gradient(#fafafa, #dadada);background-image:-o-linear-gradient(#fafafa, #dadada);-webkit-transition:left 0.3s ease-in-out;-moz-transition:left 0.3s ease-in-out;-ms-transition:left 0.3s ease-in-out;-o-transition:left 0.3s ease-in-out;transition:left 0.3s ease-in-out;cursor:drag;}

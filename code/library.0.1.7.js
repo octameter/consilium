@@ -25,6 +25,7 @@ function introfy( that ){
     var li = container.find(".intro-features").add( "li", { "class": "cell" });
     li.add( "h3" ).html( feature.title );
     li.add( "div"  ).html( feature.description );
+    return li;
   };
   
   that.addFeatures = function( features )
@@ -73,6 +74,8 @@ function kontify( that ){
        || document.domain == "10.129.240.36"
        || document.domain == "10.129.144.18"
        || document.domain == "10.129.246.198"
+       || document.domain == "192.168.1.44"
+       || document.domain == "127.0.0.1"
     )
     {
       document.domain = document.domain;
@@ -91,7 +94,7 @@ function kontify( that ){
     
   that.signOn = function( callback ) {
     
-    if( window.device) 
+    if( window.device ) 
     {
       DOM(document.body).addClass("phonegap");
       // IOS 7 FIX STATUSBAR
@@ -134,6 +137,13 @@ function kontify( that ){
     }
 
   };
+  
+  that.report = function( text ) 
+  {  
+    if( !that.time ) that.time = new Date(); 
+    
+    console.log( text, new Date().getTime() - that.time );
+  }
 }function storify( that ) {  
   
   var data = {};
@@ -156,11 +166,13 @@ function kontify( that ){
               }
             }          
           }
-          // DATA MAY EXIST
+          // DATA ADDED TO ARRAY
           data[ type ] = ( !data[ type ] ) ? value : data[ type ].concat( value );
         }
         else
         data[ type ] = value;
+        
+        return data[type];
       }
       ,
       get: function( type )
@@ -234,9 +246,15 @@ function kontify( that ){
         }
         this.rest("GET", uri, callback, null, accessToken);
       },
-      "update":function(uri, callback, data, accessToken){}
+      "update":function(uri, callback, data, accessToken)
+      {
+        this.rest("PUT", uri, callback, data, accessToken );
+      }
       ,
-      "delete":function(uri, callback, data, accessToken){}
+      "delete":function(uri, callback, data, accessToken)
+      {
+        this.rest("DELETE", uri, callback, data, accessToken );
+      }
       ,
       /**
        * readyState
@@ -445,6 +463,8 @@ Array.prototype.firstById = function( id )
 
   return this;
 };
+
+
 
 
 var util = {
@@ -1204,9 +1224,9 @@ function eventify( that ) {
         this.scrollTo("scrollTop", scroll, 500);
       }
       ,
-      scrollTo: function(dir, to, duration)
+      scrollX: function(from, to, duration)
       {					
-        var start = this.element[dir];
+        var start = from;
         var change = to - start;
         var currentTime = 0;
         var increment = 20;
@@ -1225,7 +1245,7 @@ function eventify( that ) {
         animateScroll = function(){        
             currentTime += increment;
             var val = easeInOutQuad(currentTime, start, change, duration);                        
-            element[dir] = val; 
+            element["scrollLeft"] = val; 
             if(currentTime < duration) {
                 setTimeout(animateScroll, increment);
             }
@@ -1404,8 +1424,8 @@ DOModule.addSlider = function( callback )
     
       slider.on("touchstart", function(event)
       {
-        slider.addClass("dragging");
         onDrag(event);
+        slider.addClass("dragging");
         slider.on("touchmove", onDrag);
         slider.on("touchend", onDragEnd);
         slider.on("touchleave", onDragEnd);
