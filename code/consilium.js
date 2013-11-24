@@ -591,7 +591,7 @@ var Home = {
       first.setDate(first.getDate() - 30);
       // Maximum X for Grid
       var last = new Date(); 
-      last.setDate(last.getDate() + 3);
+      last.setDate(last.getDate() + 2);
       
       // Maybe larger Grid needed
       if( range.length > 0 )  
@@ -606,10 +606,7 @@ var Home = {
       this.minInMs = util.zeit("midnight", first ) - this.stepInMs;
       this.maxInMs = util.zeit("midnight", last ) + this.stepInMs;
       this.realInMs = util.zeit();
-      
-    
-      console.log( "CHART INIT", util.zeit("midnight", last ), this.maxInMs );
-      
+
       this.board.attrib( "width", this.x( this.maxInMs ) + this.right );
       this.board.attrib( "height", this.y( this.maxInValue ) + this.bottom );       
  
@@ -648,7 +645,6 @@ var Home = {
       
       Model.getActs().forEach( function( ele )
       {
-        console.log( "REDRAW IF", ele.x <= Home.chart.minInMs , ele.x >= Home.chart.maxInMs );
         // REDRAW IF ACT OUTSIDE RANGE
         if( ele.x <= Home.chart.minInMs || ele.x >= Home.chart.maxInMs) return Home.chart.init();
       });
@@ -978,8 +974,7 @@ var Favorites = {
         Favorites.container.off("stage");
         Favorites.content.show();
       });
-    });
-    
+    });    
   }
   ,
   edit: function( data )
@@ -991,7 +986,6 @@ var Favorites = {
       Favorites.gotoHome.hide();
       Favorites.gotoSymptome.off("tangent").on("tangent", Favorites.unedit);
     }
-
   }
   ,
   unedit: function( data )
@@ -1144,7 +1138,7 @@ var Symptome = {
       this.liste.addRow({ title: symptome[i].title, value: "&nbsp;", farbe: symptome[i].farbwert, caretRight: true, data: symptome[i].id });
     }
     
-    this.liste.on("tangent", selectHandler, { watch: "LI" });
+    this.liste.on("tangent", this.selectHandler, { watch: "LI" });
 
     this.container.show();
     this.content.show();
@@ -1344,9 +1338,7 @@ var Eingabe = {
  */
    
   update: function(data)
-  {
-    console.log("Eingabe update", data );
-    
+  {    
      if (data)
      {
        this.content.find(".favActions").hide();
