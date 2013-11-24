@@ -56,9 +56,10 @@ var App = {
     {      
       Model.setActor( actor );
       
-      ( actor && !App.phonegap) ? Model.pullActor() : App.goHome();
+      if( actor && !App.phonegap) ? Model.pullActor();
       
-      if( actor ) Model.refreshActs( App.goHome );
+      if( actor ) Model.refreshActs( App.goHome ) : App.goHome();
+        
     });
   }
   ,
@@ -108,7 +109,7 @@ var Model = {
     Model.memory.set("lexikon", Tipp.data, Tipp._searchterms );
   }
   ,
-  setActor:function( actor ) { this.memory.set("actor", actor); }
+  setActor:function( actor ) { if( actor ) this.memory.set("actor", actor); }
   ,
   getActor:function() { return this.memory.get("actor"); }
   ,
@@ -183,7 +184,7 @@ var Model = {
   ,
   refreshActs:function( callback )
   {
-    ( App.phonegap ) ? this.loadActs() : this.pullActs( callback );
+    ( App.phonegap ) ? this.loadActs( callback ) : this.pullActs( callback );
   }
   ,
   getActs:function() 
@@ -207,9 +208,9 @@ var Model = {
     }
   }
   ,
-  saveActs:function() { this.storage.set("acts", this.memory.get("acts") ); }
+  saveActs:function( callback ) { this.storage.set("acts", this.memory.get("acts") ); if( callback ) callback(); }
   ,
-  loadActs:function() { this.memory.set("acts", this.storage.get("acts") ); }
+  loadActs:function( callback ) { this.memory.set("acts", this.storage.get("acts") ); if( callback ) callback(); }
   ,
   pushActs:function()
   {  
