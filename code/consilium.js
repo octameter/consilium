@@ -924,9 +924,7 @@ var Intro = {
       }
     }
           
-     var test =this.addFeature( goodbye ).add("a").addClass("button grey").text("App starten").on("tangent", Intro.goHome );
-      test.add("a").addClass("button grey").text("App starten").on("tangent", Intro.goHome );
-
+     this.addFeature( goodbye ); //.add("a").addClass("button grey").text("App starten").on("tangent", Intro.goHome );
     
     ( actor ) ? Model.storage.set("informed", role_type ) : Model.memory.set("informed", true);
   }

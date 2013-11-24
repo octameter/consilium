@@ -57,10 +57,10 @@ hr{background:transparent;border-color:rgba(0, 0, 0, 0.1) transparent rgba(255, 
 .fontAlert{color:#F5C107;}
 fieldset{color:#F0F0F0;border:1px solid #F0F0F0;border-radius:6px;}
 fieldset>legend{color:white;}
-#introId{-webkit-overflow-scrolling:touch;}
+
 #introId.view{bottom:0;}
 #introId .button{line-height:36px;margin:0;}
-.intro-wrapper{overflow-x:hidden;-moz-box-sizing:border-box;box-sizing:border-box;min-height:100%;height:auto !important;height:100%;margin:0 auto -140px;padding-bottom:140px;}
+.intro-wrapper{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;-moz-box-sizing:border-box;box-sizing:border-box;min-height:100%;height:auto !important;height:100%;margin:0 auto -140px;padding-bottom:140px;}
 .intro-main{padding:3em 0;}
 h1.intro-title{margin:0;font-size:40px;}
 .intro-main .cell{position:relative;}
