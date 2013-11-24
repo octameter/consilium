@@ -1123,7 +1123,7 @@ var Symptome = {
       }
     });
     
-    Controller.on(Controller.SYMPTOME, function(data)
+    Controller.on( Controller.SYMPTOME, function(data)
     {
       data = data || {};
       Symptome.BACK = data.back || Symptome.BACK || Controller.HOME;
@@ -1136,7 +1136,7 @@ var Symptome = {
   }
   ,
   update: function()
-  {
+  {   
     this.content.hide();
     
     this.liste.removeChilds();
@@ -1149,8 +1149,14 @@ var Symptome = {
       this.liste.addRow({ title: symptome[i].title, value: "&nbsp;", farbe: symptome[i].farbwert, caretRight: true, data: symptome[i].id });
     }
     
-    this.liste.on("tangent", function(data)
-    {
+    this.liste.on("tangent", selectHandler, { watch: "LI" });
+
+    this.container.show();
+    this.content.show();
+  }
+  ,
+  selectHandler:function( data )
+  {
       if (data.type == "touchstart") DOM(data.target).addClass("selected");
       if( data.type == "touchend")
       {
@@ -1165,9 +1171,6 @@ var Symptome = {
         }
       }
     }
-    , { watch: "LI" });
-
-    this.content.show();
   }
 };
 
@@ -1348,7 +1351,7 @@ var Eingabe = {
    
   update: function(data)
   {
-    console.log("UPDATE", data );
+    console.log("Eingabe update", data );
     
      if (data)
      {

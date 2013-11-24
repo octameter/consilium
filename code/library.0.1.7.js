@@ -1403,14 +1403,18 @@ DOModule.addSlider = function( callback )
   {
       var slider = this.add("div").addClass("slider");
       var thumb = slider.add("a").addClass("knob");
-      var thumbWidth = thumb.width();      
-      var hundert = slider.width() - (thumbWidth * 0.5);
-   
+    
       function onDrag(data)
       {
+        var thumbWidth = thumb.width();      
+        var hundert = slider.width() - (thumbWidth * 0.5);
+        
         var value = parseInt((data.koord.clientX - thumbWidth)/ hundert * 100);
         value = Math.min(Math.max(value, 0), 100);
         thumb.style("left", parseInt(hundert * value / 100) + "px");
+        
+        console.log( data.koord.clientX, thumbWidth, hundert );
+        
         callback(value);
       }
     
@@ -1452,9 +1456,7 @@ DOModule.addSlider = function( callback )
 DOModule.setDatetime = function( ms )
 {
   ms = parseInt( ms || new Date().getTime() );
-  
-  console.log( "keine", ms, window.device );
-  
+
   if( window.device )
   {
     this.find("input[type=date]").set("value", util.zeit("yyyy-MM-dd", ms));
