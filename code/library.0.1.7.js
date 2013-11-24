@@ -1451,7 +1451,9 @@ DOModule.addSlider = function( callback )
 
 DOModule.setDatetime = function( ms )
 {
-  ms = parseInt( ms );
+  ms = parseInt( ms || new Date().getTime() );
+  
+  console.log( "keine", ms, window.device );
   
   if( window.device )
   {
@@ -1472,8 +1474,12 @@ DOModule.setDatetime = function( ms )
 DOModule.addDatetime = function( callback ) 
 {
 
+  console.log(" addDatetime ");
+  
   if( window.device )
   {
+    
+    console.log("datetime mobile created");
     
     function getHTML5DateTime(data)
     {

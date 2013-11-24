@@ -38,9 +38,9 @@ var App = {
     Tipps.init();
 
     DOM(window).on("ready", function(){
-      //App.setup();
+      App.setup();
       
-      console.log( "app ready", window.device );
+      console.log( "Ready Device", window.device );
     });
   }
   ,
@@ -52,14 +52,17 @@ var App = {
     
     App.phonegap = ( !!window.device );
     
+    //App.phonegap = window.device = true;
+    
     App.signOn(function(actor)
     {      
       Model.setActor( actor );
       
-      if( actor && !App.phonegap) ? Model.pullActor();
+      if( actor && !App.phonegap) Model.pullActor();
       
-      if( actor ) Model.refreshActs( App.goHome ) : App.goHome();
-        
+      if( actor ) Model.refreshActs( App.goHome );   
+      
+      if( !actor ) App.goHome();
     });
   }
   ,
@@ -1201,85 +1204,14 @@ var Eingabe = {
         if( data.type == "touchend" ) Eingabe.goBack();
       });
       
-      DOM("zeitArea").addDatetime(function(value){
-      // Zeit
-        Eingabe.itemModified = Eingabe.itemModified || Object.create( Eingabe.item );   
-        Eingabe.itemModified.x = value;
-        
-        Eingabe.update(Eingabe.itemModified); 
-      });
-      
-      // Strukurierte Eingabe
-      DOM("sliderArea").addSlider(function(value){
-      
-      if (!Eingabe.itemModified){
-        Eingabe.itemModified = Object.create(Eingabe.item);
-        Eingabe.itemModified.x = new Date().getTime();
-      }
-      
-      Eingabe.itemModified.y = value;
-      // TODO: specifically update containers
-        Eingabe.update(Eingabe.itemModified);
-      });
-      
-      // Freitext
-      DOM("favTextareaId").on("input", function(data)
-      {
-        Eingabe.itemModified = Eingabe.itemModified || Object.create( Eingabe.item );      
-        Eingabe.itemModified.y = data.value;
-        Eingabe.itemModified.x = new Date().getTime();
-        
-        Eingabe.update( Eingabe.itemModified );
-      });
-      
-      // Actions
-      Eingabe.eingabe.find(".blue").on("tangent", function( data ) 
-      { 
-        // TODO directly assign Eingabe.method
-        if( data.type == "touchend" ) Eingabe.saveItemModified(); 
-      }); 
-      
-      Eingabe.eingabe.find(".red").on("tangent", function( data ) 
-      { 
-        if( data.type == "touchend" ) Eingabe.deleteItem(); 
-      });
-      
-      Eingabe.eingabe.find(".grey").on("tangent", function( data ) 
-      { 
-        if( data.type == "touchend" ) Eingabe.cancelItemModified();
-      });
-      
-      Eingabe.freitext.find(".lightgrey").on("tangent", function( data )
-      {
-        if( data.type == "touchend" ) 
-        {           
-          Eingabe.itemModified = Object.create( Eingabe.item );         
-          Eingabe.itemModified.y = "";
-          Eingabe.itemModified.x = new Date().getTime();
-          
-          Eingabe.update( Eingabe.itemModified );
-        }
-      });
-      
-      Eingabe.freitext.find(".blue").on("tangent", function(data) 
-      { 
-        if( data.type == "touchend" ) Eingabe.saveItemModified(); 
-      });
-      
-      Eingabe.freitext.find(".red").on("tangent", function(data) 
-      { 
-        if( data.type == "touchend" ) Eingabe.deleteItem(); 
-      });
-      
-      Eingabe.freitext.find(".grey").on("tangent", function(data) 
-      { 
-        if( data.type == "touchend" ) Eingabe.cancelItemModified(); 
-      });
-
-     Controller.on(Controller.EINGABE, function(data){
-       
+     Controller.on(Controller.EINGABE, function(data)
+     {  
        Eingabe.content.hide();
-       if (data){
+       
+       Eingabe.build();
+       
+       if (data)
+       {
        // Coming from Favorites or Symptom
          Eingabe.BACK = data.back || Controller.HOME;
          Eingabe.item = data;
@@ -1294,6 +1226,88 @@ var Eingabe = {
        });
      });
    }
+  ,
+  build:function() 
+  {
+    if( this.done ) return;
+    
+    this.done = true;
+    
+    DOM("zeitArea").addDatetime(function(value){
+    // Zeit
+      Eingabe.itemModified = Eingabe.itemModified || Object.create( Eingabe.item );   
+      Eingabe.itemModified.x = value;
+      
+      Eingabe.update(Eingabe.itemModified); 
+    });
+    
+    // Strukurierte Eingabe
+    DOM("sliderArea").addSlider(function(value){
+    
+    if (!Eingabe.itemModified){
+      Eingabe.itemModified = Object.create(Eingabe.item);
+      Eingabe.itemModified.x = new Date().getTime();
+    }
+    
+    Eingabe.itemModified.y = value;
+    // TODO: specifically update containers
+      Eingabe.update(Eingabe.itemModified);
+    });
+    
+    // Freitext
+    DOM("favTextareaId").on("input", function(data)
+    {
+      Eingabe.itemModified = Eingabe.itemModified || Object.create( Eingabe.item );      
+      Eingabe.itemModified.y = data.value;
+      Eingabe.itemModified.x = new Date().getTime();
+      
+      Eingabe.update( Eingabe.itemModified );
+    });
+    
+    // Actions
+    Eingabe.eingabe.find(".blue").on("tangent", function( data ) 
+    { 
+      // TODO directly assign Eingabe.method
+      if( data.type == "touchend" ) Eingabe.saveItemModified(); 
+    }); 
+    
+    Eingabe.eingabe.find(".red").on("tangent", function( data ) 
+    { 
+      if( data.type == "touchend" ) Eingabe.deleteItem(); 
+    });
+    
+    Eingabe.eingabe.find(".grey").on("tangent", function( data ) 
+    { 
+      if( data.type == "touchend" ) Eingabe.cancelItemModified();
+    });
+    
+    Eingabe.freitext.find(".lightgrey").on("tangent", function( data )
+    {
+      if( data.type == "touchend" ) 
+      {           
+        Eingabe.itemModified = Object.create( Eingabe.item );         
+        Eingabe.itemModified.y = "";
+        Eingabe.itemModified.x = new Date().getTime();
+        
+        Eingabe.update( Eingabe.itemModified );
+      }
+    });
+    
+    Eingabe.freitext.find(".blue").on("tangent", function(data) 
+    { 
+      if( data.type == "touchend" ) Eingabe.saveItemModified(); 
+    });
+    
+    Eingabe.freitext.find(".red").on("tangent", function(data) 
+    { 
+      if( data.type == "touchend" ) Eingabe.deleteItem(); 
+    });
+    
+    Eingabe.freitext.find(".grey").on("tangent", function(data) 
+    { 
+      if( data.type == "touchend" ) Eingabe.cancelItemModified(); 
+    });
+  }
   ,
    
 /**
@@ -1314,6 +1328,8 @@ var Eingabe = {
   update: function(data)
   {
 
+    console.log("UPDATE", data );
+    
      if (data){
        this.content.find(".favActions").hide();
        this.freitext.hide();
@@ -1350,6 +1366,7 @@ var Eingabe = {
          this.eingabe.find("legend").html( data.kategorie );
          DOM("favGradId").html("");
          this.eingabe.find(".favTitle").html( data.title );
+         
          DOM("zeitArea").setDatetime( data.x );
          DOM("favOutputId").text( ( data.y || data.zero ) + " " + data.unit);
          this.content.show();
