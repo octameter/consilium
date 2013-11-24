@@ -1230,6 +1230,8 @@ var Eingabe = {
   build:function() 
   {
     if( this.done ) return;
+   
+    console.log("build eingabe");
     
     this.done = true;
     
@@ -1431,12 +1433,12 @@ var Eingabe = {
        
        var rows = DOM("fieldsetTipp").find(".listeNext").removeChilds();
              
-       rows.on("tangent", function(data){
-         
+       rows.on("tangent", function(data)
+       {  
          if (data.type == "touchstart") DOM(data.target).addClass("selected");
          if( data.type == "touchend")
          {
-            var tipp = JSON.parse( data.target.getAttribute("data") );
+            var tipp = data.transfer;
          
              if (tipp){
                 Eingabe.content.hide();

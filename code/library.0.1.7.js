@@ -1474,13 +1474,8 @@ DOModule.setDatetime = function( ms )
 DOModule.addDatetime = function( callback ) 
 {
 
-  console.log(" addDatetime ");
-  
   if( window.device )
   {
-    
-    console.log("datetime mobile created");
-    
     function getHTML5DateTime(data)
     {
       callback(new Date(yyyymmdd.element.value + " " + hhmm.element.value).getTime());
