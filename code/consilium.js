@@ -1137,35 +1137,37 @@ var Symptome = {
   ,
   update: function()
   {
-    Symptome.content.show();
+    this.content.hide();
+    
+    this.liste.removeChilds();
+    
+    var symptome = Model.memory.search("lexikon", "Symptom" ).notIn("id", Model.getFavorites() );
+    
+    symptome.sortABC("title");
+    
+    for (var i = 0; i < symptome.length; i++){
+      this.liste.addRow({ title: symptome[i].title, value: "&nbsp;", farbe: symptome[i].farbwert, caretRight: true, data: symptome[i].id });
+    }
     
     this.liste.on("tangent", function(data)
     {
       if (data.type == "touchstart") DOM(data.target).addClass("selected");
       if( data.type == "touchend")
       {
-        var item = data.transfer;
+        Symptome.liste.off("tangent");
         
-        if (item){
+        if (data.transfer){
           Symptome.content.hide();
           Symptome.container.swipe("left");
-          Model.setFavorite( { id: item.id, edit: true } );
-          item.back = Controller.SYMPTOME;
-          Controller.dispatch(Controller.EINGABE, item);
+          Model.setFavorite( { id: data.transfer, edit: true } );
+
+          Controller.dispatch(Controller.EINGABE, { id : data.transfer, back:Controller.SYMPTOME });
         }
       }
     }
     , { watch: "LI" });
-    
-    var symptome = Model.memory.search("lexikon", "Symptom" ).notIn("id", Model.getFavorites() );
-    
-    symptome.sortABC("title");
-    
-    this.liste.removeChilds();
-    
-    for (var i = 0; i < symptome.length; i++){
-      this.liste.addRow({ title: symptome[i].title, value: "&nbsp;", farbe: symptome[i].farbwert, caretRight: true, data: symptome[i]});
-    }
+
+    this.content.show();
   }
 };
 
@@ -1212,6 +1214,25 @@ var Eingabe = {
        
        if (data)
        {
+         // SYMPTOMLISTE NEU NUR ID
+         if( !data.x )
+         {
+            var index = Model.memory.get("lexikon").length;
+    
+            while( index-- )
+            {
+              var temp = Model.memory.get("lexikon")[ index ];
+
+              if( temp.id == data.id )
+              {
+                temp = Model.memory.get("lexikon")[ index ];
+                temp.back = data.back;
+                data = temp;
+                continue;
+              }
+            }
+         }
+         
        // Coming from Favorites or Symptom
          Eingabe.BACK = data.back || Controller.HOME;
          Eingabe.item = data;
@@ -1230,8 +1251,6 @@ var Eingabe = {
   build:function() 
   {
     if( this.done ) return;
-   
-    console.log("build eingabe");
     
     this.done = true;
     
@@ -1329,10 +1348,10 @@ var Eingabe = {
    
   update: function(data)
   {
-
     console.log("UPDATE", data );
     
-     if (data){
+     if (data)
+     {
        this.content.find(".favActions").hide();
        this.freitext.hide();
        this.eingabe.hide();
