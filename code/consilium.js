@@ -39,30 +39,21 @@ var App = {
 
     DOM(window).on("ready", function(){
       App.setup();
-      
-      console.log( "Ready Device", window.device );
     });
   }
   ,
   setup: function()
   {    
     App.enviroment(); // domain, node, origin, live
-    
     App.device = DOM().device(); // tv || tablet || mobile || desktop
-    
-    App.phonegap = ( !!window.device );
-    
-    //App.phonegap = window.device = true;
-    
+    App.phonegap = ( !!window.device ); //App.phonegap = window.device = true;
     App.signOn(function(actor)
     {      
       Model.setActor( actor );
       
-      if( actor && !App.phonegap) Model.pullActor();
-      
-      if( actor ) Model.refreshActs( App.goHome );   
-      
       if( !actor ) App.goHome();
+      if( actor && !App.phonegap) Model.pullActor();
+      if( actor ) Model.refreshActs( App.goHome );   
     });
   }
   ,
@@ -612,11 +603,12 @@ var Home = {
         if( lastAct > last ) last = lastAct;
       }
 
-      this.minInMs = util.zeit("midnight", first - this.stepInMs);
-      this.maxInMs = util.zeit("midnight", last + this.stepInMs);
+      this.minInMs = util.zeit("midnight", first ) - this.stepInMs;
+      this.maxInMs = util.zeit("midnight", last ) + this.stepInMs;
       this.realInMs = util.zeit();
       
-      console.log( "CHART INIT", this.maxInMs, this.right, last, first );
+    
+      console.log( "CHART INIT", util.zeit("midnight", last ), this.maxInMs );
       
       this.board.attrib( "width", this.x( this.maxInMs ) + this.right );
       this.board.attrib( "height", this.y( this.maxInValue ) + this.bottom );       
