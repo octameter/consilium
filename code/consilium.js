@@ -924,7 +924,9 @@ var Intro = {
       }
     }
           
-    this.addFeature( goodbye ).add("a").addClass("button grey").text("App starten").on("tangent", Intro.goHome );
+     var test =this.addFeature( goodbye ).add("a").addClass("button grey").text("App starten").on("tangent", Intro.goHome );
+      test.add("a").addClass("button grey").text("App starten").on("tangent", Intro.goHome );
+
     
     ( actor ) ? Model.storage.set("informed", role_type ) : Model.memory.set("informed", true);
   }
@@ -1159,6 +1161,11 @@ var Symptome = {
         Controller.dispatch(Controller.EINGABE, { id : data.transfer, back:Controller.SYMPTOME });
       }
     }
+    if( data.type == "touchleave" )
+    {
+      Symptome.liste.off("tangent");
+    }
+    
   }
 };
 
