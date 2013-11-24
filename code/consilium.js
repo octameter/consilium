@@ -1112,6 +1112,8 @@ var Symptome = {
       }
     });
     
+    this.liste.on("tangent", this.selectHandler, { watch: "LI" });
+    
     Controller.on( Controller.SYMPTOME, function(data)
     {
       data = data || {};
@@ -1138,8 +1140,6 @@ var Symptome = {
       this.liste.addRow({ title: symptome[i].title, value: "&nbsp;", farbe: symptome[i].farbwert, caretRight: true, data: symptome[i].id });
     }
     
-    this.liste.on("tangent", this.selectHandler, { watch: "LI" });
-
     this.container.show();
     this.content.show();
   }
@@ -1149,21 +1149,18 @@ var Symptome = {
     if (data.type == "touchstart") DOM(data.target).addClass("selected");
     if( data.type == "touchend")
     {
-      Symptome.liste.off("tangent");
+      Model.setFavorite( { id: data.transfer, edit: true } );
       
-      if (data.transfer){
-        Symptome.content.hide();
-        Symptome.container.swipe("left");
-        Model.setFavorite( { id: data.transfer, edit: true } );
+      Symptome.done( { id : data.transfer, back:Controller.SYMPTOME } );
+    }
+  }
+  ,
+  done:function( payload )
+  {
+    this.content.hide();
+    this.container.swipe("left");
 
-        Controller.dispatch(Controller.EINGABE, { id : data.transfer, back:Controller.SYMPTOME });
-      }
-    }
-    if( data.type == "touchleave" )
-    {
-      Symptome.liste.off("tangent");
-    }
-    
+    Controller.dispatch(Controller.EINGABE, payload );
   }
 };
 
