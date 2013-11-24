@@ -616,6 +616,8 @@ var Home = {
       this.maxInMs = util.zeit("midnight", last + this.stepInMs);
       this.realInMs = util.zeit();
       
+      console.log( "CHART INIT", this.maxInMs, this.right, last, first );
+      
       this.board.attrib( "width", this.x( this.maxInMs ) + this.right );
       this.board.attrib( "height", this.y( this.maxInValue ) + this.bottom );       
  
@@ -654,6 +656,7 @@ var Home = {
       
       Model.getActs().forEach( function( ele )
       {
+        console.log( "REDRAW IF", ele.x <= Home.chart.minInMs , ele.x >= Home.chart.maxInMs );
         // REDRAW IF ACT OUTSIDE RANGE
         if( ele.x <= Home.chart.minInMs || ele.x >= Home.chart.maxInMs) return Home.chart.init();
       });
@@ -1157,18 +1160,17 @@ var Symptome = {
   ,
   selectHandler:function( data )
   {
-      if (data.type == "touchstart") DOM(data.target).addClass("selected");
-      if( data.type == "touchend")
-      {
-        Symptome.liste.off("tangent");
-        
-        if (data.transfer){
-          Symptome.content.hide();
-          Symptome.container.swipe("left");
-          Model.setFavorite( { id: data.transfer, edit: true } );
+    if (data.type == "touchstart") DOM(data.target).addClass("selected");
+    if( data.type == "touchend")
+    {
+      Symptome.liste.off("tangent");
+      
+      if (data.transfer){
+        Symptome.content.hide();
+        Symptome.container.swipe("left");
+        Model.setFavorite( { id: data.transfer, edit: true } );
 
-          Controller.dispatch(Controller.EINGABE, { id : data.transfer, back:Controller.SYMPTOME });
-        }
+        Controller.dispatch(Controller.EINGABE, { id : data.transfer, back:Controller.SYMPTOME });
       }
     }
   }
