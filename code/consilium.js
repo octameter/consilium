@@ -38,7 +38,9 @@ var App = {
     Tipps.init();
 
     DOM(window).on("ready", function(){
-      App.setup();
+      //App.setup();
+      
+      console.log( "app ready", window.device );
     });
   }
   ,
