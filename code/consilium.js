@@ -1317,14 +1317,6 @@ var Eingabe = {
     Eingabe.eingabe.find(".grey").on("tangent", this.cancelItemModified );
     
     // FREITEXT
-    DOM("favTextareaId").on("input", function(data)
-    {
-      Eingabe.itemModified =  Object.create( Eingabe.itemModified || Eingabe.item );      
-      Eingabe.itemModified.y = data.value;
-      Eingabe.itemModified.x = new Date().getTime();
-      
-      Eingabe.update( Eingabe.itemModified );
-    });
     // NEUER TEXT 
     Eingabe.freitext.find(".lightgrey").on("tangent", this.neuerText ); 
     // SAVE
@@ -1357,6 +1349,7 @@ var Eingabe = {
     {    
       if (!Eingabe.itemModified)
       {
+        //TODO REMOVE DISABLED FROM DATE
         Eingabe.itemModified = Object.create(Eingabe.item);
         Eingabe.itemModified.x = new Date().getTime();
       }
@@ -1365,6 +1358,17 @@ var Eingabe = {
       // TODO: specifically update containers
       Eingabe.update(Eingabe.itemModified);
     });   
+    
+    // FREITEXT
+    DOM("favTextareaId").on("input", function(data)
+    {
+      //TODO REMOVE DISABLED FROM DATE
+      Eingabe.itemModified =  Object.create( Eingabe.itemModified || Eingabe.item );      
+      Eingabe.itemModified.y = data.value;
+      Eingabe.itemModified.x = new Date().getTime();
+      
+      Eingabe.update( Eingabe.itemModified );
+    });
   }
   ,
    
