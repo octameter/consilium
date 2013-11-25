@@ -194,8 +194,7 @@ var Model = {
   ,
   getLexikonFavorites:function()
   {       
-    // WARUM MERGE ? EE WARUM X
-    return Model.memory.get("lexikon").has("id", this.getFavorites() );
+    return Model.memory.get("lexikon").merge("id", this.getFavorites() ).has("id", this.getFavorites() ).clone();
   }
   ,
   refreshActs:function( callback )
@@ -208,10 +207,15 @@ var Model = {
     return this.memory.get("acts").filter( function(element) { return !element.deleted; } ); 
   }
   ,
+  getActById:function( id )
+  {
+    var index = this.memory.get("acts").length;
+    
+    while( index -- ) if( this.memory.get("acts")[index].id == id ) return this.memory.get("acts")[index];
+  }
+  ,
   setAct:function( act )
   {
-    
-    
     var acts = this.memory.set("acts", [ act ], ["id","kategorie"] );
     
     this.commitActs();
@@ -583,16 +587,16 @@ var Home = {
     this.bind();  
     this.container.invisible();
     this.content.hide();
+    // DESKTOP WITHOUT CONSILIUM
+    if (!window.device) DOM("titleId").hide();
   }
   ,
   bind: function()
   {
     Controller.on(Controller.HOME, function()
     {   
-      if( Intro.hasInformed() )
-      {
-         Home.show();
-      }
+      if( Intro.hasInformed() ) Home.update();
+
       else Controller.dispatch( Controller.INTRO );
     });
     
@@ -617,37 +621,32 @@ var Home = {
     });   
   }
   ,
-  show: function()
+  update: function()
   {
       Home.container.show();
       Home.content.invisible();
+    
+      if( !Home.container.hasClass("swipable") ) this.build();
+
       // START WORKING DURING ANIMATION
-      Home.update();
-      
+      this.chart.update();
+      this.form.update();
+      // ANIMATE
+      Home.container.swipe("middle");
+      // ANIMATED
       Home.container.on("stage", function()
       {
         Home.container.off("stage");
         Home.content.show();
-      });
-      
-      Home.container.swipe("middle");
+      });      
   }
   ,
-  // FUNCTIONS
-  update: function()
+  build:function()
   {
-    if( !Home.container.hasClass("swipable") )
-    {
-      if (!window.device) DOM("titleId").hide();
-      
-      Home.container.addClass("swipable");
-      Home.chart.init();
-      Home.form.init();   
-    } 
-
-    this.content.show();
-    this.chart.update();
-    this.form.update();
+    Home.container.addClass("swipable");
+    Home.chart.init();
+    Home.form.init();   
+    Home.content.show();
   }
   ,
   chart: {
@@ -747,10 +746,10 @@ var Home = {
         if( ele.x <= Home.chart.minInMs || ele.x >= Home.chart.maxInMs) return Home.chart.init();
       });
       
-      // Symbole
+      // GROUP SYMBOLS
       Model.getActs().unique("id").forEach(function(id)
       {
-        var howto = Model.memory.search("lexikon", id)[0];     
+        var howto = Model.getLexikonById( id );     
         var acts = Model.getActs().has("id", [ {id: id} ] ).sort321("x"); 
 
         var todo = acts.length;
@@ -783,21 +782,18 @@ var Home = {
              this.board.drawNotizen( this.x( notiz.x) , this.y( y ), 32, 16, howto.farbwert, notiz); 
            }
         }
-        
-        // }
       }.bind(this));
     }   
   },
   
   form: {
 
-    fieldset: DOM("homeFieldsetAuswahl"),
-    
-    liste: DOM("homeAuswahlListe"),
-    
-    gotoIntro: DOM("homeBackToIntro"),
+    fieldset:   DOM("homeFieldsetAuswahl"),
+    liste:      DOM("homeAuswahlListe"),
+    gotoIntro:  DOM("homeBackToIntro"),
 
-    init: function(){  
+    init: function()
+    {  
         this.gotoIntro.on("tangent", function( data )
         { 
           if( data.type == "touchstart" ) DOM( data.target ).addClass("selected");
@@ -806,8 +802,8 @@ var Home = {
             Controller.dispatch( Controller.INTRO );
           }
         }, { watch: "LI" });
-    },
-    
+    }
+    ,
     update: function(event){
       
       this.liste.off("tangent");
@@ -862,14 +858,8 @@ var Home = {
         
         this.fieldset.legend("Auswahl");
         
-        this.liste.addRow({
-          title: howto.title,
-          caretLeft: false,
-          caretRight: true,
-          value: "",
-          farbe: ""
-          //detail:"Berühren Sie die Datenpunkte in der Timeline für detaillierte Informationen." 
-        }).on("tangent", function(data)
+        this.liste.addRow({ title: howto.title, caretLeft: false, caretRight: true});
+        this.liste.on("tangent", function(data)
         {
           if( data.type == "touchstart" ) DOM( data.target ).addClass("selected");
           if( data.type == "touchend" )
@@ -880,8 +870,11 @@ var Home = {
           }
         }, { watch: "LI" });   
       }
-    }
-    // SMALL SCREEN HAS OVERLAY IN TIMELINE
+    }  
+  }
+};
+
+//      SMALL SCREEN HAS OVERLAY IN TIMELINE
 //      if (window.matchMedia("(orientation:landscape) and (max-device-width:768px)").matches) 
 //      {   
 //        dispatchCommand(Commands.CHART_OVERLAY, {
@@ -889,8 +882,6 @@ var Home = {
 //          farbwert: type.farbwert, value: value
 //        });
 //      }
-  }
-};
 
 var Intro = {
 
@@ -1036,8 +1027,7 @@ var Favorites = {
   gotoSymptome: DOM("favoritesEditButton"),
   content:      DOM("favoritesContentId"),
   form:         DOM("favFormId"),
-  BACK:         Controller.HOME
-  ,
+  
   init: function()
   {
     if (!App.live) console.log( "- VIEW Favorites");
@@ -1054,17 +1044,16 @@ var Favorites = {
       if( data.type == "touchend" )
       {
         Favorites.content.hide();
-        Controller.dispatch(Controller.HOME); // Favorites.BACK ???
+        Controller.dispatch(Controller.HOME);
         Favorites.container.swipe("right");
       }
     });
     
     this.gotoSymptome.on("tangent", Favorites.edit);
     
-    Controller.on(Controller.FAVORITES, function(data){
-
-      data = data || {};
-      Favorites.BACK = data.back || Controller.HOME;
+    Controller.on(Controller.FAVORITES, function(data)
+    {
+      // START CREATING FIELDSETS DURING TRANSITION
       Favorites.update();
       
       Favorites.container.swipe("middle").on("stage", function()
@@ -1104,85 +1093,70 @@ var Favorites = {
     var lexiFav = Model.getLexikonFavorites(); 
     
     // EACH FAVORIT GETS FIELDSET
-    lexiFav.unique("kategorie").forEach(function(kategorie)
+    lexiFav.unique("kategorie").forEach( function(kategorie)
     {
       var legend = Favorites.form.add("fieldset").addClass("liste").add("legend").text(kategorie);
-      var rows = legend.addNext("ul").addClass("listeNext");
-      var entities = lexiFav.has("kategorie", [{ "kategorie": kategorie}] );
-      var editables = entities.has("edit", [{ edit: true }] );
+      var liste = legend.addNext("ul").addClass("listeNext");
+      var rows = lexiFav.has("kategorie", [{ "kategorie": kategorie}] );
+      var editables = rows.has("edit", [{ edit: true }] );
       
-      if (!edit) rows.on("tangent", function( data )
-      {  
-        if( data.type == "touchstart" ) DOM( data.target ).addClass("selected");        
-        if( data.type == "touchend")
-        {
-          var item = {
-            back: Controller.FAVORITES,
-            
-          };
-          
-          // QUICKLINK ZUR SYMPTOMAUSWAHL
-          if( item.id == "Symptom" ) Controller.dispatch( Controller.SYMPTOME, item);
-          else
+      // EVENTHANDLER TO CALL NEXT VIEW
+      if (!edit) liste.on("tangent", Favorites.selectedItem, { watch: "LI" });
+      // ITERATE ROWS
+      for (var i = 0; i < rows.length; i++)
+      {        
+        var row = { title: rows[i].title };
+        // EDITABLE MODE
+        if (edit)
+        { // ROW CAN BE DELETED
+          if ( rows[i].edit )
+          row.callback = function() { Model.removeFavorite( this ); }.bind( rows[i] );
+          // GENERATE ROW
+          liste.addRemovableRow( row );            
+        } 
+        else 
+        {          
+          row.farbe = rows[i].farbwert;
+          row.caretRight = true;
+          // ACHTUNG KEINE REFERENZ EE
+          row.data = { id:rows[i].id };
+          // LAST ENTRIES FOR ID
+          var acts = Model.getActs().has("id", [{ id: rows[i].id }] );
+          if (acts.length > 0)
           {
-            
-          }
-          // TODO Bubbling
-          var item = data.transfer;
-
-          if (item){
-            Favorites.content.hide();
-   
-            Favorites.container.swipe("left");
-           
-            Controller.dispatch(Controller.EINGABE, item);
-          }
-        }
-
-      }
-      , { watch: "LI" });
-      
-      for (var i = 0; i < entities.length; i++)
-      {
-          var params = {};
-          params.title = entities[i].title;
-          
-          if (edit)
-          {
-            var editableItem = editables.has("id", [{ id: entities[i].id }] );
-
-            if (editableItem.length > 0)
-            {
-              params.callback = function()
-              {
-                Model.removeFavorite( this );
-              }
-              .bind( entities[i] );
-            }
-            
-            rows.addRemovableRow(params);            
+            var last = acts.sort123("x").clone().pop();
+            if (/^\d+$/.test(last.y)) row.value = last.y + " " + rows[i].unit;
+            // LABEL LAST ENTRY
+            row.zeit = "Zuletzt: " + util.zeit("dd.mm.yyyy hh:mm", Math.floor(last.x)); 
+            row.data.x = last.x;
+            row.data.y = last.y;
           } 
-          else 
-          {          
-            params.farbe = entities[i].farbwert;
-            params.caretRight = true;
-            params.data = entities[i];
-            params.value = "&nbsp;";
-            
-            var acts = Model.getActs().has("id", [{ id: entities[i].id }] );
-            
-            if (acts.length > 0){
-              var last = acts.sort123("x").clone().pop();
-              if (/^\d+$/.test(last.y)) params.value = last.y + " " + entities[i].unit;
-              
-              params.zeit = "Zuletzt: " + util.zeit("dd.mm.yyyy hh:mm", Math.floor(last.x)); 
-              params.data.x = last.x;
-              params.data.y = last.y;
-            }
-            rows.addRow(params);         
-          }
+          // GENERATE ROW
+          liste.addRow(row);         
+        }
       }
     });
+  }
+  ,
+  selectedItem:function(data)
+  {
+    if( data.type == "touchstart" ) DOM( data.target ).addClass("selected");        
+    if( data.type == "touchend")
+    {
+      var item = { back: Controller.FAVORITES };
+      
+      if( data.transfer.id) item.id = data.transfer.id;
+      if( data.transfer.x ) item.x = data.transfer.x;
+      if( data.transfer.y ) item.y = data.transfer.y;
+      
+      Favorites.content.hide();
+      Favorites.container.swipe("left");
+                
+      // QUICKLINK ZUR SYMPTOMAUSWAHL
+      if( item.id == "Symptom" ) Controller.dispatch( Controller.SYMPTOME, item);
+      
+      else Controller.dispatch(Controller.EINGABE, item);      
+    }
   }
 };
 
