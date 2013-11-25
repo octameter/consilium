@@ -1412,9 +1412,7 @@ DOModule.addSlider = function( callback )
         var value = parseInt((data.koord.clientX - thumbWidth)/ hundert * 100);
         value = Math.min(Math.max(value, 0), 100);
         thumb.style("left", parseInt(hundert * value / 100) + "px");
-        
-        console.log( data.koord.clientX, thumbWidth, hundert );
-        
+
         callback(value);
       }
     
@@ -1437,7 +1435,41 @@ DOModule.addSlider = function( callback )
   }
 
   return this;
-};var DateTime = {
+};
+
+/*
+      function onDrag(data)
+      {
+        var thumbWidth = thumb.width();      
+        var hundert = slider.width() - (thumbWidth * 0.5);
+        
+        var value = parseInt((data.koord.clientX - thumbWidth)/ hundert * 100);
+        value = Math.min(Math.max(value, 0), 100);
+        thumb.style("left", parseInt(hundert * value / 100) + "px");
+        
+        console.log( data.koord.clientX, thumbWidth, hundert );
+        
+        callback(value);
+      }
+    
+      function onDragEnd()
+      {
+        slider.removeClass("dragging");
+        slider.off("touchmove");
+        slider.off("touchend");
+        slider.off("touchleave");
+      }
+    
+      slider.on("touchstart", function(event)
+      {
+        onDrag(event);
+        slider.addClass("dragging");
+        slider.on("touchmove", onDrag);
+        slider.on("touchend", onDragEnd);
+        slider.on("touchleave", onDragEnd);
+      });
+      
+*/var DateTime = {
     
     createOptions:function( params )
     {
@@ -1999,7 +2031,7 @@ DOModule.drawConnect = function( x1, y1, x2, y2, padding, farbwert )
     yPad = -1 * yPad;     
   }
 
-  this.add( Svg.line( { x1:x1 + xPad, y1:y1 + yPad, x2:x2- xPad, y2:y2-yPad, strokeWidth:4, color:farbwert, className:"movePoint" }) );
+  this.add( Svg.line( { x1:x1 + xPad, y1:y1 + yPad, x2:x2- xPad, y2:y2-yPad, strokeWidth:4, color:farbwert, className:"lineConnect"}) );
 };
 
 
@@ -2015,9 +2047,9 @@ DOModule.addSymbol = function(type, params){
   return this;
 };
 
+// PROJEKT VERORDNUNG
 DOModule.chartSchema = function( schemaArray, produkt )
-{
-	
+{	
 	var nodes = this.element.getElementsByTagName("rect");
 
 	for( var n = nodes.length; n > 0 ; n--)
@@ -2053,6 +2085,7 @@ DOModule.chartSchema = function( schemaArray, produkt )
 	}
 };
 
+// LOGO CONSILIUM
 DOModule.addConsilium = function()
 {
   var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");

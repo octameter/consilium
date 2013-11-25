@@ -168,12 +168,34 @@ var Model = {
     this.commitActor();
   }
   ,
+  getLexikon:function()
+  {
+    return Model.memory.get("lexikon").clone();
+  }
+  ,
+  getLexikonAt:function( index )
+  {
+    return Model.memory.get("lexikon")[index];
+  }
+  ,
+  getLexikonById:function( id )
+  {
+    var index = Model.getLexikon().length;
+           
+    while( index-- )
+    {
+      var item = Model.getLexikonAt( index );
+
+      if( item.id == id ) return item;
+    }
+    
+    return null;
+  }
+  ,
   getLexikonFavorites:function()
-  {        
-    // TODO REVIEW BY Enrique
-    // var lexiFav = Model.memory.get("lexikon").has("id", Model.memory.get("favorites") ); 
-    var data = Model.memory.get("lexikon").merge("id", this.getFavorites() );
-    return data.has("id", this.getFavorites() );  
+  {       
+    // WARUM MERGE ? EE WARUM X
+    return Model.memory.get("lexikon").has("id", this.getFavorites() );
   }
   ,
   refreshActs:function( callback )
@@ -188,6 +210,8 @@ var Model = {
   ,
   setAct:function( act )
   {
+    
+    
     var acts = this.memory.set("acts", [ act ], ["id","kategorie"] );
     
     this.commitActs();
@@ -239,7 +263,7 @@ var Model = {
     this.remote.delete(App.node + "/api/acts/"+act.act_id, function(data)
     {
       if( data.status == 200 )
-      acts.splice( acts.indexOf( act ), 1 )
+      acts.splice( acts.indexOf( act ), 1 );
     }, 
     act, this.getActor().access_token );  
   }
@@ -259,7 +283,7 @@ var Model = {
         else acts.splice( index, 1 );
       }
     }
-    
+
     this.commitActs();
   }
   ,
@@ -270,17 +294,11 @@ var Model = {
       if( data.status == 200 )
       {
         Model.memory.set("acts", data.message );
-        if( callback) callback();
+        if( callback) callback( data );
       }
       
     }, 
     null, this.getActor().access_token );   
-  }
-  ,
-  upload:function( callback )
-  {
-    // Wieviel
-    //this.updateActor
   }
   ,
   test:function()
@@ -294,8 +312,6 @@ var Model = {
       { id: "10013963", x: "1380935392804", y: "70" },
       { id: "privat", x: "1380745392804", y: "Ein guter Tag<br>morgen" }
     ], ["id", "x"]);
-    
-
   }
 };
 
@@ -350,7 +366,7 @@ var Einstellung = {
       if( data.type == "touchstart" ) Einstellung.syncBtn.addClass("selected");
       if( data.type == "touchend" )
       {
-        console.log("hier syncen");
+        Einstellung.synchronisieren();
       }
     });
     
@@ -401,7 +417,7 @@ var Einstellung = {
         this.verbindenStatus.text( actor.scope_display );
         this.verbindenInfo.text("hergestellt");
         this.verbindenBtn.hide();
-        this.sync.hide();
+        this.sync.show();
       }
       else
       {
@@ -466,6 +482,86 @@ var Einstellung = {
       }
     ); 
   }
+  ,
+  synchronisieren:function()
+  {
+    this.pullActor();
+    
+    console.log("Sync started");
+  }
+  ,
+  pullActor:function()
+  {
+    Model.pullActor( function(data) 
+    {    
+      console.log("Response pullActor", data.status);
+      
+      if( data.status == 200 ) 
+      {  
+        // TODO UPDATE LOGIK
+        var actor =  data.message ;
+        
+        Einstellung.uploadActor();
+      }
+      else Einstellung.abbruch( data );
+    });
+  }
+  ,
+  uploadActor:function()
+  {
+    Model.pushActor( function( data )
+    {
+      console.log("Response uploadActor", data.status);
+      
+      if( data.status == 200 )
+      {
+        Einstellung.pullActs();
+      }
+      else Einstellung.abbruch( data );
+    });
+  }
+  ,
+  pullActs:function()
+  {
+    Model.pullActs( function( data )
+    {
+      console.log("Response pullActs", data.status);
+      
+      console.log( Model.getActor(), new Date ( Model.getActor().current_date ) );
+      
+      if( data.status == 200 )
+      {
+        Einstellung.pushActs();
+      }
+      else Einstellung.abbruch( data );
+    });
+  }
+  ,
+  pushActs:function()
+  {
+    console.log("push acts");
+    
+    Model.pushActs( function( data )
+    {
+      console.log("Response pushActs", data.status);
+      
+      if( data.status == 200 )
+      {
+        Einstellung.synced( data );
+      }
+      else Einstellung.abbruch( data );
+    });
+  }
+  ,
+  synced:function( data )
+  {
+    console.log("Synced");
+  }
+  ,
+  abbruch:function( err )
+  {
+    console.log("Sync aborted");
+  }
 };
 
 /**
@@ -525,13 +621,13 @@ var Home = {
   {
       Home.container.show();
       Home.content.invisible();
+      // START WORKING DURING ANIMATION
       Home.update();
       
       Home.container.on("stage", function()
       {
         Home.container.off("stage");
         Home.content.show();
-        App.report("Home on.stage");
       });
       
       Home.container.swipe("middle");
@@ -599,7 +695,8 @@ var Home = {
         var firstAct = Math.floor( range.shift().x );
         if( firstAct < first ) first = firstAct;
         
-        var lastAct  = Math.floor( range.pop().x );
+        // IF TWO AVAILABLE ELSE THE ONLY ONE
+        var lastAct  = ( range.length > 1 ) ? Math.floor( range.pop().x ) : firstAct;
         if( lastAct > last ) last = lastAct;
       }
 
@@ -642,6 +739,7 @@ var Home = {
     update: function()
     {  
       this.board.findAll(".movePoint").remove();
+      this.board.findAll(".connectLine").remove();
       
       Model.getActs().forEach( function( ele )
       {
@@ -653,7 +751,7 @@ var Home = {
       Model.getActs().unique("id").forEach(function(id)
       {
         var howto = Model.memory.search("lexikon", id)[0];     
-        var acts = Model.getActs().has("id", [ {id: id} ] ).sort123("x"); 
+        var acts = Model.getActs().has("id", [ {id: id} ] ).sort321("x"); 
 
         var todo = acts.length;
         
@@ -717,7 +815,7 @@ var Home = {
 
       if (event)
       {
-        var howto = Model.memory.get("lexikon").has("id", [{ id: event.id }] )[0];
+        var howto = Model.getLexikonById( event.id );
         
         // Augment event
         event.zero = howto.zero;
@@ -751,7 +849,7 @@ var Home = {
             Home.container.swipe("left");
             
             var item = event;
-            item.back = App.HOME;
+            item.back = Controller.HOME;
             Controller.dispatch(Controller.EINGABE, item);
           }
          }, { watch: "LI" });
@@ -760,7 +858,7 @@ var Home = {
       } 
       else
       {
-        var howto = Model.memory.get("lexikon").has("id", [{ id: "Symptom" }] )[0];
+        var howto = Model.getLexikonById( "Symptom" );
         
         this.fieldset.legend("Auswahl");
         
@@ -1005,9 +1103,9 @@ var Favorites = {
 
     var lexiFav = Model.getLexikonFavorites(); 
     
-    lexiFav.unique("kategorie").forEach(function(kategorie){
-
     // EACH FAVORIT GETS FIELDSET
+    lexiFav.unique("kategorie").forEach(function(kategorie)
+    {
       var legend = Favorites.form.add("fieldset").addClass("liste").add("legend").text(kategorie);
       var rows = legend.addNext("ul").addClass("listeNext");
       var entities = lexiFav.has("kategorie", [{ "kategorie": kategorie}] );
@@ -1015,19 +1113,29 @@ var Favorites = {
       
       if (!edit) rows.on("tangent", function( data )
       {  
-        if( data.type == "touchstart" ) DOM( data.target ).addClass("selected");
-        
+        if( data.type == "touchstart" ) DOM( data.target ).addClass("selected");        
         if( data.type == "touchend")
         {
+          var item = {
+            back: Controller.FAVORITES,
+            
+          };
+          
+          // QUICKLINK ZUR SYMPTOMAUSWAHL
+          if( item.id == "Symptom" ) Controller.dispatch( Controller.SYMPTOME, item);
+          else
+          {
+            
+          }
           // TODO Bubbling
           var item = data.transfer;
-          
+
           if (item){
             Favorites.content.hide();
-            item.back = Controller.FAVORITES;
+   
             Favorites.container.swipe("left");
            
-            Controller.dispatch(Controller[item.id == "Symptom" ? "SYMPTOME" : "EINGABE"], item);
+            Controller.dispatch(Controller.EINGABE, item);
           }
         }
 
@@ -1061,7 +1169,7 @@ var Favorites = {
             params.data = entities[i];
             params.value = "&nbsp;";
             
-            var acts = Model.memory.get("acts").has("id", [{ id: entities[i].id }] );
+            var acts = Model.getActs().has("id", [{ id: entities[i].id }] );
             
             if (acts.length > 0){
               var last = acts.sort123("x").clone().pop();
@@ -1170,14 +1278,14 @@ var Eingabe = {
    //DOMELEMENTS
    container:     DOM("eingabeId"),
    goBackButton:  DOM("eingabeBackButton"),
-   // gotoSymptome:DOM("favoriteEditId"),
    content:       DOM("eingabeContentId"),
    eingabe:       DOM("strukturierteEingabe"),
    freitext:      DOM("freiText"),
    tipp:          DOM("fieldsetTipp"),
+   tippListe:     DOM("fieldsetTipp").find(".listeNext"),
 
    //VARIABLES
-   BACK: App.HOME,
+   goBackTo: null,
    item: null,
    itemModified: null
    ,
@@ -1185,10 +1293,10 @@ var Eingabe = {
    {
      if (!App.live) console.log( "- VIEW EINGABE");
      
-     // container has to be visible before bind or slider will not initialize correctly
      this.container.show();
-     this.bind();
+     // container has to be visible before bind or slider will not initialize correctly
      this.content.invisible();
+     this.bind();
    }
    ,
    // BINDING
@@ -1198,48 +1306,62 @@ var Eingabe = {
       {
         if( data.type == "touchend" ) Eingabe.goBack();
       });
-      
+    
+     // VIEW IS CALLED
      Controller.on(Controller.EINGABE, function(data)
      {  
        Eingabe.content.hide();
        
        Eingabe.build();
        
+       // !data from Tipps, but maybe itemModified
        if (data)
        {
-         // SYMPTOMLISTE NEU NUR ID
-         if( !data.x )
-         {
-            var index = Model.memory.get("lexikon").length;
-    
-            while( index-- )
-            {
-              var temp = Model.memory.get("lexikon")[ index ];
-
-              if( temp.id == data.id )
-              {
-                temp = Model.memory.get("lexikon")[ index ];
-                temp.back = data.back;
-                data = temp;
-                continue;
-              }
-            }
-         }
+         Eingabe.goBackTo = data.back;
          
-       // Coming from Favorites or Symptom
-         Eingabe.BACK = data.back || Controller.HOME;
-         Eingabe.item = data;
+         // SYMPTOMLISTE NEU NUR ID
+         // TODO FAVORITES AND HOME
+         Eingabe.item = Model.getLexikonById( data.id );         
+         Eingabe.item.x = data.x;
+         Eingabe.item.y = data.y;
          Eingabe.itemModified = null;         
        }
-       // no data from Tipps
-       
+
        Eingabe.container.swipe("middle").on("stage", function()
        {
          Eingabe.container.off("stage");
          Eingabe.update(Eingabe.itemModified || Eingabe.item);
        });
      });
-   }
+     
+    // SCHIEBEREGLER
+    // SAVE
+    Eingabe.eingabe.find(".blue").on("tangent", this.saveItemModified );
+    // DELETE
+    Eingabe.eingabe.find(".red").on("tangent", this.deleteItem );     
+    // CANCEL
+    Eingabe.eingabe.find(".grey").on("tangent", this.cancelItemModified );
+    
+    // FREITEXT
+    DOM("favTextareaId").on("input", function(data)
+    {
+      Eingabe.itemModified =  Object.create( Eingabe.itemModified || Eingabe.item );      
+      Eingabe.itemModified.y = data.value;
+      Eingabe.itemModified.x = new Date().getTime();
+      
+      Eingabe.update( Eingabe.itemModified );
+    });
+    // NEUER TEXT 
+    Eingabe.freitext.find(".lightgrey").on("tangent", this.neuerText ); 
+    // SAVE
+    Eingabe.freitext.find(".blue").on("tangent", this.saveItemModified );
+    // DELETE
+    Eingabe.freitext.find(".red").on("tangent", this.deleteItem );
+    // CANCEL
+    Eingabe.freitext.find(".grey").on("tangent", this.cancelItemModified );
+     
+    Eingabe.tippListe.on("tangent", this.showTipp, { watch: "LI"} );
+  }
   ,
   build:function() 
   {
@@ -1247,80 +1369,28 @@ var Eingabe = {
     
     this.done = true;
     
-    DOM("zeitArea").addDatetime(function(value){
+    DOM("zeitArea").addDatetime(function(value)
+    {
     // Zeit
-      Eingabe.itemModified = Eingabe.itemModified || Object.create( Eingabe.item );   
+      Eingabe.itemModified =  Object.create( Eingabe.itemModified || Eingabe.item );   
       Eingabe.itemModified.x = value;
       
       Eingabe.update(Eingabe.itemModified); 
     });
     
     // Strukurierte Eingabe
-    DOM("sliderArea").addSlider(function(value){
-    
-    if (!Eingabe.itemModified){
-      Eingabe.itemModified = Object.create(Eingabe.item);
-      Eingabe.itemModified.x = new Date().getTime();
-    }
-    
-    Eingabe.itemModified.y = value;
-    // TODO: specifically update containers
-      Eingabe.update(Eingabe.itemModified);
-    });
-    
-    // Freitext
-    DOM("favTextareaId").on("input", function(data)
-    {
-      Eingabe.itemModified = Eingabe.itemModified || Object.create( Eingabe.item );      
-      Eingabe.itemModified.y = data.value;
-      Eingabe.itemModified.x = new Date().getTime();
-      
-      Eingabe.update( Eingabe.itemModified );
-    });
-    
-    // Actions
-    Eingabe.eingabe.find(".blue").on("tangent", function( data ) 
-    { 
-      // TODO directly assign Eingabe.method
-      if( data.type == "touchend" ) Eingabe.saveItemModified(); 
-    }); 
-    
-    Eingabe.eingabe.find(".red").on("tangent", function( data ) 
-    { 
-      if( data.type == "touchend" ) Eingabe.deleteItem(); 
-    });
-    
-    Eingabe.eingabe.find(".grey").on("tangent", function( data ) 
-    { 
-      if( data.type == "touchend" ) Eingabe.cancelItemModified();
-    });
-    
-    Eingabe.freitext.find(".lightgrey").on("tangent", function( data )
-    {
-      if( data.type == "touchend" ) 
-      {           
-        Eingabe.itemModified = Object.create( Eingabe.item );         
-        Eingabe.itemModified.y = "";
+    DOM("sliderArea").addSlider(function(value)
+    {    
+      if (!Eingabe.itemModified)
+      {
+        Eingabe.itemModified = Object.create(Eingabe.item);
         Eingabe.itemModified.x = new Date().getTime();
-        
-        Eingabe.update( Eingabe.itemModified );
       }
-    });
-    
-    Eingabe.freitext.find(".blue").on("tangent", function(data) 
-    { 
-      if( data.type == "touchend" ) Eingabe.saveItemModified(); 
-    });
-    
-    Eingabe.freitext.find(".red").on("tangent", function(data) 
-    { 
-      if( data.type == "touchend" ) Eingabe.deleteItem(); 
-    });
-    
-    Eingabe.freitext.find(".grey").on("tangent", function(data) 
-    { 
-      if( data.type == "touchend" ) Eingabe.cancelItemModified(); 
-    });
+      
+      Eingabe.itemModified.y = value;
+      // TODO: specifically update containers
+      Eingabe.update(Eingabe.itemModified);
+    });   
   }
   ,
    
@@ -1368,6 +1438,7 @@ var Eingabe = {
          this.freitext.find("legend").html( data.kategorie );
          this.freitext.find(".favTitle").html( data.title );
          DOM("zeitArea").setDatetime( data.x );
+         
          DOM("favTextareaId").set("value", (data.y) ? data.y.replace(/<br>/g, "\n") : "");       
        }
        else
@@ -1391,36 +1462,13 @@ var Eingabe = {
      }
      this.content.show();
    }
-  , 
-  deleteItem: function()
+  ,
+  showDefinition: function(data)
   {
-    Model.removeAct( Eingabe.item );
-    this.goBack();
-  }
-  ,   
-   cancelItemModified: function(){
-     Eingabe.itemModified = null;
-     Eingabe.update(Eingabe.item);
-   },
-   
-   saveItemModified: function(){
-     var item = Eingabe.itemModified;
-     
-     var act = {
-        id: item.id + "",
-        x: item.x,    
-        y: (item.kategorie == "Notizen") ? item.y.replace(/\n/g,"<br>") : item.y
-     };
-     
-     Model.setAct( act );
-
-     Eingabe.goBack();
-   },
-   
-   showDefinition: function(data){
      if (!data.grad) return;
      
-     for (var i = 0; i < data.grad.length; i++){
+     for (var i = 0; i < data.grad.length; i++)
+     {
        var grad = data.grad[i];
        var y = Math.floor( data.y );
        
@@ -1429,57 +1477,110 @@ var Eingabe = {
          this.showTipps(grad);
        }
      }
-   },
-   
-   showTipps: function(grad){
-   //
-       if (!grad.tipps) return;
-       
-       var search = grad.tipps.split(",").map(function(ele){
-         return { id: ele };
-       });
-       
-       var tipps = Model.memory.get("lexikon").has("id", search).clone();
-       
-       var rows = DOM("fieldsetTipp").find(".listeNext").removeChilds();
-             
-       rows.on("tangent", function(data)
-       {  
-         if (data.type == "touchstart") DOM(data.target).addClass("selected");
-         if( data.type == "touchend")
-         {
-            var tipp = data.transfer;
-         
-             if (tipp){
-                Eingabe.content.hide();
-                Eingabe.container.swipe("left");
-                Controller.dispatch(Controller.TIPPS, tipp);
-             }
-         }
+  }
+  , 
+  showTipps: function(grad)
+  {
+    // ALWAYS CLEANUP
+    this.tippListe.removeChilds();
 
-       }, { watch: "LI"} );
-             
-       for (var j = 0; j < tipps.length; j++){
-         var tipp = tipps[j];
-         
-         rows.addRow({
-           title: tipps[j].title,
-           zeit: tipps[j].kategorie,
+    // POSSIBLE?
+    if (!grad.tipps) return;
+    
+    // MAP ARRAY TO OBJECT ARRAY
+    var search = grad.tipps.split(",").map(function(ele){
+     return { id: ele };
+    });
+    
+    Model.getLexikon().has("id", search).forEach( function( tipp )
+    {                                                              
+      Eingabe.tippListe.addRow(
+      {
+           title: tipp.title,
+           zeit: tipp.kategorie,
            caretLeft: false,
            caretRight: true,
-           data: tipps[j]
-         });               
-       }
+           data: tipp
+       });               
+    });
        
-       DOM("fieldsetTipp").show();
-   },
-   
-   goBack: function(){
-     Eingabe.content.hide();
-     Controller.dispatch(Eingabe.BACK);
-     Eingabe.container.swipe("right");     
-   }
-   
+    DOM("fieldsetTipp").show();
+  }
+  /**
+  * EVENTHANDLER
+  **/
+  ,
+  showTipp:function( data )
+  {
+    if ( data.type == "touchstart") DOM(data.target).addClass("selected");
+    if ( data.type == "touchend")
+    {
+       if (data.transfer)
+       {
+          Eingabe.content.hide();
+          Eingabe.container.swipe("left");
+          Controller.dispatch(Controller.TIPPS, data.transfer);
+       }  
+    }
+  }
+  ,
+  neuerText:function( data )
+  {
+      if( data.type == "touchend" ) 
+      {           
+        Eingabe.itemModified = Object.create( Eingabe.item );         
+        Eingabe.itemModified.y = "";
+        Eingabe.itemModified.x = new Date().getTime();
+        
+        Eingabe.update( Eingabe.itemModified );
+      }
+  }
+  ,
+  saveItemModified: function( data )
+  {
+    if( data.type == "touchend")
+    {       
+      Model.setAct( 
+      {
+        id: Eingabe.itemModified.id + "",
+        x:  Eingabe.itemModified.x,    
+        y: (Eingabe.itemModified.kategorie == "Notizen") ? Eingabe.itemModified.y.replace(/\n/g,"<br>") : Eingabe.itemModified.y
+      });
+      
+      Eingabe.goBack();
+    }
+  }
+  , 
+  deleteItem: function( data )
+  {
+    if( data.type == "touchend" )
+    {
+      Model.removeAct( Eingabe.item );
+      Eingabe.goBack();
+    }
+  }
+  ,   
+  cancelItemModified: function(data)
+  {
+    if( data.type == "touchend" )
+    {
+      Eingabe.itemModified = null;
+      Eingabe.update(Eingabe.item);
+    }
+  }
+  ,
+  goBack: function()
+  {
+    // CLEANUP
+    Eingabe.item = null;
+    Eingabe.itemModified = null; 
+    // LEAVE STAGE
+    Eingabe.content.hide();
+    Eingabe.container.swipe("right");     
+    // CALL NEXT
+    Controller.dispatch(Eingabe.goBackTo);
+  }
+
 };
 
 // VIEW
