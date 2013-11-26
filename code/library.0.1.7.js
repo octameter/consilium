@@ -1378,10 +1378,8 @@ DOModule.setSlider = function( value )
   }
   else 
   { 
-    var slider = this.find(".slider");
-    
+    var slider = this.find(".slider");    
     var thumb = slider.find("a");
-      
     var hundert = slider.width() - thumb.width();
     // TODO slider.width() is 0 if container is display: none;
   
@@ -1396,12 +1394,13 @@ DOModule.addSlider = function( callback )
     var slider = this.add("input", { type: "range", min: 0, max: 100 });
     
     slider.on("change", function(data) {
-      callback(data.value);
+      callback(data);
     });
   }
   else 
   {
       var slider = this.add("div").addClass("slider");
+      var sliderArea = slider.parent().parent();
       var thumb = slider.add("a").addClass("knob");
     
       function onDrag(data)
@@ -1413,24 +1412,24 @@ DOModule.addSlider = function( callback )
         value = Math.min(Math.max(value, 0), 100);
         thumb.style("left", parseInt(hundert * value / 100) + "px");
 
-        callback(value);
+        callback( {"value":value} );
       }
     
       function onDragEnd()
       {
         slider.removeClass("dragging");
-        slider.off("touchmove");
-        slider.off("touchend");
-        slider.off("touchleave");
+        sliderArea.off("touchmove");
+        sliderArea.off("touchend");
+        sliderArea.off("touchleave");
       }
     
       slider.on("touchstart", function(event)
       {
         onDrag(event);
         slider.addClass("dragging");
-        slider.on("touchmove", onDrag);
-        slider.on("touchend", onDragEnd);
-        slider.on("touchleave", onDragEnd);
+        sliderArea.on("touchmove", onDrag);
+        sliderArea.on("touchend", onDragEnd);
+        sliderArea.on("touchleave", onDragEnd);
       });
   }
 
@@ -1469,23 +1468,21 @@ DOModule.addSlider = function( callback )
         slider.on("touchleave", onDragEnd);
       });
       
-*/var DateTime = {
-    
-    createOptions:function( params )
-    {
-      DOM(params.id).removeChilds();
-      
-      for(var j = params.min; j <= params.max; j++)
-      {
-        DOM(params.id).add("option").set("value",j).text( ( j < 10 ) ? "0" + j : j);
-      
-        if(params.zeit == j)
-        DOM(params.id).child(j-1).set("selected","selected");
-      }
-    }
+*/
+DOModule.datetimeBuild = function( params )
+{
+  this.removeChilds();
+  
+  for(var j = params.min; j <= params.max; j++)
+  {
+    this.add("option").set("value",j).text( ( j < 10 ) ? "0" + j : j);
+  
+    if(params.zeit == j)
+    this.child(j-1).set("selected","selected");
+  }
 };
 
-DOModule.setDatetime = function( ms )
+DOModule.datetimeSet = function( ms )
 {
   ms = parseInt( ms || new Date().getTime() );
 
@@ -1494,20 +1491,55 @@ DOModule.setDatetime = function( ms )
     this.find("input[type=date]").set("value", util.zeit("yyyy-MM-dd", ms));
     this.find("input[type=time]").set("value", util.zeit("hh:mm", ms));
   }
-  else {
+  else {   
     //DATE
-    DateTime.createOptions( { id:"dd", min:1, max:util.zeit("ddInMonth", ms), zeit:util.zeit("dd", ms) } );
-    DateTime.createOptions( { id:"MM", min:1, max:12, zeit:util.zeit("MM", ms) } );
-    DateTime.createOptions( { id:"yyyy", min:2013, max:util.zeit("yyyy", ms), zeit:util.zeit("yyyy", ms) } );
+    this.find(".dd").datetimeBuild( {  min:1, max:util.zeit("ddInMonth", ms), zeit:util.zeit("dd", ms) } );
+    this.find(".MM").datetimeBuild( { min:1, max:12, zeit:util.zeit("MM", ms) } );
+    this.find(".yyyy").datetimeBuild( {  min:2013, max:util.zeit("yyyy", ms), zeit:util.zeit("yyyy", ms) } );
     //TIME
-    DateTime.createOptions( { id:"hh", min:1, max:24, zeit:util.zeit("hh", ms) } );
-    DateTime.createOptions( { id:"mm", min:1, max:60, zeit:util.zeit("mm", ms) } );
+    this.find(".hh").datetimeBuild( {  min:1, max:24, zeit:util.zeit("hh", ms) } );
+    this.find(".mm").datetimeBuild( { min:1, max:60, zeit:util.zeit("mm", ms) } );
   }
 };
 
-DOModule.addDatetime = function( callback ) 
+DOModule.datetimeOff = function()
 {
+  if( window.device )
+  {
+    this.find("input[type=date]").set("disabled","disabled");
+    this.find("input[type=time]").set("disabled","disabled");
+  }
+  else {
+    this.find(".dd").set("disabled","disabled");
+    this.find(".MM").set("disabled","disabled");
+    this.find(".yyyy").set("disabled","disabled");
+    //TIME
+    this.find(".hh").set("disabled","disabled");
+    this.find(".mm").set("disabled","disabled");
+    //DATE
+  }
+};
 
+DOModule.datetimeOn = function()
+{
+  if( window.device )
+  {
+    this.find("input[type=date]").removeAttrib("disabled");
+    this.find("input[type=time]").removeAttrib("disabled");
+  }
+  else {
+    this.find(".dd").removeAttrib("disabled");
+    this.find(".MM").removeAttrib("disabled");
+    this.find(".yyyy").removeAttrib("disabled");
+    //TIME
+    this.find(".hh").removeAttrib("disabled");
+    this.find(".mm").removeAttrib("disabled");
+    //DATE
+  }
+};
+
+DOModule.datetimeCreate = function( callback ) 
+{
   if( window.device )
   {
     function getHTML5DateTime(data)
@@ -1523,45 +1555,48 @@ DOModule.addDatetime = function( callback )
   }
   else 
   {
+     var that = this;
+    
     function getDateTime()
     {
       return new Date
       (
-          DOM("yyyy").find("option:checked").get("value"),
-          DOM("MM").find("option:checked").get("value") - 1,
-          DOM("dd").find("option:checked").get("value"),
+          that.find(".yyyy option:checked").get("value"),
+          that.find(".MM option:checked").get("value") - 1,
+          that.find(".dd option:checked").get("value"),
           
-          DOM("hh").find("option:checked").get("value"),
-          DOM("mm").find("option:checked").get("value")
+          that.find(".hh option:checked").get("value"),
+          that.find(".mm option:checked").get("value")
       )
       .getTime();     
     };
     // DATE
     this.add("span").addClass("optionenLabel").html("<b>Datum</b>");
-    this.add("select", { id:"dd"}).addClass("optionen").on("change", function() 
+    this.add("select").addClass("dd optionen").on("change", function() 
     {  
       callback( getDateTime() );
     });
-    this.add("select", { id:"MM"}).addClass("optionen").on("change", function(data)
+     
+    this.add("select").addClass("MM optionen").on("change", function(data)
     {
       var ms = getDateTime();
-      
+
       // RECALCULATE DAYS IN MONTH 
-      DateTime.createOptions( { id:"dd", min:1, max:util.zeit("ddInMonth", ms), zeit:util.zeit("dd", ms) } );
+      that.find(".dd").datetimeBuild( { min:1, max:util.zeit("ddInMonth", ms), zeit:util.zeit("dd", ms) } );
       
       callback( ms );
     });
-    this.add("select", { id:"yyyy"}).addClass("optionen").on("change", function(data)
+    this.add("select").addClass("yyyy optionen").on("change", function(data)
     {
       callback( getDateTime() );
     });
     // TIME
     this.add("span").addClass("optionenLabel").html("<b>Zeit</b>");
-    this.add("select", { id:"hh"}).addClass("optionen").on("change", function(data)
+    this.add("select").addClass("hh optionen").on("change", function(data)
     {
       callback( getDateTime() );
     });
-    this.add("select", { id:"mm"}).addClass("optionen").on("change", function(data)
+    this.add("select").addClass("mm optionen").on("change", function(data)
     {
       callback( getDateTime() );
     });
@@ -2031,7 +2066,7 @@ DOModule.drawConnect = function( x1, y1, x2, y2, padding, farbwert )
     yPad = -1 * yPad;     
   }
 
-  this.add( Svg.line( { x1:x1 + xPad, y1:y1 + yPad, x2:x2- xPad, y2:y2-yPad, strokeWidth:4, color:farbwert, className:"lineConnect"}) );
+  this.add( Svg.line( { x1:x1 + xPad, y1:y1 + yPad, x2:x2- xPad, y2:y2-yPad, strokeWidth:4, color:farbwert, className:"connectLine"}) );
 };
 
 

@@ -294,13 +294,12 @@ var Model = {
   pullActs:function( callback )
   {
     this.remote.read(App.node + "/api/acts/", function(data)
-    {
+    {      
       if( data.status == 200 )
       {
         Model.memory.set("acts", data.message );
         if( callback) callback( data );
-      }
-      
+      }      
     }, 
     null, this.getActor().access_token );   
   }
@@ -594,7 +593,7 @@ var Home = {
   bind: function()
   {
     Controller.on(Controller.HOME, function()
-    {   
+    {       
       if( Intro.hasInformed() ) Home.update();
 
       else Controller.dispatch( Controller.INTRO );
@@ -628,9 +627,10 @@ var Home = {
     
       if( !Home.container.hasClass("swipable") ) this.build();
 
-      // START WORKING DURING ANIMATION
+      // START WORKING DURING POSSIBLE ANIMATION
       this.chart.update();
       this.form.update();
+    
       // ANIMATE
       Home.container.swipe("middle");
       // ANIMATED
@@ -737,6 +737,7 @@ var Home = {
     
     update: function()
     {  
+      console.log("removes lines");
       this.board.findAll(".movePoint").remove();
       this.board.findAll(".connectLine").remove();
       
@@ -748,7 +749,7 @@ var Home = {
       
       // GROUP SYMBOLS
       Model.getActs().unique("id").forEach(function(id)
-      {
+      { 
         var howto = Model.getLexikonById( id );     
         var acts = Model.getActs().has("id", [ {id: id} ] ).sort321("x"); 
 
@@ -763,7 +764,7 @@ var Home = {
             this.board.drawSymptom( this.x( act.x ), this.y( 100 - act.y ), 17, howto.farbwert, act);
                       
             // Less than 3 days apart
-            if (prev && Number(prev.x) < Number(act.x) + 3 * 86400000)
+            if (prev && Number(prev.x) > Number(act.x) - 3 * 86400000)
             this.board.drawConnect( this.x( act.x ), this.y( 100 - act.y ), this.x( prev.x), this.y(100- prev.y), 19, howto.farbwert );
 
             prev = Object.create( act );
@@ -784,8 +785,10 @@ var Home = {
         }
       }.bind(this));
     }   
-  },
-  
+    
+    
+  }
+  ,
   form: {
 
     fieldset:   DOM("homeFieldsetAuswahl"),
@@ -911,7 +914,6 @@ var Intro = {
     if( data.type == "touchend" )
     {
       Intro.hide();
-      Controller.dispatch(Controller.HOME);
     }
   }
   ,
@@ -956,30 +958,14 @@ var Intro = {
     // DESKTOP NOLOGIN
     if( ( role_type == "NOT_REGISTER" || role_type == "REGISTER" ) && !App.phonegap )
     {
-      this.addFeatures(
-      [
-        { title: "1. Funktion", description: "<p>Consilium ist eine Applikation zur Erfassung von Symptomen und Notizen durch die NutzerInnen. Sie unterstützt die Kommunikation mit dem Arzt über einen gemeinsamen Datenzugriff.</p>"}
-        ,
-        { title: "2. Entwicklung", description: "<p>Consilium wurde für eine Studie entwickelt, die aktuell den Mehrwert von Applikationen in der medizinischen Versorgung untersucht.</p>"}
-        ,
-        { title: "3. Nutzung", description: "<p>Alle Interssierte dürfen die App testen. Über „Start“ wird die Favoritenliste aufgerufen, in der Wohlbefinden, Symptome und Tagebuchnotizen eingeben werden können.</p>"}
-        ,
-        { title: "4. Datenspeicherung", description: "<p>Die Daten werden nur nach Verbindung mit dem Server und regelmässiger Synchronisation über „Sync“ gespeichert. Eingegebene Daten in der Testversion werden nicht erfasst.</p>"}
-        ,
-        { title: "5. Anonymisierung", description: "<p>NutzerInnen der App erhalten eine individuelle Patienten-ID, mit der Sie berechtigt sind den Service zu nutzen.</p>"}
-      ]);
+      this.addFeatures( IntroText["de"].WEB_NOT_REGISTER );
       goodbye = { title: "6. Epilog", description: "<p>Wir danken für Ihr Interesse.</p>" };
     }
     
     // APP NOLOGIN
     if( role_type == "NOT_REGISTER" && App.phonegap )
     {
-      this.addFeatures(
-      [
-        { title: "1. Funktion", description: "<p>Die App ist Ihr persönliches Logbuch während einer medizinischen Therapie. Wir empfehlen die App täglich zu nutzen.</p>" }
-        ,
-        { title: "2. Einführung", description: "<p>Über „Start“ können Sie in der Favoritenliste Wohlbefinden, Symptome und Notizen erfassen.</p>" }
-      ]);
+      this.addFeatures( IntroText["de"].DEVICE_NOT_REGISTER );
       goodbye = { title: "3. Epilog", description: "<p>Die erfassten Daten erscheinen in Ihrer Timeline und in Ihrer Web-Applikation. Wir wünschen Ihnen viel Erfolg!</p>"};
     }
 
@@ -988,27 +974,13 @@ var Intro = {
       // GRUPPE B   
       if( actor.scope_type == "GRUPPE_B" )
       {
-       this.addFeatures(
-        [
-          { title: "1. Einteilung", description: "<p>Sie gehören der Gruppe B an. Verwenden Sie die App während der Beobachtungszeit, ohne den Arzt darüber zu informieren. Verhalten Sie sich ansonsten in den Arztvisiten wie gewohnt, und informieren Sie den Arzt über alle Ihre Beschwerden und Wünsche.</p>"}
-          ,
-          { title: "2. Nutzung", description: "<p>Wir empfehlen die App täglich zu nutzen. Über „Start“ können Sie in der Favoritenliste Wohlbefinden, Symptome und Notizen erfassen. Die erfassten Daten erscheinen in Ihrer Timeline und Web-Applikation. Zwei Datenpunkten erhalten eine Verbindungslinie, wenn der Zeitabstand weniger als drei Tage beträgt.</p>"}
-          ,
-          { title: "3. Fragebogen", description: "<p>Bitte beantworten Sie unsere Fragebögen. Sie können die App dabei verwenden. Notieren Sie bitte auf dem Fragebogen nur Ihre persönliche Patienten-ID (Pat-ID) und nie Ihren Namen. Ihre Pat-ID erscheint in der App durch Berühren der „Sync“-Taste.</p>"}
-        ]);      
+        this.addFeatures( IntroText["de"].PATIENT_GRUPPE_B );      
         goodbye = { title: "4. Epilog", description: "<p>Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie.</p>" };
       }
       // GRUPPE C       
       if( actor.scope_type == "GRUPPE_C" )
       {
-        this.addFeatures(
-        [
-          { title: "1. Einteilung", description: "<p>Sie gehören der Gruppe C an. Verwenden Sie die App während der Beobachtungszeit und diskutieren Sie die Daten zusammen mit dem Arzt in der Visite. Verhalten Sie sich ansonsten in den Arztvisiten wie gewohnt, und informieren Sie den Arzt über alle Ihre Beschwerden und Wünsche.</p>"}
-          ,
-          { title: "2. Nutzung", description: "<p>Wir empfehlen die App täglich zu nutzen. Über „Start“ können Sie in der Favoritenliste Wohlbefinden, Symptome und Notizen erfassen. Die erfassten Daten erscheinen in Ihrer Timeline und in Ihrer Web-Applikation. Zwei Datenpunkten erhalten eine Verbindungslinie, wenn der Zeitabstand weniger als drei Tage beträgt.</p>"}
-          ,
-          { title: "3. Fragebogen", description: "<p>Bitte beantworten Sie unsere Fragebögen. Sie können die App dabei verwenden. Notieren Sie bitte auf dem Fragebogen nur Ihre persönliche Patienten-ID (Pat-ID) und nie Ihren Namen. Ihre Pat-ID erscheint in der App durch Berühren der „Sync“-Taste.</p>"}
-        ]);
+        this.addFeatures( IntroText["de"].PATIENT_GRUPPE_C);
         goodbye = { title: "4. Epilog", description: "<p>Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie.</p>" };
       }
     }
@@ -1246,6 +1218,21 @@ var Symptome = {
   }
 };
 
+   
+/**
+ * _term: "10013963 SYMPTOM "
+    back: "FAVORITES"
+    farbwert: "rgba(40,210,230,0.9)"
+    grad: Array[5]
+    id: "10013963"
+    kategorie: "Symptom"
+    sub: "Atemwege"
+    title: "Atemnot"
+    unit: "Pkte"
+    x: "1380725392804"
+    y: "20"
+    zero: 0
+ */
 var Eingabe = {
  // VIEW
     
@@ -1284,9 +1271,11 @@ var Eingabe = {
      // VIEW IS CALLED
      Controller.on(Controller.EINGABE, function(data)
      {  
-       Eingabe.content.hide();
-       
+       Eingabe.content.invisible();   
        Eingabe.build();
+       Eingabe.item = null;
+       Eingabe.itemModified = null;  
+       DOM("sliderArea").setSlider( 0 );
        
        // !data from Tipps, but maybe itemModified
        if (data)
@@ -1298,13 +1287,12 @@ var Eingabe = {
          Eingabe.item = Model.getLexikonById( data.id );         
          Eingabe.item.x = data.x;
          Eingabe.item.y = data.y;
-         Eingabe.itemModified = null;         
        }
 
        Eingabe.container.swipe("middle").on("stage", function()
        {
          Eingabe.container.off("stage");
-         Eingabe.update(Eingabe.itemModified || Eingabe.item);
+         Eingabe.update();
        });
      });
      
@@ -1318,7 +1306,7 @@ var Eingabe = {
     
     // FREITEXT
     // NEUER TEXT 
-    Eingabe.freitext.find(".lightgrey").on("tangent", this.neuerText ); 
+    Eingabe.freitext.find(".green").on("tangent", this.neuerText ); 
     // SAVE
     Eingabe.freitext.find(".blue").on("tangent", this.saveItemModified );
     // DELETE
@@ -1335,111 +1323,106 @@ var Eingabe = {
     
     this.done = true;
     
-    DOM("zeitArea").addDatetime(function(value)
+    DOM("zeitArea").datetimeCreate(function(value)
     {
-    // Zeit
-      Eingabe.itemModified =  Object.create( Eingabe.itemModified || Eingabe.item );   
       Eingabe.itemModified.x = value;
-      
-      Eingabe.update(Eingabe.itemModified); 
-    });
-    
-    // Strukurierte Eingabe
-    DOM("sliderArea").addSlider(function(value)
-    {    
-      if (!Eingabe.itemModified)
-      {
-        //TODO REMOVE DISABLED FROM DATE
-        Eingabe.itemModified = Object.create(Eingabe.item);
-        Eingabe.itemModified.x = new Date().getTime();
-      }
-      
-      Eingabe.itemModified.y = value;
-      // TODO: specifically update containers
-      Eingabe.update(Eingabe.itemModified);
     });   
     
-    // FREITEXT
-    DOM("favTextareaId").on("input", function(data)
+    // SLIDER CHANGING
+    DOM("sliderArea").addSlider( this.eingabeHandler );   
+    
+    // FREITEXT CHANGING
+    DOM("favTextareaId").on("input", this.eingabeHandler );
+  }
+  ,   
+  update: function(data)
+  {   
+    // FREEZE DATE
+    DOM("zeitArea").datetimeOff();
+    
+    this.content.show();
+    this.content.invisible();
+    // ONLY IF RESULTS
+    this.tipp.hide();
+    
+    // BUTTON 
+    // BLUE ERSTELLEN - GREY ABBRECHEN - GREEN NEUER TEXT - RED LÖSCHEN
+    this.content.findAll(".button").hide();
+    
+    if( !Eingabe.itemModified )
     {
-      //TODO REMOVE DISABLED FROM DATE
-      Eingabe.itemModified =  Object.create( Eingabe.itemModified || Eingabe.item );      
-      Eingabe.itemModified.y = data.value;
-      Eingabe.itemModified.x = new Date().getTime();
+      if( Eingabe.item.x )
+      {        
+        this.freitext.find(".red").show();
+        this.eingabe.find(".red").show();
+        this.freitext.find(".green").show(); 
+      }
       
-      Eingabe.update( Eingabe.itemModified );
-    });
+      data = Object.create( Eingabe.item );
+    }
+    
+    if ( Eingabe.itemModified )
+    {
+       this.freitext.find(".blue").show();
+       this.eingabe.find(".blue").show();
+       this.freitext.find(".grey").show();  
+       this.eingabe.find(".grey").show();   
+
+       // NEW DATA MAY SET DATE
+       DOM("zeitArea").datetimeOn();
+      
+       data = Object.create( Eingabe.itemModified );
+    } 
+
+    DOM("zeitArea").datetimeSet( data.x );
+    
+    // FREITEXT 
+    if (data.kategorie == "Notizen")
+    {     
+      this.eingabe.hide();
+      
+      this.freitext.find("legend").html( data.kategorie );
+      this.freitext.find(".favTitle").html( data.title );
+      
+      DOM("favTextareaId").set("value", (data.y) ? data.y.replace(/<br>/g, "\n") : "");  
+      
+      this.freitext.show();
+    }
+    // STRUKTURIERTE EINGABE
+    else
+    {
+      this.freitext.hide();
+
+      this.eingabe.find(".favTitle").html( data.title ); 
+      this.eingabe.find("legend").html( data.kategorie );
+      
+      DOM("favGradId").html("");
+      DOM("favOutputId").text( ( data.y || data.zero ) + " " + data.unit);       
+      // TODO only set the slider on view change but not on slider change
+      
+      this.eingabe.show();
+      
+      DOM("sliderArea").setSlider(parseInt(data.y) || data.zero );
+         
+      this.showDefinition( data );  
+      
+    }
+
+    this.content.show();
   }
   ,
-   
-/**
- * _term: "10013963 SYMPTOM "
-    back: "FAVORITES"
-    farbwert: "rgba(40,210,230,0.9)"
-    grad: Array[5]
-    id: "10013963"
-    kategorie: "Symptom"
-    sub: "Atemwege"
-    title: "Atemnot"
-    unit: "Pkte"
-    x: "1380725392804"
-    y: "20"
-    zero: 0
- */
-   
-  update: function(data)
+  eingabeHandler:function(data)
   {    
-     if (data)
-     {
-       this.content.find(".favActions").hide();
-       this.freitext.hide();
-       this.eingabe.hide();
-       this.tipp.hide();
-       
-       if (Eingabe.itemModified){
-         this.content.findAll(".blue").show();
-         this.content.findAll(".grey").show();
-         this.content.findAll(".red").hide();    
-         this.content.findAll(".favActions").show();
-       } 
-       else if (data.y != "")
-       {  
-         this.content.findAll(".blue").hide();
-         this.content.findAll(".grey").hide();
-         this.content.findAll(".red").show();
-         this.content.findAll(".favActions").show();
-       }
+    if (!Eingabe.itemModified)
+    {
+      Eingabe.itemModified = Object.create(Eingabe.item);
+      Eingabe.itemModified.x = new Date().getTime();
+    }
 
-       if (data.kategorie == "Notizen"){
-         this.freitext.show();
-
-         this.freitext.find("legend").html( data.kategorie );
-         this.freitext.find(".favTitle").html( data.title );
-         DOM("zeitArea").setDatetime( data.x );
-         
-         DOM("favTextareaId").set("value", (data.y) ? data.y.replace(/<br>/g, "\n") : "");       
-       }
-       else
-       {
-         // FOR WIDTH
-         this.eingabe.show();
-
-         this.eingabe.find("legend").html( data.kategorie );
-         DOM("favGradId").html("");
-         this.eingabe.find(".favTitle").html( data.title );
-         
-         DOM("zeitArea").setDatetime( data.x );
-         DOM("favOutputId").text( ( data.y || data.zero ) + " " + data.unit);
-         this.content.show();
-         
-         // TODO only set the slider on view change but not on slider change
-         DOM("sliderArea").setSlider(parseInt(data.y) || data.zero );
-         
-         this.showDefinition( data );
-       }
-     }
-     this.content.show();
-   }
+    Eingabe.itemModified.y = data.value;
+    
+    Eingabe.update();
+  }
   ,
   showDefinition: function(data)
   {
@@ -1510,14 +1493,14 @@ var Eingabe = {
         Eingabe.itemModified.y = "";
         Eingabe.itemModified.x = new Date().getTime();
         
-        Eingabe.update( Eingabe.itemModified );
+        Eingabe.update();
       }
   }
   ,
   saveItemModified: function( data )
   {
     if( data.type == "touchend")
-    {       
+    {         
       Model.setAct( 
       {
         id: Eingabe.itemModified.id + "",
@@ -1543,7 +1526,7 @@ var Eingabe = {
     if( data.type == "touchend" )
     {
       Eingabe.itemModified = null;
-      Eingabe.update(Eingabe.item);
+      Eingabe.update();
     }
   }
   ,
