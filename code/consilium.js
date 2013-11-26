@@ -44,21 +44,37 @@ var App = {
   ,
   setup: function()
   {    
-    App.enviroment(); // domain, node, origin, live
-    App.device = DOM().device(); // tv || tablet || mobile || desktop
-    App.phonegap = ( !!window.device ); //App.phonegap = window.device = true;
+    // domain, node, origin, live
+    App.enviroment(); 
+    // tv || tablet || mobile || desktop
+    App.screenSize = DOM().device(); 
+    //App.phonegap= window.device = true;
+    App.phonegap = ( !!window.device ); 
+    
     App.signOn(function(actor)
     {      
       Model.setActor( actor );
       
-      if( !actor ) App.goHome();
+      // WELCOME EVERYONE
+      if( !actor ) App.go();
+      // REFRESH USER DATA
       if( actor && !App.phonegap) Model.pullActor();
-      if( actor ) Model.refreshActs( App.goHome );   
+      // LOAD USER HISTORY
+      if( actor ) Model.refreshActs( App.go );   
     });
   }
   ,
-  goHome:function() { Controller.dispatch( Controller.HOME ); }
+  go:function() 
+  {
+    Controller.dispatch( Controller.INTRO );
+    Controller.dispatch( Controller.HOME ); 
+  }
 };
+//TODO 
+//memory actor wird App.actor 
+//App.phonegap wird device
+// push pull
+// save, upload, load
 
 var Controller = {
   
@@ -69,6 +85,7 @@ var Controller = {
   EINGABE:    "EINGABE",
   SYMPTOME:   "SYMPTOME",
   TIPPS:      "TIPPS",
+  TIPP2EINGABE:"TIPP2EINGABE",
   
   init: function(domain)
   {
@@ -79,7 +96,6 @@ var Controller = {
   ,
   bind: function()
   {
-
   }
 };
 
@@ -89,8 +105,7 @@ var Model = {
   {
     storify(this);
     
-    // DEFAULT START
-    //this.memory.set("favorites", [{ id: "Symptom" }]);    
+    // DEFAULT START 
     this.memory.set("acts", [], ["id","kategorie"]);
     this.kataloge();
   }
@@ -586,18 +601,19 @@ var Home = {
     this.bind();  
     this.container.invisible();
     this.content.hide();
+    
     // DESKTOP WITHOUT CONSILIUM
     if (!window.device) DOM("titleId").hide();
+    
+    // BUILD GRID
+    Home.chart.init();
+    // BUILD AUSWAHL
+    Home.form.init(); 
   }
   ,
   bind: function()
   {
-    Controller.on(Controller.HOME, function()
-    {       
-      if( Intro.hasInformed() ) Home.update();
-
-      else Controller.dispatch( Controller.INTRO );
-    });
+    Controller.on(Controller.HOME, Home.update );
     
     this.gotoOptionen.on("tangent", function( data )
     {
@@ -620,17 +636,23 @@ var Home = {
     });   
   }
   ,
-  update: function()
+  update: function( data )
   {
-      Home.container.show();
-      Home.content.invisible();
+    console.log("home update");
     
-      if( !Home.container.hasClass("swipable") ) this.build();
+    Home.container.show();
+    Home.content.invisible();
 
-      // START WORKING DURING POSSIBLE ANIMATION
-      this.chart.update();
-      this.form.update();
+    // START WORKING DURING POSSIBLE ANIMATION
+    Home.chart.update();
+    Home.form.update();
     
+    if( Home.container.hasClass("middle") )
+    { 
+      Home.content.show(); 
+    }
+    else 
+    {     
       // ANIMATE
       Home.container.swipe("middle");
       // ANIMATED
@@ -639,14 +661,7 @@ var Home = {
         Home.container.off("stage");
         Home.content.show();
       });      
-  }
-  ,
-  build:function()
-  {
-    Home.container.addClass("swipable");
-    Home.chart.init();
-    Home.form.init();   
-    Home.content.show();
+    }    
   }
   ,
   chart: {
@@ -737,7 +752,6 @@ var Home = {
     
     update: function()
     {  
-      console.log("removes lines");
       this.board.findAll(".movePoint").remove();
       this.board.findAll(".connectLine").remove();
       
@@ -785,8 +799,6 @@ var Home = {
         }
       }.bind(this));
     }   
-    
-    
   }
   ,
   form: {
@@ -899,14 +911,28 @@ var Intro = {
     introfy(this);
     
     this.bind();    
-    this.container.addClass("swipable");
     this.logo.addConsilium();
+
     this.container.hide();
   }
   ,
   bind: function()
   {    
-    Controller.on(Controller.INTRO, Intro.show );
+    Controller.on(Controller.INTRO, function()
+    { 
+      if( !Intro.done && Intro.hasInformed() )
+      {
+        Intro.hide();  
+        Intro.update();
+      } 
+      else
+      {
+        Intro.update();
+        Intro.container.style("top", "0%");
+      }
+      
+      Intro.done = true;
+    });
   }
   ,
   goHome:function( data )
@@ -914,14 +940,7 @@ var Intro = {
     if( data.type == "touchend" )
     {
       Intro.hide();
-      Home.update();
     }
-  }
-  ,
-  show: function( data )
-  { 
-    Intro.update( data );
-    Intro.container.style("top", "0%");
   }
   ,
   hide: function()
@@ -942,8 +961,6 @@ var Intro = {
   ,
   update: function()
   { 
-    this.container.show();
-
     var role_type = ( Model.memory.get("actor") ) ? Model.memory.get("actor").role_type : "NOT_REGISTER";
     
     Intro.setTitle(  "Consilium" );
@@ -989,6 +1006,8 @@ var Intro = {
      this.addFeature( goodbye ); //.add("a").addClass("button grey").text("App starten").on("tangent", Intro.goHome );
     
     ( actor ) ? Model.storage.set("informed", role_type ) : Model.memory.set("informed", true);
+    
+    this.container.show();
   }
 };
 
@@ -1221,21 +1240,9 @@ var Symptome = {
 
    
 /**
- * _term: "10013963 SYMPTOM "
-    back: "FAVORITES"
-    farbwert: "rgba(40,210,230,0.9)"
-    grad: Array[5]
-    id: "10013963"
-    kategorie: "Symptom"
-    sub: "Atemwege"
-    title: "Atemnot"
-    unit: "Pkte"
-    x: "1380725392804"
-    y: "20"
-    zero: 0
+ * VIEW EINGABE
  */
 var Eingabe = {
- // VIEW
     
    //DOMELEMENTS
    container:     DOM("eingabeId"),
@@ -1264,10 +1271,10 @@ var Eingabe = {
    // BINDING
    bind: function()
    {     
-      this.goBackButton.on("tangent", function(data)
-      {
+     this.goBackButton.on("tangent", function(data)
+     {
         if( data.type == "touchend" ) Eingabe.goBack();
-      });
+     });
     
      // VIEW IS CALLED
      Controller.on(Controller.EINGABE, function(data)
@@ -1290,29 +1297,20 @@ var Eingabe = {
          Eingabe.item.y = data.y;
        }
 
-       Eingabe.container.swipe("middle").on("stage", function()
-       {
-         Eingabe.container.off("stage");
-         Eingabe.update();
-       });
+       Eingabe.show();
      });
      
+     Controller.on( Controller.TIPP2EINGABE, function() { Eingabe.show() } );
+     
     // SCHIEBEREGLER
-    // SAVE
     Eingabe.eingabe.find(".blue").on("tangent", this.saveItemModified );
-    // DELETE
     Eingabe.eingabe.find(".red").on("tangent", this.deleteItem );     
-    // CANCEL
     Eingabe.eingabe.find(".grey").on("tangent", this.cancelItemModified );
     
     // FREITEXT
-    // NEUER TEXT 
     Eingabe.freitext.find(".green").on("tangent", this.neuerText ); 
-    // SAVE
     Eingabe.freitext.find(".blue").on("tangent", this.saveItemModified );
-    // DELETE
     Eingabe.freitext.find(".red").on("tangent", this.deleteItem );
-    // CANCEL
     Eingabe.freitext.find(".grey").on("tangent", this.cancelItemModified );
      
     Eingabe.tippListe.on("tangent", this.showTipp, { watch: "LI"} );
@@ -1334,6 +1332,15 @@ var Eingabe = {
     
     // FREITEXT CHANGING
     DOM("favTextareaId").on("input", this.eingabeHandler );
+  }
+  ,
+  show:function()
+  {      
+     Eingabe.container.swipe("middle").on("stage", function()
+     {
+       Eingabe.container.off("stage");
+       Eingabe.update();
+     });
   }
   ,   
   update: function(data)
@@ -1406,7 +1413,6 @@ var Eingabe = {
       DOM("sliderArea").setSlider(parseInt(data.y) || data.zero );
          
       this.showDefinition( data );  
-      
     }
 
     this.content.show();
@@ -1568,13 +1574,10 @@ var Tipps = {
    {       
      this.gotoEingabe.on("tangent", function( data )
      {      
-       if( data.type == "touchend" )
-       {
-         Tipps.goBack();
-       }
+       if( data.type == "touchend" ) Controller.dispatch( Controller.TIPP2EINGABE );
      });     
      
-     Controller.on(Controller.TIPPS, function(data)
+     Controller.on(Controller.TIPPS, function( data )
      {   
        Tipps.update( data );
        Tipps.container.swipe("middle").on("stage", function()
@@ -1583,24 +1586,16 @@ var Tipps = {
          Tipps.content.show();
        });
      });
+     
+     Controller.on(Controller.TIPP2EINGABE, function( data )
+     {
+        Tipps.content.hide();       
+        Tipps.container.swipe("right");
+     });
    }
    ,
-   goBack: function(){
-     Tipps.content.hide();       
-     Controller.dispatch(Controller.EINGABE);
-     Tipps.container.swipe("right");
-   }
-   ,
-   /**
-    * _term: "IMELD2 BRUSTZENTRUM "
-      bausteine: Array[3]
-      dislikes: 0
-      id: "iMeld2"
-      kategorie: "Brustzentrum"
-      likes: 0
-      title: "Kontakt aufnehmen"
-    */
-   update: function(data){
+   update: function(data)
+   {
      this.content.removeChilds();
      
      var display = this.content.add("form").add("fieldset").style("text-align", "left").add("legend").text(data.kategorie).parent();
@@ -1619,16 +1614,18 @@ var Tipps = {
      var actions = display.add("p");
      actions.add("a").addClass("button green floatLeft").text("Hilfreich").on("tangent", function(data)
      {
-       if( data.type == "touchend" ){
-        console.log("TODO TIPP HLFREICH");
-        Tipps.goBack();
+       if( data.type == "touchend" )
+       {
+         console.log("TODO TIPP HLFREICH"); 
+         Controller.dispatch( Controller.TIPP2EINGABE );
        }
      });
      actions.add("a").addClass("button grey floatRight").text("Nicht Hilfreich").on("tangent", function(data)
      {
-       if( data.type == "touchend" ){
+       if( data.type == "touchend" )
+       {
         console.log("TODO TIPP NICHT HLFREICH");
-        Tipps.goBack();
+        Controller.dispatch( Controller.TIPP2EINGABE );
        }
      });
    }

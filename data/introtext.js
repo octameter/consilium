@@ -4,13 +4,13 @@ var IntroText = {
   {
     WEB_NOT_REGISTER:
     [
-      { title: "1. Funktion", description: "<p>Consilium ist eine Applikation zur Erfassung von Symptomen und Notizen durch die NutzerInnen. Sie unterstützt die Kommunikation mit dem Arzt über einen gemeinsamen Datenzugriff.</p>"}
+      { title: "1. Funktion", description: "<p>Consilium ist eine Applikation zur Erfassung des Verlaufes von Symptomen. Arzt und Patient können gemeinsam strukturierte Daten anlegen.</p>"}
       ,
       { title: "2. Entwicklung", description: "<p>Consilium wurde für eine Studie entwickelt, die aktuell den Mehrwert von Applikationen in der medizinischen Versorgung untersucht.</p>"}
       ,
-      { title: "3. Nutzung", description: "<p>Alle Interssierte dürfen die App testen. Über „Start“ wird die Favoritenliste aufgerufen, in der Wohlbefinden, Symptome und Tagebuchnotizen eingeben werden können.</p>"}
+      { title: "3. Nutzung", description: "<p>Alle Interssierte dürfen die App testen. Über „Liste“ wird die Favoritenliste aufgerufen, in der Wohlbefinden, Symptome und Tagebuchnotizen eingeben werden können.</p>"}
       ,
-      { title: "4. Datenspeicherung", description: "<p>Die Daten werden nur nach Verbindung mit dem Server und regelmässiger Synchronisation über „Sync“ gespeichert. Eingegebene Daten in der Testversion werden nicht erfasst.</p>"}
+      { title: "4. Datenspeicherung", description: "<p>Die Daten werden nur nach Verbindung mit dem Server und regelmässiger Synchronisation über „Sync“ gespeichert. Eingegebene Daten ohne <b>vorherige</b> Anmeldung werden nicht gespeichert.</p>"}
       ,
       { title: "5. Anonymisierung", description: "<p>NutzerInnen der App erhalten eine individuelle Patienten-ID, mit der Sie berechtigt sind den Service zu nutzen.</p>"}
     ]
