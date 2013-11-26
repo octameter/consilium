@@ -914,6 +914,7 @@ var Intro = {
     if( data.type == "touchend" )
     {
       Intro.hide();
+      Home.update();
     }
   }
   ,
