@@ -48,19 +48,20 @@ var App = {
     App.enviroment(); 
     // tv || tablet || mobile || desktop
     App.screenSize = DOM().device(); 
-    //App.phonegap= window.device = true;
-    App.phonegap = ( !!window.device ); 
+    //window.device = true;
+    window.browser = !( !!window.device ); 
     
     App.signOn(function(actor)
     {      
       Model.setActor( actor );
       
       // WELCOME EVERYONE
-      if( !actor ) App.go();
-      // REFRESH USER DATA
-      if( actor && !App.phonegap) Model.pullActor();
-      // LOAD USER HISTORY
-      if( actor ) Model.refreshActs( App.go );   
+      if( !Model.hasActor() ) { App.go(); return; }
+           
+      // ACTOR REFRESH
+      if( browser ) Model.readActor();
+      // LOAD HISTORY NO FRESH ACTOR NEEDED
+      Model.refreshActs( App.go );   
     });
   }
   ,
@@ -94,9 +95,7 @@ var Controller = {
     this.bind();
   }
   ,
-  bind: function()
-  {
-  }
+  bind: function(){}
 };
 
 var Model = {
@@ -106,7 +105,10 @@ var Model = {
     storify(this);
     
     // DEFAULT START 
-    this.memory.set("acts", [], ["id","kategorie"]);
+    this.memory.set("acts", [], ["id","kategorie"]);    
+    
+    console.log( this.memory.get("acts") );
+    
     this.kataloge();
   }
   ,
@@ -118,100 +120,79 @@ var Model = {
     Model.memory.set("lexikon", Tipp.data, Tipp._searchterms );
   }
   ,
-  setActor:function( actor ) { if( actor ) this.memory.set("actor", actor); }
-  ,
-  getActor:function() { return this.memory.get("actor"); }
-  ,
-  pullActor:function( callback )
+  /**
+   * ACTOR 
+   * PATIENT 
+   * ARZT { id: "diagnose"}, { id:"zyklus" }
+   */
+  setActor:function( actor ) 
+  { 
+    this.memory.set("actor", actor || 
+    { 
+      role_type:"NOT_REGISTER",
+      favorites_array:[ {"id":"Symptom"}, { id: "10025482" }, { id: "privat"} ] 
+    } ); 
+  },
+  getActor:function() { return this.memory.get("actor"); },
+  hasActor:function() { return !!this.memory.get("actor").access_token },
+  readActor:function( callback )
   {
-    var actor = this.getActor();
-
-    this.remote.read(App.node+"/api/actors/"+actor.actor_id, function( data )
+    this.remote.read(App.node+"/api/actors/"+this.actor().actor_id, function( data )
     {
-      if( data.status == 200 )  Model.memory.get("actor").favorites_array = data.message.favorites_array;
-      
+      if( data.status == 200 )  Model.actor().favorites_array = data.message.favorites_array;   
       if( callback ) callback(data);
-
-    }, null, actor.access_token );
-  }
-  ,
-  commitActor:function()
-  {
-    if( this.getActor() )
-    {
-      ( App.phonegap ) ? this.saveActor : this.pushActor();
     }
-  }
-  ,
-  pushActor:function( callback )
+    , null, Model.actor().access_token );
+  },
+  updateActor:function( callback )
   {
-    var actor = this.getActor();
-
-    this.remote.update(App.node+"/api/actors/"+actor.actor_id, function( data )
+    this.remote.update(App.node+"/api/actors/"+this.actor().actor_id, function( data )
     {
-      if( data.status == 200 ) console.log("Update Remote Actor"); 
-      
+      if( data.status == 200 ) console.log("Update Remote Actor");      
       if( callback ) callback( data );    
     }
-    , actor, actor.access_token );
-  }
-  ,
-  saveActor:function() { this.storage.set("actor", this.getActor() ); }
-  ,
-  getFavorites:function()
+    , Model.actor(), Model.actor().access_token );
+  },
+  saveActor:function()
   {
-    // PATIENT START { id: "10025482" }, { id: "privat"}
-    // ARZT START { id: "diagnose"}, { id:"zyklus" }
-    if( !this.favorites )
-    this.favorites = ( this.getActor() ) ? this.getActor().favorites_array : [ {"id":"Symptom"} ];
-    
-    return this.favorites;
-  }
-  ,
-  setFavorite:function( favorite )
+    if( this.hasActor() && browser ) this.updateActor();
+    if( this.hasActor() && device  ) this.storage.set("actor", this.getActor() );
+  },
+  getActorFavorites:function() { return this.getActor().favorites_array; },
+  setActorFavorite:function( favorite )
   {
-    this.favorites.push( favorite );
-    this.commitActor();
-  }
-  ,
-  removeFavorite:function( favorite )
+    this.getActor().favorites_array.push( favorite ); this.saveActor();
+  },
+  removeActorFavorite:function( favorite )
   { 
     // Modify existing array don't create new one
     var index = this.favorites.length;   
     while( index-- ) if( this.favorites[index].id == favorite.id ) this.favorites.splice( index, 1 ); 
-
-    this.commitActor();
+    this.saveActor();
   }
   ,
-  getLexikon:function()
-  {
-    return Model.memory.get("lexikon").clone();
-  }
-  ,
-  getLexikonAt:function( index )
-  {
-    return Model.memory.get("lexikon")[index];
-  }
-  ,
+  /**
+   * LEXIKON PREVENT MODIFYING
+  */
+  getLexikon:function() { return Model.memory.get("lexikon").clone(); },
+  getLexikonAt:function( index ) { return Model.memory.get("lexikon")[index]; },
   getLexikonById:function( id )
   {
-    var index = Model.getLexikon().length;
-           
+    var index = Model.getLexikon().length;           
     while( index-- )
     {
       var item = Model.getLexikonAt( index );
-
       if( item.id == id ) return item;
     }
-    
-    return null;
-  }
-  ,
+  },
   getLexikonFavorites:function()
   {       
-    return Model.memory.get("lexikon").merge("id", this.getFavorites() ).has("id", this.getFavorites() ).clone();
+    return Model.memory.get("lexikon").merge("id", this.getActorFavorites() ).has("id", this.getActorFavorites() ).clone();
   }
   ,
+  /**
+   * ACTS
+   */
   refreshActs:function( callback )
   {
     ( App.phonegap ) ? this.loadActs( callback ) : this.pullActs( callback );
@@ -319,17 +300,24 @@ var Model = {
     null, this.getActor().access_token );   
   }
   ,
-  test:function()
+  dummy:function()
   {
-    // DEV
     console.log("Setting DUMMY data");
+    var x0 = new Date().getTime();
+    var step = 86400000;
+    Model.memory.remove("acts");
     Model.memory.set("acts", [
-      { id: "10025482", x: "1380725392804", y: "80" },
-      { id: "10013963", x: "1380735392804", y: "20" },
-      { id: "10013963", x: "1380835392804", y: "50" },
-      { id: "10013963", x: "1380935392804", y: "70" },
-      { id: "privat", x: "1380745392804", y: "Ein guter Tag<br>morgen" }
-    ], ["id", "x"]);
+      { id: "10025482", x: x0 - 1.5*step, y: "80" },
+      { id: "10013963", x: x0 - 1*step, y: "20" },
+      { id: "10013963", x: x0 - 2*step, y: "50" },
+      { id: "10013963", x: x0 - 3*step, y: "70" },
+      { id: "10013963", x: x0 - 4*step, y: "10" },
+      { id: "10013963", x: x0 - 5*step, y: "0" },
+      { id: "zyklus", x: x0 - 6*step, y: "Aspirin cardio" },
+      { id: "diagnose", x: x0 - 7*step, y: "Strukturierte Datenerfassung mit Austausch Arzt und Patient" },
+      { id: "privat", x: x0 - 2.5*step, y: "Ein guter Tag" }
+    ], ["id"]);
+    Controller.dispatch( Controller.HOME );
   }
 };
 
@@ -939,6 +927,7 @@ var Intro = {
   {
     if( data.type == "touchend" )
     {
+      Model.storage.set("informed", Model.getActor().role_type );
       Intro.hide();
     }
   }
@@ -950,27 +939,33 @@ var Intro = {
   ,
   hasInformed:function()
   {
-    var actor = Model.memory.get("actor");
-
-    if( actor )
-    return ( actor.role_type == Model.storage.get("informed") );
-    
-    if( !actor )
-    return Model.memory.get("informed");
+    return ( Model.getActor().role_type == Model.storage.get("informed") );
   }
   ,
   update: function()
   { 
-    var role_type = ( Model.memory.get("actor") ) ? Model.memory.get("actor").role_type : "NOT_REGISTER";
+    var actor = Model.getActor();
+    var role_type = actor.role_type;
     
     Intro.setTitle(  "Consilium" );
     Intro.setClaim(  "Arzt und Patient verbinden");
-    Intro.setDetail( "Informationen" ).add("a", { "class": "button blue floatRight" } ).text("Start").on("tangent", Intro.goHome );  
+    
+    var detail = Intro.setDetail( "Informationen" );
+        detail.add("a", { "class": "button blue floatRight" } ).text("Start").on("tangent", Intro.goHome ); 
+    
+    if( browser && role_type == "NOT_REGISTER" )
+    {
+        detail.add("a", { "class": "button green floatRight" } ).text("Beispiel").on("tangent", function(data)
+        {
+          if( data.type == "touchend") { Model.dummy(); Intro.goHome( data ); }
+        });
+    }
+    
+    
     Intro.setDisclaimer();
   
     this.removeFeatures();
-    
-    var actor = Model.memory.get("actor");
+
     var goodbye;
     
     // DESKTOP NOLOGIN
@@ -1003,9 +998,7 @@ var Intro = {
       }
     }
           
-     this.addFeature( goodbye ); //.add("a").addClass("button grey").text("App starten").on("tangent", Intro.goHome );
-    
-    ( actor ) ? Model.storage.set("informed", role_type ) : Model.memory.set("informed", true);
+    this.addFeature( goodbye ); //.add("a").addClass("button grey").text("App starten").on("tangent", Intro.goHome );
     
     this.container.show();
   }
@@ -1102,7 +1095,7 @@ var Favorites = {
         if (edit)
         { // ROW CAN BE DELETED
           if ( rows[i].edit )
-          row.callback = function() { Model.removeFavorite( this ); }.bind( rows[i] );
+          row.callback = function() { Model.removeActorFavorite( this ); }.bind( rows[i] );
           // GENERATE ROW
           liste.addRemovableRow( row );            
         } 
@@ -1206,7 +1199,7 @@ var Symptome = {
     
     this.liste.removeChilds();
     
-    var symptome = Model.memory.search("lexikon", "Symptom" ).notIn("id", Model.getFavorites() );
+    var symptome = Model.memory.search("lexikon", "Symptom" ).notIn("id", Model.getActorFavorites() );
     
     symptome.sortABC("title");
     
@@ -1223,7 +1216,7 @@ var Symptome = {
     if (data.type == "touchstart") DOM(data.target).addClass("selected");
     if( data.type == "touchend")
     {
-      Model.setFavorite( { id: data.transfer, edit: true } );
+      Model.setActorFavorite( { id: data.transfer, edit: true } );
       
       Symptome.done( { id : data.transfer, back:Controller.SYMPTOME } );
     }
