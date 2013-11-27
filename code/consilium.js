@@ -397,8 +397,10 @@ var Einstellung = {
     scanner.scan(
       function(result) 
       { 
-        if( result.format == "QR_CODE" && result.text.split(":").length == 2)
+        if( result.format == "QR_CODE" && result.text.split(":").length == 2 && !/(http|\/)/.test(result.text))
         {
+          console.log( result.text, "call "+App.node );
+          
           var params = {
             "usr": result.text[0],
             "pwd": result.text[1]
@@ -409,6 +411,7 @@ var Einstellung = {
             if( data.status == 200)
             {
               Model.storage.remove("device_actor");
+              
               var actors = data.message;
               
               for( var i = 0; i < actors.length ; i++)
