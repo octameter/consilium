@@ -192,6 +192,7 @@ var Model = {
     {      
       if( data.status == 200 )
       {
+        //MERGE TO BE SURE
         Model.memory.set("acts", data.message );
         if( callback ) callback( data );
       }      
@@ -215,10 +216,10 @@ var Model = {
     if( this.hasActor() && device  ) { this.storage.set("device_acts", this.memory.get("acts") ); if( callback ) callback(); }
   }
   ,
-  pushActs:function()
+  pushActs:function( callback )
   {  
     var index = this.memory.get("acts").length;
-    
+
     while( index-- )
     {
       var act = this.memory.get("acts").at( index );
@@ -227,10 +228,12 @@ var Model = {
 
       if( act.act_id && act.deleted ) this.pushDeleteAct( act ); 
     }
+    // TODO QUEUE
+    if( callback ) callback({status:200});
   }
   ,
   pushCreateAct:function( act )
-  {
+  {  
     var acts = this.memory.get("acts");
     
     this.remote.create(App.node + "/api/acts/", function(data)
@@ -378,7 +381,8 @@ var Einstellung = {
       this.verbindenStatus.text( Model.getActor().scope_display );
       this.verbindenInfo.text("hergestellt");
       
-      if( device ) this.sync.show();
+      // TESTING 
+      if( device || true) this.sync.show();
     }    
     if( Model.hasActor() && error )
     {
@@ -399,10 +403,8 @@ var Einstellung = {
       { 
         var credentials = result.text.split(":");
         
-        if( result.format == "QR_CODE" && credentials.length == 2 && !/(http|\/)/.test(result.text))
+        if( result.format == "QR_CODE" && credentials.length == 2 && /(http|\/)/.test(result.text) == false)
         {
-          console.log( result.text, "call "+App.node );
-          
           var params = {
             "usr": credentials[0],
             "pwd": credentials[1]
@@ -444,32 +446,32 @@ var Einstellung = {
   */
   synchronisieren:function()
   {
-    this.pullActor();
+    this.readActor();
     
     console.log("Sync started");
   }
   ,
-  pullActor:function()
+  readActor:function()
   {
-    Model.pullActor( function(data) 
+    Model.readActor( function(data) 
     {    
-      console.log("Response pullActor", data.status);   
+      console.log("Response readActor", data.status);   
       if( data.status == 200 ) 
       {  
         // TODO UPDATE LOGIK
         var actor =  data.message ;
         
-        Einstellung.uploadActor();
+        Einstellung.updateActor();
       }
       else Einstellung.abbruch( data );
     });
   }
   ,
-  uploadActor:function()
+  updateActor:function()
   {
-    Model.pushActor( function( data )
+    Model.updateActor( function( data )
     {
-      console.log("Response uploadActor", data.status);      
+      console.log("Response updateActor", data.status);      
       if( data.status == 200 )
       {
         Einstellung.pullActs();
@@ -483,11 +485,10 @@ var Einstellung = {
     Model.pullActs( function( data )
     {
       console.log("Response pullActs", data.status);
-      
-      console.log( Model.getActor(), new Date ( Model.getActor().current_date ) );
-      
+
       if( data.status == 200 )
       {
+        //MERGE TO BE SURE
         Einstellung.pushActs();
       }
       else Einstellung.abbruch( data );
@@ -496,8 +497,6 @@ var Einstellung = {
   ,
   pushActs:function()
   {
-    console.log("push acts");
-    
     Model.pushActs( function( data )
     {
       console.log("Response pushActs", data.status);
@@ -512,6 +511,7 @@ var Einstellung = {
   ,
   synced:function( data )
   {
+    console.log("Sync done");
     Model.synced();
   }
   ,
