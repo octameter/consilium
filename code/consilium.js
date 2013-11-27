@@ -391,7 +391,7 @@ var Einstellung = {
       this.verbindenInfo.text("hergestellt");
       
       // TESTING 
-      if( device || true) this.sync.show();
+      if( device ) this.sync.show();
     }    
     if( Model.hasActor() && error )
     {
