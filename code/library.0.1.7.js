@@ -341,6 +341,20 @@ Array.prototype.single = function( property )
 
 };
 
+Array.prototype.at = function( index )
+{
+  return this[ index ];
+};
+
+Array.prototype.byId = function( id )
+{
+  var index = this.length;           
+  while( index-- )
+  {
+    if( this[ index ].id == id ) return this[ index ];
+  }
+};
+
 Array.prototype.has = function( key, array )
 {
   return this.filter( function(element) 

@@ -16,6 +16,8 @@
   FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.          
  */
+var device =  window.device; 
+var browser = !!!device; 
 
 var App = {
   
@@ -48,20 +50,14 @@ var App = {
     App.enviroment(); 
     // tv || tablet || mobile || desktop
     App.screenSize = DOM().device(); 
-    //window.device = true;
-    window.browser = !( !!window.device ); 
-    
+
     App.signOn(function(actor)
     {      
+      // WELCOME EVERYONE
       Model.setActor( actor );
       
-      // WELCOME EVERYONE
-      if( !Model.hasActor() ) { App.go(); return; }
-           
-      // ACTOR REFRESH
-      if( browser ) Model.readActor();
-      // LOAD HISTORY NO FRESH ACTOR NEEDED
-      Model.refreshActs( App.go );   
+      // LOAD HISTORY 
+      Model.hasActor() ? Model.restoreActs( App.go ) :  App.go();
     });
   }
   ,
@@ -132,31 +128,32 @@ var Model = {
       role_type:"NOT_REGISTER",
       favorites_array:[ {"id":"Symptom"}, { id: "10025482" }, { id: "privat"} ] 
     } ); 
+    this.saveActor();
   },
   getActor:function() { return this.memory.get("actor"); },
   hasActor:function() { return !!this.memory.get("actor").access_token },
   readActor:function( callback )
   {
-    this.remote.read(App.node+"/api/actors/"+this.actor().actor_id, function( data )
+    this.remote.read(App.node+"/api/actors/"+this.getActor().actor_id, function( data )
     {
-      if( data.status == 200 )  Model.actor().favorites_array = data.message.favorites_array;   
+      if( data.status == 200 )  Model.getActor().favorites_array = data.message.favorites_array;   
       if( callback ) callback(data);
     }
-    , null, Model.actor().access_token );
+    , null, Model.getActor().access_token );
   },
   updateActor:function( callback )
   {
-    this.remote.update(App.node+"/api/actors/"+this.actor().actor_id, function( data )
+    this.remote.update(App.node+"/api/actors/"+this.getActor().actor_id, function( data )
     {
       if( data.status == 200 ) console.log("Update Remote Actor");      
       if( callback ) callback( data );    
     }
-    , Model.actor(), Model.actor().access_token );
+    , Model.getActor(), Model.getActor().access_token );
   },
   saveActor:function()
   {
     if( this.hasActor() && browser ) this.updateActor();
-    if( this.hasActor() && device  ) this.storage.set("actor", this.getActor() );
+    if( this.hasActor() && device  ) this.storage.set("device_actor", this.getActor() );
   },
   getActorFavorites:function() { return this.getActor().favorites_array; },
   setActorFavorite:function( favorite )
@@ -175,16 +172,6 @@ var Model = {
    * LEXIKON PREVENT MODIFYING
   */
   getLexikon:function() { return Model.memory.get("lexikon").clone(); },
-  getLexikonAt:function( index ) { return Model.memory.get("lexikon")[index]; },
-  getLexikonById:function( id )
-  {
-    var index = Model.getLexikon().length;           
-    while( index-- )
-    {
-      var item = Model.getLexikonAt( index );
-      if( item.id == id ) return item;
-    }
-  },
   getLexikonFavorites:function()
   {       
     return Model.memory.get("lexikon").merge("id", this.getActorFavorites() ).has("id", this.getActorFavorites() ).clone();
@@ -193,42 +180,40 @@ var Model = {
   /**
    * ACTS
    */
-  refreshActs:function( callback )
+  restoreActs:function( callback )
   {
-    ( App.phonegap ) ? this.loadActs( callback ) : this.pullActs( callback );
+    if( this.hasActor() && browser ) this.pullActs( callback );
+    if( this.hasActor() && device  ) { this.memory.set("acts", this.storage.get("device_acts") ); if( callback ) callback(); };
   }
   ,
-  getActs:function() 
-  { 
+  pullActs:function( callback )
+  {
+    this.remote.read(App.node + "/api/acts/", function(data)
+    {      
+      if( data.status == 200 )
+      {
+        Model.memory.set("acts", data.message );
+        if( callback ) callback( data );
+      }      
+    }, 
+    this.storage.get("device_synced"), this.getActor().access_token );   
+  }
+  ,
+  getActs:function() { 
     return this.memory.get("acts").filter( function(element) { return !element.deleted; } ); 
-  }
-  ,
-  getActById:function( id )
-  {
-    var index = this.memory.get("acts").length;
-    
-    while( index -- ) if( this.memory.get("acts")[index].id == id ) return this.memory.get("acts")[index];
   }
   ,
   setAct:function( act )
   {
     var acts = this.memory.set("acts", [ act ], ["id","kategorie"] );
-    
-    this.commitActs();
+    this.saveActs();
   }
   ,
-  // Phonegap commits to localstorage and desktop to remote
-  commitActs:function() 
+  saveActs:function( callback ) 
   { 
-    if( this.getActor() )
-    {
-      ( App.phonegap ) ? this.saveActs() : this.pushActs(); 
-    }
+    if( this.hasActor() && browser ) this.pushActs( callback ); 
+    if( this.hasActor() && device  ) { this.storage.set("device_acts", this.memory.get("acts") ); if( callback ) callback(); }
   }
-  ,
-  saveActs:function( callback ) { this.storage.set("acts", this.memory.get("acts") ); if( callback ) callback(); }
-  ,
-  loadActs:function( callback ) { this.memory.set("acts", this.storage.get("acts") ); if( callback ) callback(); }
   ,
   pushActs:function()
   {  
@@ -236,7 +221,7 @@ var Model = {
     
     while( index-- )
     {
-      var act = this.memory.get("acts")[ index ];
+      var act = this.memory.get("acts").at( index );
       
       if( !act.act_id ) this.pushCreateAct( act ); 
 
@@ -250,8 +235,7 @@ var Model = {
     
     this.remote.create(App.node + "/api/acts/", function(data)
     {
-      if( data.status == 200 )
-      acts.splice( acts.indexOf( act ), 1, data.message );
+      if( data.status == 200 ) acts.splice( acts.indexOf( act ), 1, data.message );
     }, 
     act, this.getActor().access_token );
   }
@@ -262,42 +246,31 @@ var Model = {
     
     this.remote.delete(App.node + "/api/acts/"+act.act_id, function(data)
     {
-      if( data.status == 200 )
-      acts.splice( acts.indexOf( act ), 1 );
+      if( data.status == 200 ) acts.splice( acts.indexOf( act ), 1 );
     }, 
     act, this.getActor().access_token );  
   }
   ,
+  // IDENTIFY ACT AND DELETE OR MARK AS DELETED
   removeAct:function( act )
   {
     var acts = this.memory.get("acts");
-
     var index = acts.length;
     
     while( index-- )
     {
       if (acts[index].id == act.id && acts[index].x == act.x)
       {
-        if( acts[index].act_id ) acts[index].deleted = true;
-        
+        if( acts[index].act_id ) acts[index].deleted = true;        
         else acts.splice( index, 1 );
       }
     }
-
-    this.commitActs();
-  }
+    this.saveActs();
+  }  
   ,
-  pullActs:function( callback )
+  synced:function()
   {
-    this.remote.read(App.node + "/api/acts/", function(data)
-    {      
-      if( data.status == 200 )
-      {
-        Model.memory.set("acts", data.message );
-        if( callback) callback( data );
-      }      
-    }, 
-    null, this.getActor().access_token );   
+    this.storage.set("device_synced", new Date().getTime() ); 
   }
   ,
   dummy:function()
@@ -388,51 +361,32 @@ var Einstellung = {
   ,
   update: function(error)
   {
+    // DEFAULT
+    this.verbindenStatus.text( "Kein Studienzentrum" );
+    this.verbindenInfo.text( "zugeordnet" );
+    this.verbindenBtn.hide();
+    this.sync.hide();
+    
+    if( device && !Model.hasActor() )
+    {
+      this.verbindenStatus.text( "Mit Studienzentrum" );
+      this.verbindenInfo.text("herstellen");
+      this.verbindenBtn.show();
+    }   
+    if( Model.hasActor() && !error )
+    {
+      this.verbindenStatus.text( Model.getActor().scope_display );
+      this.verbindenInfo.text("hergestellt");
+      
+      if( device ) this.sync.show();
+    }    
+    if( Model.hasActor() && error )
+    {
+      this.verbindenStatus.text( error.status );
+      this.verbindenInfo.text( error.info );
+      this.verbindenBtn.show();
+    }
     this.content.show();
-    
-    var actor = Model.getActor();  
-    
-    if( App.phonegap )
-    {
-      if( actor )
-      {
-        this.verbindenStatus.text( actor.scope_display );
-        this.verbindenInfo.text("hergestellt");
-        this.verbindenBtn.hide();
-        this.sync.show();
-      }
-      else if( error )
-      {
-        this.verbindenStatus.text( error.status );
-        this.verbindenInfo.text( error.info );
-        this.verbindenBtn.show();
-        this.sync.hide();
-      }
-      else
-      {
-        this.verbindenStatus.text( "Mit Studienzentrum" );
-        this.verbindenInfo.text("herstellen");
-        this.verbindenBtn.show();
-        this.sync.hide();
-      }
-    }
-    else
-    {
-      if( actor && actor.role_type == "PATIENT")
-      {
-        this.verbindenStatus.text( actor.scope_display );
-        this.verbindenInfo.text("hergestellt");
-        this.verbindenBtn.hide();
-        this.sync.show();
-      }
-      else
-      {
-        this.verbindenStatus.text( "Kein Studienzentrum" );
-        this.verbindenInfo.text( "zugeordnet" );
-        this.verbindenBtn.hide();
-        this.sync.hide();
-      }
-    }
   } 
   ,
   verbinden:function()
@@ -446,8 +400,7 @@ var Einstellung = {
         if( result.format == "QR_CODE" && result.text.split(":").length == 2)
         {
           var params = {
-            "usr": result.text[0]
-            ,
+            "usr": result.text[0],
             "pwd": result.text[1]
           };
 
@@ -455,29 +408,21 @@ var Einstellung = {
           {
             if( data.status == 200)
             {
+              Model.storage.remove("device_actor");
               var actors = data.message;
-              var actor;
               
               for( var i = 0; i < actors.length ; i++)
               {
-                if( actors[i].scope_display.indexOf( "Consilium" ) > -1 ) actor = actors[i];
+                if( actors[i].scope_display.indexOf( "Consilium" ) > -1 ) Model.setActor( actors[i] );
               }
               
-              if( actor )
-              {
-                Model.storage.set("device_actor", actor);   
-                Model.memory.set("actor", actor);  
-                Model.memory.set("favorites", actor.favorites_array );
-                Einstellung.update();
-              }
+              if( Model.hasActor() ) Einstellung.update();
+
               else Einstellung.update( { status:"Berechtigung", info:"nicht vorhanden" } );
             }
-            else 
-            {
-              Model.storage.remove("device_actor");
-              Einstellung.update( { status:"Authentifizierung", info:"fehlgeschlagen" } );
-            }
-          }, params );                  
+            else Einstellung.update( { status:"Authentifizierung", info:"fehlgeschlagen" } );
+          }
+          , params );                  
         }
         else Einstellung.update( { status:"QR-Code", info:"konnte nicht gelesen werden" } );
       }
@@ -489,6 +434,9 @@ var Einstellung = {
     ); 
   }
   ,
+  /**
+   * SYNCRO CASCADE
+  */
   synchronisieren:function()
   {
     this.pullActor();
@@ -500,8 +448,7 @@ var Einstellung = {
   {
     Model.pullActor( function(data) 
     {    
-      console.log("Response pullActor", data.status);
-      
+      console.log("Response pullActor", data.status);   
       if( data.status == 200 ) 
       {  
         // TODO UPDATE LOGIK
@@ -517,8 +464,7 @@ var Einstellung = {
   {
     Model.pushActor( function( data )
     {
-      console.log("Response uploadActor", data.status);
-      
+      console.log("Response uploadActor", data.status);      
       if( data.status == 200 )
       {
         Einstellung.pullActs();
@@ -561,7 +507,7 @@ var Einstellung = {
   ,
   synced:function( data )
   {
-    console.log("Synced");
+    Model.synced();
   }
   ,
   abbruch:function( err )
@@ -752,7 +698,7 @@ var Home = {
       // GROUP SYMBOLS
       Model.getActs().unique("id").forEach(function(id)
       { 
-        var howto = Model.getLexikonById( id );     
+        var howto = Model.getLexikon().byId( id );     
         var acts = Model.getActs().has("id", [ {id: id} ] ).sort321("x"); 
 
         var todo = acts.length;
@@ -814,7 +760,7 @@ var Home = {
 
       if (event)
       {
-        var howto = Model.getLexikonById( event.id );
+        var howto = Model.getLexikon().byId( event.id );
         
         // Augment event
         event.zero = howto.zero;
@@ -857,7 +803,7 @@ var Home = {
       } 
       else
       {
-        var howto = Model.getLexikonById( "Symptom" );
+        var howto = Model.getLexikon().byId( "Symptom" );
         
         this.fieldset.legend("Auswahl");
         
@@ -1285,7 +1231,7 @@ var Eingabe = {
          
          // SYMPTOMLISTE NEU NUR ID
          // TODO FAVORITES AND HOME
-         Eingabe.item = Model.getLexikonById( data.id );         
+         Eingabe.item = Model.getLexikon().byId( data.id );         
          Eingabe.item.x = data.x;
          Eingabe.item.y = data.y;
        }
