@@ -55,7 +55,7 @@ var App = {
     {      
       // WELCOME EVERYONE
       Model.setActor( actor );
-      
+
       // LOAD HISTORY 
       Model.hasActor() ? Model.restoreActs( App.go ) :  App.go();
     });
@@ -128,7 +128,9 @@ var Model = {
       role_type:"NOT_REGISTER",
       favorites_array:[ {"id":"Symptom"}, { id: "10025482" }, { id: "privat"} ] 
     } ); 
-    this.saveActor();
+    
+    // UPDATE KONTO ACTOR WITH FRESH FROM DB
+    if( Model.hasActor() && browser ) Model.readActor();
   },
   getActor:function() { return this.memory.get("actor"); },
   hasActor:function() { return !!this.memory.get("actor").access_token },
@@ -145,7 +147,7 @@ var Model = {
   {
     this.remote.update(App.node+"/api/actors/"+this.getActor().actor_id, function( data )
     {
-      if( data.status == 200 ) console.log("Update Remote Actor");      
+      if( data.status == 200 ) console.log("Updated Remote Actor");      
       if( callback ) callback( data );    
     }
     , Model.getActor(), Model.getActor().access_token );
@@ -163,8 +165,10 @@ var Model = {
   removeActorFavorite:function( favorite )
   { 
     // Modify existing array don't create new one
-    var index = this.favorites.length;   
-    while( index-- ) if( this.favorites[index].id == favorite.id ) this.favorites.splice( index, 1 ); 
+    var index = Model.getActor().favorites_array.length;   
+    while( index-- )
+    if( this.getActorFavorites().byId( favorite.id ) ) this.getActor().favorites_array.splice( index, 1 );   
+
     this.saveActor();
   }
   ,
@@ -188,6 +192,8 @@ var Model = {
   ,
   pullActs:function( callback )
   {
+    var payload = { since: 1385476924000 };
+    
     this.remote.read(App.node + "/api/acts/", function(data)
     {      
       if( data.status == 200 )
@@ -197,7 +203,7 @@ var Model = {
         if( callback ) callback( data );
       }      
     }, 
-    this.storage.get("device_synced"), this.getActor().access_token );   
+    payload, this.getActor().access_token );   
   }
   ,
   getActs:function() { 
@@ -368,6 +374,9 @@ var Einstellung = {
     this.verbindenStatus.text( "Kein Studienzentrum" );
     this.verbindenInfo.text( "zugeordnet" );
     this.verbindenBtn.hide();
+    this.syncStatus.text( "Kein Studienzentrum" );
+    this.syncInfo.text( "zugeordnet" );
+    this.syncBtn.replaceClass("green|red|blue","blue").text("Sync");
     this.sync.hide();
     
     if( device && !Model.hasActor() )
@@ -420,12 +429,13 @@ var Einstellung = {
               
               for( var i = 0; i < actors.length ; i++)
               {
-                if( actors[i].scope_display.indexOf( "Consilium" ) > -1 ) Model.setActor( actors[i] );
+                if( actors[i].scope_display.indexOf( "Consilium" ) > -1 )
+                {
+                  Model.setActor( actors[i] );
+                  Model.saveActor();
+                }
               }
-              
-              if( Model.hasActor() ) Einstellung.update();
-
-              else Einstellung.update( { status:"Berechtigung", info:"nicht vorhanden" } );
+              Einstellung.update( Model.hasActor() ? null : { status:"Berechtigung", info:"nicht vorhanden" } );
             }
             else Einstellung.update( { status:"Authentifizierung", info:"fehlgeschlagen" } );
           }
@@ -446,16 +456,18 @@ var Einstellung = {
   */
   synchronisieren:function()
   {
-    this.readActor();
+    this.syncing( { status:"Verbindung", info:"aufbauen.." } );
+    this.syncBtn.hide();
     
-    console.log("Sync started");
+    this.readActor();
   }
   ,
   readActor:function()
   {
+    this.syncing( { status:"Profil", info:"aktualisieren.." } );
+    
     Model.readActor( function(data) 
     {    
-      console.log("Response readActor", data.status);   
       if( data.status == 200 ) 
       {  
         // TODO UPDATE LOGIK
@@ -463,61 +475,69 @@ var Einstellung = {
         
         Einstellung.updateActor();
       }
-      else Einstellung.abbruch( data );
+      else Einstellung.abbruch( { status:"Profil",info:"nicht aktualisiert"} );
     });
   }
   ,
   updateActor:function()
   {
+    this.syncing("Profil","hochladen..");
+    
     Model.updateActor( function( data )
-    {
-      console.log("Response updateActor", data.status);      
-      if( data.status == 200 )
-      {
-        Einstellung.pullActs();
-      }
-      else Einstellung.abbruch( data );
+    {  
+      if( data.status == 200 ) Einstellung.pullActs();
+      
+      else Einstellung.abbruch( { status:"Profil", info:"nicht geladen" } );
     });
   }
   ,
   pullActs:function()
   {
+    this.syncing("Eingaben","aktualisieren..");
+
     Model.pullActs( function( data )
     {
-      console.log("Response pullActs", data.status);
-
       if( data.status == 200 )
       {
         //MERGE TO BE SURE
         Einstellung.pushActs();
       }
-      else Einstellung.abbruch( data );
+      else Einstellung.abbruch( {status:"Eingaben", info:"nicht aktualisiert"} );
     });
   }
   ,
   pushActs:function()
   {
+    this.syncing( { status:"Eingaben",info:"hochladen.."});
+    
     Model.pushActs( function( data )
     {
-      console.log("Response pushActs", data.status);
-      
       if( data.status == 200 )
       {
         Einstellung.synced( data );
       }
-      else Einstellung.abbruch( data );
+      else Einstellung.abbruch( {status:"Eingaben", info:"nicht geladen"} );
     });
   }
   ,
   synced:function( data )
   {
-    console.log("Sync done");
+    this.syncing( { status:"Erfolgreich", info:"abgeschlossen"} );
+    this.syncBtn.replaceClass("blue|red","green").text("Sync").show();
+    
     Model.synced();
   }
   ,
-  abbruch:function( err )
+  abbruch:function( text )
   {
-    console.log("Sync aborted");
+    this.syncing( text );
+    this.syncBtn.replaceClass("blue|green","red").text("Wiederholen").show();
+  }
+  ,
+  syncing:function( text )
+  {
+    this.syncStatus.text(text.status );
+    this.syncInfo.text(  text.info );
   }
 };
 
@@ -581,14 +601,12 @@ var Home = {
     
     Home.container.show();
     Home.content.invisible();
-
-    // START WORKING DURING POSSIBLE ANIMATION
-    Home.chart.update();
-    Home.form.update();
     
     if( Home.container.hasClass("middle") )
     { 
       Home.content.show(); 
+      Home.chart.update();
+      Home.form.update();
     }
     else 
     {     
@@ -599,6 +617,8 @@ var Home = {
       {
         Home.container.off("stage");
         Home.content.show();
+        Home.chart.update();
+        Home.form.update();
       });      
     }    
   }
@@ -737,6 +757,7 @@ var Home = {
            }
         }
       }.bind(this));
+      
     }   
   }
   ,
