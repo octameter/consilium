@@ -397,13 +397,15 @@ var Einstellung = {
     scanner.scan(
       function(result) 
       { 
-        if( result.format == "QR_CODE" && result.text.split(":").length == 2 && !/(http|\/)/.test(result.text))
+        var credentials = result.text.split(":");
+        
+        if( result.format == "QR_CODE" && credentials.length == 2 && !/(http|\/)/.test(result.text))
         {
           console.log( result.text, "call "+App.node );
           
           var params = {
-            "usr": result.text[0],
-            "pwd": result.text[1]
+            "usr": credentials[0],
+            "pwd": credentials[1]
           };
 
           Model.remote.read( App.node + "/authenticate", function( data )
