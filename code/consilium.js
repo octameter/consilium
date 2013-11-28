@@ -42,6 +42,15 @@ var App = {
     Eingabe.init();
     Tipps.init();
     
+    document.addEventListener("deviceready", function(){
+      console.log("document deviceready");
+    });
+    
+    window.addEventListener("deviceready", function(){
+      console.log("window deviceready");
+    });
+
+    
     console.log(1);
     DOM(window).on("ready", function(){
       console.log(2);
