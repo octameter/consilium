@@ -1576,7 +1576,8 @@ DOModule.datetimeCreate = function( callback )
   else 
   {
      var that = this;
-    
+     
+  
     function getDateTime()
     {
       return new Date
@@ -1591,7 +1592,11 @@ DOModule.datetimeCreate = function( callback )
       .getTime();     
     };
     // DATE
-    this.add("span").addClass("optionenLabel").html("<b>Datum</b>");
+    var datumLabel = this.add("span").addClass("optionenLabel").html("<b>Datum</b>");
+    
+    if (DOM().device() == "tablet") datumLabel.style("line-height", "35px");
+    
+    
     this.add("select").addClass("dd optionen").on("change", function() 
     {  
       callback( getDateTime() );
@@ -1611,7 +1616,10 @@ DOModule.datetimeCreate = function( callback )
       callback( getDateTime() );
     });
     // TIME
-    this.add("span").addClass("optionenLabel").html("<b>Zeit</b>");
+    var zeitLabel = this.add("span").addClass("optionenLabel").html("<b>Zeit</b>");
+    
+    if (DOM().device() == "tablet") zeitLabel.style("line-height", "35px");
+    
     this.add("select").addClass("hh optionen").on("change", function(data)
     {
       callback( getDateTime() );
