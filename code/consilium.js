@@ -16,8 +16,6 @@
   FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.          
  */
-var device =  window.device; 
-var browser = !!!device; 
 
 var App = {
   
@@ -46,6 +44,8 @@ var App = {
   ,
   setup: function()
   {    
+    window.browser = !window.device; 
+    
     // domain, node, origin, live
     App.enviroment(); 
     // tv || tablet || mobile || desktop
@@ -932,8 +932,7 @@ var Intro = {
           if( data.type == "touchend") { Model.dummy(); Intro.goHome( data ); }
         });
     }
-    
-    
+      
     Intro.setDisclaimer();
   
     this.removeFeatures();
@@ -941,14 +940,14 @@ var Intro = {
     var goodbye;
     
     // DESKTOP NOLOGIN
-    if( ( role_type == "NOT_REGISTER" || role_type == "REGISTER" ) && !App.phonegap )
+    if( ( role_type == "NOT_REGISTER" || role_type == "REGISTER" ) && browser)
     {
       this.addFeatures( IntroText["de"].WEB_NOT_REGISTER );
       goodbye = { title: "6. Epilog", description: "<p>Wir danken für Ihr Interesse.</p>" };
     }
     
     // APP NOLOGIN
-    if( role_type == "NOT_REGISTER" && App.phonegap )
+    if( role_type == "NOT_REGISTER" && device)
     {
       this.addFeatures( IntroText["de"].DEVICE_NOT_REGISTER );
       goodbye = { title: "3. Epilog", description: "<p>Die erfassten Daten erscheinen in Ihrer Timeline und in Ihrer Web-Applikation. Wir wünschen Ihnen viel Erfolg!</p>"};

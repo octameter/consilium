@@ -72,8 +72,10 @@ function kontify( that ){
     
     if( document.domain == "localhost" 
        || document.domain == "10.129.240.36"
+       || document.domain == "10.129.245.22"
        || document.domain == "10.129.144.18"
        || document.domain == "10.129.246.198"
+       || document.domain == "10.129.245.22"
        || document.domain == "192.168.1.44"
        || document.domain == "127.0.0.1"
     )
