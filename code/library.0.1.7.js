@@ -676,7 +676,10 @@ function eventify( that ) {
             
             case "done":
             case "stage":
-              type = "transitionend";
+              if('ontransitionend' in window) type = 'transitionend';
+              else if('onwebkittransitionend' in window) type = 'webkitTransitionEnd';
+              else if('onotransitionend' in this.element || navigator.appName == 'Opera') type = 'oTransitionEnd';
+              else return;
               break;
           }    			  
         
@@ -861,7 +864,12 @@ function eventify( that ) {
           
 		  case "done":
           case "stage":
-          case "transitionend": type = "transitionend"; break;
+          case "transitionend": 
+            if('ontransitionend' in window) type = 'transitionend';
+            else if('onwebkittransitionend' in window) type = 'webkitTransitionEnd';
+            else if('onotransitionend' in this.element || navigator.appName == 'Opera') type = 'oTransitionEnd';
+            else { eventHandler(data); return; }
+            break;
 
           case "ready":
             // cordova device plugin required for "deviceready" event 

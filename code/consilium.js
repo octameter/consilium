@@ -41,15 +41,14 @@ var App = {
     Symptome.init();
     Eingabe.init();
     Tipps.init();
-    
+
     DOM(document).on("ready", function(){
       App.setup();
     });
   }
   ,
   setup: function()
-  {
-    
+  {    
     // domain, node, origin, live
     App.enviroment(); 
     // tv || tablet || mobile || desktop
@@ -106,9 +105,7 @@ var Model = {
     
     // DEFAULT START 
     this.memory.set("acts", [], ["id","kategorie"]);    
-    
-    console.log( this.memory.get("acts") );
-    
+
     this.kataloge();
   }
   ,
