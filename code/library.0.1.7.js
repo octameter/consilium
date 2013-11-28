@@ -621,6 +621,10 @@ function eventify( that ) {
     {
       this.element = window;
     }
+    else if( id === document )
+    {
+      this.element = document;
+    }
     else if( id instanceof selector) // TODO review: support for DOM(DOM('someId'))
     {
       return id;
@@ -862,6 +866,7 @@ function eventify( that ) {
           case "ready":
             // cordova device plugin required for "deviceready" event 
             type = (!!window.cordova) ? "deviceready" : "DOMContentLoaded";
+            console.log(this.element)
             break;
             
           case "load":    break;
