@@ -1202,10 +1202,9 @@ var Symptome = {
   ,
   done:function( payload )
   {
+    Controller.dispatch(Controller.EINGABE, payload );
     this.content.hide();
     this.container.swipe("left");
-
-    Controller.dispatch(Controller.EINGABE, payload );
   }
 };
 
