@@ -41,8 +41,10 @@ var App = {
     Symptome.init();
     Eingabe.init();
     Tipps.init();
-
+    
+    console.log(1);
     DOM(window).on("ready", function(){
+      console.log(2);
       App.setup();
     });
   }
