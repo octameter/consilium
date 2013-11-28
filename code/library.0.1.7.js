@@ -1409,7 +1409,7 @@ DOModule.setSlider = function( value )
 
 DOModule.addSlider = function( callback )
 {
-  if( window.device )
+  if( false && window.device )
   {
     var slider = this.add("input", { type: "range", min: 0, max: 100 });
     
