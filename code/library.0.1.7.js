@@ -75,7 +75,6 @@ function kontify( that ){
        || document.domain == "10.129.245.22"
        || document.domain == "10.129.144.18"
        || document.domain == "10.129.246.198"
-       || document.domain == "10.129.245.22"
        || document.domain == "192.168.1.44"
        || document.domain == "127.0.0.1"
     )
@@ -861,7 +860,10 @@ function eventify( that ) {
           case "transitionend": type = "transitionend"; break;
 
           case "ready":
-            type = ( window.device ) ? "deviceready" : "DOMContentLoaded";
+            type = (
+              (window.cordova || window.device || window.PhoneGap || window.phonegap) 
+              && /^file:\/{3}[^\/]/i.test(window.location.href)
+            ) ? "deviceready" : "DOMContentLoaded";
             break;
             
           case "load":    break;
