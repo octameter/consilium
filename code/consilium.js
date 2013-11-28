@@ -24,6 +24,11 @@ var App = {
   {  
     if (!DOM) console.log( "- MODULE DOM required");
     
+    browser = !window.cordova;
+    device = !!window.cordova;
+    
+    console.log( "Running on " + (browser ? "browser" : "device" ));
+    
     kontify(this);
     
     Model.init();
@@ -43,8 +48,7 @@ var App = {
   }
   ,
   setup: function()
-  {    
-    window.browser = !window.device; 
+  {
     
     // domain, node, origin, live
     App.enviroment(); 

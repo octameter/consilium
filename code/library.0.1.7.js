@@ -865,10 +865,7 @@ function eventify( that ) {
               device: typeof window.device,
               test_href: /^file:\/{3}[^\/]/i.test(window.location.href)
             };
-            type = (
-              (window.cordova || window.device || window.PhoneGap || window.phonegap) 
-              && /^file:\/{3}[^\/]/i.test(window.location.href)
-            ) ? "deviceready" : "DOMContentLoaded";
+            type = (!!window.cordova) ? "deviceready" : "DOMContentLoaded";
             break;
             
           case "load":    break;
