@@ -42,9 +42,7 @@ var App = {
     Eingabe.init();
     Tipps.init();
     
-    console.log(11);
     DOM(document).on("ready", function(){
-      console.log(22);
       App.setup();
     });
   }
@@ -613,10 +611,12 @@ var Home = {
       Home.content.show(); 
       Home.chart.update();
       Home.form.update();
+      Home.container.addClass("complete");
     }
     else 
     {     
       // ANIMATE
+      Home.container.removeClass("complete");
       Home.container.swipe("middle");
       // ANIMATED
       Home.container.on("stage", function()
@@ -625,8 +625,9 @@ var Home = {
         Home.content.show();
         Home.chart.update();
         Home.form.update();
+        Home.container.addClass("complete");
       });      
-    }    
+    }
   }
   ,
   chart: {

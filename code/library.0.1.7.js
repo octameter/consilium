@@ -866,7 +866,6 @@ function eventify( that ) {
           case "ready":
             // cordova device plugin required for "deviceready" event 
             type = (!!window.cordova) ? "deviceready" : "DOMContentLoaded";
-            console.log(this.element)
             break;
             
           case "load":    break;
