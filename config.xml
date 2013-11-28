@@ -21,15 +21,11 @@
     <gap:platform name="winphone" />
     
     <!-- <gap:plugin> -->
-    <!--
     <gap:plugin name="org.apache.cordova.device" />
-    -->
     <gap:plugin name="com.phonegap.plugins.barcodescanner" />
 	
 	<!-- FEATURE -->
-    <!-- 
     <feature name="http://api.phonegap.com/1.0/device" />
-    -->
 
    	<!-- expanded to the appropriate Android and Windows Phone permissions -->
     <!-- <feature name="http://api.phonegap.com/1.0/battery" /> -->

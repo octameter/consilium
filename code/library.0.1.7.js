@@ -860,11 +860,7 @@ function eventify( that ) {
           case "transitionend": type = "transitionend"; break;
 
           case "ready":
-            window.debug = {
-              cordova: typeof window.cordova,
-              device: typeof window.device,
-              test_href: /^file:\/{3}[^\/]/i.test(window.location.href)
-            };
+            // cordova device plugin required for "deviceready" event 
             type = (!!window.cordova) ? "deviceready" : "DOMContentLoaded";
             break;
             
