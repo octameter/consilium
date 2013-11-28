@@ -860,6 +860,11 @@ function eventify( that ) {
           case "transitionend": type = "transitionend"; break;
 
           case "ready":
+            window.debug = {
+              cordova: typeof window.cordova,
+              device: typeof window.device,
+              test_href: /^file:\/{3}[^\/]/i.test(window.location.href)
+            };
             type = (
               (window.cordova || window.device || window.PhoneGap || window.phonegap) 
               && /^file:\/{3}[^\/]/i.test(window.location.href)
