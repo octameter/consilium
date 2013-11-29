@@ -212,13 +212,19 @@ function kontify( that ){
    */
   that.storage = {
     
+    available: ("localStorage" in window && window["localStorage"] !== null)
+    ,
     set:function( key, value ) 
     { 
+      if( !this.available ) return;
+      
       localStorage.setItem( key, JSON.stringify( value || {} ) ); 
     }
     ,
     get:function( key ) 
     {
+      if( !this.available ) return;
+      
       var item = localStorage.getItem( key );
       
       return ( typeof item == "string" ) ? JSON.parse( item ) : item; 
@@ -226,6 +232,8 @@ function kontify( that ){
     ,
     remove: function( key ) 
     { 
+      if( !this.available ) return;
+      
       return localStorage.removeItem( key ); 
     }
   };
