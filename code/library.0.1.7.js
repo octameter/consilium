@@ -1569,16 +1569,15 @@ DOModule.datetimeOn = function()
 
 DOModule.datetimeCreate = function( callback ) 
 {
-  function hasInputType(typename) {
+  /*function hasInputType(typename) {
       var el = document.createElement("input");
       el.setAttribute("type", typename);
       var support = (el.type !== "text");
       delete el;
-    console.log(support);
       return support;
-  }
+  }*/
 
-  if( window.device && hasInputType("date") && hasInputType("time") )
+  if( window.device && device.platform != "Android" )
   {
     function getHTML5DateTime(data)
     {
