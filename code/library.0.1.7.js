@@ -1569,7 +1569,7 @@ DOModule.datetimeOn = function()
 
 DOModule.datetimeCreate = function( callback ) 
 {
-  funciton hasInputType(typename) {
+  function hasInputType(typename) {
       var el = document.createElement("input");
       el.setAttribute("type", typename);
       var support = (input.type !== "text");
