@@ -24,10 +24,10 @@ var App = {
   {  
     if (!DOM) console.log( "- MODULE DOM required");
     
-    browser = !window.cordova;
-    device = !!window.cordova;    
+    BROWSER = !window.cordova;
+    DEVICE = !!window.cordova;
 
-    console.log( "Running on " + (browser ? "browser" : "device" ));
+    console.log( "Running on " + (BROWSER ? "browser" : "device" ));
     
     kontify(this);
     
@@ -78,8 +78,8 @@ var App = {
     // FOR LOGGING FORCE LOCAL SERVER
     App.node = "http://localhost:8080";
     // OVERRIDE BROWSER STATUS    
-    device = true;
-    browser = false;
+    BROWSER = false;
+    DEVICE = true;
     // TESTACTOR
     var actor = 
     {
@@ -163,7 +163,7 @@ var Model = {
     } ); 
     
     // UPDATE KONTO ACTOR WITH FRESH FROM DB
-    if( Model.hasActor() && browser ) Model.readActor();
+    if( Model.hasActor() && BROWSER ) Model.readActor();
   },
   getActor:function() { return this.memory.get("actor"); },
   hasActor:function() { return !!this.memory.get("actor").access_token },
@@ -187,8 +187,8 @@ var Model = {
   },
   saveActor:function()
   {
-    if( this.hasActor() && browser ) this.updateActor();
-    if( this.hasActor() && device  ) this.storage.set("device_actor", this.getActor() );
+    if( this.hasActor() && BROWSER ) this.updateActor();
+    if( this.hasActor() && DEVICE  ) this.storage.set("device_actor", this.getActor() );
   },
   getActorFavorites:function() { return this.getActor().favorites_array; },
   setActorFavorite:function( favorite )
@@ -223,8 +223,8 @@ var Model = {
    */
   restoreActs:function( callback )
   {
-    if( this.hasActor() && browser ) this.pullActs( callback );
-    if( this.hasActor() && device  ) 
+    if( this.hasActor() && BROWSER ) this.pullActs( callback );
+    if( this.hasActor() && DEVICE ) 
     {
       var known = this.storage.get("device_acts");
       this.memory.set("acts", known || []); 
@@ -258,8 +258,11 @@ var Model = {
   ,
   saveActs:function( callback ) 
   { 
-    if( this.hasActor() && browser ) this.pushActs( callback ); 
-    if( this.hasActor() && device  ) { this.storage.set("device_acts", this.memory.get("acts") ); if( callback ) callback(); }
+    if( this.hasActor() && BROWSER ) this.pushActs( callback ); 
+    if( this.hasActor() && DEVICE ) {
+      this.storage.set("device_acts", this.memory.get("acts") );
+      if( callback ) callback();
+    }
   }
   ,
   pushActs:function( callback )
@@ -327,7 +330,7 @@ var Model = {
   { 
     var synced = this.storage.get("device_synced");
     
-    return (device && synced != null) ? { since: synced } : null;
+    return (DEVICE && synced != null) ? { since: synced } : null;
   }
   ,
   dummy:function()
@@ -427,7 +430,7 @@ var Einstellung = {
     this.syncBtn.replaceClass("green|red|blue","blue").text("Sync");
     this.sync.hide();
     
-    if( device && !Model.hasActor() )
+    if( DEVICE && !Model.hasActor() )
     {
       this.verbindenStatus.text( "Mit Studienzentrum" );
       this.verbindenInfo.text("herstellen");
@@ -439,7 +442,7 @@ var Einstellung = {
       this.verbindenInfo.text("hergestellt");
       
       // TESTING 
-      if( device ) this.sync.show();
+      if( DEVICE ) this.sync.show();
     }    
     if( Model.hasActor() && error )
     {
@@ -612,7 +615,7 @@ var Home = {
     this.content.hide();
     
     // DESKTOP WITHOUT CONSILIUM
-    if (!window.device) DOM("titleId").hide();
+    if (BROWSER) DOM("titleId").hide();
     
     // BUILD GRID
     Home.chart.init();
@@ -978,7 +981,7 @@ var Intro = {
     var detail = Intro.setDetail( "Informationen" );
         detail.add("a", { "class": "button blue floatRight" } ).text("Start").on("tangent", Intro.goHome ); 
     
-    if( browser && role_type == "NOT_REGISTER" )
+    if( BROWSER && role_type == "NOT_REGISTER" )
     {
         detail.add("a", { "class": "button green floatRight" } ).text("Beispiel").on("tangent", function(data)
         {
@@ -993,14 +996,14 @@ var Intro = {
     var goodbye;
     
     // DESKTOP NOLOGIN
-    if( ( role_type == "NOT_REGISTER" || role_type == "REGISTER" ) && browser)
+    if( ( role_type == "NOT_REGISTER" || role_type == "REGISTER" ) && BROWSER)
     {
       this.addFeatures( IntroText["de"].WEB_NOT_REGISTER );
       goodbye = { title: "6. Epilog", description: "<p>Wir danken für Ihr Interesse.</p>" };
     }
     
     // APP NOLOGIN
-    if( role_type == "NOT_REGISTER" && device)
+    if( role_type == "NOT_REGISTER" && DEVICE)
     {
       this.addFeatures( IntroText["de"].DEVICE_NOT_REGISTER );
       goodbye = { title: "3. Epilog", description: "<p>Die erfassten Daten erscheinen in Ihrer Timeline und in Ihrer Web-Applikation. Wir wünschen Ihnen viel Erfolg!</p>"};
