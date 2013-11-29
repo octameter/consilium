@@ -17,8 +17,8 @@
    -webkit-box-shadow: none;
 }
 
-#homeId.view.complete/*, #homeScrollerId
-#symptomeId.view.complete #symptomeContentId*/ {
+#homeId.view.complete, /*#homeScrollerId */
+#symptomeId.middle.view /*#symptomeContentId*/ {
   -webkit-overflow-scrolling: touch;
 }
 
