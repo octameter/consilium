@@ -1551,7 +1551,7 @@ var Eingabe = {
       {
         id: Eingabe.itemModified.id + "",
         x:  Eingabe.itemModified.x,    
-        y: (Eingabe.itemModified.kategorie == "Notizen") ? Eingabe.itemModified.y.replace(/\n/g,"<br>") : Eingabe.itemModified.y
+        y: (Eingabe.itemModified.kategorie == "Notizen") ? Eingabe.itemModified.y.replace(/\n/g,"<br>").replace(/(script|embed|object)/gi,"") : Eingabe.itemModified.y
       });
       
       Eingabe.goBack();
