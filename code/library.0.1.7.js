@@ -1643,17 +1643,22 @@ DOModule.datetimeCreate = function( callback )
     });
     
     if (DOM().device() == "tablet"){
+      
       if (window.device.platform != "Android"){
+        
         datumLabel.style("line-height", "35px");
         zeitLabel.style("line-height", "35px");
+        
       } else {
-        datumLabel.style("line-height", "20px");
-        zeitLabel.style("line-height", "20px");
+        
+        datumLabel.style("line-height", "30px");
+        zeitLabel.style("line-height", "30px");
         dd.style("line-height", "1em");
         MM.style("line-height", "1em");
         yyyy.style("line-height", "1em");
         hh.style("line-height", "1em");
         mm.style("line-height", "1em");
+        
       }
     }
   }
