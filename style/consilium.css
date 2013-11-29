@@ -17,6 +17,26 @@
    -webkit-box-shadow: none;
 }
 
+#homeId.view.complete/*, #homeScrollerId
+#symptomeId.view.complete #symptomeContentId*/ {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* SCROLLER (#homeScrollerId) */
+.scrollableX {
+	margin-left: 4%;
+	margin-right: 3%;
+ 	overflow-x: scroll; 
+	overflow-y: hidden;
+ }
+
+/* not in use
+.scrollableY {
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+*/
+
 body {
   background-color: #FAFAFA;
 }
@@ -72,15 +92,6 @@ and (orientation: landscape) {
 	background: #888;
 	width: 100%;
 }
-
-/* SCROLLER */
-.scrollableX {
-	margin-left: 4%;
-	margin-right: 3%;
- 	overflow-x: scroll; 
-	overflow-y: hidden;
-    -webkit-overflow: scroll;
- }
  
 .overlay {
 	position: absolute;
@@ -129,11 +140,6 @@ and (orientation: landscape) {
 	-webkit-transform: scale(1);
 }
 
-
-.scrollableY {
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;	
-}
 
 /* Position the div wrapper as relative with overflow hidden and a specific width and height. */
 /* Use position absolute on the inner div (the div you want to move */
