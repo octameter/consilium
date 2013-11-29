@@ -1647,11 +1647,11 @@ DOModule.datetimeCreate = function( callback )
       zeitLabel.style("line-height", "35px");
       
       if (window.device.platform == "Android"){
-        dd.style("height", "35px");
-        MM.style("height", "35px");
-        yyyy.style("height", "35px");
-        hh.style("height", "35px");
-        mm.style("height", "35px");
+        dd.style("height", "40px");
+        MM.style("height", "40px");
+        yyyy.style("height", "40px");
+        hh.style("height", "40px");
+        mm.style("height", "40px");
       }
     }
   }
