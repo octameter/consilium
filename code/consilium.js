@@ -25,8 +25,8 @@ var App = {
     if (!DOM) console.log( "- MODULE DOM required");
     
     browser = !window.cordova;
-    device = !!window.cordova;
-    
+    device = !!window.cordova;    
+   
     console.log( "Running on " + (browser ? "browser" : "device" ));
     
     kontify(this);
@@ -193,18 +193,16 @@ var Model = {
   ,
   pullActs:function( callback )
   {
-    var payload = { since: 1385476924000 };
     
     this.remote.read(App.node + "/api/acts/", function(data)
     {      
       if( data.status == 200 )
       {
-        //MERGE TO BE SURE
-        Model.memory.set("acts", data.message );
+        Model.memory.set("acts", data.message.notIn("act_id", Model.memory.get("acts") ) );
         if( callback ) callback( data );
       }      
     }, 
-    payload, this.getActor().access_token );   
+    this.lastSync(), this.getActor().access_token );   
   }
   ,
   getActs:function() { 
@@ -278,9 +276,13 @@ var Model = {
     this.saveActs();
   }  
   ,
-  synced:function()
-  {
-    this.storage.set("device_synced", new Date().getTime() ); 
+  synced:function() {  this.storage.set("device_synced", new Date().getTime() ); }
+  ,
+  lastSync:function() 
+  { 
+    var synced = this.storage.get("device_synced");
+    
+    return (synced != null) ? { since: synced } : null;
   }
   ,
   dummy:function()
@@ -371,6 +373,7 @@ var Einstellung = {
   ,
   update: function(error)
   {
+   
     // DEFAULT
     this.verbindenStatus.text( "Kein Studienzentrum" );
     this.verbindenInfo.text( "zugeordnet" );
