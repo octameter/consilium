@@ -17,15 +17,36 @@
    -webkit-box-shadow: none;
 }
 
+#homeId.view.complete, /*#homeScrollerId */
+#symptomeId.middle.view /*#symptomeContentId*/ {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* SCROLLER (#homeScrollerId) */
+.scrollableX {
+	margin-left: 4%;
+	margin-right: 3%;
+ 	overflow-x: scroll; 
+	overflow-y: hidden;
+ }
+
+/* not in use
+.scrollableY {
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+*/
+
 body {
   background-color: #FAFAFA;
 }
 
 /* landscape iPhone */
 /* http://www.stephentgilbert.com/mediaqueries/#iPhone */
-@media screen and (orientation:landscape)
-and (min-device-width : 320px) 
-and (max-device-width : 568px) {
+@media only screen 
+and (min-device-width: 320px) 
+and (max-device-width: 568px) 
+and (orientation: landscape) {
 	/* landscape-specific styles */
 	.disappear {
 		display:none;
@@ -33,6 +54,9 @@ and (max-device-width : 568px) {
 	.disappear + article {
 		top: 0 !important;
 	}
+  
+  #homeId header { display: none; }
+  #homeId.view>section { top: 0; }
 }
 
 /* VIEW FAVORITEN */
@@ -68,15 +92,6 @@ and (max-device-width : 568px) {
 	background: #888;
 	width: 100%;
 }
-
-/* SCROLLER */
-.scrollableX {
-	margin-left: 4%;
-	margin-right: 3%;
- 	overflow-x: scroll; 
-	overflow-y: hidden;
-    -webkit-overflow: scroll;
- }
  
 .overlay {
 	position: absolute;
@@ -125,11 +140,6 @@ and (max-device-width : 568px) {
 	-webkit-transform: scale(1);
 }
 
-
-.scrollableY {
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;	
-}
 
 /* Position the div wrapper as relative with overflow hidden and a specific width and height. */
 /* Use position absolute on the inner div (the div you want to move */
