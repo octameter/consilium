@@ -75,6 +75,7 @@ function kontify( that ){
        || document.domain == "10.129.245.22"
        || document.domain == "10.129.144.18"
        || document.domain == "10.129.246.198"
+       || document.domain == "10.129.247.72"
        || document.domain == "192.168.1.44"
        || document.domain == "127.0.0.1"
     )
@@ -1568,7 +1569,15 @@ DOModule.datetimeOn = function()
 
 DOModule.datetimeCreate = function( callback ) 
 {
-  if( window.device )
+  funciton hasInputType(typename) {
+      var el = document.createElement("input");
+      el.setAttribute("type", typename);
+      var support = (input.type !== "text");
+      delete el;
+      return support;
+  }
+
+  if( window.device && hasInputType("date") && hasInputType("time") )
   {
     function getHTML5DateTime(data)
     {
