@@ -445,7 +445,7 @@ var Einstellung = {
     this.verbindenInfo.text( "zugeordnet" );
     this.verbindenBtn.hide();
     this.syncStatus.text( "Studiendaten" );
-    this.syncInfo.text( "hochladen" );
+    this.syncInfo.text( "" );
     this.syncBtn.replaceClass(/(green|red)/,"blue").text("Sync");
     this.sync.hide();
     

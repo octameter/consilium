@@ -1587,7 +1587,12 @@ DOModule.datetimeCreate = function( callback )
   {
     function getHTML5DateTime(data)
     {
-      callback(new Date(yyyymmdd.element.value + " " + hhmm.element.value).getTime());
+      // FIX IF NO SECONDS
+      var time = ( hhmm.element.value.split(":").length == 2 ) ? hhmm.element.value +":00" : hhmm.element.value;
+      // MAKE DATE
+      var datetime = new Date(yyyymmdd.element.value + "T" + time);
+      // CHECK DATE
+      callback( (  datetime.getTime() > 0 ) ? datetime.getTime() : new Date().getTime() );
     }
     
     var yyyymmdd = this.add("input", { type: "date"}).addClass("optionen");
@@ -1652,12 +1657,10 @@ DOModule.datetimeCreate = function( callback )
     
     if (DOM().device() == "tablet"){
       
-      if (window.device.platform != "Android"){
-        
-        datumLabel.style("line-height", "35px");
-        zeitLabel.style("line-height", "35px");
-        
-      } else {
+      datumLabel.style("line-height", "35px");
+      zeitLabel.style("line-height", "35px");
+      
+      if (window.device && window.device.platform == "Android"){
         
         datumLabel.style("line-height", "30px");
         zeitLabel.style("line-height", "30px");
