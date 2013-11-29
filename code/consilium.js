@@ -62,7 +62,10 @@ var App = {
       // WELCOME EVERYONE
       Model.setActor( actor );
       
-      // LOAD HISTORY 
+      // UPDATE KONTO ACTOR WITH FRESH FROM DB
+      if( Model.hasActor() && BROWSER ) Model.readActor( function( data ) { Model.setActor( data.message ); } );
+      
+      // LOAD HISTORY AND DOES NOT NEED FRESH ACTOR
       Model.hasActor() ? Model.restoreActs( App.go ) :  App.go();
     });
   }
@@ -160,10 +163,7 @@ var Model = {
     { 
       role_type:"NOT_REGISTER",
       favorites_array:[ {"id":"Symptom"}, { id: "10025482" }, { id: "privat"} ] 
-    } ); 
-    
-    // UPDATE KONTO ACTOR WITH FRESH FROM DB
-    if( Model.hasActor() && BROWSER ) Model.readActor();
+    } );     
   },
   getActor:function() { return this.memory.get("actor"); },
   hasActor:function() { return !!this.memory.get("actor").access_token },
@@ -171,7 +171,7 @@ var Model = {
   {
     this.remote.read(App.node+"/api/actors/"+this.getActor().actor_id, function( data )
     {
-      if( data.status == 200 )  Model.getActor().favorites_array = data.message.favorites_array;   
+      if( data.status == 200 ) console.log("Received Remote Actor");   
       if( callback ) callback(data);
     }
     , null, Model.getActor().access_token );
@@ -193,18 +193,23 @@ var Model = {
   getActorFavorites:function() { return this.getActor().favorites_array; },
   setActorFavorite:function( favorite )
   {
+    console.log("SAVED FAVORITE", favorite.title );
     this.getActor().favorites_array.push( favorite ); this.saveActor();
+    console.log( this.getActor().favorites_array );
   },
   removeActorFavorite:function( favorite )
   { 
-    console.log( favorite, Model.getActor().favorites_array.length ); 
-    
     // Modify existing array don't create new one
     var index = Model.getActor().favorites_array.length;   
     while( index-- )
-    if( this.getActorFavorites().byId( favorite.id ) ) this.getActor().favorites_array.splice( index, 1 );   
-
-    console.log( favorite, Model.getActor().favorites_array.length ); 
+    { 
+      if( this.getActor().favorites_array[ index ].id == favorite.id )
+      {
+        console.log("REMOVED FAVORITE", favorite.title, index );
+        this.getActor().favorites_array.splice( index, 1 );   
+      }
+    }
+    console.log( Model.getActor().favorites_array ); 
     
     this.saveActor();
   }
@@ -233,13 +238,27 @@ var Model = {
   }
   ,
   pullActs:function( callback )
-  {
-    
+  {    
+    var known = this.memory.get("acts");
+    var neue = [];
     this.remote.read(App.node + "/api/acts/", function(data)
     {      
       if( data.status == 200 )
       {
-        Model.memory.set("acts", data.message.notIn("act_id", Model.memory.get("acts") ) );
+        var match = false;
+        
+        data.message.forEach( function( element ) 
+        {
+          for( var i = 0; i < known.length; i++ )
+          {
+            if( known[i].act_id == element.act_id ) { match = true;  known[i] = element; }
+          }
+          
+          if( !match) neue.push( element );
+        });
+                             
+        Model.memory.set("acts", neue, ["id","kategorie"] );
+        
         if( callback ) callback( data );
       }      
     }, 
@@ -521,27 +540,28 @@ var Einstellung = {
     {    
       if( data.status == 200 ) 
       {  
-        console.log( "remote ", data.message.update_date );
-        console.log( " lokal ", Model.storage.get("device_actor").update_date );
-
-        // TODO UPDATE LOGIK
-        var actor =  data.message ;
-        
-        Einstellung.updateActor();
+        // REMOTE NEUER
+        if( data.message.update_date > Model.storage.get("device_synced") )
+        {         
+          Model.setActor( data.message ); 
+          console.log( " the winner is remote" );
+          Einstellung.pullActs();
+        }         
+          
+        // LOKAL NEUER  
+        if( data.message.update_date <= Model.storage.get("device_synced") )
+        {         
+          Model.setActor( Model.storage.get("device_actor") );
+          console.log( " the winner is lokal" );
+          Model.updateActor( function( data )
+          {  
+            if( data.status == 200 ) Einstellung.pullActs();
+            
+            else Einstellung.abbruch( { status:"Profil", info:"nicht geladen" } );
+          });
+        }
       }
       else Einstellung.abbruch( { status:"Profil",info:"nicht aktualisiert"} );
-    });
-  }
-  ,
-  updateActor:function()
-  {
-    this.syncing("Profil","hochladen..");
-    
-    Model.updateActor( function( data )
-    {  
-      if( data.status == 200 ) Einstellung.pullActs();
-      
-      else Einstellung.abbruch( { status:"Profil", info:"nicht geladen" } );
     });
   }
   ,

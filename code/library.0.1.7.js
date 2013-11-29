@@ -212,13 +212,19 @@ function kontify( that ){
    */
   that.storage = {
     
+    available: ("localStorage" in window && window["localStorage"] !== null)
+    ,
     set:function( key, value ) 
     { 
+      if( !this.available ) return;
+      
       localStorage.setItem( key, JSON.stringify( value || {} ) ); 
     }
     ,
     get:function( key ) 
     {
+      if( !this.available ) return;
+      
       var item = localStorage.getItem( key );
       
       return ( typeof item == "string" ) ? JSON.parse( item ) : item; 
@@ -226,6 +232,8 @@ function kontify( that ){
     ,
     remove: function( key ) 
     { 
+      if( !this.available ) return;
+      
       return localStorage.removeItem( key ); 
     }
   };
@@ -1643,15 +1651,22 @@ DOModule.datetimeCreate = function( callback )
     });
     
     if (DOM().device() == "tablet"){
-      datumLabel.style("line-height", "35px");
-      zeitLabel.style("line-height", "35px");
       
-      if (window.device.platform == "Android"){
-        dd.style("height", "40px");
-        MM.style("height", "40px");
-        yyyy.style("height", "40px");
-        hh.style("height", "40px");
-        mm.style("height", "40px");
+      if (window.device.platform != "Android"){
+        
+        datumLabel.style("line-height", "35px");
+        zeitLabel.style("line-height", "35px");
+        
+      } else {
+        
+        datumLabel.style("line-height", "30px");
+        zeitLabel.style("line-height", "30px");
+        dd.style("line-height", "1em");
+        MM.style("line-height", "1em");
+        yyyy.style("line-height", "1em");
+        hh.style("line-height", "1em");
+        mm.style("line-height", "1em");
+        
       }
     }
   }
