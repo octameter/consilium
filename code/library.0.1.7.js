@@ -1609,15 +1609,13 @@ DOModule.datetimeCreate = function( callback )
     // DATE
     var datumLabel = this.add("span").addClass("optionenLabel").html("<b>Datum</b>");
     
-    if (DOM().device() == "tablet") datumLabel.style("line-height", "35px");
     
-    
-    this.add("select").addClass("dd optionen").on("change", function() 
+    var dd = this.add("select").addClass("dd optionen").on("change", function() 
     {  
       callback( getDateTime() );
     });
      
-    this.add("select").addClass("MM optionen").on("change", function(data)
+    var MM = this.add("select").addClass("MM optionen").on("change", function(data)
     {
       var ms = getDateTime();
 
@@ -1626,23 +1624,36 @@ DOModule.datetimeCreate = function( callback )
       
       callback( ms );
     });
-    this.add("select").addClass("yyyy optionen").on("change", function(data)
+    
+    var yyyy = this.add("select").addClass("yyyy optionen").on("change", function(data)
     {
       callback( getDateTime() );
     });
     // TIME
     var zeitLabel = this.add("span").addClass("optionenLabel").html("<b>Zeit</b>");
     
-    if (DOM().device() == "tablet") zeitLabel.style("line-height", "35px");
+    var hh = this.add("select").addClass("hh optionen").on("change", function(data)
+    {
+      callback( getDateTime() );
+    });
     
-    this.add("select").addClass("hh optionen").on("change", function(data)
+    var mm = this.add("select").addClass("mm optionen").on("change", function(data)
     {
       callback( getDateTime() );
     });
-    this.add("select").addClass("mm optionen").on("change", function(data)
-    {
-      callback( getDateTime() );
-    });
+    
+    if (DOM().device() == "tablet"){
+      datumLabel.style("line-height", "35px");
+      zeitLabel.style("line-height", "35px");
+      
+      if (window.device.platform == "Android"){
+        dd.style("height", "35px");
+        MM.style("height", "35px");
+        yyyy.style("height", "35px");
+        hh.style("height", "35px");
+        mm.style("height", "35px");
+      }
+    }
   }
 };DOModule.legend = function( text )
 {  
