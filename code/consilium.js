@@ -444,9 +444,9 @@ var Einstellung = {
     this.verbindenStatus.text( "Kein Studienzentrum" );
     this.verbindenInfo.text( "zugeordnet" );
     this.verbindenBtn.hide();
-    this.syncStatus.text( "Kein Studienzentrum" );
-    this.syncInfo.text( "zugeordnet" );
-    this.syncBtn.replaceClass("green|red|blue","blue").text("Sync");
+    this.syncStatus.text( "Studiendaten" );
+    this.syncInfo.text( "hochladen" );
+    this.syncBtn.replaceClass(/(green|red)/,"blue").text("Sync");
     this.sync.hide();
     
     if( DEVICE && !Model.hasActor() )
@@ -596,7 +596,7 @@ var Einstellung = {
   synced:function( data )
   {
     this.syncing( { status:"Erfolgreich", info:"abgeschlossen"} );
-    this.syncBtn.replaceClass("blue|red","green").text("Sync").show();
+    this.syncBtn.replaceClass(/(blue|red)/,"green").text("Sync").show();
     
     Model.synced();
   }
@@ -604,7 +604,7 @@ var Einstellung = {
   abbruch:function( text )
   {
     this.syncing( text );
-    this.syncBtn.replaceClass("blue|green","red").text("Wiederholen").show();
+    this.syncBtn.replaceClass(/(blue|green)/,"red").text("Wiederholen").show();
   }
   ,
   syncing:function( text )

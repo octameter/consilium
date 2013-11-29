@@ -2,8 +2,8 @@
 <widget xmlns     = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "ch.epha.consilium"
-        versionCode="014"
-        version   = "0.1.4">
+        versionCode="140"
+        version   = "1.4.0">
 	<!-- versionCode is optional and Android only -->
 
     <name>Consilium</name>
