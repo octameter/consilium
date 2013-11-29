@@ -26,7 +26,7 @@ var App = {
     
     browser = !window.cordova;
     device = !!window.cordova;    
-   
+
     console.log( "Running on " + (browser ? "browser" : "device" ));
     
     kontify(this);
@@ -45,6 +45,7 @@ var App = {
     DOM(document).on("ready", function(){
       App.setup();
     });
+      
   }
   ,
   setup: function()
@@ -56,9 +57,11 @@ var App = {
 
     App.signOn(function(actor)
     {      
+      if( DOM().hash() == "device") actor = App.emulateDevice();
+        
       // WELCOME EVERYONE
       Model.setActor( actor );
-
+      
       // LOAD HISTORY 
       Model.hasActor() ? Model.restoreActs( App.go ) :  App.go();
     });
@@ -68,6 +71,35 @@ var App = {
   {
     Controller.dispatch( Controller.INTRO );
     Controller.dispatch( Controller.HOME ); 
+  }
+  ,
+  emulateDevice:function()
+  {
+    // FOR LOGGING FORCE LOCAL SERVER
+    App.node = "http://localhost:8080";
+    // OVERRIDE BROWSER STATUS    
+    device = true;
+    browser = false;
+    // TESTACTOR
+    var actor = 
+    {
+      "actor_id": 6,
+      "role_id": 15,
+      "role_display": "Testing..",
+      "role_type": "PATIENT",
+      "scope_id": 10,
+      "scope_display": "Studie Consilium",
+      "scope_type": "GRUPPE_B",
+      "update_date": 1385717076000,
+      "favorites_array": [{ "id": "Symptom"}, {  "id": "10025482"},  {"id": "privat"},{"id": "10013573","edit": true},{
+            "id": "10020772",  "edit": true}, {  "id": "10062225", "edit": true }
+      ],
+      "access_token": "bp2ou9FzC3YM"
+    };
+    // SET AS SCANNED
+    Model.storage.set("device_actor", actor );
+    // FAKE SIGNON(actor) 
+    return actor;
   }
 };
 //TODO 
@@ -165,11 +197,15 @@ var Model = {
   },
   removeActorFavorite:function( favorite )
   { 
+    console.log( favorite, Model.getActor().favorites_array.length ); 
+    
     // Modify existing array don't create new one
     var index = Model.getActor().favorites_array.length;   
     while( index-- )
     if( this.getActorFavorites().byId( favorite.id ) ) this.getActor().favorites_array.splice( index, 1 );   
 
+    console.log( favorite, Model.getActor().favorites_array.length ); 
+    
     this.saveActor();
   }
   ,
@@ -188,7 +224,12 @@ var Model = {
   restoreActs:function( callback )
   {
     if( this.hasActor() && browser ) this.pullActs( callback );
-    if( this.hasActor() && device  ) { this.memory.set("acts", this.storage.get("device_acts") ); if( callback ) callback(); };
+    if( this.hasActor() && device  ) 
+    {
+      var known = this.storage.get("device_acts");
+      this.memory.set("acts", known || []); 
+      if( callback ) callback(); 
+    };
   }
   ,
   pullActs:function( callback )
@@ -276,13 +317,17 @@ var Model = {
     this.saveActs();
   }  
   ,
-  synced:function() {  this.storage.set("device_synced", new Date().getTime() ); }
+  synced:function() {
+
+    this.storage.set("device_acts", this.memory.get("acts") );
+    this.storage.set("device_synced", new Date().getTime() ); 
+  }
   ,
   lastSync:function() 
   { 
     var synced = this.storage.get("device_synced");
     
-    return (synced != null) ? { since: synced } : null;
+    return (device && synced != null) ? { since: synced } : null;
   }
   ,
   dummy:function()
@@ -373,7 +418,6 @@ var Einstellung = {
   ,
   update: function(error)
   {
-   
     // DEFAULT
     this.verbindenStatus.text( "Kein Studienzentrum" );
     this.verbindenInfo.text( "zugeordnet" );
@@ -474,6 +518,9 @@ var Einstellung = {
     {    
       if( data.status == 200 ) 
       {  
+        console.log( "remote ", data.message.update_date );
+        console.log( " lokal ", Model.storage.get("device_actor").update_date );
+
         // TODO UPDATE LOGIK
         var actor =  data.message ;
         
@@ -503,7 +550,6 @@ var Einstellung = {
     {
       if( data.status == 200 )
       {
-        //MERGE TO BE SURE
         Einstellung.pushActs();
       }
       else Einstellung.abbruch( {status:"Eingaben", info:"nicht aktualisiert"} );

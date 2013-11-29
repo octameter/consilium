@@ -94,7 +94,7 @@
     <icon src="icons/ios/icon-72.png" gap:platform="ios" width="72" height="72" />
     <icon src="icons/ios/icon_at_2x.png" gap:platform="ios" width="114" height="114" />
     <!-- retina iPad support: PhoneGap 2.5.0+ only -->
-    <icon src="icons/ios/icon-72_at_2x.png" gap:platform="ios" width="144" height="144" />  
+    <icon src="icons/ios/icon-120.png" gap:platform="ios" width="120" height="120" />  
     <icon src="icons/ios/icon-152.png" gap:platform="ios" width="152" height="152" />  
     <!-- Android -->
     <icon src="icons/android/ldpi.png"   gap:platform="android"    gap:density="ldpi" />
