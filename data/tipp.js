@@ -14,7 +14,7 @@ var Tipp =
       bausteine: 
      [
         { "Info":"Melden Sie sich telefonisch im Brust-Zentrum."},
-          { "Telefonnummern":"<table><tr style='height:30px'><td>Tagsüber:</td><td><a href='tel:41-44-384-9350'>+41-44-384-9350</a></td></tr><tr style='height:30px'><td>Nachts:</td><td><a href='tel:41-44-209-2111'>+41-44-209-2111</a></td></tr><tr style='height:30px'><td>Wochenende:</td><td><a href='tel:41-44-209-2111'>+41-44-209-2111</a></td></tr></table>"},
+          { "Telefonnummern":"<table><tr style='height:30px'><td>Tagsüber:</td><td><a href='tel:+41443849350'>+41-44-384-9350</a></td></tr><tr style='height:30px'><td>Nachts:</td><td><a href='tel:+41442092111'>+41-44-209-2111</a></td></tr><tr style='height:30px'><td>Wochenende:</td><td><a href='tel:+41442092111'>+41-44-209-2111</a></td></tr></table>"},
          { "Bürozeiten":"<table><tr><td>Mo</td><td>8:00-12:00</td><td>12:30-17:00<td/></tr><tr><td>Di</td><td>8:00-12:00</td><td>12:30-17:00</td></tr><tr><td>Mi</td><td>8:00-12:00</td></tr><tr><td>Do</td><td>8:00-12:00</td><td>12:30-17:00</td></tr><tr><td>Fr</td><td>geschlossen</td></tr></table>" }
       ]    
     }
@@ -241,9 +241,9 @@ var Tipp =
       bausteine: 
        [
           { "Info":"Nehmen Sie Ihre Reservemedikation grosszügig ein oder wenden Sie sich an das Brustzentrum/Onkozentrum."},
-          { "Tagsüber":"+41 43 344 3333"},
-          { "Nachts":" +41 44 209 2111"},
-          { "Wochenende":" +41 44 209 2111"}
+          { "Tagsüber":" <a href='tel:+41433443333'>+41 43 344 3333</a>"},
+          { "Nachts":" <a href='tel:+41442092111'>+41 44 209 2111</a>"},
+          { "Wochenende":" < href='tel:+41442092111'>+41 44 209 2111</a>"}
           ]    
     },
     { id: "iAnanas", title:"Ananas und Zitronenwasser", kategorie:"Prophylaxe", likes:0, dislikes:0,
