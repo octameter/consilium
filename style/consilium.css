@@ -24,7 +24,7 @@ body {
 /* landscape iPhone */
 /* http://www.stephentgilbert.com/mediaqueries/#iPhone */
 @media screen and (orientation:landscape)
-and (min-device-width : 320px) 
+and (min-device-width : 321px) 
 and (max-device-width : 568px) {
 	/* landscape-specific styles */
 	.disappear {
@@ -33,6 +33,8 @@ and (max-device-width : 568px) {
 	.disappear + article {
 		top: 0 !important;
 	}
+  
+  #homeId header { display: none; }
 }
 
 /* VIEW FAVORITEN */
