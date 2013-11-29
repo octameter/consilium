@@ -1515,7 +1515,7 @@ DOModule.datetimeSet = function( ms )
 {
   ms = parseInt( ms || new Date().getTime() );
 
-  if( window.device )
+  if( window.device && window.device.platform != "Android" )
   {
     this.find("input[type=date]").set("value", util.zeit("yyyy-MM-dd", ms));
     this.find("input[type=time]").set("value", util.zeit("hh:mm", ms));
@@ -1533,7 +1533,7 @@ DOModule.datetimeSet = function( ms )
 
 DOModule.datetimeOff = function()
 {
-  if( window.device )
+  if( window.device && window.device.platform != "Android" )
   {
     this.find("input[type=date]").set("disabled","disabled");
     this.find("input[type=time]").set("disabled","disabled");
@@ -1551,7 +1551,7 @@ DOModule.datetimeOff = function()
 
 DOModule.datetimeOn = function()
 {
-  if( window.device )
+  if( window.device && window.device.platform != "Android" )
   {
     this.find("input[type=date]").removeAttrib("disabled");
     this.find("input[type=time]").removeAttrib("disabled");
@@ -1572,12 +1572,10 @@ DOModule.datetimeCreate = function( callback )
   /*function hasInputType(typename) {
       var el = document.createElement("input");
       el.setAttribute("type", typename);
-      var support = (el.type !== "text");
-      delete el;
-      return support;
+      return (el.type !== "text");
   }*/
 
-  if( window.device && device.platform != "Android" )
+  if( window.device && window.device.platform != "Android" )
   {
     function getHTML5DateTime(data)
     {
