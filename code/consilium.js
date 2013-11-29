@@ -166,7 +166,7 @@ var Model = {
     } );     
   },
   getActor:function() { return this.memory.get("actor"); },
-  hasActor:function() { return !!this.memory.get("actor").access_token },
+  hasActor:function() { return !!this.memory.get("actor").access_token; },
   readActor:function( callback )
   {
     this.remote.read(App.node+"/api/actors/"+this.getActor().actor_id, function( data )
