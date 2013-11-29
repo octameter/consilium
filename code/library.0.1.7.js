@@ -1652,12 +1652,10 @@ DOModule.datetimeCreate = function( callback )
     
     if (DOM().device() == "tablet"){
       
-      if (window.device.platform != "Android"){
-        
-        datumLabel.style("line-height", "35px");
-        zeitLabel.style("line-height", "35px");
-        
-      } else {
+      datumLabel.style("line-height", "35px");
+      zeitLabel.style("line-height", "35px");
+      
+      if (window.device && window.device.platform == "Android"){
         
         datumLabel.style("line-height", "30px");
         zeitLabel.style("line-height", "30px");
