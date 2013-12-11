@@ -109,3 +109,9 @@ fieldset.liste legend{margin-left:0.75em;}
 .row_delete.button{line-height:28px;padding:0 10px;}
 .row_detail:not(:empty){border-top:1px solid #c8c8c8;padding:5px;margin:5px;}
 .row_caretRight{position:absolute;top:0px;bottom:0px;right:12px;margin:auto;width:18px;height:18px;}
+section>form{position:relative;margin:0;color:#000;padding:0;padding-top:1%;padding-left:1%;padding-right:1%;}
+input[type=text],input[type=password],input[type=email]{box-sizing:border-box;display:block;margin:0 0 10px 0;padding:5px;width:100%;}
+section>fieldset,section>form>fieldset{position:relative;color:#696969;border-radius:6px;height:auto;border:1px solid #696969;background-color:#F5F5F5;background-image:-webkit-linear-gradient(#fafafa, #f5f5f5);background-image:-moz-linear-gradient(#fafafa, #f5f5f5);background-image:-ms-linear-gradient(#fafafa, #f5f5f5);background-image:-o-linear-gradient(#fafafa, #f5f5f5);background-image:linear-gradient(#fafafa, #f5f5f5);margin-bottom:1%;}
+fieldset>legend{color:#696969;text-align:left;}
+fieldset>div{position:relative;text-align:left;padding-top:5px;}
+fieldset>span{position:relative;text-align:left;padding-top:20px;}

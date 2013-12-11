@@ -1044,6 +1044,12 @@ var Intro = {
         goodbye = { title: "4. Epilog", description: "<p>Wir danken für die Teilnahme an der Studie und wünschen Ihnen eine erfolgreiche Therapie.</p>" };
       }
     }
+    
+    if( role_type == "ARZT" && actor.scope_type == "GRUPPE_C")
+    {
+      this.addFeatures( IntroText["de"].DOCTOR_CONSILIUM);
+      goodbye = { title: "Epilog", description: "<p>Wir wünschen Ihnen viel Erfolg!</p>" };
+    }
           
     this.addFeature( goodbye ); //.add("a").addClass("button grey").text("App starten").on("tangent", Intro.goHome );
     

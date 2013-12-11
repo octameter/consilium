@@ -129,7 +129,11 @@ function kontify( that ){
 
         DOM(window).on("msg", function( data) 
         {  
-          if( data.transfer.request == "REDIRECT") location.replace(data.transfer.target); 
+
+          if( data.transfer.request == "REDIRECT"){
+            if (typeof that.relocate == "function") that.relocate(data.transfer.target);
+            else location.replace(data.transfer.target); 
+          }
             
           if( data.transfer.request == "ACTOR_GET") callback( data.transfer.actor ); 
         });
@@ -138,6 +142,19 @@ function kontify( that ){
       }); 
     }
 
+  };
+  
+  /*
+    // in App.initalize use:
+    
+    App.relocateOn(function(url){
+      if (url.indexOf("consilium") > -1) url += "#/id:12312";
+      location.replace(url);
+    });
+  */
+  
+  that.relocateOn = function(callback){
+    that.relocate = callback;
   };
   
   that.report = function( text ) 
@@ -362,6 +379,19 @@ Array.prototype.byId = function( id )
   while( index-- )
   {
     if( this[ index ].id == id ) return this[ index ];
+  }
+};
+
+Array.prototype.by = function( key, id )
+{
+  var index = this.length;
+  while( index-- )
+  {
+    if( this[ index ][ key ] == id ) {
+      console.log("schau hier");
+      console.log(this[index]);
+      return this[ index ];
+    }
   }
 };
 

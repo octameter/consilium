@@ -15,6 +15,30 @@ var IntroText = {
       { title: "5. Anonymisierung", description: "<p>NutzerInnen der App erhalten eine individuelle Patienten-ID, mit der Sie berechtigt sind den Service zu nutzen.</p>"}
     ]
     ,
+    DOCTOR_REGISTER:
+    [
+      { title:"Akte", description:"Consilium ist eine anonymisierte Patientenakte zum sicheren Informationsaustausch zwischen Arzt und Patient." }
+      ,
+      { title:"Entwicklung", description:"Consilium wurde für die Verlaufsbeobachtung von Patienten unter Therapie und für Studienzwecke entwickelt." }
+      ,
+      { title:"Funktion", description:"Patienten erfassen strukturiert ihr Befinden und teilen nach Wunsch die Daten mit dem Arzt.  Der Arzt ergänzt bei Bedarf notwendige Informationen für den Patienten." }
+      ,
+      { title:"Verwendung", description:"Die Akten der Patienten erscheinen nach Eingabe der individuellen Patienten-ID im Suchfeld." }
+      ,
+      { title:"Datenspeicherung", description:"Die Funktionen stehen nur nach Anmeldung mit Benutzername und Passwort zur Verfügung. Daten werden verschlüsselt übermittelt und gespeichert." }
+    ]
+    ,
+    DOCTOR_CONSILIUM:
+    [
+      { title:"Einleitung", description:"Sie sehen die Akten der Gruppe C der Studie: „Randomisierte einfach blinde Studie zur zeitnahen Erfassung von Symptomen bei ambulanten  Brustkrebspatientinnen“." }
+      ,
+      { title:"Nutzung", description:"Über die jeweilige Patienten-ID gelangen Sie zu den Daten Ihrer Patientinnen. Erinnern Sie die Patientinnen an die Daten-Synchronisation, um aktuelle Informationen zu erhalten." }
+      ,
+      { title:"Daten", description:"Die Erfassung von Symptomen und Wohlbefinden beginnt nach Verabreichung des ersten Chemotherapiezyklus und endet bei der Verabreichung des dritten Zyklus." }      
+      ,
+      { title:"Kommunikation", description:"Besprechen Sie die erfassten Daten mit den Patientinnen in der Visite. Ergänzen Sie die Diagnosen und Chemotherapiezyklen." }
+    ]
+    ,
     DEVICE_NOT_REGISTER:
   [
       { title: "1. Funktion", description: "<p>Die App ist Ihr persönliches Logbuch während einer medizinischen Therapie. Wir empfehlen die App täglich zu nutzen.</p>" }
