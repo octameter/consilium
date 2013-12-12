@@ -373,26 +373,19 @@ Array.prototype.at = function( index )
   return this[ index ];
 };
 
-Array.prototype.byId = function( id )
-{
-  var index = this.length;           
-  while( index-- )
-  {
-    if( this[ index ].id == id ) return this[ index ];
-  }
-};
-
 Array.prototype.by = function( key, id )
 {
   var index = this.length;
   while( index-- )
   {
     if( this[ index ][ key ] == id ) {
-      console.log("schau hier");
-      console.log(this[index]);
       return this[ index ];
     }
   }
+};
+
+Array.prototype.byId = function(id){
+  return this.by("id", id);
 };
 
 Array.prototype.has = function( key, array )
@@ -746,10 +739,11 @@ function eventify( that ) {
             var rounds = 3;
             
             while (rounds--){
-              if (data.target.nodeName != data.watch.toUpperCase())
-                data.target = data.target.parentNode;
-              else break;
+              if (data.target.nodeName == data.watch.toUpperCase()) break;
+              else if (rounds < 1) return;
+              else data.target = data.target.parentNode; 
             }
+            
           }
           
           // SET ON ELEMENTS
