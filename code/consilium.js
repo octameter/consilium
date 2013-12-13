@@ -62,7 +62,19 @@ var App = {
       // WELCOME EVERYONE
       Model.setActor( actor );
       
-      // UPDATE KONTO ACTOR WITH FRESH FROM DB
+      if (location.hash != ""){
+        
+        // regex is also used in akte.js
+        
+        // test for sequence of numbers after /id:
+        var id = location.hash.match(/\/id:([0-9]*)/);
+        
+        // TODO MARCO MARCO MARCO
+        if (!!id && !!id[1]) console.log( "MARCO MARCO ------->", id[1] );
+        
+      }
+      
+      // UPDATE KONTO ACTOR FROM DB
       if( Model.hasActor() && BROWSER ) Model.readActor( function( data ) { Model.setActor( data.message ); } );
       
       // LOAD HISTORY AND DOES NOT NEED FRESH ACTOR
@@ -852,7 +864,7 @@ var Home = {
           {
             Controller.dispatch( Controller.INTRO );
           }
-        }, { watch: "LI" });
+        });
     }
     ,
     update: function(event){

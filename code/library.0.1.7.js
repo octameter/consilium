@@ -77,6 +77,7 @@ function kontify( that ){
        || document.domain == "10.129.246.198"
        || document.domain == "10.129.247.72"
        || document.domain == "192.168.1.44"
+       || document.domain == "10.129.225.76"
        || document.domain == "127.0.0.1"
     )
     {
