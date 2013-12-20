@@ -91,6 +91,14 @@ and (orientation: landscape) {
 	background: #888;
 	width: 100%;
 }
+
+.chart line {
+  shape-rendering: crispEdges;
+}
+
+.chart line.connectLine {
+  shape-rendering: auto;
+}
  
 .overlay {
 	position: absolute;

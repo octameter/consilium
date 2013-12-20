@@ -726,8 +726,8 @@ var Home = {
   	maxInValue: 100,
 
     top: 40,
-  	right: 5,
-  	left: 5,
+  	right: 1, // 5,
+  	left: 0, // 5,
   	bottom: 30,
     
     x: function(ms){
@@ -795,6 +795,7 @@ var Home = {
           toX-= Home.container.width() - 160;      
       // ACTION
       Home.chart.scroller.scrollX(fromX, toX, 2000);
+      console.log("Home.chart.scroller.scrollX", fromX, toX, 2000);
     },
     
     update: function()

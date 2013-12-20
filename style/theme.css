@@ -113,7 +113,7 @@ section>fieldset,section>form>fieldset{position:relative;color:#696969;border-ra
 fieldset>legend{text-align:left;}
 fieldset>div{position:relative;text-align:left;padding-top:5px;}
 fieldset>span{position:relative;text-align:left;padding-top:20px;}
-.search{position:absolute;height:60px;width:100%;}
-.search>form{padding:0;position:absolute;top:8px;left:10px;width:300px;}
+.search{box-sizing:border-box;padding:10px 10px 0 10px;position:absolute;height:60px;width:100%;}
+.search>form{position:absolute;top:8px;left:10px;width:300px;}
 .searchQuelle{position:absolute;left:320px;top:10px;}
 .searchStatus{position:absolute;left:320px;top:34px;}

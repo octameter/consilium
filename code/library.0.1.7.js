@@ -726,8 +726,6 @@ function eventify( that ) {
         var data = params || {};
         
         var eventHandler = function(event){
-          //event.preventDefault();
-          //event.stopPropagation();
           
           // MULTI FINGER
           if (event.touches && event.touches.length > 0) event = event.touches[0];
@@ -794,19 +792,19 @@ function eventify( that ) {
 
             function contactHandler( data )
             {
-              var element = data.target;
+              var element = DOM( data.target );
               var x = data.koord.clientX;
               var y = data.koord.clientY;
               var transient = data.target.tagName.toLowerCase();
-              var transient = !!( transient == "a" || transient == "button" ); 
+              transient = !!( transient == "a" || transient == "button" );
 
               function finalize( data )
               {
                 if( data.type == "touchend" )
-                {   
-                  if( transient ) DOM( element ).removeClass("selected");
+                {
+                  if( transient ) element.removeClass("selected");
                   
-                  if( element != data.target ) 
+                  if( element.element != data.target ) 
                   {
                     data.type = "touchleave";
                   }
@@ -815,8 +813,8 @@ function eventify( that ) {
                 }
                else if( data.type == "touchleave")
                 {
-                  DOM( element ).removeClass("selected");
-                  data.target = element;
+                  element.removeClass("selected");
+                  data.target = element.element;
                   callback( data ); 
                 }
                 else if( data.type == "touchmove")
@@ -826,7 +824,7 @@ function eventify( that ) {
                   
                   if( Math.abs(moveX - x) > 10 || Math.abs(moveY - y) > 6 )
                   {
-                      DOM( element ).removeClass("selected");
+                      element.removeClass("selected");
                       data.type = "touchleave";
                       callback( data );
                   }
@@ -837,22 +835,23 @@ function eventify( that ) {
                   }
                 }
  
-                DOM( element ).off( "touchmove", finalize );
-                DOM( element ).off( "touchend", finalize );
-                DOM( element ).off( "touchleave", finalize );
+                element.off( "touchmove", finalize );
+                element.off( "touchend", finalize );
+                element.off( "touchleave", finalize );
               }
               
               if(data.type == "touchstart")
               {  
                 callback( data ); 
                 
-                if( transient ) DOM( element ).addClass("selected");               
-                DOM( element ).on( "touchmove", finalize );
+                if( transient ) element.addClass("selected");               
+                element.on( "touchmove", finalize );
                 
-                if( data && data.watch ) DOM( element ).on( "touchend", finalize, { watch:data.watch } );
-                else DOM( element ).on( "touchend", finalize );
+                if( data && data.watch ) element.on( "touchend", finalize, { watch: data.watch } );
+                // TODO review, (data && data.url ? { url: data.url } : null )
+                else element.on( "touchend", finalize );
  
-                DOM( element ).on( "touchleave", finalize );
+                element.on( "touchleave", finalize );
               }
             }
             this.on("touchstart", contactHandler, data);
@@ -1811,7 +1810,6 @@ var Svg = {
 	line: function( params )
 	{
 		var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    line.setAttribute("fill", params.color || "white");
     line.setAttribute("stroke", params.color || "white");
     line.setAttribute("stroke-width", params.strokeWidth || "1");
     line.setAttribute("x1", params.x1);
@@ -2117,7 +2115,7 @@ DOModule.timeGrid = function( xMin, xMax, xStep, yMin, yMax, yStep, minInMs, xIn
 
   var now = new Date().getTime();
   
-  for(var x = xMin; x <= xMax; x += xStep )
+  for(var x = xMin; x <= xMax + 1; x += xStep )
   {
       // Vertical Line
       this.add( Svg.line( { x1:x, y1:yMin, x2:x, y2:yMax, color: "rgba(255,255,255,1)"} ) ); 
