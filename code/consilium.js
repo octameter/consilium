@@ -782,8 +782,11 @@ var Home = {
           this.minInMs, this.xInMs 
       );
       
-      this.board.on("touchstart", function(data){
+      /*this.board.on("touchstart", function(data){
         Home.form.update( data.transfer );
+      });*/
+      this.board.on("tangent", function(data){
+        if (data.type == "touchstart") Home.form.update( data.transfer );
       });
       
       // AT APP START ALL LEFT (0)             

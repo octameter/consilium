@@ -170,59 +170,59 @@ function kontify( that ){
   
   that.memory = {
       
-      set:function( type, value, sterms )
-      { 
-        if( value instanceof Array )
+    set:function( type, value, sterms )
+    { 
+      if( value instanceof Array )
+      {
+        if( sterms )
         {
-          if( sterms )
+          for( var i = 0; i < value.length; i++)
           {
-            for( var i = 0; i < value.length; i++)
+            value[i]["_term"] = '';
+            
+            for( var t = 0; t < sterms.length; t++)
             {
-              value[i]["_term"] = '';
-              
-              for( var t = 0; t < sterms.length; t++)
-              {
-                if( value[i][sterms[t]] ) value[i]["_term"] += value[i][sterms[t]].toUpperCase() + " ";
-              }
-            }          
-          }
-          // DATA ADDED TO ARRAY
-          data[ type ] = ( !data[ type ] ) ? value : data[ type ].concat( value );
-        }
-        else
-        data[ type ] = value;
-        
-        return data[type];
-      }
-      ,
-      get: function( type )
-      {
-        return data[type];  
-      }
-      ,
-      remove:function( type )
-      {
-        delete data[type];
-      }
-      ,
-      search:function( type, searchString )
-      {
-        var search = searchString.toUpperCase().split(" ");
-        
-        var source = data[type].slice(0);
-        
-        return source.filter( function(ele)
-        {   
-            for( var i = 0; i < search.length; i++)
-            {
-              if( ele["_term"] && ele["_term"].indexOf( search[i] ) > -1) { continue; }
-
-              return false;
+              if( value[i][sterms[t]] ) value[i]["_term"] += value[i][sterms[t]].toUpperCase() + " ";
             }
-
-            return true;
-        });
+          }          
+        }
+        // DATA ADDED TO ARRAY
+        data[ type ] = ( !data[ type ] ) ? value : data[ type ].concat( value );
       }
+      else
+      data[ type ] = value;
+      
+      return data[type];
+    }
+    ,
+    get: function( type )
+    {
+      return data[type];  
+    }
+    ,
+    remove:function( type )
+    {
+      delete data[type];
+    }
+    ,
+    search:function( type, searchString )
+    {
+      var search = searchString.toUpperCase().split(" ");
+      
+      var source = data[type].slice(0);
+      
+      return source.filter( function(ele)
+      {   
+          for( var i = 0; i < search.length; i++)
+          {
+            if( ele["_term"] && ele["_term"].indexOf( search[i] ) > -1) { continue; }
+
+            return false;
+          }
+
+          return true;
+      });
+    }
   };
 
   /**
@@ -261,78 +261,84 @@ function kontify( that ){
    */
   that.remote = {
 
-      "create":function(uri, callback, data, accessToken)
+    "create":function(uri, callback, data, accessToken)
+    {
+      this.rest("POST", uri, callback, data, accessToken);
+    }
+    ,
+    "read":function(uri, callback, data, accessToken)
+    {
+      if(data != null && typeof data == "object")
       {
-        this.rest("POST", uri, callback, data, accessToken);
+        uri += "?" + this.toUrlVariables(data);
       }
-      ,
-      "read":function(uri, callback, data, accessToken)
-      {
-        if(data != null && typeof data == "object")
-        {
-          uri += "?" + this.toUrlVariables(data);
-        }
-        this.rest("GET", uri, callback, null, accessToken);
-      },
-      "update":function(uri, callback, data, accessToken)
-      {
-        this.rest("PUT", uri, callback, data, accessToken );
-      }
-      ,
-      "delete":function(uri, callback, data, accessToken)
-      {
-        this.rest("DELETE", uri, callback, data, accessToken );
-      }
-      ,
-      /**
-       * readyState
-       * 0: request not initialized 
-       * 1: server connection established
-       * 2: request received 
-       * 3: processing request 
-       * 4: request finished and response is ready
-       */
-      rest: function( method, uri, callback, data, accessToken) { 
+      this.rest("GET", uri, callback, null, accessToken);
+    },
+    "update":function(uri, callback, data, accessToken)
+    {
+      this.rest("PUT", uri, callback, data, accessToken );
+    }
+    ,
+    "delete":function(uri, callback, data, accessToken)
+    {
+      this.rest("DELETE", uri, callback, data, accessToken );
+    }
+    ,
+    /**
+     * readyState
+     * 0: request not initialized 
+     * 1: server connection established
+     * 2: request received 
+     * 3: processing request 
+     * 4: request finished and response is ready
+     */
+    rest: function( method, uri, callback, data, accessToken, noheaders) { 
 
-        var request = new XMLHttpRequest() || ActiveXObject("MSXML2.XMLHTTP.3.0");
-        request.open( method, uri, true);
-        request.setRequestHeader("Content-Type", "application/json");
-        request.setRequestHeader("Authorization", accessToken || "");         
-        request.onreadystatechange = function()
-        {   
-          if( request.readyState == 4)
-          {                 
-            if( request.status == 200 && request.responseText) 
-            callback( { status: request.status, message:JSON.parse( request.responseText ) } );
-            else 
-            callback( { status: request.status, message:request.statusText } ); 
-          }
-        };
-        request.send( JSON.stringify( data ) );
-      }
-      ,
-      form: function( method, uri, params ) {
-        var form = DOM().fragment("form");
-        form.attrib("method", method);
-        form.attrib("action", uri);
-        
-        for( var key in params) {
-          if(params.hasOwnProperty(key)) {
-            form.add("input").attrib("type", "hidden").attrib("name", key).attrib("value", params[key] );
-          }
+      var request = new XMLHttpRequest() || ActiveXObject("MSXML2.XMLHTTP.3.0");
+      request.open( method, uri, true);
+      
+      if( !noheaders )
+      request.setRequestHeader("Content-Type", "application/json");
+      
+      if( !noheaders && accessToken ) 
+      request.setRequestHeader("Authorization", accessToken);   
+      
+      request.onreadystatechange = function()
+      {   
+        if( request.readyState == 4)
+        {                 
+          if( request.status == 200 && request.responseText) 
+          callback( { status: request.status, message:JSON.parse( request.responseText ) } );
+          else 
+          callback( { status: request.status, message:request.statusText } ); 
         }
-        form.element.submit();
-      }  
-      ,
-      toUrlVariables: function(data) {
-        var query = [];
-        for (var key in data){
-          query.push(encodeURIComponent(key) + "=" + encodeURIComponent(data[key]));
+      };
+      request.send( JSON.stringify( data ) );
+    }
+    ,
+    form: function( method, uri, params ) 
+    {
+      var form = DOM( DOM( document ).create("form") );
+      form.attrib("method", method);
+      form.attrib("action", uri);
+      
+      for( var key in params) {
+        if(params.hasOwnProperty(key)) {
+          form.add("input").attrib("type", "hidden").attrib("name", key).attrib("value", params[key] );
         }
-        return query.join("&");
       }
+      form.element.submit();
+    }  
+    ,
+    toUrlVariables: function(data) 
+    {
+      var query = [];
+      for (var key in data){
+        query.push(encodeURIComponent(key) + "=" + encodeURIComponent(data[key]));
+      }
+      return query.join("&");
+    }
   };
-  
 };
 
 
@@ -844,7 +850,8 @@ function eventify( that ) {
               {  
                 callback( data ); 
                 
-                if( transient ) element.addClass("selected");               
+                if( transient ) element.addClass("selected");   
+                
                 element.on( "touchmove", finalize );
                 
                 if( data && data.watch ) element.on( "touchend", finalize, { watch: data.watch } );
@@ -889,6 +896,7 @@ function eventify( that ) {
           case "msg":           type = "message";     break;
           case "tab":	        type = "visibilitychange"; break;
           case "return":        type = "keydown";     break;						
+          case "keydown":        type = "keydown";     break;						
 
           case "change":  break;
           case "keyup":   break;
@@ -1913,7 +1921,9 @@ var Svg = {
     var params = { "fill":"rgba(255,255,255,1)", "stroke":"rgba(204,204,204,0.8)","strokeWidth":"1" };
     params.d = "M 15 30 L 15 15 C 15 5, 20 6, 25 10 L 45 25 C 50 28, 50 32, 45 35 L 25 50 C 20 55, 15 54, 15 45 L 15 30 Z";
     
-    return this.symbol().appendChild( this.path( params ) );
+    var svg = this.symbol(); 
+    svg.appendChild( this.path( params ) );
+    return svg;
   },
   pause : function() 
   {
@@ -1974,9 +1984,13 @@ var Svg = {
       svg.setAttribute("width", params.width || 60);
       svg.setAttribute("height", params.height || 60);
       
-      //svg.style["position"] = "absolute";
-      //svg.style["right"] = (-0.4 * percentSize ) + "%";
-      //svg.style["top"] = (-0.4 * percentSize ) + "%";
+      if( params.right && params.top )
+      {
+        svg.style["position"] = "absolute";
+        svg.style["right"] = params.right;
+        svg.style["top"] = params.top; 
+        svg.style["cursor"] = "pointer"; 
+      }
       
       var kreis = document.createElementNS("http://www.w3.org/2000/svg", "circle");
       kreis.setAttribute("fill", params.fill);
@@ -2170,7 +2184,7 @@ DOModule.addSymbol = function(type, params){
     case "error": this.add( Svg.error() );      break;
     case "busy":  this.add( Svg.busy() );       break;
     case "play":  this.add( Svg.play() );       break;
-    case "close": this.add(Svg.close(params));  break;
+    case "close": this.add( Svg.close(params) );  break;
     case "caretL": this.add( Svg.caretL() );    break;
     case "caretR": this.add( Svg.caretR() );    break;
   }
