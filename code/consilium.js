@@ -57,6 +57,7 @@ var App = {
 
     App.signOn(function(actor)
     {      
+      // TESTING
       if( DOM().hash() == "device") actor = App.emulateDevice();
         
       // WELCOME EVERYONE
@@ -70,14 +71,13 @@ var App = {
         var id = location.hash.match(/\/id:([0-9]*)/);
         
         // TODO MARCO MARCO MARCO
-        if (!!id && !!id[1]) console.log( "MARCO MARCO ------->", id[1] );
-        
+        if (!!id && !!id[1]) Model.setAntagonist( id[1] );        
       }
       
       // UPDATE KONTO ACTOR FROM DB
       if( Model.hasActor() && BROWSER ) Model.readActor( function( data ) { Model.setActor( data.message ); } );
       
-      // LOAD HISTORY AND DOES NOT NEED FRESH ACTOR
+      // LOADS HISTORY AND DOES NOT NEED FRESH ACTOR
       Model.hasActor() ? Model.restoreActs( App.go ) :  App.go();
     });
   }
@@ -88,6 +88,7 @@ var App = {
     Controller.dispatch( Controller.HOME ); 
   }
   ,
+  // TESTING HELPER FUNCTION
   emulateDevice:function()
   {
     // FOR LOGGING FORCE LOCAL SERVER
@@ -252,7 +253,15 @@ var Model = {
   pullActs:function( callback )
   {    
     var known = this.memory.get("acts");
-    var neue = [];
+    var neue = [];    
+    var query;
+    
+    if( DEVICE )
+    query = ( this.storage.get("device_synced") ) ? { since : this.storage.get("device_synced") } : null;
+    
+    if( BROWSER )
+    query = ( this.memory.get("antagonist") ) ? { anta_actor_id : this.memory.get("antagonist") } : null;
+    
     this.remote.read(App.node + "/api/acts/", function(data)
     {      
       if( data.status == 200 )
@@ -274,7 +283,7 @@ var Model = {
         if( callback ) callback( data );
       }      
     }, 
-    this.lastSync(), this.getActor().access_token );   
+    query, this.getActor().access_token );   
   }
   ,
   getActs:function() { 
@@ -283,6 +292,9 @@ var Model = {
   ,
   setAct:function( act )
   {
+    if ( this.getAntagonist() )
+    act.anta_actor_id = this.getAntagonist();
+    
     var acts = this.memory.set("acts", [ act ], ["id","kategorie"] );
     this.saveActs();
   }
@@ -357,13 +369,6 @@ var Model = {
     this.storage.set("device_synced", new Date().getTime() ); 
   }
   ,
-  lastSync:function() 
-  { 
-    var synced = this.storage.get("device_synced");
-    
-    return (DEVICE && synced != null) ? { since: synced } : null;
-  }
-  ,
   dummy:function()
   {
     console.log("Setting DUMMY data");
@@ -383,6 +388,15 @@ var Model = {
     ], ["id"]);
     Controller.dispatch( Controller.HOME );
   }
+  ,
+  // IF AVAILABLE ACTS ON HIS TABLE
+  setAntagonist: function( antagonist )
+  {
+    this.memory.set("antagonist", antagonist ); 
+  }
+  ,
+  getAntagonist: function() { return this.memory.get("antagonist"); }
+  
 };
 
 /**
@@ -469,6 +483,8 @@ var Einstellung = {
     }   
     if( Model.hasActor() && !error )
     {
+      console.log( "OK", Model.getActor() );
+      
       this.verbindenStatus.text( Model.getActor().scope_display );
       this.verbindenInfo.text("hergestellt");
       
@@ -650,6 +666,7 @@ var Home = {
     if (BROWSER) DOM("titleId").hide();
     
     // BUILD GRID
+    // TODO ONLY IF NO GET ACTS CALLED
     Home.chart.init();
     // BUILD AUSWAHL
     Home.form.init(); 
@@ -689,7 +706,11 @@ var Home = {
     
     if( Home.container.hasClass("middle") )
     { 
+      // FIRST TIME CHART IS DISPLAYED
+     
       Home.content.show(); 
+      //setTimeout( function(){ Home.chart.update(); }, 3000);
+      
       Home.chart.update();
       Home.form.update();
       Home.container.addClass("complete");
@@ -789,6 +810,11 @@ var Home = {
         if (data.type == "touchstart") Home.form.update( data.transfer );
       });
       
+      this.animate();
+    }
+    ,
+    animate:function()
+    {
       // AT APP START ALL LEFT (0)             
       var scrolledX = Home.chart.scroller.get("scrollLeft");      
       // AT START TAKE ONLY LAST 14 DAYS ELSE
@@ -799,8 +825,8 @@ var Home = {
       // ACTION
       Home.chart.scroller.scrollX(fromX, toX, 2000);
       console.log("Home.chart.scroller.scrollX", fromX, toX, 2000);
-    },
-    
+    }
+    ,
     update: function()
     {  
       this.board.findAll(".movePoint").remove();
