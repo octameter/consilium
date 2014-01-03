@@ -27,7 +27,7 @@ var App = {
     BROWSER = !window.cordova;
     DEVICE = !!window.cordova;
 
-    console.log( "Running on " + (BROWSER ? "browser" : "device" ));
+    console.log( "Running on " + (BROWSER ? "BROWSER" : "DEVICE" ));
     
     kontify(this);
     
@@ -44,6 +44,11 @@ var App = {
 
     DOM(document).on("ready", function(){
       App.setup();
+    });
+    
+    App.relocateOn(function(url){
+      if (url.search(/(akte|consilium)/) > -1) url += location.hash;
+      location.replace(url);
     });
       
   }
@@ -64,15 +69,17 @@ var App = {
       Model.setActor( actor );
       
       if (location.hash != ""){
-        
-        // regex is also used in akte.js
-        
+
         // test for sequence of numbers after /id:
         var id = location.hash.match(/\/id:([0-9]*)/);
         
-        // TODO MARCO MARCO MARCO
-        if (!!id && !!id[1]) Model.setAntagonist( id[1] );        
-      }
+        // ARZT HAS PATIENT SELECTED IN AKTE
+        if (!!id && !!id[1])
+        {
+          document.title = "ID "+ id[1];
+          Model.setAntagonist( id[1] );
+        }
+      } else document.title = "Consilium";
       
       // UPDATE KONTO ACTOR FROM DB
       if( Model.hasActor() && BROWSER ) Model.readActor( function( data ) { Model.setActor( data.message ); } );
@@ -483,8 +490,6 @@ var Einstellung = {
     }   
     if( Model.hasActor() && !error )
     {
-      console.log( "OK", Model.getActor() );
-      
       this.verbindenStatus.text( Model.getActor().scope_display );
       this.verbindenInfo.text("hergestellt");
       
@@ -706,11 +711,8 @@ var Home = {
     
     if( Home.container.hasClass("middle") )
     { 
-      // FIRST TIME CHART IS DISPLAYED
-     
+      // FIRST TIME CHART IS DISPLAYED  
       Home.content.show(); 
-      //setTimeout( function(){ Home.chart.update(); }, 3000);
-      
       Home.chart.update();
       Home.form.update();
       Home.container.addClass("complete");
@@ -803,28 +805,11 @@ var Home = {
           this.minInMs, this.xInMs 
       );
       
-      /*this.board.on("touchstart", function(data){
-        Home.form.update( data.transfer );
-      });*/
       this.board.on("tangent", function(data){
         if (data.type == "touchstart") Home.form.update( data.transfer );
       });
       
-      this.animate();
-    }
-    ,
-    animate:function()
-    {
-      // AT APP START ALL LEFT (0)             
-      var scrolledX = Home.chart.scroller.get("scrollLeft");      
-      // AT START TAKE ONLY LAST 14 DAYS ELSE
-      var fromX = ( scrolledX == 0 ) ? this.x( this.maxInMs - ( 14 * this.stepInMs ) ) : scrolledX;
-          fromX -= Home.container.width() - 160; 
-      var toX = this.x(this.maxInMs - this.stepInMs);
-          toX-= Home.container.width() - 160;      
-      // ACTION
-      Home.chart.scroller.scrollX(fromX, toX, 2000);
-      console.log("Home.chart.scroller.scrollX", fromX, toX, 2000);
+      //this.animate();
     }
     ,
     update: function()
@@ -876,7 +861,25 @@ var Home = {
         }
       }.bind(this));
       
+      this.animate();
     }   
+    ,
+    animate:function()
+    {
+      // AT APP START ALL LEFT (0)             
+      var scrolledX = Home.chart.scroller.get("scrollLeft");      
+      // AT START TAKE ONLY LAST 14 DAYS ELSE
+      var fromX = this.x( this.maxInMs - ( 14 * this.stepInMs ) );
+          fromX -= Home.container.width() - 160; 
+      var toX = this.x(this.maxInMs - this.stepInMs);
+          toX-= Home.container.width() - 160;      
+      
+      // ACTION
+      if( scrolledX == 0  )
+      Home.chart.scroller.scrollX(fromX, toX, 2000);
+      
+      console.log("Home.chart.scroller.scrollX", scrolledX, fromX, toX, 2000);
+    }
   }
   ,
   form: {
@@ -935,11 +938,12 @@ var Home = {
           if( data.type == "touchend" )
           {
             Home.content.hide();
-            Home.container.swipe("left");
             
             var item = event;
             item.back = Controller.HOME;
             Controller.dispatch(Controller.EINGABE, item);
+            
+            Home.container.swipe("left");
           }
          }, { watch: "LI" });
       

@@ -1544,10 +1544,24 @@ DOModule.datetimeBuild = function( params )
   
   for(var j = params.min; j <= params.max; j++)
   {
-    this.add("option").set("value",j).text( ( j < 10 ) ? "0" + j : j);
-  
-    if(params.zeit == j)
-    this.child(j-1).set("selected","selected");
+    // DAY AND MONTH AND HOUR AND MINUTES
+    if( params.zeit <= 60 )
+    {
+      this.add("option").set("value",j).text( ( j < 10 ) ? "0" + j : j);
+    
+      if(params.zeit == j)
+      this.child(j-1).set("selected","selected");
+    }
+
+    // YEAR
+    if( params.zeit > 1900 )
+    {
+      if( params.zeit == j ) 
+      this.add("option").set("value",j).text(j).set("selected","selected");
+      
+      else
+      this.add("option").set("value",j);
+    }
   }
 };
 
@@ -1565,6 +1579,7 @@ DOModule.datetimeSet = function( ms )
     this.find(".dd").datetimeBuild( {  min:1, max:util.zeit("ddInMonth", ms), zeit:util.zeit("dd", ms) } );
     this.find(".MM").datetimeBuild( { min:1, max:12, zeit:util.zeit("MM", ms) } );
     this.find(".yyyy").datetimeBuild( {  min:2013, max:util.zeit("yyyy", ms), zeit:util.zeit("yyyy", ms) } );
+    
     //TIME
     this.find(".hh").datetimeBuild( {  min:1, max:24, zeit:util.zeit("hh", ms) } );
     this.find(".mm").datetimeBuild( { min:1, max:60, zeit:util.zeit("mm", ms) } );
