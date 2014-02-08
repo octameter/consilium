@@ -191,7 +191,7 @@ function kontify( that ){
       }
       else
       data[ type ] = value;
-      
+
       return data[type];
     }
     ,
@@ -679,7 +679,8 @@ function eventify( that ) {
     
 	    // TODO return null if not found
       find: function(select){
-          return DOM(this.element.querySelector(select));
+        var result = this.element.querySelector(select);
+        return result ? DOM(result) : null;
       },
       findAll: function(select){
         return DOM( this.element.querySelectorAll(select) );
@@ -752,7 +753,7 @@ function eventify( that ) {
           }
           
           // SET ON ELEMENTS
-          if (data.target.hasAttribute){
+          if (data.target && data.target.hasAttribute){
             if (data.target.hasAttribute("data"))
               data.transfer = JSON.parse(data.target.getAttribute("data"));
             
@@ -760,7 +761,7 @@ function eventify( that ) {
               data.href = data.target.getAttribute("href");           
           }
           
-          if (data.target.value != null) data.value = data.target.value;
+          if (data.target && data.target.value != null) data.value = data.target.value;
           
           // MESSAGEEVENT
           if (event.data && event.origin){
@@ -1103,7 +1104,7 @@ function eventify( that ) {
       hellip: function(zeichen)
       {
         var value = this.text();
-        if (zeichen < value.length) this.text(value.substr(0, zeichen) + "…");
+        if (zeichen < value.length - 2) this.text(value.substr(0, zeichen - 1) + "…");
         return this;
       }
       ,

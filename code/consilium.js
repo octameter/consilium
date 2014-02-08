@@ -1097,6 +1097,7 @@ var Intro = {
       goodbye = { title: "Epilog", description: "<p>Wir wünschen Ihnen viel Erfolg!</p>" };
     }
           
+    if( goodbye )
     this.addFeature( goodbye ); //.add("a").addClass("button grey").text("App starten").on("tangent", Intro.goHome );
     
     this.container.show();
